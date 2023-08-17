@@ -1,0 +1,7 @@
+Package: enigma2-plugin-extensions-bouquetmakerxtream
+Version: 0.04-20230817
+Section: misc
+Priority: optional
+Architecture: all
+Maintainer: kiddac
+Description: Bouquet Maker Xtream - IPTV bouquet maker
