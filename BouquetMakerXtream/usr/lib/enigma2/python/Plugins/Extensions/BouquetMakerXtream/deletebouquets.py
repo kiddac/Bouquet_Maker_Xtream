@@ -5,7 +5,7 @@ from . import _
 from . import globalfunctions as bmxfunctions
 from . import bouquet_globals as glob
 
-from .plugin import skin_path, common_path, playlists_json, epgimporter
+from .plugin import skin_path, common_path, playlists_json, epgimporter, version
 from .bouquetStaticText import StaticText
 
 from Components.ActionMap import ActionMap
@@ -39,6 +39,7 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
         self["key_yellow"] = StaticText(_("Invert"))
         self["key_blue"] = StaticText(_("Clear All"))
         self["key_info"] = StaticText("")
+        self["version"] = StaticText()
 
         self.playlists_all = bmxfunctions.getPlaylistJson()
 
@@ -53,18 +54,20 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
             "ok": self.toggleSelection
         }, -2)
 
+        self["version"].setText(version)
+
         self.getStartList()
         self.refresh()
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
-    def buildListEntry(self, name, index, enabled):
-        if enabled:
+    def buildListEntry(self, name, index, selected):
+        if selected:
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_on.png"))
         else:
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_off.png"))
-        return (pixmap, str(name), index, enabled)
+        return (pixmap, str(name), index, selected)
 
     def getStartList(self):
         for playlist in self.playlists_all:

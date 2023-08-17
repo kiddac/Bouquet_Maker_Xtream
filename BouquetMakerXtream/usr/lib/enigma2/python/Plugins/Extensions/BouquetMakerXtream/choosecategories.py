@@ -638,12 +638,12 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.currentList = 1
         self.enablelist()
 
-    def buildListEntry(self, id, name, enabled):
-        if enabled:
-            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_on.png"))
+    def buildListEntry(self, id, name, hidden):
+        if hidden:
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_hidden.png"))
         else:
-            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_off.png"))
-        return (pixmap, str(name), str(id), enabled)
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_on.png"))
+        return (pixmap, str(name), str(id), hidden)
 
     def refresh(self):
         # print("*** refresh ***")
