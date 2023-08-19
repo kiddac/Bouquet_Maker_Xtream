@@ -2,19 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-
 from . import globalfunctions as bmxfunctions
 from . import bouquet_globals as glob
+
+from .plugin import cfg, skin_directory, hdr, pythonVer, playlists_json, epgimporter
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
 from enigma import eTimer, eDVBDB
 
-from .plugin import cfg, skin_directory, hdr, pythonVer, playlists_json, epgimporter
-
-from Screens.MessageBox import MessageBox
 from requests.adapters import HTTPAdapter, Retry
+from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
 try:
@@ -172,6 +171,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.close()
 
     def nextjob(self, actiontext, function):
+        # print("*** function ***", function)
         self.processing = True
         self["action"].setText(actiontext)
         self.timer = eTimer()
@@ -211,7 +211,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.finished()
 
     def delete_existing_refs(self):
-        # print("*** delete_existing_refs ***")
+        print("*** delete_existing_refs ***")
         safeName = self.safefilename
 
         with open("/etc/enigma2/bouquets.tv", "r+") as f:
@@ -251,7 +251,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.nextjob(_("Processing series data..."), self.process_series)
 
     def download_url(self, url, ext):
-        # print("*** url ***", url)
+        print("*** url ***", url)
         r = ""
         retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
@@ -281,7 +281,8 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         return ""
 
     def process_live(self):
-        # print("*** process_live ***")
+        print("*** process_live ***")
+
         self.livestreamdata = ""
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
@@ -297,7 +298,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             for category in self.livecategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]:
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
-                    self.nextjob(_("Adding live bouquet.tv data..."), self.build_bouquet_tv_file("live", bouquetTitle))
+                    self.build_bouquet_tv_file("live", bouquetTitle)
 
             for category in self.livecategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]:
@@ -313,13 +314,13 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
                         if str(category["category_id"]) == str(stream["category_id"]):
                             stringbuilder += stream["bouquetString"]
-                    self.nextjob(_("Adding live userbouquets files..."), self.build_userbouquets("live", bouquetTitle, stringbuilder))
+                    self.build_userbouquets("live", bouquetTitle, stringbuilder)
                     self.progressvalue += 1
 
         self.progressvalue += 1
         self["progress"].setValue(self.progressvalue)
 
-        print("**** starting xmltv source ***")
+        # print("**** starting xmltv source ***")
         if epgimporter:
             self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
 
@@ -334,17 +335,21 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
     def downloadLiveStreams(self):
         # print("*** downloadLiveStreams ***")
+        streamlist = []
+        if self.livecategoriescount == len(glob.current_playlist["data"]["live_categories_hidden"]):
+            return streamlist
+
         url = str(self.player_api) + "&action=get_live_streams"
         result = self.download_url(url, "json")
+
+        streamlist = []
 
         if result:
             try:
                 channellist_all = result
-                streamlist = []
 
                 for channel in channellist_all:
 
-                    channelid = str(channel["epg_channel_id"])
                     stream_id = str(channel["stream_id"])
 
                     if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
@@ -360,6 +365,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                         if cfg.catchup.value is True and catchup == 1:
                             name = str(cfg.catchupprefix.value) + str(name)
 
+                        channelid = str(channel["epg_channel_id"])
                         if channelid and "&" in channelid:
                             channelid = channelid.replace("&", "&amp;")
 
@@ -391,10 +397,10 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             except Exception as e:
                 print(e)
         else:
-            return ""
+            return streamlist
 
     def process_vod(self):
-        # print("*** process_vod ***")
+        print("*** process_vod ***")
         self.vodstreamdata = ""
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.vodstreamdata = self.downloadVodStreams()
@@ -407,7 +413,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             for category in self.vodcategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["vod_categories_hidden"]:
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
-                    self.nextjob(_("Adding VOD bouquet.tv data..."), self.build_bouquet_tv_file("vod", bouquetTitle))
+                    self.build_bouquet_tv_file("vod", bouquetTitle)
 
             for category in self.vodcategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["vod_categories_hidden"]:
@@ -422,7 +428,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     for stream in self.vodstreamdata:
                         if str(category["category_id"]) == str(stream["category_id"]):
                             stringbuilder += stream["bouquetString"]
-                    self.nextjob(_("Adding VOD userbouquets files..."), self.build_userbouquets("vod", bouquetTitle, stringbuilder))
+                    self.build_userbouquets("vod", bouquetTitle, stringbuilder)
                     self.progressvalue += 1
 
         self.progressvalue += 1
@@ -435,14 +441,17 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.processing = False
 
     def downloadVodStreams(self):
-        # print("*** downloadVodStreams ***")
+        print("*** downloadVodStreams ***")
+        streamlist = []
+        if self.vodcategoriescount == len(glob.current_playlist["data"]["vod_categories_hidden"]):
+            return streamlist
+
         url = str(self.player_api) + "&action=get_vod_streams"
         result = self.download_url(url, "json")
 
         if result:
             try:
                 channellist_all = result
-                streamlist = []
 
                 for channel in channellist_all:
                     stream_id = str(channel["stream_id"])
@@ -469,9 +478,10 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             except Exception as e:
                 print(e)
         else:
-            return ""
+            return streamlist
 
     def process_series(self):
+        print("*** process_series ***")
         self.seriesstreamdata = ""
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.seriesstreamdata = self.downloadSeriesStreams()
@@ -484,7 +494,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             for category in self.seriescategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]:
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
-                    self.nextjob(_("Adding series bouquet.tv data..."), self.build_bouquet_tv_file("series", bouquetTitle))
+                    self.build_bouquet_tv_file("series", bouquetTitle)
 
             for category in self.seriescategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]:
@@ -499,7 +509,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     for stream in self.seriesstreamdata:
                         if str(category["category_id"]) == str(stream["category_id"]):
                             stringbuilder += stream["bouquetString"]
-                    self.nextjob(_("Adding series userbouquets files..."), self.build_userbouquets("series", bouquetTitle, stringbuilder))
+                    self.build_userbouquets("series", bouquetTitle, stringbuilder)
                     self.progressvalue += 1
 
         self.progressvalue += 1
@@ -508,43 +518,55 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.processing = False
 
     def downloadSeriesStreams(self):
-        # print("download get_series")
+        print("download get_series")
+
+        streamlist = []
+        if self.seriescategoriescount == len(glob.current_playlist["data"]["series_categories_hidden"]):
+            return streamlist
 
         url = str(self.player_api) + "&action=get_series"
         seriesstreamresult = self.download_url(url, "json")
 
         # download get.api type=simple
-
         url = str(self.simple)
         seriessimpleresult = self.download_url(url, "text")
 
-        lines = seriessimpleresult.splitlines()
+        if seriessimpleresult and seriesstreamresult:
 
-        if seriesstreamresult:
-            try:
-                channellist_all = seriesstreamresult
-                streamlist = []
+            lines = seriessimpleresult.splitlines()
 
-                x = 0
-                for line in lines:
-                    if x > 1000:
-                        break
-                    if pythonVer == 3:
-                        line = line.decode()
+            if pythonVer == 3:
+                lines = [x for x in lines if "/series/" in x.decode() or "/S01/" in x.decode() or "/E01" in x.decode() and "/live" not in x.decode() and "/movie/" not in x.decode()]
+            else:
+                lines = [x for x in lines if "/series/" in x or "/S01/" in x or "/E01" in x and "/live" not in x and "/movie/" not in x]
 
-                    if ("/series/" in line) or ("S01" in line) or ("E01" in line):
+            buildlist = [x for x in seriesstreamresult if str(x["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and
+                         str(x["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]]
+
+            if buildlist:
+                try:
+                    x = 0
+                    for line in lines:
+                        if pythonVer == 3:
+                            line = line.decode()
+
+                        if x > 1000:
+                            break
+
                         series_url = line.split(" ")[0]
                         series_name = line.split(":")[-1].strip()
                         series_name = series_name.replace(":", "").replace('"', "").strip("-")
                         series_stream_id = series_url.split("/")[-1].split(".")[0]
 
-                        for channel in channellist_all:
+                        name = ""
+
+                        for channel in buildlist:
                             if channel['name'] in series_name:
                                 name = channel["name"]
                                 name = name.replace(":", "").replace('"', "").strip("-")
                                 break
 
-                        if str(channel["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(channel["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]:
+                        if name:
                             bouquet_id1 = 0
                             calc_remainder = int(series_stream_id) // 65535
                             bouquet_id1 = bouquet_id1 + calc_remainder
@@ -554,16 +576,19 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                             bouquetString = ""
                             bouquetString += "#SERVICE " + str(self.streamtype) + str(custom_sid) + quote(series_url) + ":" + str(series_name) + "\n"
                             bouquetString += "#DESCRIPTION " + str(series_name) + "\n"
-                            streamlist.append({"name": channel["name"], "category_id": str(channel["category_id"]), "stream_id": str(series_stream_id), "custom_sid": custom_sid, "bouquetString": bouquetString})
+                            streamlist.append({"name": str(name), "category_id": str(channel["category_id"]), "stream_id": str(series_stream_id), "custom_sid": custom_sid, "bouquetString": bouquetString})
                             x += 1
-                return streamlist
-            except Exception as e:
-                print(e)
+
+                    return streamlist
+                except Exception as e:
+                    print(e)
 
         else:
-            return ""
+            print("*** no simple api call ***")
+            return streamlist
 
     def build_bouquet_tv_file(self, streamtype, bouquetTitle):
+        print("*** build_bouquet_tv ***")
         if cfg.groups.value is True:
 
             groupname = "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
@@ -593,6 +618,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                 f.write(str(bouquetTvString))
 
     def build_userbouquets(self, streamtype, bouquetTitle, bouquetString):
+        print("*** build userbouquets ***")
         filepath = "/etc/enigma2/"
 
         if cfg.groups.value is True:
@@ -608,7 +634,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             f.write(bouquetString)
 
     def build_xmltv_source(self):
-        # print("*** build_xmltv_source ***")
+        print("*** build_xmltv_source ***")
 
         import xml.etree.ElementTree as ET
 
@@ -668,7 +694,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.nextjob(_("Building EPG channel file..."), self.build_xmltv_channels)
 
     def build_xmltv_channels(self):
-        # print("*** build_xmltv channels ***")
+        print("*** build_xmltv channels ***")
         safeName = self.safefilename
 
         filepath = "/etc/epgimport/"

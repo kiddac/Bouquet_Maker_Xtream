@@ -73,9 +73,8 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             "right": self.goRight,
             "channelUp": self.pageUp,
             "channelDown": self.pageDown,
-            "prevBouquet": self.pageUp,
-            "nextBouquet": self.pageDown,
-
+            "2": self.pageUp,
+            "8": self.pageDown,
             "up": self.goUp,
             "down": self.goDown,
 
@@ -95,7 +94,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.onFirstExecBegin.append(self.start)
 
     def enablelist(self):
-        # print("*** enablelist ***")
         self["list2"].master.master.instance.setSelectionEnable(0)
         self.active = "list" + str(self.currentList)
 
@@ -159,7 +157,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 self.selectionChanged()
 
     def start(self):
-        # print("*** start ***")
         self.timer = eTimer()
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
@@ -172,37 +169,41 @@ class BouquetMakerXtream_ChooseCategories(Screen):
 
     def makeUrlList(self):
         # print("*** makeUrlList ***")
-        self.url_list = []
+        self.live_url_list = []
+        self.vod_url_list = []
+        self.series_url_list = []
+        self.external_url_list = []
+
         if glob.current_playlist["playlist_info"]["playlisttype"] != "local":
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                 if glob.current_playlist["settings"]["showlive"] is True:
-                    self.url_list.append([self.p_live_categories_url, 0])
-                    self.url_list.append([self.p_live_streams_url, 3])
+                    self.live_url_list.append([self.p_live_categories_url, 0])
+                    self.live_url_list.append([self.p_live_streams_url, 3])
 
                 if glob.current_playlist["settings"]["showvod"] is True:
-                    self.url_list.append([self.p_vod_categories_url, 1])
-                    self.url_list.append([self.p_vod_streams_url, 4])
+                    self.vod_url_list.append([self.p_vod_categories_url, 1])
+                    self.vod_url_list.append([self.p_vod_streams_url, 4])
 
                 if glob.current_playlist["settings"]["showseries"] is True:
-                    self.url_list.append([self.p_series_categories_url, 2])
-                    self.url_list.append([self.p_series_streams_url, 5])
+                    self.series_url_list.append([self.p_series_categories_url, 2])
+                    self.series_url_list.append([self.p_series_streams_url, 5])
 
             elif glob.current_playlist["playlist_info"]["playlisttype"] == "external":
-                self.url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6])
-            self.process_downloads()
+                self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6])
+                self.process_downloads("external")
         else:
             self.parse_m3u8_playlist()
 
-        self["splash"].hide()
-        if glob.current_playlist["settings"]["showlive"] is True and glob.current_playlist["data"]["live_categories"] != []:
+        # self["splash"].hide()
+        if glob.current_playlist["settings"]["showlive"] is True:
             self.loadLive()
-        elif glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"] != []:
+        elif glob.current_playlist["settings"]["showvod"] is True:
             self.loadVod()
-        elif glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"] != []:
+        elif glob.current_playlist["settings"]["showseries"] is True:
             self.loadSeries()
 
     def download_url(self, url):
-        # print("*** download_url ***")
+        # print("*** url ***", url)
         category = url[1]
         r = ""
 
@@ -213,7 +214,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         http.mount("https://", adapter)
         response = ""
 
-        # print("*** url ***", url)
         try:
             r = http.get(url[0], headers=hdr, timeout=(10, 20), verify=False)
             r.raise_for_status()
@@ -237,8 +237,27 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             print(e)
             return category, ""
 
-    def process_downloads(self):
-        # print("*** process_downloads ***")
+    def process_downloads(self, streamtype):
+        print("*** process_downloads ***")
+
+        if streamtype == "live":
+            self.url_list = self.live_url_list
+
+        if streamtype == "vod":
+            self.url_list = self.vod_url_list
+
+        if streamtype == "series":
+            self.url_list = self.series_url_list
+
+        if streamtype == "external":
+            self.url_list = self.external_url_list
+
+        try:
+            self["splash"].show()
+        except:
+            pass
+
+        results = ""
 
         threads = len(self.url_list)
         if threads > 10:
@@ -247,7 +266,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         if hasConcurrent or hasMultiprocessing:
             if hasConcurrent:
                 try:
-                    # print("******* trying concurrent futures ******")
                     from concurrent.futures import ThreadPoolExecutor
                     executor = ThreadPoolExecutor(max_workers=threads)
 
@@ -258,7 +276,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
 
             elif hasMultiprocessing:
                 try:
-                    # print("*** trying multiprocessing ThreadPool ***")
                     from multiprocessing.pool import ThreadPool
                     pool = ThreadPool(threads)
                     results = pool.imap_unordered(self.download_url, self.url_list)
@@ -286,7 +303,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                         self.parse_m3u8_playlist(response)
 
         else:
-            # print("*** trying sequential ***")
             for url in self.url_list:
                 result = self.download_url(url)
                 category = result[0]
@@ -309,8 +325,9 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                     else:
                         self.parse_m3u8_playlist(response)
 
+        self["splash"].hide()
+
     def parse_m3u8_playlist(self, response=None):
-        # print("*** parse_m3u8_playlist ***")
         self.live_streams = []
         self.vod_streams = []
         self.series_streams = []
@@ -422,7 +439,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.make_m3u8_categories_json()
 
     def make_m3u8_categories_json(self):
-        # print("*** make_m3u8_categories_json ***")
         glob.current_playlist["data"]["live_categories"] = []
         glob.current_playlist["data"]["vod_categories"] = []
         glob.current_playlist["data"]["series_categories"] = []
@@ -468,13 +484,9 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 if not exists:
 
                     glob.current_playlist["data"]["series_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-
-        # print(glob.current_playlist["data"])
-
         self.make_m3u8_streams_json()
 
     def make_m3u8_streams_json(self):
-        # print("*** make_m3u8_streams_json ***")
         glob.current_playlist["data"]["live_streams"] = []
         glob.current_playlist["data"]["vod_streams"] = []
         glob.current_playlist["data"]["series_streams"] = []
@@ -489,7 +501,9 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             glob.current_playlist["data"]["series_streams"].append({"stream_icon": str(x[1]), "category_id": str(x[2]), "name":  str(x[3]), "source": str(x[4]), "series_id": str(x[5])})
 
     def loadLive(self):
-        # print("*** loadlive ***")
+        # print("*** loadLive ***")
+        self.process_downloads("live")
+
         self.categoryList = []
         self.categorySelectedList = []
 
@@ -519,7 +533,8 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.selectionChanged()
 
     def loadVod(self):
-        # print("*** loadvod  ***")
+        self.process_downloads("vod")
+
         self.categoryList = []
         self.categorySelectedList = []
 
@@ -548,7 +563,8 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.selectionChanged()
 
     def loadSeries(self):
-        # print("*** loadseries ***")
+        self.process_downloads("series")
+
         self.categoryList = []
         self.categorySelectedList = []
 
@@ -573,8 +589,11 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.selectionChanged()
 
     def selectionChanged(self):
+
+        self.channelList = []
+        self.channelSelectedList = []
+
         if not self["list1"].getCurrent():
-            # print("**** no list1 ***")
             return
 
         if self["list1"].getCurrent()[3] is True:
@@ -582,9 +601,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             return
 
         category = self["list1"].getCurrent()[2]
-
-        self.channelList = []
-        self.channelSelectedList = []
 
         if self.setup_title == (_("Choose Live Categories")):
 
@@ -646,7 +662,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         return (pixmap, str(name), str(id), hidden)
 
     def refresh(self):
-        # print("*** refresh ***")
         if self.selectedList == self["list1"]:
             self.categoryList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.categorySelectedList]
             self["list1"].updateList(self.categoryList)
@@ -758,7 +773,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             self.close()
 
     def keyGreen(self):
-        # print("*** keygreen ***")
         if self.setup_title == (_("Choose Live Categories")):
             if glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"] != []:
                 self.loadVod()
@@ -777,7 +791,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             self.save()
 
     def save(self):
-        # print("**** save data ***")
         self.getPlaylistUserFile()
         from . import buildbouquets
         self.session.openWithCallback(self.exit, buildbouquets.BouquetMakerXtream_BuildBouquets)
