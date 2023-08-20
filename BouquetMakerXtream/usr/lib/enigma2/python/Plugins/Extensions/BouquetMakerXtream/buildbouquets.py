@@ -134,10 +134,8 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.livestreams = glob.current_playlist["data"]["live_streams"]
             self.livestreamscount = len(self.livestreams)
 
-            """
             if (glob.current_playlist["settings"]["livecategoryorder"] == "alphabetical"):
                 self.livecategories = sorted(self.livecategories, key=lambda k: k["category_name"].lower())
-                """
 
             self.progressrange += 1
             # self.progressrange += self.livecategoriescount
@@ -152,6 +150,9 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.vodstreams = glob.current_playlist["data"]["vod_streams"]
             self.vodstreamscount = len(self.vodstreams)
 
+            if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
+                self.vodcategories = sorted(self.vodcategories, key=lambda k: k["category_name"].lower())
+
             self.progressrange += 1
             # self.progressrange += self.vodcategoriescount
 
@@ -164,6 +165,9 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
             self.seriesstreams = glob.current_playlist["data"]["series_streams"]
             self.seriesstreamscount = len(self.seriesstreams)
+
+            if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
+                self.seriescategories = sorted(self.seriescategories, key=lambda k: k["category_name"].lower())
 
             self.progressrange += 1
             # self.progressrange += self.seriescategoriescount
@@ -193,7 +197,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.timer.start(10, True)
 
     def refresh_bouquets(self):
-        # print("*** refreshing bouquets **")
+        print("*** refreshing bouquets **")
         eDVBDB.getInstance().reloadServicelist()
         eDVBDB.getInstance().reloadBouquets()
 
@@ -222,7 +226,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.finished()
 
     def delete_existing_refs(self):
-        # print("*** delete_existing_refs ***")
+        print("*** delete_existing_refs ***")
         safeName = self.safefilename
 
         with open("/etc/enigma2/bouquets.tv", "r+") as f:
@@ -262,7 +266,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.nextjob(_("Processing series data..."), self.process_series)
 
     def download_url(self, url, ext):
-        # print("*** url ***", url)
+        print("*** url ***", url)
         r = ""
         retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
@@ -292,7 +296,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         return ""
 
     def process_live(self):
-        # print("*** process_live ***")
+        print("*** process_live ***")
 
         self.livestreamdata = ""
 
@@ -314,10 +318,10 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     self.build_bouquet_tv_file("live", bouquetTitle)
 
-            for category in self.livecategories:
-                if str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]:
                     self.totalcount += 1
                     stringbuilder = ""
+                    stringlist = []
+
                     if glob.current_playlist["settings"]["prefixname"] is True:
                         stringbuilder += "#NAME " + self.safefilename + " - " + category["category_name"] + "\n"
                     else:
@@ -327,14 +331,25 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     for stream in self.livestreamdata:
 
                         if str(category["category_id"]) == str(stream["category_id"]):
-                            stringbuilder += stream["bouquetString"]
+                            stringlist.append([str(stream["bouquetString"]), str(stream["name"]), str(stream["added"])])
+                            # stringbuilder += stream["bouquetString"]
+
+                    if (glob.current_playlist["settings"]["livestreamorder"] == "alphabetical"):
+                        stringlist.sort(key=lambda x: x[1].lower())
+
+                    if (glob.current_playlist["settings"]["livestreamorder"] == "added"):
+                        stringlist.sort(key=lambda x: x[2].lower(), reverse=True)
+
+                    for string in stringlist:
+                        stringbuilder += string[0]
+
                     self.build_userbouquets("live", bouquetTitle, stringbuilder)
                     # self.progressvalue += 1
 
         self.progressvalue += 1
         self["progress"].setValue(self.progressvalue)
 
-        # print("**** starting xmltv source ***")
+        print("**** starting xmltv source ***")
         if epgimporter:
             self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
 
@@ -348,7 +363,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.processing = False
 
     def downloadLiveStreams(self):
-        # print("*** downloadLiveStreams ***")
+        print("*** downloadLiveStreams ***")
         streamlist = []
         if self.livecategoriescount == len(glob.current_playlist["data"]["live_categories_hidden"]):
             return streamlist
@@ -408,7 +423,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                         bouquetString += "#SERVICE " + str(self.streamtype) + str(custom_sid) + str(self.host_encoded) + "/live/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(self.output) + ":" + str(name) + "\n"
                         bouquetString += "#DESCRIPTION " + str(name) + "\n"
 
-                        streamlist.append({"category_id": str(channel["category_id"]), "xml_str": str(xml_str), "bouquetString": bouquetString})
+                        streamlist.append({"category_id": str(channel["category_id"]), "xml_str": str(xml_str), "bouquetString": bouquetString, "name": str(channel["name"]), "added": str(channel["added"])})
                 return streamlist
             except Exception as e:
                 print(e)
@@ -416,7 +431,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             return streamlist
 
     def process_vod(self):
-        # print("*** process_vod ***")
+        print("*** process_vod ***")
         self.vodstreamdata = ""
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.vodstreamdata = self.downloadVodStreams()
@@ -433,19 +448,30 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     self.build_bouquet_tv_file("vod", bouquetTitle)
 
-            for category in self.vodcategories:
-                if str(category["category_id"]) not in glob.current_playlist["data"]["vod_categories_hidden"]:
                     self.totalcount += 1
                     stringbuilder = ""
+                    stringlist = []
+
                     if glob.current_playlist["settings"]["prefixname"] is True:
-                        stringbuilder += "#NAME " + self.safefilename + " -VOD- " + category["category_name"] + "\n"
+                        stringbuilder += "#NAME " + self.safefilename + "-VOD- " + category["category_name"] + "\n"
                     else:
                         stringbuilder += "#NAME " + "VOD " + category["category_name"] + "\n"
 
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     for stream in self.vodstreamdata:
                         if str(category["category_id"]) == str(stream["category_id"]):
-                            stringbuilder += stream["bouquetString"]
+                            stringlist.append([str(stream["bouquetString"]), str(stream["name"]), str(stream["added"])])
+                            # stringbuilder += stream["bouquetString"]
+
+                    if (glob.current_playlist["settings"]["vodstreamorder"] == "alphabetical"):
+                        stringlist.sort(key=lambda x: x[1].lower())
+
+                    if (glob.current_playlist["settings"]["vodstreamorder"] == "added"):
+                        stringlist.sort(key=lambda x: x[2].lower(), reverse=True)
+
+                    for string in stringlist:
+                        stringbuilder += string[0]
+
                     self.build_userbouquets("vod", bouquetTitle, stringbuilder)
                     # self.progressvalue += 1
 
@@ -459,7 +485,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.processing = False
 
     def downloadVodStreams(self):
-        # print("*** downloadVodStreams ***")
+        print("*** downloadVodStreams ***")
         streamlist = []
         if self.vodcategoriescount == len(glob.current_playlist["data"]["vod_categories_hidden"]):
             return streamlist
@@ -491,7 +517,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                         bouquetString += "#SERVICE " + str(self.streamtype) + str(custom_sid) + str(self.host_encoded) + "/movie/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(extension) + ":" + str(name) + "\n"
                         bouquetString += "#DESCRIPTION " + str(name) + "\n"
 
-                        streamlist.append({"category_id": str(channel["category_id"]), "bouquetString": bouquetString})
+                        streamlist.append({"category_id": str(channel["category_id"]), "bouquetString": bouquetString, "name": str(channel["name"]), "added": str(channel["added"])})
                 return streamlist
             except Exception as e:
                 print(e)
@@ -499,7 +525,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             return streamlist
 
     def process_series(self):
-        # print("*** process_series ***")
+        print("*** process_series ***")
         self.seriesstreamdata = ""
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.seriesstreamdata = self.downloadSeriesStreams()
@@ -517,19 +543,30 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     self.build_bouquet_tv_file("series", bouquetTitle)
 
-            for category in self.seriescategories:
-                if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]:
                     self.totalcount += 1
                     stringbuilder = ""
+                    stringlist = []
+
                     if glob.current_playlist["settings"]["prefixname"] is True:
-                        stringbuilder += "#NAME " + self.safefilename + " -Series- " + category["category_name"] + "\n"
+                        stringbuilder += "#NAME " + self.safefilename + "-Series- " + category["category_name"] + "\n"
                     else:
                         stringbuilder += "#NAME " + "Series " + category["category_name"] + "\n"
 
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     for stream in self.seriesstreamdata:
                         if str(category["category_id"]) == str(stream["category_id"]):
-                            stringbuilder += stream["bouquetString"]
+                            stringlist.append([str(stream["bouquetString"]), str(stream["name"]), str(stream["added"])])
+                            # stringbuilder += stream["bouquetString"]
+
+                    if (glob.current_playlist["settings"]["vodstreamorder"] == "alphabetical"):
+                        stringlist.sort(key=lambda x: x[1].lower())
+
+                    if (glob.current_playlist["settings"]["vodstreamorder"] == "added"):
+                        stringlist.sort(key=lambda x: x[2].lower(), reverse=True)
+
+                    for string in stringlist:
+                        stringbuilder += string[0]
+
                     self.build_userbouquets("series", bouquetTitle, stringbuilder)
                     # self.progressvalue += 1
 
@@ -539,7 +576,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.processing = False
 
     def downloadSeriesStreams(self):
-        # print("download get_series")
+        print("download get_series")
 
         streamlist = []
         if self.seriescategoriescount == len(glob.current_playlist["data"]["series_categories_hidden"]):
@@ -554,6 +591,10 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
         if seriessimpleresult and seriesstreamresult:
 
+            if "#EXTM3U" in str(seriessimpleresult):
+                self.session.open(MessageBox, _("Your provider does not have the 'simple' API call\nUnable to build series.\nAlternative method might be added in the future."), MessageBox.TYPE_INFO, timeout=10)
+                return streamlist
+
             lines = seriessimpleresult.splitlines()
 
             if pythonVer == 3:
@@ -564,7 +605,11 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             buildlist = [x for x in seriesstreamresult if str(x["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and
                          str(x["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]]
 
+            print("**** length lines ***", len(lines))
+
             if buildlist:
+                print("**** true ***")
+
                 try:
                     x = 0
                     for line in lines:
@@ -597,7 +642,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                             bouquetString = ""
                             bouquetString += "#SERVICE " + str(self.streamtype) + str(custom_sid) + quote(series_url) + ":" + str(series_name) + "\n"
                             bouquetString += "#DESCRIPTION " + str(series_name) + "\n"
-                            streamlist.append({"name": str(name), "category_id": str(channel["category_id"]), "stream_id": str(series_stream_id), "bouquetString": bouquetString})
+                            streamlist.append({"category_id": str(channel["category_id"]), "stream_id": str(series_stream_id), "bouquetString": bouquetString, "name": str(channel["name"]), "added": str(channel["last_modified"])})
                             x += 1
 
                     return streamlist
@@ -609,7 +654,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             return streamlist
 
     def build_bouquet_tv_file(self, streamtype, bouquetTitle):
-        # print("*** build_bouquet_tv ***")
+        print("*** build_bouquet_tv ***")
         if cfg.groups.value is True:
 
             groupname = "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
@@ -639,7 +684,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                 f.write(str(bouquetTvString))
 
     def build_userbouquets(self, streamtype, bouquetTitle, bouquetString):
-        # print("*** build userbouquets ***")
+        print("*** build userbouquets ***")
         filepath = "/etc/enigma2/"
 
         if cfg.groups.value is True:
@@ -655,7 +700,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             f.write(bouquetString)
 
     def build_xmltv_source(self):
-        # print("*** build_xmltv_source ***")
+        print("*** build_xmltv_source ***")
 
         import xml.etree.ElementTree as ET
 
@@ -715,7 +760,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.nextjob(_("Building EPG channel file..."), self.build_xmltv_channels)
 
     def build_xmltv_channels(self):
-        # print("*** build_xmltv channels ***")
+        print("*** build_xmltv channels ***")
         safeName = self.safefilename
 
         filepath = "/etc/epgimport/"
@@ -741,7 +786,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self["progress"].setValue(self.progressvalue)
 
     def finished(self):
-        # print("**** self finished ***")
+        print("**** self finished ***")
         self.refresh_bouquets()
         self.getPlaylistUserFile()
         self.session.openWithCallback(self.close, MessageBox, str(self.totalcount) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=30)

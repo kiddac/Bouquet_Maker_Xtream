@@ -177,6 +177,11 @@ def processfiles():
                                     playlist["playlist_info"]["output"] = output
                                     playlist["playlist_info"]["full_url"] = full_url  # get.php
                                     playlist["playlist_info"]["index"] = index
+
+                                    playlist["settings"]["live_streams"] = []
+                                    playlist["settings"]["vod_streams"] = []
+                                    playlist["settings"]["series_streams"] = []
+
                                     # playlist["data"]["data_downloaded"] = False
                                     playlist["settings"]["epgoffset"] = epgoffset
 
@@ -280,6 +285,11 @@ def processfiles():
 
                                     playlist["playlist_info"]["name"] = name
                                     playlist["playlist_info"]["index"] = index
+
+                                    playlist["settings"]["live_streams"] = []
+                                    playlist["settings"]["vod_streams"] = []
+                                    playlist["settings"]["series_streams"] = []
+
                                     index += 1
                                     break
 
@@ -393,6 +403,11 @@ def processfiles():
                                     playlist["settings"]["vodstreamorder"] = vodstreamorder
 
                                 playlist["playlist_info"]["index"] = index
+
+                                playlist["settings"]["live_streams"] = []
+                                playlist["settings"]["vod_streams"] = []
+                                playlist["settings"]["series_streams"] = []
+
                                 index += 1
                                 break
 

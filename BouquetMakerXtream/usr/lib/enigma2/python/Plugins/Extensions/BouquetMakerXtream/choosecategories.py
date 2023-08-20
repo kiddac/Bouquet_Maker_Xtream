@@ -368,10 +368,16 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                         line = re.sub('tvg-logo=\"(.*?)\"', '', line)
 
                 if "group-title=" in line and "format" not in line:
-                    group_title = re.search('group-title=\"(.*?)\"', line).group(1).strip()
+                    try:
+                        group_title = re.search('group-title=\"(.*?)\"', line).group(1).strip()
+                    except:
+                        group_title = ""
 
                 if "tvg-name=" in line:
-                    name = re.search('tvg-name=\"(.*?)\"', line).group(1).strip()
+                    try:
+                        name = re.search('tvg-name=\"(.*?)\"', line).group(1).strip()
+                    except:
+                        name = line.strip().split(",")[1]
 
                 else:
                     name = line.strip().split(",")[1]
@@ -381,7 +387,10 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                     name = _("Stream") + " " + str(channelnum)
 
                 if "tvg-id=" in line:
-                    epg_id = re.search('tvg-id=\"(.*?)\"', line).group(1).strip()
+                    try:
+                        epg_id = re.search('tvg-id=\"(.*?)\"', line).group(1).strip()
+                    except:
+                        epg_id = ""
 
             elif line.startswith("http"):
                 source = line.strip()
@@ -590,7 +599,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.selectionChanged()
 
     def selectionChanged(self):
-
+        self["list2"].setList([])
         self.channelList = []
         self.channelSelectedList = []
 
