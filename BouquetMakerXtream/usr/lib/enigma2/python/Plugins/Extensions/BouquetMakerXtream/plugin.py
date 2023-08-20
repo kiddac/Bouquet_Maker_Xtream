@@ -101,8 +101,6 @@ cfg.autoupdate = ConfigYesNo(default=False)
 cfg.groups = ConfigYesNo(default=False)
 cfg.locationvalid = ConfigYesNo(default=True)
 
-# cfg.voddefaultorder = ConfigSelection(default="alphabetical", choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("date", _("Newest First"))])
-
 skin_path = os.path.join(skin_directory, cfg.skin.value)
 common_path = os.path.join(skin_directory, "common/")
 playlists_json = os.path.join(dir_etc, "playlists.json")

@@ -442,8 +442,10 @@ class BouquetMakerXtream_Playlists(Screen):
                         break
                     x += 1
 
+                """
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     self.deleteEpgData()
+                    """
 
                 self.writeJsonFile()
 

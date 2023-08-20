@@ -107,8 +107,10 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         self.showlive = glob.current_playlist["settings"]["showlive"]
         self.showvod = glob.current_playlist["settings"]["showvod"]
         self.showseries = glob.current_playlist["settings"]["showseries"]
-        self.liveorder = glob.current_playlist["settings"]["liveorder"]
-        self.vodorder = glob.current_playlist["settings"]["vodorder"]
+        self.livecategoryorder = glob.current_playlist["settings"]["livecategoryorder"]
+        self.livestreamorder = glob.current_playlist["settings"]["livestreamorder"]
+        self.vodcategoryorder = glob.current_playlist["settings"]["vodcategoryorder"]
+        self.vodstreamorder = glob.current_playlist["settings"]["vodstreamorder"]
 
         self.nameCfg = NoSave(ConfigText(default=self.name, fixed_size=False))
         self.prefixNameCfg = NoSave(ConfigYesNo(default=self.prefixname))
@@ -120,8 +122,10 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         self.showvodCfg = NoSave(ConfigYesNo(default=self.showvod))
         self.showseriesCfg = NoSave(ConfigYesNo(default=self.showseries))
 
-        self.liveOrderCfg = NoSave(ConfigSelection(default=self.liveorder, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
-        self.vodOrderCfg = NoSave(ConfigSelection(default=self.vodorder, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
+        self.liveCategoryOrderCfg = NoSave(ConfigSelection(default=self.livecategoryorder, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
+        self.liveStreamOrderCfg = NoSave(ConfigSelection(default=self.livestreamorder, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
+        self.vodCategoryOrderCfg = NoSave(ConfigSelection(default=self.vodcategoryorder, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
+        self.vodStreamOrderCfg = NoSave(ConfigSelection(default=self.vodstreamorder, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
 
         self.catchupShiftCfg = NoSave(ConfigSelectionNumber(min=-9, max=9, stepwidth=1, default=glob.catchupshift, wraparound=True))
         # self.FixEPGCfg = NoSave(ConfigYesNo(default=glob.fixepg)
@@ -151,7 +155,8 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
             self.list.append(getConfigListEntry(_("Stream Type LIVE:"), self.liveTypeCfg))
 
         if self.showliveCfg.value is True:
-            self.list.append(getConfigListEntry(_("LIVE bouquet order"), self.liveOrderCfg))
+            self.list.append(getConfigListEntry(_("LIVE category bouquet order"), self.liveCategoryOrderCfg))
+            self.list.append(getConfigListEntry(_("LIVE stream bouquet order"), self.liveStreamOrderCfg))
 
         self.list.append(getConfigListEntry(_("Show VOD category if available:"), self.showvodCfg))
         self.list.append(getConfigListEntry(_("Show SERIES category if available:"), self.showseriesCfg))
@@ -160,7 +165,8 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
             self.list.append(getConfigListEntry(_("Stream Type VOD/SERIES:"), self.vodTypeCfg))
 
         if self.showvodCfg.value is True:
-            self.list.append(getConfigListEntry(_("VOD bouquet order"), self.vodOrderCfg))
+            self.list.append(getConfigListEntry(_("VOD/SERIES category bouquet order"), self.vodCategoryOrderCfg))
+            self.list.append(getConfigListEntry(_("VOD/SERIES streams bouquet order"), self.vodStreamOrderCfg))
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.list.append(getConfigListEntry(_("Output:"), self.outputCfg))
@@ -251,8 +257,10 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         showseries = self.showseriesCfg.value
         livetype = self.liveTypeCfg.value
         vodtype = self.vodTypeCfg.value
-        liveorder = self.liveOrderCfg.value
-        vodorder = self.vodOrderCfg.value
+        livecategoryorder = self.liveCategoryOrderCfg.value
+        vodcategoryorder = self.vodCategoryOrderCfg.value
+        livestreamorder = self.liveStreamOrderCfg.value
+        vodstreamorder = self.vodStreamOrderCfg.value
         prefixname = self.prefixNameCfg.value
         glob.current_playlist["playlist_info"]["name"] = self.name
         glob.current_playlist["settings"]["prefixname"] = prefixname
@@ -261,8 +269,10 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         glob.current_playlist["settings"]["showseries"] = showseries
         glob.current_playlist["settings"]["livetype"] = livetype
         glob.current_playlist["settings"]["vodtype"] = vodtype
-        glob.current_playlist["settings"]["liveorder"] = liveorder
-        glob.current_playlist["settings"]["vodorder"] = vodorder
+        glob.current_playlist["settings"]["livecategoryorder"] = livecategoryorder
+        glob.current_playlist["settings"]["vodcategoryorder"] = vodcategoryorder
+        glob.current_playlist["settings"]["livestreamorder"] = livestreamorder
+        glob.current_playlist["settings"]["vodstreamorder"] = vodstreamorder
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.username = glob.current_playlist["playlist_info"]["username"]

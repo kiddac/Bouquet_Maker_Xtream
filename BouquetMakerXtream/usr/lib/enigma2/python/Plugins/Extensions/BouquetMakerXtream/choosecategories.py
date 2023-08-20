@@ -521,7 +521,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             else:
                 self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
 
-        if (glob.current_playlist["settings"]["liveorder"] == "alphabetical"):
+        if (glob.current_playlist["settings"]["livecategoryorder"] == "alphabetical"):
             self.categorySelectedList.sort(key=lambda x: x[1].lower())
 
         self.categoryList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.categorySelectedList]
@@ -552,7 +552,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             else:
                 self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
 
-        if (glob.current_playlist["settings"]["liveorder"] == "alphabetical"):
+        if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
             self.categorySelectedList.sort(key=lambda x: x[1].lower())
 
         self.categoryList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.categorySelectedList]
@@ -579,7 +579,8 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             else:
                 self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
 
-        self.categorySelectedList.sort(key=lambda x: x[1].lower())
+        if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
+            self.categorySelectedList.sort(key=lambda x: x[1].lower())
 
         self.categoryList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.categorySelectedList]
         self["list1"].setList(self.categoryList)
@@ -608,46 +609,62 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     if channel["category_id"] == category:
                         if str(channel["stream_id"]) in glob.current_playlist["data"]["live_streams_hidden"]:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True, str(channel["added"])])
                         else:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False, str(channel["added"])])
                 else:
                     if channel["category_id"] == category:
                         if str(channel["name"]) in glob.current_playlist["data"]["live_streams_hidden"]:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True, "0"])
                         else:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False, "0"])
+
+            if (glob.current_playlist["settings"]["livestreamorder"] == "alphabetical"):
+                self.channelSelectedList.sort(key=lambda x: x[1].lower())
+
+            if (glob.current_playlist["settings"]["livestreamorder"] == "added"):
+                self.channelSelectedList.sort(key=lambda x: x[3].lower(), reverse=True)
 
         elif self.setup_title == (_("Choose VOD Categories")):
             for channel in glob.current_playlist["data"]["vod_streams"]:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     if channel["category_id"] == category:
                         if str(channel["stream_id"]) in glob.current_playlist["data"]["vod_streams_hidden"]:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True, str(channel["added"])])
                         else:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False, str(channel["added"])])
                 else:
                     if channel["category_id"] == category:
                         if str(channel["name"]) in glob.current_playlist["data"]["vod_streams_hidden"]:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), True, "0"])
                         else:
-                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False])
+                            self.channelSelectedList.append([str(channel["stream_id"]), str(channel["name"]), False, "0"])
+
+            if (glob.current_playlist["settings"]["vodstreamorder"] == "alphabetical"):
+                self.channelSelectedList.sort(key=lambda x: x[1].lower())
+
+            if (glob.current_playlist["settings"]["vodstreamorder"] == "added"):
+                self.channelSelectedList.sort(key=lambda x: x[3].lower(), reverse=True)
 
         elif self.setup_title == (_("Choose Series Categories")):
             for channel in glob.current_playlist["data"]["series_streams"]:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     if channel["category_id"] == category:
                         if str(channel["series_id"]) in glob.current_playlist["data"]["series_streams_hidden"]:
-                            self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), True])
+                            self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), True, str(channel["last_modified"])])
                         else:
-                            self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), False])
+                            self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), False, str(channel["last_modified"])])
                 else:
                     if str(channel["name"]) in glob.current_playlist["data"]["series_streams_hidden"]:
-                        self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), True])
+                        self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), True, "0"])
                     else:
-                        self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), False])
+                        self.channelSelectedList.append([str(channel["series_id"]), str(channel["name"]), False, "0"])
 
-        self.channelSelectedList.sort(key=lambda x: x[1].lower())
+            if (glob.current_playlist["settings"]["vodstreamorder"] == "alphabetical"):
+                self.channelSelectedList.sort(key=lambda x: x[1].lower())
+
+            if (glob.current_playlist["settings"]["vodstreamorder"] == "added"):
+                self.channelSelectedList.sort(key=lambda x: x[3].lower(), reverse=True)
 
         self.channelList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channelSelectedList]
         self["list2"].setList(self.channelList)
@@ -774,9 +791,9 @@ class BouquetMakerXtream_ChooseCategories(Screen):
 
     def keyGreen(self):
         if self.setup_title == (_("Choose Live Categories")):
-            if glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"] != []:
+            if glob.current_playlist["settings"]["showvod"] is True:
                 self.loadVod()
-            elif glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"] != []:
+            elif glob.current_playlist["settings"]["showseries"] is True:
                 self.loadSeries()
             else:
                 self.save()

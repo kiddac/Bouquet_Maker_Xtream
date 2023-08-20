@@ -81,8 +81,10 @@ def processfiles():
             serveroffset = 0
             epgoffset = 0
             playlisttype = ""
-            liveorder = "original"
-            vodorder = "original"
+            livecategoryorder = "original"
+            livestreamorder = "original"
+            vodcategoryorder = "original"
+            vodstreamorder = "original"
 
             epgalternative = False
             epgalternativeurl = ""
@@ -158,6 +160,18 @@ def processfiles():
                                 if playlist["playlist_info"]["domain"] == domain and playlist["playlist_info"]["username"] == username and playlist["playlist_info"]["password"] == password:
                                     playlist_exists = True
 
+                                    if "livecategoryorder" not in playlist["settings"]:
+                                        playlist["settings"]["livecategoryorder"] = livecategoryorder
+
+                                    if "livestreamorder" not in playlist["settings"]:
+                                        playlist["settings"]["livestreamorder"] = livestreamorder
+
+                                    if "vodcategoryorder" not in playlist["settings"]:
+                                        playlist["settings"]["vodcategoryorder"] = vodcategoryorder
+
+                                    if "vodstreamorder" not in playlist["settings"]:
+                                        playlist["settings"]["vodstreamorder"] = vodstreamorder
+
                                     playlist["playlist_info"]["name"] = name
                                     playlist["playlist_info"]["type"] = playlistformat
                                     playlist["playlist_info"]["output"] = output
@@ -205,8 +219,10 @@ def processfiles():
                                 ("livetype", livetype),
                                 ("vodtype", vodtype),
 
-                                ("liveorder", liveorder),
-                                ("vodorder", vodorder),
+                                ("livecategoryorder", livecategoryorder),
+                                ("livestreamorder", livestreamorder),
+                                ("vodcategoryorder", vodcategoryorder),
+                                ("vodstreamorder", vodstreamorder),
 
                                 ("epgoffset", serveroffset),
                                 ("epgalternative", epgalternative),
@@ -249,6 +265,19 @@ def processfiles():
                             if "full_url" in playlist["playlist_info"]:
                                 if playlist["playlist_info"]["full_url"] == full_url:
                                     playlist_exists = True
+
+                                    if "livecategoryorder" not in playlist["settings"]:
+                                        playlist["settings"]["livecategoryorder"] = livecategoryorder
+
+                                    if "livestreamorder" not in playlist["settings"]:
+                                        playlist["settings"]["livestreamorder"] = livestreamorder
+
+                                    if "vodcategoryorder" not in playlist["settings"]:
+                                        playlist["settings"]["vodcategoryorder"] = vodcategoryorder
+
+                                    if "vodstreamorder" not in playlist["settings"]:
+                                        playlist["settings"]["vodstreamorder"] = vodstreamorder
+
                                     playlist["playlist_info"]["name"] = name
                                     playlist["playlist_info"]["index"] = index
                                     index += 1
@@ -279,8 +308,10 @@ def processfiles():
                                 ("livetype", livetype),
                                 ("vodtype", vodtype),
 
-                                ("liveorder", liveorder),
-                                ("vodorder", vodorder),
+                                ("livecategoryorder", livecategoryorder),
+                                ("livestreamorder", livestreamorder),
+                                ("vodcategoryorder", vodcategoryorder),
+                                ("vodstreamorder", vodstreamorder),
                             ]),
 
                             "data": dict([
@@ -348,6 +379,19 @@ def processfiles():
                         if "full_url" in playlist["playlist_info"]:
                             if playlist["playlist_info"]["full_url"] == filename:
                                 playlist_exists = True
+
+                                if "livecategoryorder" not in playlist["settings"]:
+                                    playlist["settings"]["livecategoryorder"] = livecategoryorder
+
+                                if "livestreamorder" not in playlist["settings"]:
+                                    playlist["settings"]["livestreamorder"] = livestreamorder
+
+                                if "vodcategoryorder" not in playlist["settings"]:
+                                    playlist["settings"]["vodcategoryorder"] = vodcategoryorder
+
+                                if "vodstreamorder" not in playlist["settings"]:
+                                    playlist["settings"]["vodstreamorder"] = vodstreamorder
+
                                 playlist["playlist_info"]["index"] = index
                                 index += 1
                                 break
@@ -375,8 +419,10 @@ def processfiles():
                         ("livetype", livetype),
                         ("vodtype", vodtype),
 
-                        ("liveorder", liveorder),
-                        ("vodorder", vodorder),
+                        ("livecategoryorder", livecategoryorder),
+                        ("livestreamorder", livestreamorder),
+                        ("vodcategoryorder", vodcategoryorder),
+                        ("vodstreamorder", vodstreamorder),
                     ]),
 
                     "data": dict([

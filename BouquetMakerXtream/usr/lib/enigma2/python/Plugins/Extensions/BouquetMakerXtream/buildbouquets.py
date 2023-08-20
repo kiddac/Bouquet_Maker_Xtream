@@ -134,8 +134,10 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.livestreams = glob.current_playlist["data"]["live_streams"]
             self.livestreamscount = len(self.livestreams)
 
-            if (glob.current_playlist["settings"]["liveorder"] == "alphabetical"):
+            """
+            if (glob.current_playlist["settings"]["livecategoryorder"] == "alphabetical"):
                 self.livecategories = sorted(self.livecategories, key=lambda k: k["category_name"].lower())
+                """
 
             self.progressrange += 1
             # self.progressrange += self.livecategoriescount
