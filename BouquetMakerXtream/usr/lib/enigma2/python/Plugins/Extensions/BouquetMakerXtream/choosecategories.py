@@ -510,7 +510,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.setup_title = _("Choose Live Categories")
         self.setTitle(self.setup_title)
 
-        if (glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"] != []) or (glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"] != []):
+        if glob.current_playlist["settings"]["showvod"] is True or glob.current_playlist["settings"]["showseries"] is True:
             self["key_green"].setText(_("Next"))
         else:
             self["key_green"].setText(_("Create"))
@@ -541,7 +541,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.setup_title = _("Choose VOD Categories")
         self.setTitle(self.setup_title)
 
-        if glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"] != []:
+        if glob.current_playlist["settings"]["showseries"] is True:
             self["key_green"].setText(_("Next"))
         else:
             self["key_green"].setText(_("Create"))
