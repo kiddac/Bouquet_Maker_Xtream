@@ -139,6 +139,7 @@ class BouquetMakerXtream_Settings(ConfigListScreen, Screen, ProtectedScreen):
         # self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
         self.cfg_location = getConfigListEntry(_("playlists.txt location"), cfg.location)
         self.cfg_locallocation = getConfigListEntry(_("Local M3U File location"), cfg.locallocation)
+        self.cfg_position = getConfigListEntry(_("Bouquet placement"), cfg.position)
         # self.cfg_timeout = getConfigListEntry(_("Server timeout (seconds)"), cfg.timeout)
         self.cfg_livetype = getConfigListEntry(_("Default LIVE stream type"), cfg.livetype)
         self.cfg_vodtype = getConfigListEntry(_("Default VOD/SERIES stream type"), cfg.vodtype)
@@ -175,6 +176,7 @@ class BouquetMakerXtream_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self.list.append(self.cfg_locallocation)
         # self.list.append(self.cfg_timeout)
         self.list.append(self.cfg_skipplaylistsscreen)
+        # self.list.append(self.cfg_position)
         self.list.append(self.cfg_autoupdate)
 
         if cfg.autoupdate.value is True:

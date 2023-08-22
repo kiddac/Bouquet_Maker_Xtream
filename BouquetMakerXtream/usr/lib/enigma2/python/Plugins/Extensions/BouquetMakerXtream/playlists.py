@@ -81,18 +81,11 @@ class BouquetMakerXtream_Playlists(Screen):
         self.onFirstExecBegin.append(self.start)
         self.onLayoutFinish.append(self.__layoutFinished)
 
-    def clear_caches(self):
-        try:
-            os.system("echo 1 > /proc/sys/vm/drop_caches")
-            os.system("echo 2 > /proc/sys/vm/drop_caches")
-            os.system("echo 3 > /proc/sys/vm/drop_caches")
-        except:
-            pass
-
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
     def start(self):
+        print("*** start ***")
         self["version"].setText(version)
 
         if epgimporter:
@@ -103,7 +96,7 @@ class BouquetMakerXtream_Playlists(Screen):
         # check if playlists.json file exists in specified location
         self.playlists_all = bmxfunctions.getPlaylistJson()
 
-        if self.playlists_all and os.path.isfile(playlist_file) and os.stat(playlist_file).st_size > 0:
+        if self.playlists_all:
             self.playlists_all.sort(key=lambda e: e["playlist_info"]["index"], reverse=False)
             self.delayedDownload()
         else:
@@ -111,7 +104,59 @@ class BouquetMakerXtream_Playlists(Screen):
 
         self.clear_caches()
 
+    def epgimportcleanup(self):
+        print("*** epgimportcleanup ***")
+
+        channelfilelist = []
+        oldchannelfiles = pythonglob.glob("/etc/epgimport/bouquetmakerxtream.*.channels.xml")
+
+        self.playlists_all = bmxfunctions.getPlaylistJson()
+
+        for playlist in self.playlists_all:
+            cleanName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(playlist["playlist_info"]["name"]))
+            cleanName = re.sub(r" ", "_", cleanName)
+            cleanName = re.sub(r"_+", "_", cleanName)
+            channelfilelist.append(cleanName)
+
+        # delete old xmltv channel files
+        for filePath in oldchannelfiles:
+            exists = False
+            for cfile in channelfilelist:
+                if cfile in filePath:
+                    exists = True
+
+            if exists is False:
+                try:
+                    os.remove(filePath)
+                except:
+                    print("Error while deleting file : ", filePath)
+
+        # remove sources from source file
+        sourcefile = "/etc/epgimport/bouquetmakerxtream.sources.xml"
+
+        if os.path.isfile(sourcefile):
+            import xml.etree.ElementTree as ET
+            tree = ET.parse(sourcefile)
+            root = tree.getroot()
+            for elem in root.iter():
+                for child in list(elem):
+                    exists = False
+                    description = ""
+                    if child.tag == "source":
+                        try:
+                            description = child.find("description").text
+                            for cfile in channelfilelist:
+                                if cfile in description:
+                                    exists = True
+                        except:
+                            pass
+
+                        if exists is False:
+                            elem.remove(child)
+            tree.write(sourcefile)
+
     def delayedDownload(self):
+        print("*** delayedDownload ***")
         self.timer = eTimer()
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
@@ -120,9 +165,19 @@ class BouquetMakerXtream_Playlists(Screen):
                 self.timer.callback.append(self.makeUrlList)
             except:
                 self.self.makeUrlList()
-        self.timer.start(5, True)
+        self.timer.start(50, True)
+
+    def clear_caches(self):
+        print("*** clear_caches ***")
+        try:
+            os.system("echo 1 > /proc/sys/vm/drop_caches")
+            os.system("echo 2 > /proc/sys/vm/drop_caches")
+            os.system("echo 3 > /proc/sys/vm/drop_caches")
+        except:
+            pass
 
     def makeUrlList(self):
+        print("*** makeUrlList ***")
         self.url_list = []
         x = 0
         for playlists in self.playlists_all:
@@ -143,10 +198,14 @@ class BouquetMakerXtream_Playlists(Screen):
 
         if self.url_list:
             self.process_downloads()
+        else:
+            self.createSetup()
 
-        self.buildPlaylistList()
+        # print("*** ABC ***")
+        # self.buildPlaylistList()
 
     def download_url(self, url):
+        print("*** download_url ***")
         index = url[1]
         r = ""
         retries = Retry(total=2, backoff_factor=1)
@@ -184,6 +243,7 @@ class BouquetMakerXtream_Playlists(Screen):
         return index, ""
 
     def process_downloads(self):
+        print("*** process_downloads ***")
         threads = len(self.url_list)
         if threads > 10:
             threads = 10
@@ -238,9 +298,11 @@ class BouquetMakerXtream_Playlists(Screen):
                         self.playlists_all[index]["user_info"] = []
                     self.playlists_all[index]["playlist_info"]["valid"] = False
 
+        print("*** def ***")
         self.buildPlaylistList()
 
     def buildPlaylistList(self):
+        print("*** buildPlaylistList ***")
         for playlists in self.playlists_all:
             if "user_info" in playlists:
                 if "message" in playlists["user_info"]:
@@ -295,11 +357,13 @@ class BouquetMakerXtream_Playlists(Screen):
         self.writeJsonFile()
 
     def writeJsonFile(self):
+        print("*** writeJsonFile ***")
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
         self.createSetup()
 
     def createSetup(self):
+        print("*** createSetup ***")
         try:
             self["splash"].hide()
         except:
@@ -389,6 +453,7 @@ class BouquetMakerXtream_Playlists(Screen):
             self.openBouquetSettings()
 
     def buildListEntry(self, index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlisttype):
+        print("*** buildListEntry ***")
         if status == (_("Active")) or status == (_("Url OK")) or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_green.png"))
 
@@ -415,6 +480,7 @@ class BouquetMakerXtream_Playlists(Screen):
         self.close()
 
     def deleteServer(self, answer=None):
+        print("*** deleteServer ***")
         if self.list != []:
             self.currentplaylist = glob.current_playlist.copy()
 
@@ -426,6 +492,7 @@ class BouquetMakerXtream_Playlists(Screen):
                     with open(playlist_file, "r+") as f:
                         lines = f.readlines()
                         f.seek(0)
+                        f.truncate()
                         for line in lines:
 
                             if str(self.currentplaylist["playlist_info"]["full_url"]) in line:
@@ -450,6 +517,7 @@ class BouquetMakerXtream_Playlists(Screen):
                 self.writeJsonFile()
 
     def deleteEpgData(self, data=None):
+        print("*** deleteEpgData ***")
         if data is None:
             self.session.openWithCallback(self.deleteEpgData, MessageBox, _("Delete providers EPG data?"))
         else:
@@ -465,6 +533,7 @@ class BouquetMakerXtream_Playlists(Screen):
             # self.start()
 
     def getCurrentEntry(self):
+        print("*** getCurrentEntry ***")
         if self.list != []:
             glob.current_selection = self["playlists"].getIndex()
             glob.current_playlist = self.playlists_all[glob.current_selection]
@@ -505,59 +574,6 @@ class BouquetMakerXtream_Playlists(Screen):
                 return
 
     def checkoneplaylist(self):
+        print("*** checkoneplaylist ***")
         if len(self.list) == 1 and cfg.skipplaylistsscreen.getValue() is True:
             self.quit()
-
-    def epgimportcleanup(self):
-        # print("*** epgimportcleanup ***")
-
-        channelfilelist = []
-        oldchannelfiles = pythonglob.glob("/etc/epgimport/bouquetmakerxtream.*.channels.xml")
-
-        self.playlists_all = bmxfunctions.getPlaylistJson()
-
-        for playlist in self.playlists_all:
-            cleanName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(playlist["playlist_info"]["name"]))
-            cleanName = re.sub(r" ", "_", cleanName)
-            cleanName = re.sub(r"_+", "_", cleanName)
-            channelfilelist.append(cleanName)
-
-        # delete old xmltv channel files
-        for filePath in oldchannelfiles:
-            exists = False
-            for cfile in channelfilelist:
-                if cfile in filePath:
-                    exists = True
-
-            if exists is False:
-                try:
-                    os.remove(filePath)
-                except:
-                    print("Error while deleting file : ", filePath)
-
-        # remove sources from source file
-        sourcefile = "/etc/epgimport/bouquetmakerxtream.sources.xml"
-
-        if os.path.isfile(sourcefile):
-
-            import xml.etree.ElementTree as ET
-            tree = ET.parse(sourcefile)
-            root = tree.getroot()
-
-            for elem in root.iter():
-                for child in list(elem):
-                    exists = False
-                    description = ""
-                    if child.tag == "source":
-                        try:
-                            description = child.find("description").text
-                            for cfile in channelfilelist:
-                                if cfile in description:
-                                    exists = True
-                        except:
-                            pass
-
-                        if exists is False:
-                            elem.remove(child)
-
-            tree.write(sourcefile)

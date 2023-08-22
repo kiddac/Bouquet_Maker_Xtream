@@ -110,26 +110,33 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
         for x in selectedBouquetList:
             bouquet_name = x
 
-            cleanName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(bouquet_name))
-            cleanName = re.sub(r" ", "_", cleanName)
-            cleanName = re.sub(r"_+", "_", cleanName)
+            safeName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(bouquet_name))
+            safeName = re.sub(r" ", "_", safeName)
+            safeName = re.sub(r"_+", "_", safeName)
 
             with open("/etc/enigma2/bouquets.tv", "r+") as f:
                 lines = f.readlines()
                 f.seek(0)
-                for line in lines:
-                    if "bouquetmakerxtream_live_" + str(cleanName) + "_" in line or "bouquetmakerxtream_vod_" + str(cleanName) + "_" in line or "bouquetmakerxtream_series_" + str(cleanName) + "_" in line or "bouquetmakerxtream_" + str(cleanName) in line:
-                        continue
-                    f.write(line)
                 f.truncate()
 
-            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(cleanName) + "_")
-            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(cleanName) + "_")
-            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(cleanName) + "_")
-            bmxfunctions.purge("/etc/enigma2", str(cleanName) + str(".tv"))
+                for line in lines:
+                    if "bouquetmakerxtream_live_" + str(safeName) + "_" in line:
+                        continue
+                    if "bouquetmakerxtream_vod_" + str(safeName) + "_" in line:
+                        continue
+                    if "bouquetmakerxtream_series_" + str(safeName) + "_" in line:
+                        continue
+                    if "bouquetmakerxtream_" + str(safeName) + ".tv" in line:
+                        continue
+                    f.write(line)
+
+            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safeName) + "_")
+            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safeName) + "_")
+            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safeName) + "_")
+            bmxfunctions.purge("/etc/enigma2", str(safeName) + str(".tv"))
 
             if epgimporter is True:
-                bmxfunctions.purge("/etc/epgimport", "bouquetmakerxtream." + str(cleanName) + ".channels.xml")
+                bmxfunctions.purge("/etc/epgimport", "bouquetmakerxtream." + str(safeName) + ".channels.xml")
 
                 # remove sources from source file
                 sourcefile = "/etc/epgimport/bouquetmakerxtream.sources.xml"
@@ -146,7 +153,7 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
                             if child.tag == "source":
                                 try:
                                     description = child.find("description").text
-                                    if cleanName in description:
+                                    if safeName in description:
                                         elem.remove(child)
                                 except:
                                     pass

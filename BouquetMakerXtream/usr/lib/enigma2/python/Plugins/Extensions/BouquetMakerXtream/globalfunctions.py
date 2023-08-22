@@ -16,7 +16,6 @@ def getPlaylistJson():
         with open(playlists_json) as f:
             try:
                 playlists_all = json.load(f)
-
             except:
                 os.remove(playlists_json)
     return playlists_all

@@ -105,8 +105,6 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
                 self.simple = str(self.host) + "/" + "get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=simple&output=" + str(self.output)
 
-                # self.progressrange += 2
-
         self.full_url = glob.current_playlist["playlist_info"]["full_url"]
 
         # init variables
@@ -127,6 +125,9 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
         self.totalcount = 0
 
+        self.bouquettv = False
+        self.userbouquet = False
+
         if glob.current_playlist["settings"]["showlive"] is True:
             self.livecategories = glob.current_playlist["data"]["live_categories"]
             self.livecategoriescount = len(self.livecategories)
@@ -138,7 +139,6 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                 self.livecategories = sorted(self.livecategories, key=lambda k: k["category_name"].lower())
 
             self.progressrange += 1
-            # self.progressrange += self.livecategoriescount
 
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                 self.progressrange += 3
@@ -154,7 +154,6 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                 self.vodcategories = sorted(self.vodcategories, key=lambda k: k["category_name"].lower())
 
             self.progressrange += 1
-            # self.progressrange += self.vodcategoriescount
 
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                 self.progressrange += 1
@@ -170,7 +169,6 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                 self.seriescategories = sorted(self.seriescategories, key=lambda k: k["category_name"].lower())
 
             self.progressrange += 1
-            # self.progressrange += self.seriescategoriescount
 
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                 self.progressrange += 2
@@ -232,6 +230,8 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         with open("/etc/enigma2/bouquets.tv", "r+") as f:
             lines = f.readlines()
             f.seek(0)
+            f.truncate()
+
             for line in lines:
                 if "bouquetmakerxtream_live_" + str(safeName) + "_" in line:
                     continue
@@ -239,11 +239,9 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     continue
                 if "bouquetmakerxtream_series_" + str(safeName) + "_" in line:
                     continue
-                if "bouquetmakerxtream_" + str(safeName) + "_" in line:
-
+                if "bouquetmakerxtream_" + str(safeName) + ".tv" in line:
                     continue
                 f.write(line)
-            f.truncate()
 
         bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safeName) + "_")
         bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safeName) + "_")
@@ -266,7 +264,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.nextjob(_("Processing series data..."), self.process_series)
 
     def download_url(self, url, ext):
-        print("*** url ***", url)
+        # print("*** url ***", url)
         r = ""
         retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
@@ -305,34 +303,50 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.progressvalue += 1
             self["progress"].setValue(self.progressvalue)
 
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "external":
+        elif glob.current_playlist["playlist_info"]["playlisttype"] == "external":
             pass
 
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "local":
+        elif glob.current_playlist["playlist_info"]["playlisttype"] == "local":
             pass
 
         if self.livestreamdata:
-            # print("*** true ***")
+            if cfg.groups.value is True and self.bouquettv is False:
+                self.build_bouquet_tv_grouped_file()
+
+            bouquetTvString = ""
+            if cfg.groups.value is True and self.userbouquet is False:
+                bouquetTvString += "#NAME " + str(glob.current_playlist["playlist_info"]["name"]) + "\n"
+
+            for category in self.livecategories:
+                if str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]:
+                    if cfg.groups.value is True:
+                        filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
+                        bouquet = "subbouquet"
+                        self.userbouquet = True
+                    if cfg.groups.value is False:
+                        filename = "/etc/enigma2/bouquets.tv"
+                        bouquet = "userbouquet"
+
+                    bouquetTvString += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_live_" + self.safefilename + "_" + self.safe_name(category["category_name"]) + '.tv" ORDER BY bouquet\n'
+
+            with open(filename, "a+") as f:
+                f.write(str(bouquetTvString))
+
             for category in self.livecategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]:
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
-                    self.build_bouquet_tv_file("live", bouquetTitle)
-
                     self.totalcount += 1
-                    stringbuilder = ""
+                    outputString = ""
                     stringlist = []
 
-                    if glob.current_playlist["settings"]["prefixname"] is True:
-                        stringbuilder += "#NAME " + self.safefilename + " - " + category["category_name"] + "\n"
+                    if glob.current_playlist["settings"]["prefixname"] is True and cfg.groups.value is False:
+                        outputString += "#NAME " + self.safefilename + " " + category["category_name"] + "\n"
                     else:
-                        stringbuilder += "#NAME " + category["category_name"] + "\n"
+                        outputString += "#NAME " + category["category_name"] + "\n"
 
-                    bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     for stream in self.livestreamdata:
-
                         if str(category["category_id"]) == str(stream["category_id"]):
                             stringlist.append([str(stream["bouquetString"]), str(stream["name"]), str(stream["added"])])
-                            # stringbuilder += stream["bouquetString"]
 
                     if (glob.current_playlist["settings"]["livestreamorder"] == "alphabetical"):
                         stringlist.sort(key=lambda x: x[1].lower())
@@ -341,15 +355,19 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                         stringlist.sort(key=lambda x: x[2].lower(), reverse=True)
 
                     for string in stringlist:
-                        stringbuilder += string[0]
+                        outputString += string[0]
 
-                    self.build_userbouquets("live", bouquetTitle, stringbuilder)
-                    # self.progressvalue += 1
+                    if cfg.groups.value is True:
+                        filename = "/etc/enigma2/subbouquet.bouquetmakerxtream_live_" + str(bouquetTitle) + ".tv"
+                    else:
+                        filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_live_" + str(bouquetTitle) + ".tv"
+
+                    with open(filename, "w+") as f:
+                        f.write(outputString)
 
         self.progressvalue += 1
         self["progress"].setValue(self.progressvalue)
 
-        print("**** starting xmltv source ***")
         if epgimporter:
             self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
 
@@ -417,7 +435,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
                         xml_str = ""
                         if channelid and channelid != "None":
-                            xml_str = '\t<channel id="' + str(channelid) + '">' + str(self.streamtype) + str(serviceref) + '</channel><!-- ' + str(name) + ' -->\n'
+                            xml_str = '\t<channel id="' + str(channelid) + '">' + str(serviceref) + '</channel><!-- ' + str(name) + ' -->\n'
 
                         bouquetString = ""
                         bouquetString += "#SERVICE " + str(self.streamtype) + str(custom_sid) + str(self.host_encoded) + "/live/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(self.output) + ":" + str(name) + "\n"
@@ -437,31 +455,51 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.vodstreamdata = self.downloadVodStreams()
             self.progressvalue += 1
             self["progress"].setValue(self.progressvalue)
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "external":
+
+        elif glob.current_playlist["playlist_info"]["playlisttype"] == "external":
             pass
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "local":
+
+        elif glob.current_playlist["playlist_info"]["playlisttype"] == "local":
             pass
 
         if self.vodstreamdata:
+            if cfg.groups.value is True and self.bouquettv is False:
+                self.build_bouquet_tv_grouped_file()
+
+            bouquetTvString = ""
+            if cfg.groups.value is True and self.userbouquet is False:
+                bouquetTvString += "#NAME " + str(glob.current_playlist["playlist_info"]["name"]) + "\n"
+
+            for category in self.vodcategories:
+                if str(category["category_id"]) not in glob.current_playlist["data"]["vod_categories_hidden"]:
+                    if cfg.groups.value is True:
+                        filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
+                        bouquet = "subbouquet"
+                        self.userbouquet = True
+                    if cfg.groups.value is False:
+                        filename = "/etc/enigma2/bouquets.tv"
+                        bouquet = "userbouquet"
+
+                    bouquetTvString += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_vod_" + self.safefilename + "_" + self.safe_name(category["category_name"]) + '.tv" ORDER BY bouquet\n'
+
+            with open(filename, "a+") as f:
+                f.write(str(bouquetTvString))
+
             for category in self.vodcategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["vod_categories_hidden"]:
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
-                    self.build_bouquet_tv_file("vod", bouquetTitle)
-
                     self.totalcount += 1
-                    stringbuilder = ""
+                    outputString = ""
                     stringlist = []
 
-                    if glob.current_playlist["settings"]["prefixname"] is True:
-                        stringbuilder += "#NAME " + self.safefilename + "-VOD- " + category["category_name"] + "\n"
+                    if glob.current_playlist["settings"]["prefixname"] is True and cfg.groups.value is False:
+                        outputString += "#NAME " + self.safefilename + "-VOD " + category["category_name"] + "\n"
                     else:
-                        stringbuilder += "#NAME " + "VOD " + category["category_name"] + "\n"
+                        outputString += "#NAME " + "VOD " + category["category_name"] + "\n"
 
-                    bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     for stream in self.vodstreamdata:
                         if str(category["category_id"]) == str(stream["category_id"]):
                             stringlist.append([str(stream["bouquetString"]), str(stream["name"]), str(stream["added"])])
-                            # stringbuilder += stream["bouquetString"]
 
                     if (glob.current_playlist["settings"]["vodstreamorder"] == "alphabetical"):
                         stringlist.sort(key=lambda x: x[1].lower())
@@ -470,10 +508,15 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                         stringlist.sort(key=lambda x: x[2].lower(), reverse=True)
 
                     for string in stringlist:
-                        stringbuilder += string[0]
+                        outputString += string[0]
 
-                    self.build_userbouquets("vod", bouquetTitle, stringbuilder)
-                    # self.progressvalue += 1
+                    if cfg.groups.value is True:
+                        filename = "/etc/enigma2/subbouquet.bouquetmakerxtream_vod_" + str(bouquetTitle) + ".tv"
+                    else:
+                        filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_vod_" + str(bouquetTitle) + ".tv"
+
+                    with open(filename, "w+") as f:
+                        f.write(outputString)
 
         self.progressvalue += 1
         self["progress"].setValue(self.progressvalue)
@@ -532,31 +575,52 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.progressvalue += 2
             self["progress"].setValue(self.progressvalue)
 
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "external":
+        elif glob.current_playlist["playlist_info"]["playlisttype"] == "external":
             pass
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "local":
+
+        elif glob.current_playlist["playlist_info"]["playlisttype"] == "local":
             pass
 
         if self.seriesstreamdata:
+
+            if cfg.groups.value is True and self.bouquettv is False:
+                self.build_bouquet_tv_grouped_file()
+
+            bouquetTvString = ""
+            if cfg.groups.value is True and self.userbouquet is False:
+                bouquetTvString += "#NAME " + str(glob.current_playlist["playlist_info"]["name"]) + "\n"
+
             for category in self.seriescategories:
                 if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]:
                     bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
-                    self.build_bouquet_tv_file("series", bouquetTitle)
+                    if cfg.groups.value is True:
+                        filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
+                        bouquet = "subbouquet"
+                        self.userbouquet = True
+                    if cfg.groups.value is False:
+                        filename = "/etc/enigma2/bouquets.tv"
+                        bouquet = "userbouquet"
 
+                    bouquetTvString += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_series_" + self.safefilename + "_" + self.safe_name(category["category_name"]) + '.tv" ORDER BY bouquet\n'
+
+            with open(filename, "a+") as f:
+                f.write(str(bouquetTvString))
+
+            for category in self.seriescategories:
+                if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]:
+                    bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     self.totalcount += 1
-                    stringbuilder = ""
+                    outputString = ""
                     stringlist = []
 
-                    if glob.current_playlist["settings"]["prefixname"] is True:
-                        stringbuilder += "#NAME " + self.safefilename + "-Series- " + category["category_name"] + "\n"
+                    if glob.current_playlist["settings"]["prefixname"] is True and cfg.groups.value is False:
+                        outputString += "#NAME " + self.safefilename + "-Series " + category["category_name"] + "\n"
                     else:
-                        stringbuilder += "#NAME " + "Series " + category["category_name"] + "\n"
+                        outputString += "#NAME " + "Series " + category["category_name"] + "\n"
 
-                    bouquetTitle = self.safefilename + "_" + self.safe_name(category["category_name"])
                     for stream in self.seriesstreamdata:
                         if str(category["category_id"]) == str(stream["category_id"]):
                             stringlist.append([str(stream["bouquetString"]), str(stream["name"]), str(stream["added"])])
-                            # stringbuilder += stream["bouquetString"]
 
                     if (glob.current_playlist["settings"]["vodstreamorder"] == "alphabetical"):
                         stringlist.sort(key=lambda x: x[1].lower())
@@ -565,10 +629,15 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                         stringlist.sort(key=lambda x: x[2].lower(), reverse=True)
 
                     for string in stringlist:
-                        stringbuilder += string[0]
+                        outputString += string[0]
 
-                    self.build_userbouquets("series", bouquetTitle, stringbuilder)
-                    # self.progressvalue += 1
+                    if cfg.groups.value is True:
+                        filename = "/etc/enigma2/subbouquet.bouquetmakerxtream_series_" + str(bouquetTitle) + ".tv"
+                    else:
+                        filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_series_" + str(bouquetTitle) + ".tv"
+
+                    with open(filename, "w+") as f:
+                        f.write(outputString)
 
         self.progressvalue += 1
         self["progress"].setValue(self.progressvalue)
@@ -605,11 +674,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             buildlist = [x for x in seriesstreamresult if str(x["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and
                          str(x["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]]
 
-            print("**** length lines ***", len(lines))
-
             if buildlist:
-                print("**** true ***")
-
                 try:
                     x = 0
                     for line in lines:
@@ -653,54 +718,25 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             # print("*** no simple api call ***")
             return streamlist
 
-    def build_bouquet_tv_file(self, streamtype, bouquetTitle):
-        print("*** build_bouquet_tv ***")
-        if cfg.groups.value is True:
+    def build_bouquet_tv_grouped_file(self):
+        print("*** build_bouquet_tv_grouped_file ***")
+        exists = False
+        groupname = "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
+        with open("/etc/enigma2/bouquets.tv", "r") as f:
+            for ln, line in enumerate(f):
+                if str(groupname) in line:
+                    exists = True
+                    break
 
-            groupname = "userbouquet.bouquetmakerxtream_" + str(self.safefilename) + ".tv"
-
-            with open("/etc/enigma2/bouquets.tv", "r") as f:
-                content = f.read()
-
+        if exists is False:
             with open("/etc/enigma2/bouquets.tv", "a+") as f:
                 bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(groupname) + '" ORDER BY bouquet\n'
-                if str(bouquetTvString) not in content:
-                    f.write(str(bouquetTvString))
-
-            filename = "/etc/enigma2/" + str(groupname)
-
-            with open(filename, "a+") as f:
-                nameString = "#NAME " + str(glob.current_playlist["playlist_info"]["name"]) + "\n"
-                f.write(str(nameString))
-
-                filename = "subbouquet.bouquetmakerxtream_" + str(streamtype) + "_" + str(bouquetTitle) + ".tv"
-                bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(filename) + '" ORDER BY bouquet\n'
-                f.write(str(bouquetTvString))
-        else:
-            filename = "userbouquet.bouquetmakerxtream_" + str(streamtype) + "_" + str(bouquetTitle) + ".tv"
-
-            with open("/etc/enigma2/bouquets.tv", "a+") as f:
-                bouquetTvString = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(filename) + '" ORDER BY bouquet\n'
                 f.write(str(bouquetTvString))
 
-    def build_userbouquets(self, streamtype, bouquetTitle, bouquetString):
-        print("*** build userbouquets ***")
-        filepath = "/etc/enigma2/"
-
-        if cfg.groups.value is True:
-            cleanGroup = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", glob.name)
-            cleanGroup = re.sub(r" ", "_", cleanGroup)
-            cleanGroup = re.sub(r"_+", "_", cleanGroup)
-            filename = "subbouquet.bouquetmakerxtream_" + str(streamtype) + "_" + str(bouquetTitle) + ".tv"
-        else:
-            filename = "userbouquet.bouquetmakerxtream_" + str(streamtype) + "_" + str(bouquetTitle) + ".tv"
-        fullpath = os.path.join(filepath, filename)
-
-        with open(fullpath, "w+") as f:
-            f.write(bouquetString)
+        self.bouquettv = True
 
     def build_xmltv_source(self):
-        print("*** build_xmltv_source ***")
+        # print("*** build_xmltv_source ***")
 
         import xml.etree.ElementTree as ET
 
