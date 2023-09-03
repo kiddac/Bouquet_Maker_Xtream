@@ -3,7 +3,7 @@
 
 from . import _
 from . import bouquet_globals as glob
-from . import globalfunctions as bmxfunctions
+from . import globalfunctions as bmx
 from .plugin import skin_directory, playlist_file, playlists_json, cfg, epgimporter
 from .bouquetStaticText import StaticText
 
@@ -360,7 +360,7 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         self.getPlaylistUserFile()
 
     def getPlaylistUserFile(self):
-        self.playlists_all = bmxfunctions.getPlaylistJson()
+        self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:
             x = 0
