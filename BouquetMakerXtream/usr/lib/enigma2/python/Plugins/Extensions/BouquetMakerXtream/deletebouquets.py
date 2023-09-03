@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-from . import globalfunctions as bmxfunctions
+from . import globalfunctions as bmx
 from . import bouquet_globals as glob
 
 from .plugin import skin_path, common_path, playlists_json, epgimporter, version
@@ -16,7 +16,6 @@ from Tools.LoadPixmap import LoadPixmap
 
 import json
 import os
-import re
 
 
 class BouquetMakerXtream_DeleteBouquets(Screen):
@@ -41,7 +40,7 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
         self["key_info"] = StaticText("")
         self["version"] = StaticText()
 
-        self.playlists_all = bmxfunctions.getPlaylistJson()
+        self.playlists_all = bmx.getPlaylistJson()
 
         self.onLayoutFinish.append(self.__layoutFinished)
 
@@ -109,10 +108,7 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
 
         for x in selectedBouquetList:
             bouquet_name = x
-
-            safeName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(bouquet_name))
-            safeName = re.sub(r" ", "_", safeName)
-            safeName = re.sub(r"_+", "_", safeName)
+            safeName = bmx.safeName(bouquet_name)
 
             with open("/etc/enigma2/bouquets.tv", "r+") as f:
                 lines = f.readlines()
@@ -130,13 +126,13 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
                         continue
                     f.write(line)
 
-            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safeName) + "_")
-            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safeName) + "_")
-            bmxfunctions.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safeName) + "_")
-            bmxfunctions.purge("/etc/enigma2", str(safeName) + str(".tv"))
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safeName) + "_")
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safeName) + "_")
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safeName) + "_")
+            bmx.purge("/etc/enigma2", str(safeName) + str(".tv"))
 
             if epgimporter is True:
-                bmxfunctions.purge("/etc/epgimport", "bouquetmakerxtream." + str(safeName) + ".channels.xml")
+                bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(safeName) + ".channels.xml")
 
                 # remove sources from source file
                 sourcefile = "/etc/epgimport/bouquetmakerxtream.sources.xml"
@@ -164,7 +160,7 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
             glob.firstrun = True
             glob.current_selection = 0
             glob.current_playlist = []
-            bmxfunctions.refreshBouquets()
+            bmx.refreshBouquets()
         self.close()
 
     def deleteBouquetFile(self, bouquet_name):
