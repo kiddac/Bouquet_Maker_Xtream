@@ -33,14 +33,6 @@ if [ -d /etc/opkg ]; then
         fi
         echo ""
 
-        echo "checking python3-lxml"
-        if python -c "import lxml" &> /dev/null; then
-            echo "lxml library already installed"
-        else
-            opkg install python3-lxml
-        fi
-        echo ""
-
     else
         echo "checking python-requests"
         if python -c "import requests" &> /dev/null; then
@@ -66,13 +58,6 @@ if [ -d /etc/opkg ]; then
         fi
         echo ""
 
-        echo "checking python-lxml"
-        if python -c "import lxml" &> /dev/null; then
-            echo "lxml library already installed"
-        else
-            opkg install python-lxml
-        fi
-        echo ""
     fi
 else
     apt-get update
@@ -102,13 +87,6 @@ else
         fi
         echo ""
 
-        echo "checking python3-lxml"
-        if python -c "import lxml" &> /dev/null; then
-            echo "lxml library already installed"
-        else
-            apt-get -y install python3-lxml
-        fi
-        echo ""
     else
         echo "checking python-requests"
         if python -c "import requests" &> /dev/null; then
@@ -131,14 +109,6 @@ else
             echo "lzma library already installed"
         else
             apt-get -y install python-backports-lzma
-        fi
-        echo ""
-
-        echo "checking python-lxml"
-        if python -c "import lxml" &> /dev/null; then
-            echo "lxml library already installed"
-        else
-            apt-get -y install python-lxml
         fi
         echo ""
     fi
