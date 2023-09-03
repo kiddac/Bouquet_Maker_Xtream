@@ -3,8 +3,9 @@
 
 from . import _
 from . import bouquet_globals as glob
+from . import globalfunctions as bmx
 from . import processfiles as pfiles
-from .plugin import skin_directory, common_path, version, pythonFull, cfg
+from .plugin import skin_directory, common_path, version, pythonFull, cfg, playlists_json
 from .bouquetStaticText import StaticText
 
 from Components.ActionMap import ActionMap
@@ -16,6 +17,7 @@ from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
 import os
+import json
 
 
 class BouquetMakerXtream_MainMenu(Screen):
@@ -72,10 +74,10 @@ class BouquetMakerXtream_MainMenu(Screen):
             import requests
 
             if pythonFull < 3.9:
-                print("*** checking multiprocessing ***")
+                # print("*** checking multiprocessing ***")
                 from multiprocessing.pool import ThreadPool
         except Exception as e:
-            print("**** missing dependencies ***")
+            # print("**** missing dependencies ***")
             print(e)
             dependencies = False
 
@@ -108,7 +110,6 @@ class BouquetMakerXtream_MainMenu(Screen):
         if self.playlists_all:
             self.list.append([1, _("Playlists")])
 
-        self.list.append([2, _("Add Playlist")])
         self.list.append([3, _("Main Settings")])
 
         self.bouquets_exist = False
@@ -121,8 +122,10 @@ class BouquetMakerXtream_MainMenu(Screen):
         if self.bouquets_exist:
             self.list.append([4, _("Update Bouquets")])
             self.list.append([5, _("Delete Bouquets")])
+            self.list.append([6, _("Delete All BMX Bouquets")])
 
-        self.list.append([6, _("About")])
+        self.list.append([2, _("Add Playlist")])
+        self.list.append([7, _("About")])
 
         self.drawList = []
         self.drawList = [buildListEntry(x[0], x[1]) for x in self.list]
@@ -148,6 +151,38 @@ class BouquetMakerXtream_MainMenu(Screen):
         from . import deletebouquets
         self.session.openWithCallback(self.start, deletebouquets.BouquetMakerXtream_DeleteBouquets)
 
+    def deleteAll(self, answer=None):
+        if answer is None:
+            self.session.openWithCallback(self.deleteAll, MessageBox, _("Delete all BMX created bouquets?"))
+        elif answer:
+
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream")
+
+            with open("/etc/enigma2/bouquets.tv", "r+") as f:
+                lines = f.readlines()
+                f.seek(0)
+                for line in lines:
+                    if "bouquetmakerxtream" not in line:
+                        f.write(line)
+                f.truncate()
+
+            bmx.purge("/etc/epgimport", "bouquetmakerxtream")
+
+            self.playlists_all = bmx.getPlaylistJson()
+
+            for playlist in self.playlists_all:
+                playlist["playlist_info"]["bouquet"] = False
+
+            # delete leftover empty dicts
+            self.playlists_all = [_f for _f in self.playlists_all if _f]
+
+            with open(playlists_json, "w") as f:
+                json.dump(self.playlists_all, f)
+
+            bmx.refreshBouquets()
+            self.createSetup()
+        return
+
     def update(self):
         return
         from . import update
@@ -169,6 +204,8 @@ class BouquetMakerXtream_MainMenu(Screen):
             if index == 5:
                 self.deleteSet()
             if index == 6:
+                self.deleteAll()
+            if index == 7:
                 self.about()
 
     def quit(self):
@@ -190,6 +227,8 @@ def buildListEntry(index, title):
     if index == 5:
         png = LoadPixmap(common_path + "deleteplaylist.png")
     if index == 6:
+        png = LoadPixmap(common_path + "deleteplaylist.png")
+    if index == 7:
         png = LoadPixmap(common_path + "about.png")
 
     return (index, str(title), png)
