@@ -4,7 +4,7 @@
 
 from . import _
 from . import bouquet_globals as glob
-from . import globalfunctions as bmxfunctions
+from . import globalfunctions as bmx
 from .plugin import skin_directory, playlists_json, hdr, playlist_file, cfg, common_path, version, hasConcurrent, hasMultiprocessing
 from .bouquetStaticText import StaticText
 
@@ -85,7 +85,7 @@ class BouquetMakerXtream_Playlists(Screen):
         self.setTitle(self.setup_title)
 
     def start(self):
-        print("*** start ***")
+        # print("*** start ***")
         self["version"].setText(version)
 
         if epgimporter:
@@ -94,7 +94,7 @@ class BouquetMakerXtream_Playlists(Screen):
         self.playlists_all = []
 
         # check if playlists.json file exists in specified location
-        self.playlists_all = bmxfunctions.getPlaylistJson()
+        self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:
             self.playlists_all.sort(key=lambda e: e["playlist_info"]["index"], reverse=False)
@@ -105,12 +105,12 @@ class BouquetMakerXtream_Playlists(Screen):
         self.clear_caches()
 
     def epgimportcleanup(self):
-        print("*** epgimportcleanup ***")
+        # print("*** epgimportcleanup ***")
 
         channelfilelist = []
         oldchannelfiles = pythonglob.glob("/etc/epgimport/bouquetmakerxtream.*.channels.xml")
 
-        self.playlists_all = bmxfunctions.getPlaylistJson()
+        self.playlists_all = bmx.getPlaylistJson()
 
         for playlist in self.playlists_all:
             cleanName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(playlist["playlist_info"]["name"]))
@@ -156,7 +156,7 @@ class BouquetMakerXtream_Playlists(Screen):
             tree.write(sourcefile)
 
     def delayedDownload(self):
-        print("*** delayedDownload ***")
+        # print("*** delayedDownload ***")
         self.timer = eTimer()
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
@@ -168,7 +168,7 @@ class BouquetMakerXtream_Playlists(Screen):
         self.timer.start(50, True)
 
     def clear_caches(self):
-        print("*** clear_caches ***")
+        # print("*** clear_caches ***")
         try:
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
@@ -177,7 +177,7 @@ class BouquetMakerXtream_Playlists(Screen):
             pass
 
     def makeUrlList(self):
-        print("*** makeUrlList ***")
+        # print("*** makeUrlList ***")
         self.url_list = []
         x = 0
         for playlists in self.playlists_all:
@@ -205,7 +205,7 @@ class BouquetMakerXtream_Playlists(Screen):
         # self.buildPlaylistList()
 
     def download_url(self, url):
-        print("*** download_url ***")
+        # print("*** download_url ***")
         index = url[1]
         r = ""
         retries = Retry(total=2, backoff_factor=1)
@@ -243,14 +243,14 @@ class BouquetMakerXtream_Playlists(Screen):
         return index, ""
 
     def process_downloads(self):
-        print("*** process_downloads ***")
+        # print("*** process_downloads ***")
         threads = len(self.url_list)
         if threads > 10:
             threads = 10
 
         if hasConcurrent or hasMultiprocessing:
             if hasConcurrent:
-                print("******* trying concurrent futures ******")
+                # print("******* trying concurrent futures ******")
                 try:
                     from concurrent.futures import ThreadPoolExecutor
                     executor = ThreadPoolExecutor(max_workers=threads)
@@ -261,7 +261,7 @@ class BouquetMakerXtream_Playlists(Screen):
                     print(e)
 
             elif hasMultiprocessing:
-                print("********** trying multiprocessing threadpool *******")
+                # print("********** trying multiprocessing threadpool *******")
                 try:
                     from multiprocessing.pool import ThreadPool
                     pool = ThreadPool(threads)
@@ -284,7 +284,7 @@ class BouquetMakerXtream_Playlists(Screen):
                     self.playlists_all[index]["playlist_info"]["valid"] = False
 
         else:
-            print("********** trying sequential download *******")
+            # print("********** trying sequential download *******")
             for url in self.url_list:
                 result = self.download_url(url)
                 index = result[0]
@@ -298,11 +298,10 @@ class BouquetMakerXtream_Playlists(Screen):
                         self.playlists_all[index]["user_info"] = []
                     self.playlists_all[index]["playlist_info"]["valid"] = False
 
-        print("*** def ***")
         self.buildPlaylistList()
 
     def buildPlaylistList(self):
-        print("*** buildPlaylistList ***")
+        # print("*** buildPlaylistList ***")
         for playlists in self.playlists_all:
             if "user_info" in playlists:
                 if "message" in playlists["user_info"]:
@@ -357,13 +356,13 @@ class BouquetMakerXtream_Playlists(Screen):
         self.writeJsonFile()
 
     def writeJsonFile(self):
-        print("*** writeJsonFile ***")
+        # print("*** writeJsonFile ***")
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
         self.createSetup()
 
     def createSetup(self):
-        print("*** createSetup ***")
+        # print("*** createSetup ***")
         try:
             self["splash"].hide()
         except:
@@ -453,7 +452,7 @@ class BouquetMakerXtream_Playlists(Screen):
             self.openBouquetSettings()
 
     def buildListEntry(self, index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlisttype):
-        print("*** buildListEntry ***")
+        # print("*** buildListEntry ***")
         if status == (_("Active")) or status == (_("Url OK")) or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_green.png"))
 
@@ -480,7 +479,7 @@ class BouquetMakerXtream_Playlists(Screen):
         self.close()
 
     def deleteServer(self, answer=None):
-        print("*** deleteServer ***")
+        # print("*** deleteServer ***")
         if self.list != []:
             self.currentplaylist = glob.current_playlist.copy()
 
@@ -517,7 +516,7 @@ class BouquetMakerXtream_Playlists(Screen):
                 self.writeJsonFile()
 
     def deleteEpgData(self, data=None):
-        print("*** deleteEpgData ***")
+        # print("*** deleteEpgData ***")
         if data is None:
             self.session.openWithCallback(self.deleteEpgData, MessageBox, _("Delete providers EPG data?"))
         else:
@@ -533,7 +532,7 @@ class BouquetMakerXtream_Playlists(Screen):
             # self.start()
 
     def getCurrentEntry(self):
-        print("*** getCurrentEntry ***")
+        # print("*** getCurrentEntry ***")
         if self.list != []:
             glob.current_selection = self["playlists"].getIndex()
             glob.current_playlist = self.playlists_all[glob.current_selection]
@@ -558,7 +557,7 @@ class BouquetMakerXtream_Playlists(Screen):
     def openBouquetSettings(self):
         from . import bouquetsettings
 
-        if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
+        if glob.current_playlist and glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             if "user_info" in glob.current_playlist:
                 if "auth" in glob.current_playlist["user_info"]:
                     if glob.current_playlist["user_info"]["auth"] == 1 and glob.current_playlist["user_info"]["status"] == "Active":
@@ -574,6 +573,6 @@ class BouquetMakerXtream_Playlists(Screen):
                 return
 
     def checkoneplaylist(self):
-        print("*** checkoneplaylist ***")
+        # print("*** checkoneplaylist ***")
         if len(self.list) == 1 and cfg.skipplaylistsscreen.getValue() is True:
             self.quit()
