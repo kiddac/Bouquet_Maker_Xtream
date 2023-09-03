@@ -230,7 +230,7 @@ class AutoStartTimer:
         self.update(atLeast)
 
     def runUpdate(self):
-        print("\n *********** Updating BouquetMakerXtream Bouquets************ \n")
+        # print("\n *********** Updating BouquetMakerXtream Bouquets************ \n")
         from . import update
         self.session.open(update.BouquetMakerXtream_Update, "auto")
         # update.BouquetMakerXtream_Update()
