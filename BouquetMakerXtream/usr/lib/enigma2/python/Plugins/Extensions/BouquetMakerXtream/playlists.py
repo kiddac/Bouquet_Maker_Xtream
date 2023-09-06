@@ -201,9 +201,6 @@ class BouquetMakerXtream_Playlists(Screen):
         else:
             self.createSetup()
 
-        # print("*** ABC ***")
-        # self.buildPlaylistList()
-
     def download_url(self, url):
         # print("*** download_url ***")
         index = url[1]
