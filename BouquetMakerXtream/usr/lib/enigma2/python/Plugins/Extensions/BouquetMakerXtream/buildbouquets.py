@@ -47,7 +47,6 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
         self.bouquettv = False
         self.userbouquet = False
-        # print(" ** userbouquet ***", self.userbouquet)
 
         self.totalcount = 0
 
@@ -56,7 +55,14 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self.progressvalue = 0
         self.progressrange = 0
 
-        # print("*** buildbouquets.py ***")
+        if glob.current_playlist["settings"]["showlive"] is True and glob.current_playlist["data"]["live_categories"]:
+            self.progressrange += 1
+
+        if glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"]:
+            self.progressrange += 1
+
+        if glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
+            self.progressrange += 1
 
         self.starttimer = eTimer()
         try:
@@ -72,7 +78,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.timer_conn = self.timer.timeout.connect(function)
         except:
             self.timer.callback.append(function)
-        self.timer.start(10, True)
+        self.timer.start(50, True)
 
     def start(self):
         # print("*** start ***")
@@ -138,8 +144,6 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
 
-                self.progressrange += 1
-
                 self.get_api = str(glob.current_playlist["playlist_info"]["full_url"])
                 self.player_api = str(glob.current_playlist["playlist_info"]["player_api"])
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
@@ -148,28 +152,24 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                 self.password = glob.current_playlist["playlist_info"]["password"]
                 self.output = glob.current_playlist["playlist_info"]["output"]
 
-                if glob.current_playlist["settings"]["showlive"] is True:
+                if glob.current_playlist["settings"]["showlive"] is True and glob.current_playlist["data"]["live_categories"]:
                     # self.p_live_categories_url = str(self.player_api) + "&action=get_live_categories"
                     # self.live_url_list.append([self.p_live_categories_url, 0, "json"])
                     self.p_live_streams_url = self.player_api + "&action=get_live_streams"
                     self.live_url_list.append([self.p_live_streams_url, 3, "json"])
 
-                    self.progressrange += 1
-
-                if glob.current_playlist["settings"]["showvod"] is True:
+                if glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"]:
                     # self.p_vod_categories_url = str(self.player_api) + "&action=get_vod_categories"
                     # self.vod_url_list.append([self.p_vod_categories_url, 1, "json"])
                     self.p_vod_streams_url = self.player_api + "&action=get_vod_streams"
                     self.vod_url_list.append([self.p_vod_streams_url, 4, "json"])
-                    self.progressrange += 1
 
-                if glob.current_playlist["settings"]["showseries"] is True:
+                if glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
                     # self.p_series_categories_url = str(self.player_api) + "&action=get_series_categories"
                     # self.series_url_list.append([self.p_series_categories_url, 2, "json"])
                     self.p_series_streams_url = self.player_api + "&action=get_series"
                     self.series_url_list.append([self.p_series_streams_url, 5, "json"])
                     self.simple = str(self.host) + "/" + "get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=simple&output=" + str(self.output)
-                    self.progressrange += 1
 
             elif glob.current_playlist["playlist_info"]["playlisttype"] == "external":
                 self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
@@ -179,11 +179,11 @@ class BouquetMakerXtream_BuildBouquets(Screen):
             self.nextjob(_("Processing live data..."), self.loadLive)
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
-            if glob.current_playlist["settings"]["showlive"] is True:
+            if glob.current_playlist["settings"]["showlive"] is True and glob.current_playlist["data"]["live_categories"]:
                 self.loadLive()
-            elif glob.current_playlist["settings"]["showvod"] is True:
+            elif glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"]:
                 self.loadVod()
-            elif glob.current_playlist["settings"]["showseries"] is True:
+            elif glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.loadSeries()
 
     def process_downloads(self, streamtype):
@@ -268,7 +268,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                             self.nextjob(_("Processing series data..."), self.loadSeries)
                     else:
                         self.parse_m3u8_playlist(response)
-                        self.nextjob(_("Processing live data..."), self.loadLive)
+                        self.nextjob(_("Processing m3u8 data..."), self.loadLive)
 
     def loadLive(self):
         # print("*** loadlive ***")
@@ -280,23 +280,25 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         streamtype = glob.current_playlist["settings"]["livetype"]
 
         self.livecategories = glob.current_playlist["data"]["live_categories"]
-        self.livestreams = glob.current_playlist["data"]["live_streams"]
 
-        if (glob.current_playlist["settings"]["livecategoryorder"] == "alphabetical"):
-            self.livecategories = sorted(self.livecategories, key=lambda k: k["category_name"].lower())
+        if self.livecategories:
+            self.livestreams = glob.current_playlist["data"]["live_streams"]
 
-        if len(glob.current_playlist["data"]["live_categories"]) == len(glob.current_playlist["data"]["live_categories_hidden"]):
-            if glob.current_playlist["settings"]["showvod"] is True:
-                self.loadVod()
-                return
-            elif glob.current_playlist["settings"]["showseries"] is True:
-                self.loadSeries()
-                return
-            else:
-                if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
-                    self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
+            if (glob.current_playlist["settings"]["livecategoryorder"] == "alphabetical"):
+                self.livecategories = sorted(self.livecategories, key=lambda k: k["category_name"].lower())
+
+            if len(glob.current_playlist["data"]["live_categories"]) == len(glob.current_playlist["data"]["live_categories_hidden"]):
+                if glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"]:
+                    self.loadVod()
+                    return
+                elif glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
+                    self.loadSeries()
+                    return
                 else:
-                    self.finished()
+                    if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
+                        self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
+                    else:
+                        self.finished()
 
         if self.livecategories and self.livestreams:
             for channel in self.livestreams:
@@ -412,13 +414,14 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     with open(filename, "w+") as f:
                         f.write(outputString)
 
-        self.progressvalue += 1
-        self["progress"].setValue(self.progressvalue)
+        if self.livecategories:
+            self.progressvalue += 1
+            self["progress"].setValue(self.progressvalue)
 
-        if glob.current_playlist["settings"]["showvod"]:
+        if glob.current_playlist["settings"]["showvod"] and glob.current_playlist["data"]["vod_categories"]:
             self.nextjob(_("Processing VOD data..."), self.loadVod)
 
-        elif glob.current_playlist["settings"]["showseries"]:
+        elif glob.current_playlist["settings"]["showseries"] and glob.current_playlist["data"]["series_categories"]:
             self.nextjob(_("Processing series data..."), self.loadSeries)
 
         else:
@@ -437,20 +440,23 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         streamtype = glob.current_playlist["settings"]["vodtype"]
 
         self.vodcategories = glob.current_playlist["data"]["vod_categories"]
-        self.vodstreams = glob.current_playlist["data"]["vod_streams"]
 
-        if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
-            self.vodcategories = sorted(self.vodcategories, key=lambda k: k["category_name"].lower())
+        if self.vodcategories:
 
-        if len(glob.current_playlist["data"]["vod_categories"]) == len(glob.current_playlist["data"]["vod_categories_hidden"]):
-            if glob.current_playlist["settings"]["showseries"] is True:
-                self.loadSeries()
-                return
-            else:
-                if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
-                    self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
+            self.vodstreams = glob.current_playlist["data"]["vod_streams"]
+
+            if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
+                self.vodcategories = sorted(self.vodcategories, key=lambda k: k["category_name"].lower())
+
+            if len(glob.current_playlist["data"]["vod_categories"]) == len(glob.current_playlist["data"]["vod_categories_hidden"]):
+                if glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
+                    self.loadSeries()
+                    return
                 else:
-                    self.finished()
+                    if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
+                        self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
+                    else:
+                        self.finished()
 
         if self.vodcategories and self.vodstreams:
             for channel in self.vodstreams:
@@ -540,10 +546,11 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     with open(filename, "w+") as f:
                         f.write(outputString)
 
-        self.progressvalue += 1
-        self["progress"].setValue(self.progressvalue)
+        if self.vodcategories:
+            self.progressvalue += 1
+            self["progress"].setValue(self.progressvalue)
 
-        if glob.current_playlist["settings"]["showseries"]:
+        if glob.current_playlist["settings"]["showseries"] and glob.current_playlist["data"]["series_categories"]:
             self.nextjob(_("Processing series data..."), self.loadSeries)
 
         else:
@@ -564,17 +571,19 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
         self.seriescategories = glob.current_playlist["data"]["series_categories"]
 
-        self.seriesstreams = glob.current_playlist["data"]["series_streams"]
+        if self.seriescategories:
 
-        if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
-            self.seriescategories = sorted(self.seriescategories, key=lambda k: k["category_name"].lower())
+            self.seriesstreams = glob.current_playlist["data"]["series_streams"]
 
-        if len(glob.current_playlist["data"]["series_categories"]) == len(glob.current_playlist["data"]["series_categories_hidden"]):
-            if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
-                self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
-            else:
-                self.finished()
-                return
+            if (glob.current_playlist["settings"]["vodcategoryorder"] == "alphabetical"):
+                self.seriescategories = sorted(self.seriescategories, key=lambda k: k["category_name"].lower())
+
+            if len(glob.current_playlist["data"]["series_categories"]) == len(glob.current_playlist["data"]["series_categories_hidden"]):
+                if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
+                    self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
+                else:
+                    self.finished()
+                    return
 
         if self.seriescategories and self.seriesstreams:
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
@@ -724,9 +733,9 @@ class BouquetMakerXtream_BuildBouquets(Screen):
 
                         with open(filename, "w+") as f:
                             f.write(outputString)
-
-        self.progressvalue += 1
-        self["progress"].setValue(self.progressvalue)
+        if self.seriescategories:
+            self.progressvalue += 1
+            self["progress"].setValue(self.progressvalue)
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["settings"]["showlive"] and epgimporter and self.livecategories:
             self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)

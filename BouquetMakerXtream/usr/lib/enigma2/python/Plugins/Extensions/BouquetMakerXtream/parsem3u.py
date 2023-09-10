@@ -163,7 +163,7 @@ def make_m3u8_categories_json(live_streams, vod_streams, series_streams):
 
                 glob.current_playlist["data"]["vod_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
 
-    print('*** glob.current_playlist["data"]["series_categories"] ***', glob.current_playlist["data"]["series_categories"])
+    # print('*** glob.current_playlist["data"]["series_categories"] ***', glob.current_playlist["data"]["series_categories"])
 
     for x in series_streams:
 

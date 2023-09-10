@@ -91,15 +91,11 @@ def download_url_multi(url):
 
 
 def safeName(name):
-    for char in name:
-        if not char.isalnum():
-            name = name.strip()
-            name = name.replace(char, "_")
-
+    name = name.encode('ascii', errors='ignore').decode()
+    name = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(name))
+    name = re.sub(r" ", "_", name)
     name = re.sub(r"_+", "_", name)
-    name = re.sub(r"__", "_", name)
     name = name.strip("_")
-
     return name
 
 

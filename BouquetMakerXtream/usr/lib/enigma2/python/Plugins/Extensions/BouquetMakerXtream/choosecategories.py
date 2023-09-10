@@ -34,6 +34,9 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.categoryList = []
         self.channelList = []
 
+        self.level = 1
+        self.data = False
+
         self["list1"] = List(self.categoryList, enableWrapAround=True)
         self["list2"] = List(self.channelList, enableWrapAround=True)
 
@@ -51,6 +54,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self["key_info"] = StaticText(_("Show Streams"))
 
         self["splash"] = Pixmap()
+        print("*** show splash 1 ***")
         self["splash"].show()
 
         self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
@@ -185,7 +189,11 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         else:
             self.parse_m3u8_playlist()
 
-        # self["splash"].hide()
+        try:
+            self["splash"].hide()
+        except:
+            pass
+
         if glob.current_playlist["settings"]["showlive"] is True:
             self.loadLive()
         elif glob.current_playlist["settings"]["showvod"] is True:
@@ -280,8 +288,10 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                             glob.current_playlist["data"]["series_streams"] = response
                     else:
                         self.parse_m3u8_playlist(response)
-
-        self["splash"].hide()
+        try:
+            self["splash"].hide()
+        except:
+            pass
 
     def parse_m3u8_playlist(self, response=None):
         # print("*** parse_m3u8_playlist ***")
@@ -299,15 +309,16 @@ class BouquetMakerXtream_ChooseCategories(Screen):
 
     def loadLive(self):
         # print("*** loadLive ***")
+        self.level = 1
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.process_downloads("live")
+
+        self.setup_title = _("Choose Live Categories")
+        self.setTitle(self.setup_title)
 
         if glob.current_playlist["data"]["live_categories"]:
             self.categoryList = []
             self.categorySelectedList = []
-
-            self.setup_title = _("Choose Live Categories")
-            self.setTitle(self.setup_title)
 
             if glob.current_playlist["settings"]["showvod"] is True or glob.current_playlist["settings"]["showseries"] is True:
                 self["key_green"].setText(_("Next"))
@@ -315,10 +326,12 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 self["key_green"].setText(_("Create"))
 
             for category in glob.current_playlist["data"]["live_categories"]:
+                categorycount = len(category)
+
                 if str(category["category_id"]) in glob.current_playlist["data"]["live_categories_hidden"]:
-                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True])
+                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True, categorycount, 0])
                 else:
-                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
+                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False, categorycount, 0])
 
             if (glob.current_playlist["settings"]["livecategoryorder"] == "alphabetical"):
                 self.categorySelectedList.sort(key=lambda x: x[1].lower())
@@ -328,6 +341,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             self["list1"].setList(self.categoryList)
             self["list1"].setIndex(0)
             self.currentList = 1
+            self.data = True
             self.enablelist()
             self.selectionChanged()
         else:
@@ -338,15 +352,16 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 self.loadSeries()
 
     def loadVod(self):
+        self.level = 2
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.process_downloads("vod")
+
+        self.setup_title = _("Choose VOD Categories")
+        self.setTitle(self.setup_title)
 
         if glob.current_playlist["data"]["vod_categories"]:
             self.categoryList = []
             self.categorySelectedList = []
-
-            self.setup_title = _("Choose VOD Categories")
-            self.setTitle(self.setup_title)
 
             if glob.current_playlist["settings"]["showseries"] is True:
                 self["key_green"].setText(_("Next"))
@@ -366,6 +381,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             self["list1"].setList(self.categoryList)
             self["list1"].setIndex(0)
             self.currentList = 1
+            self.data = True
             self.enablelist()
             self.selectionChanged()
 
@@ -375,18 +391,19 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 self.loadSeries()
 
     def loadSeries(self):
+        self.level = 3
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.process_downloads("series")
 
+        self.setup_title = _("Choose Series Categories")
+        self.setTitle(self.setup_title)
+
+        self.categoryList = []
+        self.categorySelectedList = []
+
+        self["key_green"].setText(_("Create"))
+
         if glob.current_playlist["data"]["series_categories"]:
-            self.categoryList = []
-            self.categorySelectedList = []
-
-            self.setup_title = _("Choose Series Categories")
-            self.setTitle(self.setup_title)
-
-            self["key_green"].setText(_("Create"))
-
             for category in glob.current_playlist["data"]["series_categories"]:
                 if str(category["category_id"]) in glob.current_playlist["data"]["series_categories_hidden"]:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True])
@@ -400,6 +417,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             self["list1"].setList(self.categoryList)
             self["list1"].setIndex(0)
             self.currentList = 1
+            self.data = True
             self.enablelist()
             self.selectionChanged()
         else:
@@ -419,7 +437,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
 
         category = self["list1"].getCurrent()[2]
 
-        if self.setup_title == (_("Choose Live Categories")):
+        if self.level == 1:
 
             for channel in glob.current_playlist["data"]["live_streams"]:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
@@ -441,7 +459,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             if (glob.current_playlist["settings"]["livestreamorder"] == "added"):
                 self.channelSelectedList.sort(key=lambda x: x[3].lower(), reverse=True)
 
-        elif self.setup_title == (_("Choose VOD Categories")):
+        elif self.level == 2:
             for channel in glob.current_playlist["data"]["vod_streams"]:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     if channel["category_id"] == category:
@@ -462,7 +480,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             if (glob.current_playlist["settings"]["vodstreamorder"] == "added"):
                 self.channelSelectedList.sort(key=lambda x: x[3].lower(), reverse=True)
 
-        elif self.setup_title == (_("Choose Series Categories")):
+        elif self.level == 3:
             for channel in glob.current_playlist["data"]["series_streams"]:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     if channel["category_id"] == category:
@@ -634,7 +652,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
     def exit(self, answer="none"):
         self.close(True)
 
-    def updateJson(self):
+    def updateJson(self, answer="none"):
         self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:
