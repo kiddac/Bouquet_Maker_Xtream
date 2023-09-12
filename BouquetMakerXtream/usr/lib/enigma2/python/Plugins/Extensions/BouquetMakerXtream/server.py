@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from . import _
+from . import globalfunctions as bmx
 
 from .plugin import skin_directory, playlist_file, hdr, cfg
 from .bouquetStaticText import StaticText
@@ -67,6 +68,8 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
             "green": self.save,
             "ok": self.void,
         }, -2)
+
+        self.playlists_all = bmx.getPlaylistJson()
 
         self.onFirstExecBegin.append(self.initConfig)
         self.onLayoutFinish.append(self.__layoutFinished)
@@ -172,6 +175,7 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
         if self["config"].isChanged():
             if self.playlisttypeCfg.value == "standard":
                 self.name = self.nameCfg.value.strip()
+
                 protocol = self.protocolCfg.value
                 domain = self.serverCfg.value.strip().lower()
                 port = self.portCfg.value
@@ -200,9 +204,23 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
 
                 valid = self.checkline(host)
 
+            # check name is not blank
+            if self.name is None or len(self.name) < 3:
+                self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
+                self.createSetup()
+                return
+
+            # check url has response
             if not valid:
                 self.session.open(MessageBox, _("Details are not valid or unauthorised"), type=MessageBox.TYPE_INFO, timeout=5)
                 return
+
+            # check name exists
+            if self.playlists_all:
+                for playlists in self.playlists_all:
+                    if playlists["playlist_info"]["name"] == self.name:
+                        self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
+                        return
 
             # check playlists.txt file hasn't been deleted
             if not os.path.isfile(playlist_file):

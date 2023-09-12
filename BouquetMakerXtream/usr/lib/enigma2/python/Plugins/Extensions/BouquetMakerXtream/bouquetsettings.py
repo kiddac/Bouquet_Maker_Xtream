@@ -73,6 +73,8 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
             self.p_vod_categories_url = str(self.player_api) + "&action=get_vod_categories"
             self.p_series_categories_url = str(self.player_api) + "&action=get_series_categories"
 
+        self.playlists_all = bmx.getPlaylistJson()
+
         self.onFirstExecBegin.append(self.start)
         self.onLayoutFinish.append(self.__layoutFinished)
 
@@ -225,6 +227,7 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
             vod_streamtype_choices.append(("8193", "DreamOS GStreamer(8193)"))
 
         self.name = str(glob.current_playlist["playlist_info"]["name"])
+        glob.old_name = self.name
         self.prefixname = glob.current_playlist["settings"]["prefixname"]
         self.liveType = str(glob.current_playlist["settings"]["livetype"])
         self.vodType = str(glob.current_playlist["settings"]["vodtype"])
@@ -387,6 +390,20 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
 
             self.name = self.nameCfg.value.strip()
 
+            # check name is not blank
+            if self.name is None or len(self.name) < 3:
+                self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
+                self.createSetup()
+                return
+
+            # check name exists
+            if self.playlists_all:
+                for playlists in self.playlists_all:
+                    if playlists["playlist_info"]["name"] == self.name:
+                        self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
+                        self.createSetup()
+                        return
+
             showlive = self.showliveCfg.value
             showvod = self.showvodCfg.value
             showseries = self.showseriesCfg.value
@@ -495,8 +512,6 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
             self.getPlaylistUserFile()
 
     def getPlaylistUserFile(self):
-        self.playlists_all = bmx.getPlaylistJson()
-
         if self.playlists_all:
             x = 0
             for playlists in self.playlists_all:

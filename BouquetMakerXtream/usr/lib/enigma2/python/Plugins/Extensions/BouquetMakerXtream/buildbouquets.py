@@ -85,6 +85,7 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         self["progress"].setRange((0, self.progressrange))
         self["progress"].setValue(self.progressvalue)
         self.safeName = bmx.safeName(glob.current_playlist["playlist_info"]["name"])
+        self.oldName = bmx.safeName(glob.old_name)
         self.nextjob(_("Loading playlist...") + str(self.safeName), self.delete_existing_refs)
 
     def delete_existing_refs(self):
@@ -104,6 +105,14 @@ class BouquetMakerXtream_BuildBouquets(Screen):
                     continue
                 if "bouquetmakerxtream_" + str(self.safeName) + ".tv" in line:
                     continue
+                if "bouquetmakerxtream_live_" + str(self.oldName) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_vod_" + str(self.oldName) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_series_" + str(self.oldName) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_" + str(self.oldName) + ".tv" in line:
+                    continue
                 f.write(line)
 
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.safeName) + "_")
@@ -111,8 +120,14 @@ class BouquetMakerXtream_BuildBouquets(Screen):
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.safeName) + "_")
         bmx.purge("/etc/enigma2", str(self.safeName) + str(".tv"))
 
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.oldName) + "_")
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.oldName) + "_")
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.oldName) + "_")
+        bmx.purge("/etc/enigma2", str(self.oldName) + str(".tv"))
+
         if epgimporter is True:
             bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.safeName))
+            bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.oldName))
 
         self.makeUrlList()
 
