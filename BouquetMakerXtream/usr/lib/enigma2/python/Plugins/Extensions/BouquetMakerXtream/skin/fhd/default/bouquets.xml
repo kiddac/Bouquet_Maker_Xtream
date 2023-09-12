@@ -1,5 +1,5 @@
 <screen name="bouquetMakerXtreamBouquets" position="0,0" size="1920,1080" backgroundColor="#050000" flags="wfNoBorder">
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/default/images/background.png" alphatest="off" position="0,0" size="1920,1080" zPosition="-1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/default/images/background.jpg" position="0,0" size="1920,1080" zPosition="-1"/>
 	<widget source="global.CurrentTime" render="Label" position="1490,0" size="400,60" font="bouquetregular;27" foregroundColor="#ffffff" backgroundColor="#050000" valign="center" halign="right" transparent="1">
 		<convert type="ClockToText">Format:%H:%M | %A %-d %b</convert>
 	</widget>
@@ -10,13 +10,13 @@
 	<widget source="list" render="Listbox" position="center,330" size="924,600" foregroundColor="#ffffff" backgroundColor="#050000" foregroundColorSelected="#ffffff" backgroundColorSelected="#710032" itemHeight="60" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="2">
 		<convert type="TemplatedMultiContent">
 			{"template": [
-            MultiContentEntryPixmapAlphaBlend(pos = (15, 9), size = (38, 36), png = 0),
-            MultiContentEntryText(pos = (69, 4), size = (810, 60), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
-            ],
-            "fonts": [gFont("bouquetregular", 36)],
-            "itemHeight": 60,
-            "scrollbarMode": "showOnDemand"
-        }</convert>
+      MultiContentEntryPixmapAlphaBlend(pos = (15, 9), size = (38, 36), png = 0),
+      MultiContentEntryText(pos = (69, 4), size = (810, 60), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
+      ],
+      "fonts": [gFont("bouquetregular", 36)],
+      "itemHeight": 60,
+      "scrollbarMode": "showOnDemand"
+    }</convert>
 	</widget>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/divider.png" position="center,448" size="924,4" alphatest="blend" zPosition="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/divider.png" position="center,568" size="924,4" alphatest="blend" zPosition="1"/>

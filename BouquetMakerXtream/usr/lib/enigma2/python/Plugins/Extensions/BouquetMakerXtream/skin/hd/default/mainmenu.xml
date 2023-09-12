@@ -1,5 +1,5 @@
 <screen name="bouquetMakerXtreamMainMenu" position="0,0" size="1280,720" backgroundColor="#050000" flags="wfNoBorder">
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/default/images/background.png" alphatest="off" position="0,0" size="1280,720" zPosition="-1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/default/images/background.jpg" position="0,0" size="1280,720" zPosition="-1" />
 	<widget source="global.CurrentTime" render="Label" position="993,0" size="266,40" font="bouquetregular;18" foregroundColor="#ffffff" backgroundColor="#050000" valign="center" halign="right" transparent="1">
 		<convert type="ClockToText">Format:%H:%M | %A %-d %b</convert>
 	</widget>

@@ -1,6 +1,6 @@
 
 <screen name="bouquetMakerXtreamAbout" position="0,0" size="2560,1440" backgroundColor="#050000" flags="wfNoBorder">
-	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/default/images/background.png" alphatest="off" position="0,0" size="2560,1440" zPosition="-1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/default/images/background.jpg" position="0,0" size="2560,1440" zPosition="-1" />
 	<widget source="global.CurrentTime" render="Label" position="1987,0" size="534,80" font="bouquetregular;36" foregroundColor="#ffffff" backgroundColor="#050000" valign="center" halign="right" transparent="1">
 		<convert type="ClockToText">Format:%H:%M | %A %-d %b</convert>
 	</widget>
