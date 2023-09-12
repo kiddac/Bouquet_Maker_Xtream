@@ -4,7 +4,6 @@
 from . import _
 from . import globalfunctions as bmx
 from . import bouquet_globals as glob
-from . import parsem3u as parsem3u
 from .plugin import skin_directory, common_path, playlists_json, hasConcurrent, hasMultiprocessing, cfg
 from .bouquetStaticText import StaticText
 from Components.ActionMap import ActionMap
@@ -54,7 +53,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self["key_info"] = StaticText(_("Show Streams"))
 
         self["splash"] = Pixmap()
-        print("*** show splash 1 ***")
         self["splash"].show()
 
         self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
@@ -77,11 +75,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.player_api = glob.current_playlist["playlist_info"]["player_api"]
-
-            self.p_live_categories_url = str(self.player_api) + "&action=get_live_categories"
-            self.p_vod_categories_url = str(self.player_api) + "&action=get_vod_categories"
-            self.p_series_categories_url = str(self.player_api) + "&action=get_series_categories"
-
             self.p_live_streams_url = self.player_api + "&action=get_live_streams"
             self.p_vod_streams_url = self.player_api + "&action=get_vod_streams"
             self.p_series_streams_url = self.player_api + "&action=get_series"
@@ -172,22 +165,13 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         if glob.current_playlist["playlist_info"]["playlisttype"] != "local":
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                 if glob.current_playlist["settings"]["showlive"] is True:
-                    self.live_url_list.append([self.p_live_categories_url, 0, "json"])
                     self.live_url_list.append([self.p_live_streams_url, 3, "json"])
 
                 if glob.current_playlist["settings"]["showvod"] is True:
-                    self.vod_url_list.append([self.p_vod_categories_url, 1, "json"])
                     self.vod_url_list.append([self.p_vod_streams_url, 4, "json"])
 
                 if glob.current_playlist["settings"]["showseries"] is True:
-                    self.series_url_list.append([self.p_series_categories_url, 2, "json"])
                     self.series_url_list.append([self.p_series_streams_url, 5, "json"])
-
-            elif glob.current_playlist["playlist_info"]["playlisttype"] == "external":
-                self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
-                self.process_downloads("external")
-        else:
-            self.parse_m3u8_playlist()
 
         try:
             self["splash"].hide()
@@ -251,20 +235,12 @@ class BouquetMakerXtream_ChooseCategories(Screen):
             for category, response in results:
                 if response:
                     if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
-                        if category == 0:
-                            glob.current_playlist["data"]["live_categories"] = response
-                        elif category == 1:
-                            glob.current_playlist["data"]["vod_categories"] = response
-                        elif category == 2:
-                            glob.current_playlist["data"]["series_categories"] = response
-                        elif category == 3:
+                        if category == 3:
                             glob.current_playlist["data"]["live_streams"] = response
                         elif category == 4:
                             glob.current_playlist["data"]["vod_streams"] = response
                         elif category == 5:
                             glob.current_playlist["data"]["series_streams"] = response
-                    else:
-                        self.parse_m3u8_playlist(response)
 
         else:
             for url in self.url_list:
@@ -274,38 +250,16 @@ class BouquetMakerXtream_ChooseCategories(Screen):
                 if response:
                     if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                         # add categories to main json file
-                        if category == 0:
-                            glob.current_playlist["data"]["live_categories"] = response
-                        elif category == 1:
-                            glob.current_playlist["data"]["vod_categories"] = response
-                        elif category == 2:
-                            glob.current_playlist["data"]["series_categories"] = response
-                        elif category == 3:
+                        if category == 3:
                             glob.current_playlist["data"]["live_streams"] = response
                         elif category == 4:
                             glob.current_playlist["data"]["vod_streams"] = response
                         elif category == 5:
                             glob.current_playlist["data"]["series_streams"] = response
-                    else:
-                        self.parse_m3u8_playlist(response)
         try:
             self["splash"].hide()
         except:
             pass
-
-    def parse_m3u8_playlist(self, response=None):
-        # print("*** parse_m3u8_playlist ***")
-        self.live_streams, self.vod_streams, self.series_streams = parsem3u.parse_m3u8_playlist(response)
-        self.make_m3u8_categories_json()
-
-    def make_m3u8_categories_json(self):
-        # print("*** make_m3u8_categories_json  ***")
-        parsem3u.make_m3u8_categories_json(self.live_streams, self.vod_streams, self.series_streams)
-        self.make_m3u8_streams_json()
-
-    def make_m3u8_streams_json(self):
-        # print("*** make_m3u8_streams_json  ***")
-        parsem3u.make_m3u8_streams_json(self.live_streams, self.vod_streams, self.series_streams)
 
     def loadLive(self):
         # print("*** loadLive ***")
@@ -438,7 +392,6 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         category = self["list1"].getCurrent()[2]
 
         if self.level == 1:
-
             for channel in glob.current_playlist["data"]["live_streams"]:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
                     if channel["category_id"] == category:
