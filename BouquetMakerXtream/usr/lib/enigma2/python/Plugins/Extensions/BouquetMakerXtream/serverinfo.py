@@ -4,7 +4,7 @@
 from . import _
 from . import bouquet_globals as glob
 from .plugin import skin_directory, cfg
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.Label import Label
 from Components.ActionMap import ActionMap
@@ -15,7 +15,7 @@ import json
 import os
 
 
-class BouquetMakerXtream_UserInfo(Screen):
+class BMX_UserInfo(Screen):
     ALLOW_SUSPEND = True
 
     def __init__(self, session):
@@ -52,7 +52,7 @@ class BouquetMakerXtream_UserInfo(Screen):
         t_timezone = _("Timezone:")
         t_serveroffset = _("Server Offset:")
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "ok": self.quit,
             "cancel": self.quit,
             "red": self.quit,

@@ -4,7 +4,7 @@
 from . import _
 
 from .plugin import skin_path, version
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
@@ -13,7 +13,7 @@ from Screens.Screen import Screen
 import os
 
 
-class BouquetMakerXtream_About(Screen):
+class BMX_About(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -25,7 +25,7 @@ class BouquetMakerXtream_About(Screen):
 
         self.setup_title = _("About")
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "ok": self.quit,
             "green": self.quit,
             "red": self.quit,
@@ -42,7 +42,7 @@ class BouquetMakerXtream_About(Screen):
         self.setTitle(self.setup_title)
 
     def createSetup(self):
-        self.credit = _("BouqetMakerXtream ") + str(version) + " - KiddaC\n\n"
+        self.credit = _("BouquetMakerXtream ") + str(version) + " - KiddaC\n\n"
         self.credit += _("Support for this plugin and latest versions can be found on https://linuxsat-support.com\n\n")
         self.credit += _("Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \nPlay your files via your TV bouquets.\n\n")
         self.credit += _("Credits:\n")

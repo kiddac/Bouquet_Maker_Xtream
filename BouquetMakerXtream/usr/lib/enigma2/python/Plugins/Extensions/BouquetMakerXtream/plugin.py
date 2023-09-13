@@ -159,7 +159,7 @@ except Exception as e:
 
 def main(session, **kwargs):
     from . import mainmenu
-    session.open(mainmenu.BouquetMakerXtream_MainMenu)
+    session.open(mainmenu.BMX_MainMenu)
     return
 
 
@@ -172,7 +172,7 @@ def mainmenu(menu_id, **kwargs):
 
 def extensionsmenu(session, **kwargs):
     from . import mainmenu
-    session.open(mainmenu.BouquetMakerXtream_MainMenu)
+    session.open(mainmenu.BMX_MainMenu)
     return
 
 
@@ -232,7 +232,7 @@ class AutoStartTimer:
     def runUpdate(self):
         # print("\n *********** Updating BouquetMakerXtream Bouquets************ \n")
         from . import update
-        self.session.open(update.BouquetMakerXtream_Update, "auto")
+        self.session.open(update.BMX_Update, "auto")
         # update.BouquetMakerXtream_Update()
 
 

@@ -5,7 +5,7 @@ from . import _
 from . import globalfunctions as bmx
 from . import bouquet_globals as glob
 from .plugin import skin_directory, common_path, playlists_json, hasConcurrent, hasMultiprocessing, cfg
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 from Components.ActionMap import ActionMap
 from Components.Pixmap import Pixmap
 from Components.Sources.List import List
@@ -17,7 +17,7 @@ import os
 import json
 
 
-class BouquetMakerXtream_ChooseCategories(Screen):
+class BMX_ChooseCategories(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -55,7 +55,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self["splash"] = Pixmap()
         self["splash"].show()
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "ok": self.toggleSelection,
             "red": self.keyCancel,
             "cancel": self.keyCancel,
@@ -600,7 +600,7 @@ class BouquetMakerXtream_ChooseCategories(Screen):
     def save(self):
         self.updateJson()
         from . import buildbouquets
-        self.session.openWithCallback(self.exit, buildbouquets.BouquetMakerXtream_BuildBouquets)
+        self.session.openWithCallback(self.exit, buildbouquets.BMX_BuildBouquets)
 
     def exit(self, answer="none"):
         if glob.finished:

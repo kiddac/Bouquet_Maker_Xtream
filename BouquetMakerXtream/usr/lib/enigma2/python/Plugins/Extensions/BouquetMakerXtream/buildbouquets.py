@@ -26,7 +26,7 @@ import os
 import json
 
 
-class BouquetMakerXtream_BuildBouquets(Screen):
+class BMX_BuildBouquets(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)

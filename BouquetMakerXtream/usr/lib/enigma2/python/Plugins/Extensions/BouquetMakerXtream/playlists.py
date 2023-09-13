@@ -6,7 +6,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .plugin import skin_directory, playlists_json, hdr, playlist_file, cfg, common_path, version, hasConcurrent, hasMultiprocessing
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 
 from Components.ActionMap import ActionMap
@@ -41,7 +41,7 @@ if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
     epgimporter = True
 
 
-class BouquetMakerXtream_Playlists(Screen):
+class BMX_Playlists(Screen):
     ALLOW_SUSPEND = True
 
     def __init__(self, session):
@@ -68,7 +68,7 @@ class BouquetMakerXtream_Playlists(Screen):
         self["splash"] = Pixmap()
         self["splash"].show()
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "red": self.quit,
             "green": self.openBouquetSettings,
             "cancel": self.quit,
@@ -543,7 +543,7 @@ class BouquetMakerXtream_Playlists(Screen):
             if "user_info" in glob.current_playlist:
                 if "auth" in glob.current_playlist["user_info"]:
                     if glob.current_playlist["user_info"]["auth"] == 1:
-                        self.session.open(serverinfo.BouquetMakerXtream_UserInfo)
+                        self.session.open(serverinfo.BMX_UserInfo)
             else:
                 if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream" and glob.current_playlist["playlist_info"]["valid"] is False:
                     self.session.open(MessageBox, _("Url is invalid or playlist/user no longer authorised!"), MessageBox.TYPE_ERROR, timeout=5)
@@ -558,13 +558,13 @@ class BouquetMakerXtream_Playlists(Screen):
             if "user_info" in glob.current_playlist:
                 if "auth" in glob.current_playlist["user_info"]:
                     if glob.current_playlist["user_info"]["auth"] == 1 and glob.current_playlist["user_info"]["status"] == "Active":
-                        self.session.openWithCallback(self.exit, bouquetsettings.BouquetMakerXtream_BouquetSettings)
+                        self.session.openWithCallback(self.exit, bouquetsettings.BMX_BouquetSettings)
                         self.checkoneplaylist()
             else:
                 return
         else:
             if glob.current_playlist["playlist_info"]["valid"]:
-                self.session.openWithCallback(self.exit, bouquetsettings.BouquetMakerXtream_BouquetSettings)
+                self.session.openWithCallback(self.exit, bouquetsettings.BMX_BouquetSettings)
                 self.checkoneplaylist()
             else:
                 return

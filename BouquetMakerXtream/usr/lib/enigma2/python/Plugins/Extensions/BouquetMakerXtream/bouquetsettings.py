@@ -6,7 +6,7 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import parsem3u as parsem3u
 from .plugin import skin_directory, playlist_file, playlists_json, hasConcurrent, hasMultiprocessing, cfg, epgimporter
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
@@ -26,7 +26,7 @@ except:
     from urllib.parse import urlparse, parse_qs
 
 
-class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
+class BMX_BouquetSettings(ConfigListScreen, Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -58,7 +58,7 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         self["HelpWindow"] = Pixmap()
         self["HelpWindow"].hide()
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "cancel": self.cancel,
             "red": self.cancel,
             "green": self.save,
@@ -524,7 +524,7 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         self.clear_caches()
 
         from . import choosecategories
-        self.session.openWithCallback(self.exit, choosecategories.BouquetMakerXtream_ChooseCategories)
+        self.session.openWithCallback(self.exit, choosecategories.BMX_ChooseCategories)
 
     def exit(self, answer="none"):
         if glob.finished:

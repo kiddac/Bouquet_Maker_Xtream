@@ -3,7 +3,7 @@
 
 from . import _
 from .plugin import skin_directory, cfg
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
@@ -25,7 +25,7 @@ class ProtectedScreen:
             self.onFirstExecBegin.append(boundFunction(self.session.openWithCallback, self.pinEntered, PinInput, pinList=[cfg.adultpin.value], triesEntry=cfg.retries.adultpin, title=_("Please enter the correct pin code"), windowTitle=_("Enter pin code")))
 
     def isProtected(self):
-        return (config.plugins.BouquetMakerXtream.adult.value)
+        return (config.plugins.BMX.adult.value)
 
     def pinEntered(self, result):
         if result is None:
@@ -37,7 +37,7 @@ class ProtectedScreen:
         self.close(None)
 
 
-class BouquetMakerXtream_Settings(ConfigListScreen, Screen, ProtectedScreen):
+class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
     ALLOW_SUSPEND = True
 
     def __init__(self, session):
@@ -72,7 +72,7 @@ class BouquetMakerXtream_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self["HelpWindow"] = Pixmap()
         self["HelpWindow"].hide()
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "cancel": self.cancel,
             "red": self.cancel,
             "green": self.save,

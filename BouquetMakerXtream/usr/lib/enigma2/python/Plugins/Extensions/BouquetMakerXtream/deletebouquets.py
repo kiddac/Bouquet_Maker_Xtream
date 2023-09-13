@@ -6,7 +6,7 @@ from . import globalfunctions as bmx
 from . import bouquet_globals as glob
 
 from .plugin import skin_path, common_path, playlists_json, epgimporter, version
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -18,7 +18,7 @@ import json
 import os
 
 
-class BouquetMakerXtream_DeleteBouquets(Screen):
+class BMX_DeleteBouquets(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -44,7 +44,7 @@ class BouquetMakerXtream_DeleteBouquets(Screen):
 
         self.onLayoutFinish.append(self.__layoutFinished)
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "red": self.keyCancel,
             "green": self.deleteBouquets,
             "yellow": self.toggleAllSelection,

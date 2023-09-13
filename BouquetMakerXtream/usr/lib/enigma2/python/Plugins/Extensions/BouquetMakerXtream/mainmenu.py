@@ -6,7 +6,7 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import processfiles as pfiles
 from .plugin import skin_directory, common_path, version, pythonFull, cfg, playlists_json
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -20,11 +20,13 @@ import os
 import json
 
 
-class BouquetMakerXtream_MainMenu(Screen):
+class BMX_MainMenu(Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
+
+        glob.finished = False
 
         skin_path = os.path.join(skin_directory, cfg.skin.getValue())
 
@@ -42,7 +44,7 @@ class BouquetMakerXtream_MainMenu(Screen):
         self["key_green"] = StaticText(_("OK"))
         self["version"] = StaticText()
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "red": self.quit,
             "green": self.__next__,
             "ok": self.__next__,
@@ -59,7 +61,6 @@ class BouquetMakerXtream_MainMenu(Screen):
         self.setTitle(self.setup_title)
 
     def check_dependencies(self):
-
         try:
             if cfg.locationvalid.getValue() is False:
                 self.session.open(MessageBox, _("Playlists.txt location is invalid and has been reset."), type=MessageBox.TYPE_INFO, timeout=5)
@@ -100,12 +101,13 @@ class BouquetMakerXtream_MainMenu(Screen):
 
     def start(self, answer=None):
         if glob.finished:
+            glob.finished = False
             self.close()
-        else:
-            # print("*** mainmenu-processfiles start ***")
-            self.playlists_all = pfiles.processfiles()
-            # print("*** mainmenu-processfiles finished ***")
-            self.createSetup()
+
+        # print("*** mainmenu-processfiles start ***")
+        self.playlists_all = pfiles.processfiles()
+        # print("*** mainmenu-processfiles finished ***")
+        self.createSetup()
 
     def createSetup(self):
         self.list = []
@@ -136,23 +138,23 @@ class BouquetMakerXtream_MainMenu(Screen):
 
     def playlists(self):
         from . import playlists
-        self.session.openWithCallback(self.start, playlists.BouquetMakerXtream_Playlists)
+        self.session.openWithCallback(self.start, playlists.BMX_Playlists)
 
     def settings(self):
         from . import settings
-        self.session.openWithCallback(self.start, settings.BouquetMakerXtream_Settings)
+        self.session.openWithCallback(self.start, settings.BMX_Settings)
 
     def addServer(self):
         from . import server
-        self.session.openWithCallback(self.start, server.BouquetMakerXtream_AddServer)
+        self.session.openWithCallback(self.start, server.BMX_AddServer)
 
     def about(self):
         from . import about
-        self.session.openWithCallback(self.start, about.BouquetMakerXtream_About)
+        self.session.openWithCallback(self.start, about.BMX_About)
 
     def deleteSet(self):
         from . import deletebouquets
-        self.session.openWithCallback(self.start, deletebouquets.BouquetMakerXtream_DeleteBouquets)
+        self.session.openWithCallback(self.start, deletebouquets.BMX_DeleteBouquets)
 
     def deleteAll(self, answer=None):
         if answer is None:
@@ -189,13 +191,13 @@ class BouquetMakerXtream_MainMenu(Screen):
     def update(self):
         return
         from . import update
-        self.session.openWithCallback(self.createSetup, update.BouquetMakerXtream_Update, "manual")
+        self.session.openWithCallback(self.createSetup, update.BMX_Update, "manual")
         self.close()
 
     def __next__(self):
-        index = self["list"].getCurrent()[0]
-
         if self["list"].getCurrent():
+            index = self["list"].getCurrent()[0]
+
             if index == 1:
                 self.playlists()
             if index == 2:
@@ -213,7 +215,7 @@ class BouquetMakerXtream_MainMenu(Screen):
 
     def quit(self):
         glob.firstrun = 0
-        self.close(False)
+        self.close()
 
 
 def buildListEntry(index, title):

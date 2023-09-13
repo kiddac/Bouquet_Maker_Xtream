@@ -5,7 +5,7 @@ from . import _
 from . import globalfunctions as bmx
 
 from .plugin import skin_directory, playlist_file, hdr, cfg
-from .bouquetStaticText import StaticText
+from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
 from Components.ConfigList import ConfigListScreen
@@ -27,7 +27,7 @@ except:
 requests.packages.urllib3.disable_warnings()
 
 
-class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
+class BMX_AddServer(ConfigListScreen, Screen):
 
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -62,7 +62,7 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
         self.protocol = "http://"
         self.output = "ts"
 
-        self["actions"] = ActionMap(["BouquetMakerXtreamActions"], {
+        self["actions"] = ActionMap(["BMXActions"], {
             "cancel": self.cancel,
             "red": self.cancel,
             "green": self.save,
@@ -175,7 +175,6 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
         if self["config"].isChanged():
             if self.playlisttypeCfg.value == "standard":
                 self.name = self.nameCfg.value.strip()
-
                 protocol = self.protocolCfg.value
                 domain = self.serverCfg.value.strip().lower()
                 port = self.portCfg.value
@@ -187,7 +186,7 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
 
                 username = self.usernameCfg.value.strip()
                 password = self.passwordCfg.value.strip()
-                listtype = "external"
+                listtype = "m3u"
                 output = self.outputCfg.value
 
                 playlistline = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, listtype, output, self.name)
@@ -204,15 +203,15 @@ class BouquetMakerXtream_AddServer(ConfigListScreen, Screen):
 
                 valid = self.checkline(host)
 
+            # check url has response
+            if not valid:
+                self.session.open(MessageBox, _("Details are not valid or unauthorised"), type=MessageBox.TYPE_INFO, timeout=5)
+                return
+
             # check name is not blank
             if self.name is None or len(self.name) < 3:
                 self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
                 self.createSetup()
-                return
-
-            # check url has response
-            if not valid:
-                self.session.open(MessageBox, _("Details are not valid or unauthorised"), type=MessageBox.TYPE_INFO, timeout=5)
                 return
 
             # check name exists

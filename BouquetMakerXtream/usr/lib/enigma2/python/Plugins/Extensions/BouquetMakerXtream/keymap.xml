@@ -1,5 +1,5 @@
 <keymap>
-    <map context="BouquetMakerXtreamActions">
+    <map context="BMXActions">
         <key id="KEY_EXIT" mapto="cancel" flags="m" />
         <key id="KEY_ESC" mapto="cancel" flags="m" />
         <key id="KEY_BACK" mapto="cancel" flags="m" />
