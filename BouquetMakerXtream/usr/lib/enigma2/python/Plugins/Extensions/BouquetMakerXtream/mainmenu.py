@@ -99,10 +99,13 @@ class BouquetMakerXtream_MainMenu(Screen):
             self.start()
 
     def start(self, answer=None):
-        # print("*** mainmenu-processfiles start ***")
-        self.playlists_all = pfiles.processfiles()
-        # print("*** mainmenu-processfiles finished ***")
-        self.createSetup()
+        if glob.finished:
+            self.close()
+        else:
+            # print("*** mainmenu-processfiles start ***")
+            self.playlists_all = pfiles.processfiles()
+            # print("*** mainmenu-processfiles finished ***")
+            self.createSetup()
 
     def createSetup(self):
         self.list = []

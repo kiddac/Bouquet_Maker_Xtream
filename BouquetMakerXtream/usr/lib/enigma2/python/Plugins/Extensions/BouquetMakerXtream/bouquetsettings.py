@@ -14,6 +14,7 @@ from Components.config import getConfigListEntry, ConfigText, ConfigSelection, C
 from Components.Pixmap import Pixmap
 from Screens.Screen import Screen
 from enigma import eTimer
+from Screens.MessageBox import MessageBox
 
 import os
 import json
@@ -367,9 +368,9 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         return self["config"].getCurrent() and str(self["config"].getCurrent()[1].getText()) or ""
 
     def save(self):
+        # print("*** save ***")
         if self.list:
             if self.showliveCfg.value is False and self.showvodCfg.value is False and self.showseriesCfg.value is False:
-                from Screens.MessageBox import MessageBox
                 self.session.open(MessageBox, _("No bouquets selected."), MessageBox.TYPE_ERROR, timeout=5)
                 self.createSetup()
                 return
@@ -387,7 +388,6 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
                     self.host = "%s%s" % (self.protocol, self.domain)
 
             self.full_url = glob.current_playlist["playlist_info"]["full_url"]
-
             self.name = self.nameCfg.value.strip()
 
             # check name is not blank
@@ -399,6 +399,8 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
             # check name exists
             if self.playlists_all:
                 for playlists in self.playlists_all:
+                    if playlists["playlist_info"]["full_url"] == self.full_url:
+                        continue
                     if playlists["playlist_info"]["name"] == self.name:
                         self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
                         self.createSetup()
@@ -460,7 +462,6 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
                 with open(playlist_file, "r+") as f:
                     lines = f.readlines()
                     f.seek(0)
-                    exists = False
                     for line in lines:
                         hastimeshift = False
 
@@ -497,17 +498,12 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
                                     playlistline = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, self.listtype, output, self.name)
 
                                 line = str(playlistline) + "\n"
-                                exists = True
-                            f.write(line)
-
                         else:
                             if self.full_url in line:
                                 playlistline = "%s #%s" % (self.full_url, self.name)
-                                exists = True
-                            f.write(line)
+                                line = str(playlistline) + "\n"
 
-                    if exists is False:
-                        f.write("\n" + str(playlistline) + "\n")
+                        f.write(line)
 
             self.getPlaylistUserFile()
 
@@ -528,4 +524,8 @@ class BouquetMakerXtream_BouquetSettings(ConfigListScreen, Screen):
         self.clear_caches()
 
         from . import choosecategories
-        self.session.openWithCallback(self.close, choosecategories.BouquetMakerXtream_ChooseCategories)
+        self.session.openWithCallback(self.exit, choosecategories.BouquetMakerXtream_ChooseCategories)
+
+    def exit(self, answer="none"):
+        if glob.finished:
+            self.close(True)

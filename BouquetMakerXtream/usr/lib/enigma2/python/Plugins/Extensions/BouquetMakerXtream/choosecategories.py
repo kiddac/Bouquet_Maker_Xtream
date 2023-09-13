@@ -603,7 +603,8 @@ class BouquetMakerXtream_ChooseCategories(Screen):
         self.session.openWithCallback(self.exit, buildbouquets.BouquetMakerXtream_BuildBouquets)
 
     def exit(self, answer="none"):
-        self.close(True)
+        if glob.finished:
+            self.close(True)
 
     def updateJson(self, answer="none"):
         self.playlists_all = bmx.getPlaylistJson()

@@ -558,13 +558,13 @@ class BouquetMakerXtream_Playlists(Screen):
             if "user_info" in glob.current_playlist:
                 if "auth" in glob.current_playlist["user_info"]:
                     if glob.current_playlist["user_info"]["auth"] == 1 and glob.current_playlist["user_info"]["status"] == "Active":
-                        self.session.open(bouquetsettings.BouquetMakerXtream_BouquetSettings)
+                        self.session.openWithCallback(self.exit, bouquetsettings.BouquetMakerXtream_BouquetSettings)
                         self.checkoneplaylist()
             else:
                 return
         else:
             if glob.current_playlist["playlist_info"]["valid"]:
-                self.session.open(bouquetsettings.BouquetMakerXtream_BouquetSettings)
+                self.session.openWithCallback(self.exit, bouquetsettings.BouquetMakerXtream_BouquetSettings)
                 self.checkoneplaylist()
             else:
                 return
@@ -573,3 +573,8 @@ class BouquetMakerXtream_Playlists(Screen):
         # print("*** checkoneplaylist ***")
         if len(self.list) == 1 and cfg.skipplaylistsscreen.getValue() is True:
             self.quit()
+
+    def exit(self, answer="none"):
+        print("*** answer pl ***", answer)
+        if glob.finished:
+            self.close(True)

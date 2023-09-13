@@ -29,7 +29,6 @@ def refreshBouquets():
 
 
 def download_url(url, ext):
-    print("*** url ***", url)
     r = ""
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)

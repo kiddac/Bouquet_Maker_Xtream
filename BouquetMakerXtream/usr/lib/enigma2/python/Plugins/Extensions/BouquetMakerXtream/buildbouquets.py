@@ -869,8 +869,12 @@ class BouquetMakerXtream_BuildBouquets(Screen):
     def finished(self):
         # print("**** self finished ***")
         self.updateJson()
-        self.session.openWithCallback(self.close, MessageBox, str(self.totalcount) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=30)
+        self.session.openWithCallback(self.exit, MessageBox, str(self.totalcount) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=30)
         bmx.refreshBouquets()
+
+    def exit(self, answer="none"):
+        glob.finished = True
+        self.close(True)
 
     def updateJson(self):
         self.playlists_all = bmx.getPlaylistJson()
