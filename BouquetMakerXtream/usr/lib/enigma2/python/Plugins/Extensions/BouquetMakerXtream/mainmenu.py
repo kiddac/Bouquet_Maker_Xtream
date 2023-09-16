@@ -188,10 +188,9 @@ class BMX_MainMenu(Screen):
         return
 
     def update(self):
-        return
+        # return
         from . import update
         self.session.openWithCallback(self.createSetup, update.BMX_Update, "manual")
-        self.close()
 
     def __next__(self):
         if self["list"].getCurrent():

@@ -247,7 +247,6 @@ class BMX_Playlists(Screen):
 
         if hasConcurrent or hasMultiprocessing:
             if hasConcurrent:
-                # print("******* trying concurrent futures ******")
                 try:
                     from concurrent.futures import ThreadPoolExecutor
                     executor = ThreadPoolExecutor(max_workers=threads)
@@ -258,7 +257,6 @@ class BMX_Playlists(Screen):
                     print(e)
 
             elif hasMultiprocessing:
-                # print("********** trying multiprocessing threadpool *******")
                 try:
                     from multiprocessing.pool import ThreadPool
                     pool = ThreadPool(threads)
@@ -270,8 +268,6 @@ class BMX_Playlists(Screen):
 
             for index, response in results:
                 if response:
-                    # print("*** index ***", index)
-                    # print("*** response ***", response)
                     if self.playlists_all[index]["playlist_info"]["playlisttype"] == "xtream":
                         self.playlists_all[index].update(response)
                     self.playlists_all[index]["playlist_info"]["valid"] = True
@@ -281,7 +277,6 @@ class BMX_Playlists(Screen):
                     self.playlists_all[index]["playlist_info"]["valid"] = False
 
         else:
-            # print("********** trying sequential download *******")
             for url in self.url_list:
                 result = self.download_url(url)
                 index = result[0]
@@ -517,7 +512,6 @@ class BMX_Playlists(Screen):
         if data is None:
             self.session.openWithCallback(self.deleteEpgData, MessageBox, _("Delete providers EPG data?"))
         else:
-            # self["splash"].show()
             epglocation = str(cfg.epglocation.value)
             epgfolder = os.path.join(epglocation,  str(self.currentplaylist["playlist_info"]["name"]))
 
@@ -525,8 +519,6 @@ class BMX_Playlists(Screen):
                 shutil.rmtree(epgfolder)
             except:
                 pass
-            # self["splash"].show()
-            # self.start()
 
     def getCurrentEntry(self):
         # print("*** getCurrentEntry ***")

@@ -375,11 +375,7 @@ def processfiles():
         os.rename(os.path.join(cfg.locallocation.value, filename), os.path.join(cfg.locallocation.value, safeName))
 
     for filename in os.listdir(cfg.locallocation.value):
-        # print("**** filename ****", filename)
-        # playlist_data = {}
         if filename.endswith(".m3u") or filename.endswith(".m3u8"):
-
-            # print("**** file extension good ***")
             playlist_exists = False
             if playlists_all:
 
@@ -412,8 +408,6 @@ def processfiles():
                                 break
 
             if not playlist_exists:
-                # print("**** filename not exist ***", filename)
-
                 playlists_all.append({
                     "playlist_info": dict([
                         ("index", index),
@@ -461,7 +455,6 @@ def processfiles():
                 })
                 index += 1
 
-    # print("write new playlists.json file")
     with open(playlists_json, "w") as f:
         json.dump(playlists_all, f)
 

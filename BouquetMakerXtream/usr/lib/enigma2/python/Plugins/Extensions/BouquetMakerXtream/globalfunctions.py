@@ -60,7 +60,6 @@ def download_url_multi(url):
 
     category = url[1]
     ext = url[2]
-    # print("**** url ***", url)
     r = ""
     retries = 1
     adapter = HTTPAdapter(max_retries=retries)

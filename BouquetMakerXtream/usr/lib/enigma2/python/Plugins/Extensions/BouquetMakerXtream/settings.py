@@ -135,7 +135,6 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
             self.close()
 
     def initConfig(self):
-        # print("*** init config ***")
         # self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
         self.cfg_location = getConfigListEntry(_("playlists.txt location"), cfg.location)
         self.cfg_locallocation = getConfigListEntry(_("Local M3U File location"), cfg.locallocation)
@@ -199,7 +198,7 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
 
         if cfg.adult.value is True:
             self.list.append(self.cfg_adultpin)
-            
+
         self.list.append(self.cfg_autoclose)
 
         self.list.append(self.cfg_main)

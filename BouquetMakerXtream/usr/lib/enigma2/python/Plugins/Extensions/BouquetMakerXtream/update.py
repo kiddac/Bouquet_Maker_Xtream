@@ -5,7 +5,7 @@ from . import _
 from . import globalfunctions as bmx
 from . import bouquet_globals as glob
 from . import parsem3u as parsem3u
-from .plugin import skin_directory, playlists_json, hasConcurrent, hasMultiprocessing, cfg, epgimporter, pythonVer
+from .plugin import skin_directory, playlists_json, cfg, epgimporter, pythonVer, screenwidth
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
 from enigma import eTimer
@@ -26,24 +26,87 @@ import os
 import json
 
 
-class BMX_BuildBouquets(Screen):
+class BMX_Update(Screen):
 
-    def __init__(self, session):
+    def __init__(self, session, runtype):
         Screen.__init__(self, session)
         self.session = session
+        self.runtype = runtype
 
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
-        skin = os.path.join(skin_path, "progress.xml")
-        with open(skin, "r") as f:
-            self.skin = f.read()
+
+
+        if self.runtype == "manual":
+            skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+            skin = os.path.join(skin_path, "progress.xml")
+            with open(skin, "r") as f:
+                self.skin = f.read()
+        else:
+            skin = """
+                <screen name="Updater" position="0,0" size="1920,1080" backgroundColor="#ff000000" flags="wfNoBorder">
+                    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon.png" position="30,25" size="150,60" alphatest="blend" zPosition="4"  />
+                    <eLabel position="180,30" size="360,50" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
+                    <widget name="status" position="210,30" size="300,50" font="Regular;24" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
+                </screen>"""
+
+            if screenwidth.width() <= 1280:
+                skin = """
+                    <screen name="Updater" position="0,0" size="1280,720" backgroundColor="#ff000000" flags="wfNoBorder">
+                        <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon_sd.png" position="20,16" size="100,40" alphatest="blend" zPosition="4" />
+                        <eLabel position="120,20" size="240,32" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
+                        <widget name="status" position="140,20" size="200,32" font="Regular;16" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
+                    </screen>"""
+
+            self.skin = skin
 
         self.setup_title = (_("Building Bouquets"))
-
-        self.categories = []
 
         self["action"] = Label(_("Building Bouquets..."))
         self["status"] = Label("")
         self["progress"] = ProgressBar()
+
+        self.x = 0
+
+        self.playlists_all = bmx.getPlaylistJson()
+
+        if self.playlists_all:
+            self.bouquets = [item for item in self.playlists_all if item["playlist_info"]["bouquet"] is True]
+            self.bouquetslen = len(self.bouquets)
+
+        self.looptimer = eTimer()
+        try:
+            self.looptimer_conn = self.starttimer.timeout.connect(self.bouquet_loop)
+        except:
+            self.looptimer.callback.append(self.bouquet_loop)
+        self.looptimer.start(100, True)
+
+    def nextjob(self, actiontext, function):
+        self["action"].setText(actiontext)
+        self.timer = eTimer()
+        try:
+            self.timer_conn = self.timer.timeout.connect(function)
+        except:
+            self.timer.callback.append(function)
+        self.timer.start(50, True)
+
+    def loopPlaylists(self):
+        if self.x < self.bouquetslen:
+            self.bouquet_loop()
+        else:
+            if self.runtype == "manual":
+                self.session.openWithCallback(self.done, MessageBox, str(len(self.bouquets)) + _(" Providers IPTV Updated"), MessageBox.TYPE_INFO, timeout=5)
+            else:
+                self.done()
+
+    def bouquet_loop(self):
+        # print("*** bouquet_loop ***")
+
+        glob.current_playlist = self.bouquets[self.x]
+
+        self.categories = []
+
+        self.livecategoriesdownloaded = False
+        self.vodcategoriesdownloaded = False
+        self.seriescategoriesdownloaded = False
 
         self.bouquettv = False
         self.userbouquet = False
@@ -55,6 +118,8 @@ class BMX_BuildBouquets(Screen):
         self.progressvalue = 0
         self.progressrange = 0
 
+        self.safeName = bmx.safeName(glob.current_playlist["playlist_info"]["name"])
+
         if glob.current_playlist["settings"]["showlive"] is True and glob.current_playlist["data"]["live_categories"]:
             self.progressrange += 1
 
@@ -64,28 +129,13 @@ class BMX_BuildBouquets(Screen):
         if glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
             self.progressrange += 1
 
-        self.starttimer = eTimer()
-        try:
-            self.starttimer_conn = self.starttimer.timeout.connect(self.start)
-        except:
-            self.starttimer.callback.append(self.start)
-        self.starttimer.start(100, True)
-
-    def nextjob(self, actiontext, function):
-        self["action"].setText(actiontext)
-        self.timer = eTimer()
-        try:
-            self.timer_conn = self.timer.timeout.connect(function)
-        except:
-            self.timer.callback.append(function)
-        self.timer.start(50, True)
+        self["progress"].setRange((0, self.progressrange))
+        self["progress"].setValue(self.progressvalue)
+        self["status"].setText(_("Updating Playlist %d of %d") % (self.x + 1, self.bouquetslen))
+        self.start()
 
     def start(self):
         # print("*** start ***")
-        self["progress"].setRange((0, self.progressrange))
-        self["progress"].setValue(self.progressvalue)
-        self.safeName = bmx.safeName(glob.current_playlist["playlist_info"]["name"])
-        self.oldName = bmx.safeName(glob.old_name)
         self.nextjob(_("Loading playlist...") + str(self.safeName), self.delete_existing_refs)
 
     def delete_existing_refs(self):
@@ -105,14 +155,6 @@ class BMX_BuildBouquets(Screen):
                     continue
                 if "bouquetmakerxtream_" + str(self.safeName) + ".tv" in line:
                     continue
-                if "bouquetmakerxtream_live_" + str(self.oldName) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_vod_" + str(self.oldName) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_series_" + str(self.oldName) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_" + str(self.oldName) + ".tv" in line:
-                    continue
                 f.write(line)
 
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.safeName) + "_")
@@ -120,14 +162,8 @@ class BMX_BuildBouquets(Screen):
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.safeName) + "_")
         bmx.purge("/etc/enigma2", str(self.safeName) + str(".tv"))
 
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.oldName) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.oldName) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.oldName) + "_")
-        bmx.purge("/etc/enigma2", str(self.oldName) + str(".tv"))
-
         if epgimporter is True:
             bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.safeName))
-            bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.oldName))
 
         self.makeUrlList()
 
@@ -168,14 +204,20 @@ class BMX_BuildBouquets(Screen):
                 self.output = glob.current_playlist["playlist_info"]["output"]
 
                 if glob.current_playlist["settings"]["showlive"] is True and glob.current_playlist["data"]["live_categories"]:
+                    self.p_live_categories_url = str(self.player_api) + "&action=get_live_categories"
+                    self.live_url_list.append([self.p_live_categories_url, 0, "json"])
                     self.p_live_streams_url = self.player_api + "&action=get_live_streams"
                     self.live_url_list.append([self.p_live_streams_url, 3, "json"])
 
                 if glob.current_playlist["settings"]["showvod"] is True and glob.current_playlist["data"]["vod_categories"]:
+                    self.p_vod_categories_url = str(self.player_api) + "&action=get_vod_categories"
+                    self.vod_url_list.append([self.p_vod_categories_url, 1, "json"])
                     self.p_vod_streams_url = self.player_api + "&action=get_vod_streams"
                     self.vod_url_list.append([self.p_vod_streams_url, 4, "json"])
 
                 if glob.current_playlist["settings"]["showseries"] is True and glob.current_playlist["data"]["series_categories"]:
+                    self.p_series_categories_url = str(self.player_api) + "&action=get_series_categories"
+                    self.series_url_list.append([self.p_series_categories_url, 2, "json"])
                     self.p_series_streams_url = self.player_api + "&action=get_series"
                     self.series_url_list.append([self.p_series_streams_url, 5, "json"])
                     self.simple = str(self.host) + "/" + "get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=simple&output=" + str(self.output)
@@ -210,74 +252,42 @@ class BMX_BuildBouquets(Screen):
         if streamtype == "external":
             self.url_list = self.external_url_list
 
-        results = ""
+        for url in self.url_list:
+            result = bmx.download_url_multi(url)
+            category = result[0]
+            response = result[1]
 
-        threads = len(self.url_list)
-        if threads > 10:
-            threads = 10
-
-        if hasConcurrent or hasMultiprocessing:
-            if hasConcurrent:
-                try:
-                    from concurrent.futures import ThreadPoolExecutor
-                    executor = ThreadPoolExecutor(max_workers=threads)
-
-                    with executor:
-                        results = executor.map(bmx.download_url_multi, self.url_list)
-                except Exception as e:
-                    print(e)
-
-            elif hasMultiprocessing:
-                try:
-                    from multiprocessing.pool import ThreadPool
-                    pool = ThreadPool(threads)
-                    results = pool.imap_unordered(bmx.download_url_multi, self.url_list)
-                    pool.close()
-                    pool.join()
-                except Exception as e:
-                    print(e)
-
-            for category, response in results:
-                if response:
-                    if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
-                        if category == 3:
-                            glob.current_playlist["data"]["live_streams"] = response
-                            self.nextjob(_("Processing live data..."), self.loadLive)
-
-                        elif category == 4:
-                            glob.current_playlist["data"]["vod_streams"] = response
-                            self.nextjob(_("Processing VOD data..."), self.loadVod)
-                        elif category == 5:
-                            glob.current_playlist["data"]["series_streams"] = response
-                            self.nextjob(_("Processing series data..."), self.loadSeries)
-
-                    else:
-                        self.parse_m3u8_playlist(response)
+            if response:
+                if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
+                    if category == 0:
+                        glob.current_playlist["data"]["live_categories"] = response
+                        # self.nextjob(_("Processing live data..."), self.loadLive)
+                        self.livecategoriesdownloaded = True
+                    elif category == 1:
+                        glob.current_playlist["data"]["vod_categories"] = response
+                        # self.nextjob(_("Processing VOD data..."), self.loadVod)
+                        self.vodcategoriesdownloaded = True
+                    elif category == 2:
+                        glob.current_playlist["data"]["series_categories"] = response
+                        self.seriescategoriesdownloaded = True
+                        # self.nextjob(_("Processing series data..."), self.loadSeries)
+                    if category == 3:
+                        glob.current_playlist["data"]["live_streams"] = response
                         self.nextjob(_("Processing live data..."), self.loadLive)
 
-        else:
-            for url in self.url_list:
-                result = bmx.download_url_multi(url)
-                category = result[0]
-                response = result[1]
+                    elif category == 4:
+                        glob.current_playlist["data"]["vod_streams"] = response
+                        self.nextjob(_("Processing VOD data..."), self.loadVod)
 
-                if response:
-                    if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
-
-                        if category == 3:
-                            glob.current_playlist["data"]["live_streams"] = response
-                            self.nextjob(_("Processing live data..."), self.loadLive)
-
-                        elif category == 4:
-                            glob.current_playlist["data"]["vod_streams"] = response
-                            self.nextjob(_("Processing VOD data..."), self.loadVod)
-
-                        elif category == 5:
-                            glob.current_playlist["data"]["series_streams"] = response
-                            self.nextjob(_("Processing series data..."), self.loadSeries)
-                    else:
-                        self.parse_m3u8_playlist(response)
-                        self.nextjob(_("Processing m3u8 data..."), self.loadLive)
+                    elif category == 5:
+                        glob.current_playlist["data"]["series_streams"] = response
+                        self.nextjob(_("Processing series data..."), self.loadSeries)
+                else:
+                    self.parse_m3u8_playlist(response)
+                    self.livecategoriesdownloaded = True
+                    self.vodcategoriesdownloaded = True
+                    self.seriescategoriesdownloaded = True
+                    self.nextjob(_("Processing m3u8 data..."), self.loadLive)
 
     def loadLive(self):
         # print("*** loadlive ***")
@@ -863,14 +873,11 @@ class BMX_BuildBouquets(Screen):
     def finished(self):
         # print("**** self finished ***")
         self.updateJson()
-        bmx.refreshBouquets()
-        self.session.openWithCallback(self.exit, MessageBox, str(self.totalcount) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=30)
-
-    def exit(self, answer="none"):
-        glob.finished = True
-        self.close(True)
+        self.x += 1
+        self.loopPlaylists()
 
     def updateJson(self):
+        # print("*** updatejson ***")
         self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:
@@ -883,3 +890,7 @@ class BMX_BuildBouquets(Screen):
 
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
+
+    def done(self, answer=None):
+        bmx.refreshBouquets()
+        self.close()

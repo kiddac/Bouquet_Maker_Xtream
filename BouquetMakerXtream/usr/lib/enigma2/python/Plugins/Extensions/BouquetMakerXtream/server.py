@@ -244,7 +244,6 @@ class BMX_AddServer(ConfigListScreen, Screen):
 
     def checkline(self, url):
         valid = False
-        # print("*** url ***", url)
         r = ""
         adapter = HTTPAdapter(max_retries=0)
         http = requests.Session()

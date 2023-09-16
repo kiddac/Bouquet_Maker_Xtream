@@ -163,30 +163,17 @@ def make_m3u8_categories_json(live_streams, vod_streams, series_streams):
 
                 glob.current_playlist["data"]["vod_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
 
-    # print('*** glob.current_playlist["data"]["series_categories"] ***', glob.current_playlist["data"]["series_categories"])
-
     for x in series_streams:
-
-        # print("*** x ***", x)
-        # print(" *** glob ***", glob.current_playlist["data"]["series_categories"])
         if not glob.current_playlist["data"]["series_categories"]:
-            # print("*** adding first instance ***")
             glob.current_playlist["data"]["series_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
         else:
-            # print("*** not first instance ***")
             exists = False
             for category in glob.current_playlist["data"]["series_categories"]:
-                # print("**** category ***", category)
                 if category["category_name"] == str(x[2]):
-                    # print("*** already exists ***")
                     exists = True
                     break
             if not exists:
-                # print("****  does not exists **")
                 glob.current_playlist["data"]["series_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-
-    # print('*** glob.current_playlist["data"]["series_categories"] ***', glob.current_playlist["data"]["series_categories"])
-
 
 def make_m3u8_streams_json(live_streams, vod_streams, series_streams):
     glob.current_playlist["data"]["live_streams"] = []

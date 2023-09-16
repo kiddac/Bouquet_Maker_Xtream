@@ -43,7 +43,6 @@ with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version
 screenwidth = getDesktop(0).size()
 
 dir_etc = "/etc/enigma2/bouquetmakerxtream/"
-dir_tmp = "/tmp/bouquetmakerxtream/"
 dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
 
 if screenwidth.width() == 2560:
@@ -126,14 +125,6 @@ hdr = {"User-Agent": "Enigma2 - BouquetMakerXtream Plugin"}
 # create folder for working files
 if not os.path.exists(dir_etc):
     os.makedirs(dir_etc)
-
-# delete temporary folder and contents
-if os.path.exists(dir_tmp):
-    shutil.rmtree("/tmp/bouquetmakerxtream")
-
-# create temporary folder for downloaded files
-if not os.path.exists(dir_tmp):
-    os.makedirs(dir_tmp)
 
 # check if playlists.txt file exists in specified location
 if not os.path.isfile(playlist_file):
@@ -231,7 +222,7 @@ class AutoStartTimer:
         self.update(atLeast)
 
     def runUpdate(self):
-        # print("\n *********** Updating BouquetMakerXtream Bouquets************ \n")
+        print("\n *********** Updating BouquetMakerXtream Bouquets ************ \n")
         from . import update
         self.session.open(update.BMX_Update, "auto")
         # update.BouquetMakerXtream_Update()
@@ -265,11 +256,11 @@ def Plugins(**kwargs):
 
     extensions_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=extensionsmenu, needsRestart=True)
 
-    """
+
     result = [PluginDescriptor(name=pluginname, description=description, where=[PluginDescriptor.WHERE_AUTOSTART, PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
               PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_PLUGINMENU, icon=iconFile, fnc=main)]
-              """
-    result = [PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_PLUGINMENU, icon=iconFile, fnc=main)]
+
+    # result = [PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_PLUGINMENU, icon=iconFile, fnc=main)]
 
     result.append(extensions_menu)
 
