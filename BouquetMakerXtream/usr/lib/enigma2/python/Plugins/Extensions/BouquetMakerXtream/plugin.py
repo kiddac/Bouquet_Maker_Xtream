@@ -101,6 +101,7 @@ cfg.autoupdate = ConfigYesNo(default=False)
 cfg.groups = ConfigYesNo(default=False)
 cfg.locationvalid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
+cfg.autoclose = ConfigYesNo(default=False)
 
 skin_path = os.path.join(skin_directory, cfg.skin.value)
 common_path = os.path.join(skin_directory, "common/")

@@ -158,6 +158,7 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_catchupend = getConfigListEntry(_("Margin after catchup (mins)"), cfg.catchupend)
 
         self.cfg_groups = getConfigListEntry(_("Group bouquets into its own folder"), cfg.groups)
+        self.cfg_autoclose = getConfigListEntry(_("Exit plugin on bouquet creation"), cfg.autoclose)
 
         self.org_main = cfg.main.getValue()
         self.org_wakeup = cfg.wakeup.getValue()
@@ -198,6 +199,8 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
 
         if cfg.adult.value is True:
             self.list.append(self.cfg_adultpin)
+            
+        self.list.append(self.cfg_autoclose)
 
         self.list.append(self.cfg_main)
 

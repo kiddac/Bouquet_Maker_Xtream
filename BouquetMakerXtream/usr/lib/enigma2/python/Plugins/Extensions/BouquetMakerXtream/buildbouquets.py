@@ -345,7 +345,7 @@ class BMX_BuildBouquets(Screen):
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":1:" + str(format(self.unique_ref, "08x")) + ":0:0:0:"
 
                     if "custom_sid" in channel:
-                        if channel["custom_sid"] and channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None:
+                        if channel["custom_sid"] and channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
 
                             if channel["custom_sid"][0].isdigit():
                                 channel["custom_sid"] = channel["custom_sid"][1:]

@@ -450,7 +450,7 @@ class BMX_BouquetSettings(ConfigListScreen, Screen):
                 self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (self.host, self.username, self.password, self.listtype, self.output)
 
                 glob.current_playlist["playlist_info"]["full_url"] = self.full_url
-                if epgalternativeurl:
+                if epgalternative and epgalternativeurl:
                     glob.current_playlist["playlist_info"]["xmltv_api"] = epgalternativeurl
 
             if glob.current_playlist["playlist_info"]["playlisttype"] != "local":

@@ -100,8 +100,7 @@ class BMX_MainMenu(Screen):
             self.start()
 
     def start(self, answer=None):
-        if glob.finished:
-            glob.finished = False
+        if glob.finished and cfg.autoclose.getValue() is True:
             self.close()
 
         # print("*** mainmenu-processfiles start ***")

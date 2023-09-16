@@ -575,6 +575,5 @@ class BMX_Playlists(Screen):
             self.quit()
 
     def exit(self, answer="none"):
-        print("*** answer pl ***", answer)
-        if glob.finished:
+        if glob.finished and cfg.autoclose.getValue() is True:
             self.close(True)
