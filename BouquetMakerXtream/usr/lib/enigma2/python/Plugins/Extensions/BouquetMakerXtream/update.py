@@ -74,7 +74,7 @@ class BMX_Update(Screen):
 
         self.looptimer = eTimer()
         try:
-            self.looptimer_conn = self.starttimer.timeout.connect(self.bouquet_loop)
+            self.looptimer_conn = self.looptimer.timeout.connect(self.bouquet_loop)
         except:
             self.looptimer.callback.append(self.bouquet_loop)
         self.looptimer.start(100, True)
