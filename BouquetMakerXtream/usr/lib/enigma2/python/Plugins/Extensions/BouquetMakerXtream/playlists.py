@@ -566,6 +566,6 @@ class BMX_Playlists(Screen):
         if len(self.list) == 1 and cfg.skipplaylistsscreen.getValue() is True:
             self.quit()
 
-    def exit(self, answer="none"):
+    def exit(self, answer=None):
         if glob.finished and cfg.autoclose.getValue() is True:
             self.close(True)
