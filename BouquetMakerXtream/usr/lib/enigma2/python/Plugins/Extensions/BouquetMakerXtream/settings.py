@@ -119,7 +119,8 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
                 cfg.save()
                 configfile.save()
 
-                if self.org_main != cfg.main.getValue() or self.org_wakeup != cfg.wakeup.getValue() or self.location != cfg.location.getValue() or self.locallocation != cfg.locallocation.getValue():
+                if self.org_main != cfg.main.getValue() or self.org_wakeup != cfg.wakeup.getValue() or self.location != cfg.location.getValue() \
+                        or self.locallocation != cfg.locallocation.getValue() or self.org_autoupdate != cfg.autoupdate.getValue():
                     self.changedFinished()
             self.clear_caches()
             self.close()
@@ -136,20 +137,20 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
 
     def initConfig(self):
         # self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
-        self.cfg_location = getConfigListEntry(_("playlists.txt location"), cfg.location)
-        self.cfg_locallocation = getConfigListEntry(_("Local M3U File location"), cfg.locallocation)
-        self.cfg_position = getConfigListEntry(_("Bouquet placement"), cfg.position)
+        self.cfg_location = getConfigListEntry(_("playlists.txt location") + (" *Restart GUI Required"), cfg.location)
+        self.cfg_locallocation = getConfigListEntry(_("Local M3U File location") + (" *Restart GUI Required"), cfg.locallocation)
+        # self.cfg_position = getConfigListEntry(_("Bouquet placement"), cfg.position)
         # self.cfg_timeout = getConfigListEntry(_("Server timeout (seconds)"), cfg.timeout)
         self.cfg_livetype = getConfigListEntry(_("Default LIVE stream type"), cfg.livetype)
         self.cfg_vodtype = getConfigListEntry(_("Default VOD/SERIES stream type"), cfg.vodtype)
         self.cfg_adult = getConfigListEntry(_("BouquetMakerXtream parental control"), cfg.adult)
         self.cfg_adultpin = getConfigListEntry(_("BouquetMakerXtream parental pin"), cfg.adultpin)
-        self.cfg_main = getConfigListEntry(_("Show in main menu"), cfg.main)
+        self.cfg_main = getConfigListEntry(_("Show in main menu") + _(" *Restart GUI Required"), cfg.main)
 
         self.cfg_skipplaylistsscreen = getConfigListEntry(_("Skip playlist selection screen if only 1 playlist"), cfg.skipplaylistsscreen)
 
         self.cfg_autoupdate = getConfigListEntry(_("Automatic live bouquet update"), cfg.autoupdate)
-        self.cfg_wakeup = getConfigListEntry(_("Automatic live update start time"), cfg.wakeup)
+        self.cfg_wakeup = getConfigListEntry(_("Automatic EPG download time") + (" *Restart GUI Required"), cfg.wakeup)
 
         self.cfg_catchup = getConfigListEntry(_("Prefix Catchup channels"), cfg.catchup)
         self.cfg_catchupprefix = getConfigListEntry(_("Select Catchup prefix symbol"), cfg.catchupprefix)
@@ -161,11 +162,9 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
 
         self.org_main = cfg.main.getValue()
         self.org_wakeup = cfg.wakeup.getValue()
-
-        self.org_main = cfg.main.getValue()
-        self.org_wakeup = cfg.wakeup.getValue()
         self.location = cfg.location.getValue()
         self.locallocation = cfg.location.getValue()
+        self.org_autoupdate = cfg.autoupdate.getValue()
 
         self.createSetup()
 
