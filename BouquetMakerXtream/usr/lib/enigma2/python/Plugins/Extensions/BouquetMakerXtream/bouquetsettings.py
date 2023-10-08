@@ -263,13 +263,10 @@ class BMX_BouquetSettings(ConfigListScreen, Screen):
             self.epgoffset = glob.current_playlist["settings"]["epgoffset"]
             self.epgalternative = glob.current_playlist["settings"]["epgalternative"]
             self.epgalternativeurl = glob.current_playlist["settings"]["epgalternativeurl"]
-            self.directsource = glob.current_playlist["settings"]["directsource"]
-
             self.outputCfg = NoSave(ConfigSelection(default=self.output, choices=[("ts", "ts"), ("m3u8", "m3u8")]))
             self.epgoffsetCfg = NoSave(ConfigSelectionNumber(-9, 9, 1, default=self.epgoffset, wraparound=True))
             self.epgalternativeCfg = NoSave(ConfigYesNo(default=self.epgalternative))
             self.epgalternativeurlCfg = NoSave(ConfigText(default=self.epgalternativeurl, fixed_size=False))
-            self.directsourceCfg = NoSave(ConfigSelection(default=self.directsource, choices=[("Standard", "Standard"), ("Direct Source", "Direct Source")]))
 
         self.createSetup()
 
@@ -303,7 +300,6 @@ class BMX_BouquetSettings(ConfigListScreen, Screen):
 
         if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
             self.list.append(getConfigListEntry(_("Output:"), self.outputCfg))
-            self.list.append(getConfigListEntry(_("Stream Source URL:"), self.directsourceCfg))
 
             if self.showliveCfg.value is True and epgimporter is True:
                 self.list.append(getConfigListEntry(_("EPG offset:"), self.epgoffsetCfg))
@@ -438,13 +434,11 @@ class BMX_BouquetSettings(ConfigListScreen, Screen):
                 epgoffset = int(self.epgoffsetCfg.value)
                 epgalternative = self.epgalternativeCfg.value
                 epgalternativeurl = self.epgalternativeurlCfg.value
-                directsource = self.directsourceCfg.value
 
                 glob.current_playlist["playlist_info"]["output"] = output
                 glob.current_playlist["settings"]["epgoffset"] = epgoffset
                 glob.current_playlist["settings"]["epgalternative"] = epgalternative
                 glob.current_playlist["settings"]["epgalternativeurl"] = epgalternativeurl
-                glob.current_playlist["settings"]["directsource"] = directsource
 
                 playlistline = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (self.host, self.username, self.password, self.listtype, output, epgoffset, self.name)
                 self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (self.host, self.username, self.password, self.listtype, self.output)
@@ -526,6 +520,6 @@ class BMX_BouquetSettings(ConfigListScreen, Screen):
         from . import choosecategories
         self.session.openWithCallback(self.exit, choosecategories.BMX_ChooseCategories)
 
-    def exit(self, answer="none"):
+    def exit(self, answer=None):
         if glob.finished:
             self.close(True)
