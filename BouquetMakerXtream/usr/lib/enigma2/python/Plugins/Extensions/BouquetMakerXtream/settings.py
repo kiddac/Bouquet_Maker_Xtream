@@ -25,7 +25,7 @@ class ProtectedScreen:
             self.onFirstExecBegin.append(boundFunction(self.session.openWithCallback, self.pinEntered, PinInput, pinList=[cfg.adultpin.value], triesEntry=cfg.retries.adultpin, title=_("Please enter the correct pin code"), windowTitle=_("Enter pin code")))
 
     def isProtected(self):
-        return (config.plugins.BMX.adult.value)
+        return (config.plugins.BouquetMakerXtream.adult.value)
 
     def pinEntered(self, result):
         if result is None:
