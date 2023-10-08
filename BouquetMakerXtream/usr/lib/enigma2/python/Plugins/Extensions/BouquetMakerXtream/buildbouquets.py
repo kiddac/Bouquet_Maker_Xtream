@@ -592,7 +592,6 @@ class BMX_BuildBouquets(Screen):
                     self.nextjob(_("Building EPG Source File..."), self.build_xmltv_source)
                 else:
                     self.finished()
-                    return
 
         if self.seriescategories and self.seriesstreams:
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
@@ -864,9 +863,9 @@ class BMX_BuildBouquets(Screen):
         # print("**** self finished ***")
         self.updateJson()
         bmx.refreshBouquets()
-        self.session.openWithCallback(self.exit, MessageBox, str(self.totalcount) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=30)
+        self.session.openWithCallback(self.exit, MessageBox, str(self.totalcount) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=10)
 
-    def exit(self, answer="none"):
+    def exit(self, answer=None):
         glob.finished = True
         self.close(True)
 
