@@ -602,11 +602,11 @@ class BMX_ChooseCategories(Screen):
         from . import buildbouquets
         self.session.openWithCallback(self.exit, buildbouquets.BMX_BuildBouquets)
 
-    def exit(self, answer="none"):
+    def exit(self, answer=None):
         if glob.finished:
             self.close(True)
 
-    def updateJson(self, answer="none"):
+    def updateJson(self, answer=None):
         self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:
