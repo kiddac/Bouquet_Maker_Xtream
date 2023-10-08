@@ -33,8 +33,6 @@ class BMX_Update(Screen):
         self.session = session
         self.runtype = runtype
 
-
-
         if self.runtype == "manual":
             skin_path = os.path.join(skin_directory, cfg.skin.getValue())
             skin = os.path.join(skin_path, "progress.xml")
@@ -194,8 +192,6 @@ class BMX_Update(Screen):
                 self.unique_ref += value
 
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
-
-                self.get_api = str(glob.current_playlist["playlist_info"]["full_url"])
                 self.player_api = str(glob.current_playlist["playlist_info"]["player_api"])
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
 
