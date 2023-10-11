@@ -2,14 +2,27 @@
 # -*- coding: utf-8 -*-
 
 from . import _
+from . import bouquet_globals as glob
+
+from Components.ActionMap import HelpableActionMap
 from Components.config import config, ConfigSubsection, ConfigSelection, ConfigDirectory, ConfigYesNo, ConfigSelectionNumber, ConfigClock, ConfigPIN, ConfigInteger
-from enigma import eTimer, getDesktop, addFont
+from enigma import eTimer, getDesktop, addFont, eServiceReference
 from Plugins.Plugin import PluginDescriptor
+from requests.adapters import HTTPAdapter, Retry
+from Screens.ChannelSelection import ChannelSelectionBase
+from ServiceReference import ServiceReference
 
 import os
 import shutil
+import re
+import requests
 import sys
 import twisted.python.runtime
+
+try:
+    from urlparse import urljoin
+except:
+    from urllib.parse import urljoin
 
 try:
     from multiprocessing.pool import ThreadPool
@@ -225,23 +238,145 @@ class AutoStartTimer:
         print("\n *********** Updating BouquetMakerXtream Bouquets ************ \n")
         from . import update
         self.session.open(update.BMX_Update, "auto")
-        # update.BouquetMakerXtream_Update()
 
 
 def autostart(reason, session=None, **kwargs):
+    if session is not None:
+        global BMXChannelSelectionBase__init__
+        BMXChannelSelectionBase__init__ = ChannelSelectionBase.__init__
+        ChannelSelectionBase.__init__ = MyChannelSelectionBase__init__
+        ChannelSelectionBase.showBmxCatchup = showBMXCatchup
+        ChannelSelectionBase.playOriginalChannel = playOriginalChannel
+
     global autoStartTimer
     if reason == 0:
         if session is not None:
             if autoStartTimer is None:
                 autoStartTimer = AutoStartTimer(session)
+    print("*** return 1 ***")
     return
+
+
+def MyChannelSelectionBase__init__(self, session):
+    BMXChannelSelectionBase__init__(self, session)
+    self["BmxCatchupAction"] = HelpableActionMap(self, "BMXCatchupActions", {
+        "catchup": self.showBmxCatchup,
+    })
+
+
+def showBMXCatchup(self):
+    try:
+        global originalref
+        global originalrefstring
+        originalref = self.session.nav.getCurrentlyPlayingServiceReference()
+        originalrefstring = originalref.toString()
+    except:
+        pass
+
+    selectedref = self["list"].getCurrent()
+    selectedrefstring = selectedref.toString()
+
+    glob.currentref = ServiceReference(selectedref)
+
+    path = str(selectedref.getPath())
+
+    if "http" not in path:
+        return
+
+    glob.name = glob.currentref.getServiceName()
+
+    isCatchupChannel = False
+    self.refurl = ""
+    self.refstream = ""
+    self.refstreamnum = ""
+    self.username = ""
+    self.password = ""
+    self.domain = ""
+    self.error_message = ""
+    self.isCatchupChannel = False
+
+    self.originalpath = ServiceReference(originalref).getPath()
+    self.refurl = glob.currentref.getPath()
+
+    # http://domain.xyx:0000/live/user/pass/12345.ts
+
+    if "/live/" not in self.refurl:
+        return
+
+    self.refstream = self.refurl.split("/")[-1]
+    # 12345.ts
+
+    self.refstreamnum = int(self.refstream.split(".")[0])
+    # 12345
+
+    # get domain, username, password from path
+    match1 = False
+    if re.search(r"(https|http):\/\/[^\/]+\/(live|movie|series)\/[^\/]+\/[^\/]+\/\d+(\.m3u8|\.ts|$)", self.refurl) is not None:
+        match1 = True
+
+    match2 = False
+    if re.search(r"(https|http):\/\/[^\/]+\/[^\/]+\/[^\/]+\/\d+(\.m3u8|\.ts|$)", self.refurl) is not None:
+        match2 = True
+
+    if match1:
+        self.username = re.search(r"[^\/]+(?=\/[^\/]+\/\d+\.)", self.refurl).group()
+        self.password = re.search(r"[^\/]+(?=\/\d+\.)", self.refurl).group()
+        self.domain = re.search(r"(https|http):\/\/[^\/]+", self.refurl).group()
+
+    elif match2:
+        self.username = re.search(r"[^\/]+(?=\/[^\/]+\/[^\/]+$)", self.refurl).group()
+        self.password = re.search(r"[^\/]+(?=\/[^\/]+$)", self.refurl).group()
+        self.domain = re.search(r"(https|http):\/\/[^\/]+", self.refurl).group()
+
+    self.getLiveStreams = "%s/player_api.php?username=%s&password=%s&action=get_live_streams" % (self.domain, self.username, self.password)
+    retries = Retry(total=1, backoff_factor=1)
+    adapter = HTTPAdapter(max_retries=retries)
+    http = requests.Session()
+    http.mount("http://", adapter)
+    http.mount("https://", adapter)
+    response = ""
+
+    try:
+        r = http.get(self.getLiveStreams, headers=hdr, timeout=10, verify=False)
+        r.raise_for_status()
+        if r.status_code == requests.codes.ok:
+            try:
+                response = r.json()
+            except Exception as e:
+                print(e)
+
+    except Exception as e:
+        print(e)
+
+    if response:
+        liveStreams = response
+
+        isCatchupChannel = False
+        for channel in liveStreams:
+            if channel["stream_id"] == self.refstreamnum:
+                if int(channel["tv_archive"]) == 1:
+                    isCatchupChannel = True
+                    break
+
+    if liveStreams and isCatchupChannel:
+        from . import catchup
+
+        if (originalrefstring == selectedrefstring) or (urljoin(self.originalpath, '/') == urljoin(self.refurl, '/')):
+            self.session.nav.stopService()
+            self.session.openWithCallback(self.playOriginalChannel, catchup.BMX_Catchup)
+        else:
+            self.session.open(catchup.BMX_Catchup)
+
+
+def playOriginalChannel(self, answer=None):
+    self.session.nav.playService(eServiceReference(originalrefstring))
 
 
 def Plugins(**kwargs):
     addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
     addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
-    addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bouquetregular", 100, 0)
-    addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bouquetbold", 100, 0)
+    addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
+    addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
     addFont(os.path.join(font_folder, "MavenPro-Regular.ttf"), "onyxregular", 100, 0)
     addFont(os.path.join(font_folder, "MavenPro-Medium.ttf"), "onyxbold", 100, 0)
     addFont(os.path.join(font_folder, "VSkin-Light.ttf"), "vskinregular", 100, 0)

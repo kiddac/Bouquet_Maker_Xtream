@@ -67,5 +67,7 @@
         <key id="KEY_VIDEO" mapto="catchup" flags="m"/>
         <key id="KEY_FILE" mapto="catchup" flags="b"/>
         <key id="KEY_FAVORITES" mapto="catchup" flags="b"/> 
+        <key id="KEY_EXIT" mapto="cancel" flags="m" />
+        <key id="KEY_RED" mapto="red" flags="m"/>
     </map>
 </keymap>
