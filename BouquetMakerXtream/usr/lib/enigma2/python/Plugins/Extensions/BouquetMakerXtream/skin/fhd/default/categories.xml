@@ -31,19 +31,7 @@
 			}
 				</convert>
 	</widget>
-	<!--
-	<widget source="list3" render="Listbox" position="1300,210" size="560,780" foregroundColor="#ffffff" backgroundColor="#050000" foregroundColorSelected="#ffffff" backgroundColorSelected="#710032" scrollbarMode="showOnDemand" itemHeight="60" enableWrapAround="1" transparent="1" zPosition="3">
-		<convert type="TemplatedMultiContent">{"template": [
-			MultiContentEntryPixmapAlphaBlend(pos = (18, 12), size = (38, 36), png = 0),
-				MultiContentEntryText(pos = (69,0), size = (491, 60), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT|RT_VALIGN_CENTER, text = 1),
-			],
-			"fonts": [gFont("bmxregular", 27)],
-			"itemHeight": 60,
-			"scrollbarMode": "showOnDemand"
-			}
-				</convert>
-	</widget>
-	-->
+
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/button-bg.png" position="0,1020" size="1920,60" alphatest="blend" zPosition="1"/>
 	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_red.png" position="510,1031" size="38,38" alphatest="blend" zPosition="2" />
 	<widget source="key_red" render="Label" position="571,1020" size="165,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2" />
@@ -56,11 +44,6 @@
 
 	<widget source="key_blue" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_blue.png" position="1338,1031" size="38,38" alphatest="blend" zPosition="2" />
 	<widget source="key_blue" render="Label" position="1389,1020" size="165,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2" />
-	<!--
-	<widget source="key_info" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/XStreamity/skin/fhd/common/key_menu.png" position="1404,1031" size="38,38" alphatest="blend" zPosition="2">
-		<convert type="ConditionalShowHide"/>
-	</widget>
-	<widget source="key_info" render="Label" position="1465,1020" size="225,60" font="xstreamityregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" zPosition="2"/>
-	-->
+
 </screen>
 

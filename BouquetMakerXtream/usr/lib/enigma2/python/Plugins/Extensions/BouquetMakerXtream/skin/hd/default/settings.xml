@@ -7,7 +7,7 @@
 	<widget source="Title" render="Label" position="center,140" size="1280,46" foregroundColor="#ffffff" backgroundColor="#050000" halign="center" font="bmxregular;32" transparent="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/panel-wide.png" position="center,200" size="1120,440" alphatest="blend" zPosition="1" />
 
-	<widget name="config" textOffset="12,0" position="center,220" size="1080,400" font="bmxregular;18" secondfont="bmxregular;12" foregroundColor="#ffffff" backgroundColor="#050000" foregroundColorSelected="#ffffff" backgroundColorSelected="#710032" itemHeight="40" scrollbarMode="showOnDemand" scrollbarSliderBorderWidth="1" scrollbarWidth="6" enableWrapAround="1" transparent="1" zPosition="2" />
+	<widget name="config" textOffset="12,0" position="center,220" size="1080,400" font="bmxregular;18" secondfont="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#050000" foregroundColorSelected="#ffffff" backgroundColorSelected="#710032" itemHeight="40" scrollbarMode="showOnDemand" scrollbarSliderBorderWidth="1" scrollbarWidth="6" enableWrapAround="1" transparent="1" zPosition="2" />
 	
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,258" size="1080,2" alphatest="blend" zPosition="1" />
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,298" size="1080,2" alphatest="blend" zPosition="1" />
