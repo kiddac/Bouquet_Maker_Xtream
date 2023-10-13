@@ -1,0 +1,33 @@
+<screen name="BouquetMakerXtreamSettings" position="0,0" size="1280,720" flags="wfNoBorder" backgroundColor="#ff000000">
+	<eLabel position="0,0" size="1280,60" backgroundColor="#1a000000" zPosition="-1"/>
+	<eLabel position="0,60" size="1280,1" backgroundColor="#ffffff" zPosition="-1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/logo_hz.png" position="0,0" size="200,60" alphatest="blend" zPosition="2"/>
+	<widget source="Title" render="Label" position="202,0" size="1280,60" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" halign="left" font="bmxregular;24" transparent="1"/>
+	<widget source="global.CurrentTime" render="Label" position="860,0" size="400,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#ff000000" valign="center" halign="right" transparent="1" zPosition="1">
+		<convert type="ClockToText">Format:%H:%M | %A %-d %b</convert>
+	</widget>
+	<eLabel position="0,61" size="1280,618" backgroundColor="#1a242b34" zPosition="-1"/>
+	<widget name="config" position="center,74" size="1080,600" foregroundColor="#ffffff" backgroundColor="#1a242b34" foregroundColorSelected="#ffffff" backgroundColorSelected="#1a000000" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/haze/images/menu-select.png" itemHeight="40" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="0" zPosition="2"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,112" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,152" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,192" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,232" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,272" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,312" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,352" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,392" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,432" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,472" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,512" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,552" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,592" size="1080,2" alphatest="blend" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,632" size="1080,2" alphatest="blend" zPosition="1"/>
+	<eLabel position="0,679" size="1280,1" backgroundColor="#ffffff" zPosition="-1"/>
+	<eLabel position="0,680" size="1280,40" backgroundColor="#1a000000" zPosition="-1"/>
+	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_red.png" position="500,687" size="25,25" alphatest="blend" zPosition="2"/>
+	<widget source="key_red" render="Label" position="534,680" size="160,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="key_green" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_green.png" position="700,687" size="25,25" alphatest="blend" zPosition="2"/>
+	<widget source="key_green" render="Label" position="734,680" size="160,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	<widget name="VKeyIcon" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_text.png" position="881,687" size="25,25" alphatest="blend" transparent="1" zPosition="2"/>
+	<widget name="HelpWindow" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/vkey_icon.png" position="0,0" zPosition="1" size="1280,720" transparent="1" alphatest="on"/>
+</screen>

@@ -97,8 +97,9 @@ cfg.main = ConfigYesNo(default=True)
 cfg.skin = ConfigSelection(default="default", choices=folders)
 cfg.parental = ConfigYesNo(default=False)
 cfg.timeout = ConfigSelectionNumber(1, 20, 1, default=10, wraparound=True)
-cfg.catchup = ConfigYesNo(default=False)
-cfg.catchupprefix = ConfigSelection(default="~", choices=[("~", "~"), ("!", "!"), ("#", "#"), ("-", "-"), ("<", "<"), ("^", "^")])
+cfg.catchupon = ConfigYesNo(default=False)
+cfg.catchup = ConfigYesNo(default=True)
+cfg.catchupprefix = ConfigSelection(default="~", choices=[("~", "~"), ("!", "!"), ("#", "#"), ("-", "-"), ("^", "^")])
 cfg.catchupstart = ConfigSelectionNumber(0, 30, 1, default=0, wraparound=True)
 cfg.catchupend = ConfigSelectionNumber(0, 30, 1, default=0, wraparound=True)
 cfg.skipplaylistsscreen = ConfigYesNo(default=False)
@@ -241,12 +242,13 @@ class AutoStartTimer:
 
 
 def autostart(reason, session=None, **kwargs):
-    if session is not None:
-        global BMXChannelSelectionBase__init__
-        BMXChannelSelectionBase__init__ = ChannelSelectionBase.__init__
-        ChannelSelectionBase.__init__ = MyChannelSelectionBase__init__
-        ChannelSelectionBase.showBmxCatchup = showBMXCatchup
-        ChannelSelectionBase.playOriginalChannel = playOriginalChannel
+    if cfg.catchupon.getValue() is True:
+        if session is not None:
+            global BMXChannelSelectionBase__init__
+            BMXChannelSelectionBase__init__ = ChannelSelectionBase.__init__
+            ChannelSelectionBase.__init__ = MyChannelSelectionBase__init__
+            ChannelSelectionBase.showBmxCatchup = showBMXCatchup
+            ChannelSelectionBase.playOriginalChannel = playOriginalChannel
 
     global autoStartTimer
     if reason == 0:

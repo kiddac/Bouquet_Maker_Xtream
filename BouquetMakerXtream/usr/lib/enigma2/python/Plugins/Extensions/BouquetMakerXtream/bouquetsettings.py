@@ -302,7 +302,7 @@ class BMX_BouquetSettings(ConfigListScreen, Screen):
             self.list.append(getConfigListEntry(_("Output:"), self.outputCfg))
 
             if self.showliveCfg.value is True and epgimporter is True:
-                self.list.append(getConfigListEntry(_("EPG offset:"), self.epgoffsetCfg))
+                # self.list.append(getConfigListEntry(_("EPG offset:"), self.epgoffsetCfg))
                 self.list.append(getConfigListEntry(_("Use alternative EPG url:"), self.epgalternativeCfg))
                 if self.epgalternativeCfg.value is True:
                     self.list.append(getConfigListEntry(_("Alternative EPG url:"), self.epgalternativeurlCfg))

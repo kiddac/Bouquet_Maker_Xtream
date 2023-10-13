@@ -1,0 +1,33 @@
+<screen name="bouquetMakerXtreamBouquets" position="0,0" size="1920,1080" flags="wfNoBorder" backgroundColor="#ff000000">
+	<eLabel position="0,0" size="1920,90" backgroundColor="#1a000000" zPosition="-1"/>
+	<eLabel position="0,91" size="1920,1" backgroundColor="#ffffff" zPosition="-1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/logo_hz.png" position="0,0" size="300,90" alphatest="blend" zPosition="2"/>
+	<widget source="Title" render="Label" position="303,0" size="1920,90" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" halign="left" font="bmxregular;36" transparent="1"/>
+	<widget source="global.CurrentTime" render="Label" position="1290,0" size="600,90" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#ff000000" valign="center" halign="right" transparent="1" zPosition="1">
+		<convert type="ClockToText">Format:%H:%M | %A %-d %b</convert>
+	</widget>
+	<eLabel position="0,92" size="1920,928" backgroundColor="#26242b34" zPosition="-1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/panel-mid.png" position="center,300" size="984,660" alphatest="blend" zPosition="1"/>
+	<widget source="list" render="Listbox" position="center,330" size="924,600"  foregroundColor="#ffffff" backgroundColor="#1a242b34" foregroundColorSelected="#ffffff" backgroundColorSelected="#1a000000" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/haze/images/menu-select.png" itemHeight="60" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="0" zPosition="2">
+		<convert type="TemplatedMultiContent">
+			{"template": [
+      MultiContentEntryPixmapAlphaBlend(pos = (15, 9), size = (38, 36), png = 0),
+      MultiContentEntryText(pos = (69, 4), size = (810, 60), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
+      ],
+      "fonts": [gFont("bmxregular", 36)],
+      "itemHeight": 60,
+      "scrollbarMode": "showOnDemand"
+    }</convert>
+	</widget>
+	<eLabel position="0,1019" size="1920,1" backgroundColor="#ffffff" zPosition="-1"/>
+	<eLabel position="0,1020" size="1920,60" backgroundColor="#1a000000" zPosition="-1"/>
+	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_red.png" position="510,1031" size="38,38" alphatest="blend" zPosition="2"/>
+	<widget source="key_red" render="Label" position="571,1020" size="165,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="key_green" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_green.png" position="786,1031" size="38,38" alphatest="blend" zPosition="2"/>
+	<widget source="key_green" render="Label" position="837,1020" size="165,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="key_yellow" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_yellow.png" position="1062,1031" size="38,38" alphatest="blend" zPosition="2"/>
+	<widget source="key_yellow" render="Label" position="1113,1020" size="165,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="key_blue" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_blue.png" position="1338,1031" size="38,38" alphatest="blend" zPosition="2"/>
+	<widget source="key_blue" render="Label" position="1389,1020" size="165,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+</screen>
+

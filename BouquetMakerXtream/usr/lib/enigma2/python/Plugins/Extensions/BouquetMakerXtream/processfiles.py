@@ -73,8 +73,8 @@ def processfiles():
             series_streams_hidden = []
 
             showlive = True
-            showvod = True
-            showseries = True
+            showvod = False
+            showseries = False
             prefixname = True
             # live_streams = []
 

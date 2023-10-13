@@ -3,7 +3,7 @@
 
 from . import _
 
-from .plugin import skin_path, version
+from .plugin import skin_directory, version, cfg
 from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
@@ -18,7 +18,7 @@ class BMX_About(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "about.xml")
         with open(skin, "r") as f:
             self.skin = f.read()
@@ -47,10 +47,8 @@ class BMX_About(Screen):
         self.credit += _("Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \nPlay your files via your TV bouquets.\n\n")
         self.credit += _("Credits:\n")
         self.credit += _("AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n")
-        self.credit += _("Lululla for all the hard work done on XCPlugin and assistance with the project.\n")
-        self.credit += _("Massive thanks to Seagen for his endless multi image testing.\n")
         self.credit += _("And thanks to all the other coders and Linuxsat testers who helped in the development of this project.\n\n")
-        self.credit += _("If you would like to buy me a beer or a coffee: https://paypal.me/kiddac \n")
+        self.credit += _("If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/kiddac\n")
         self.credit += _("Cheers - all donations are very much appreciated.")
         self["about"].setText(self.credit)
 

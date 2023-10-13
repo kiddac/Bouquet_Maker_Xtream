@@ -120,7 +120,7 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
                 configfile.save()
 
                 if self.org_main != cfg.main.getValue() or self.org_wakeup != cfg.wakeup.getValue() or self.location != cfg.location.getValue() \
-                        or self.locallocation != cfg.locallocation.getValue() or self.org_autoupdate != cfg.autoupdate.getValue():
+                        or self.locallocation != cfg.locallocation.getValue() or self.org_autoupdate != cfg.autoupdate.getValue() or self.org_catchupon != cfg.catchupon.getValue():
                     self.changedFinished()
             self.clear_caches()
             self.close()
@@ -136,7 +136,7 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
             self.close()
 
     def initConfig(self):
-        # self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
+        self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
         self.cfg_location = getConfigListEntry(_("playlists.txt location") + (" *Restart GUI Required"), cfg.location)
         self.cfg_locallocation = getConfigListEntry(_("Local M3U File location") + (" *Restart GUI Required"), cfg.locallocation)
         # self.cfg_position = getConfigListEntry(_("Bouquet placement"), cfg.position)
@@ -152,10 +152,11 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_autoupdate = getConfigListEntry(_("Automatic live bouquet update"), cfg.autoupdate)
         self.cfg_wakeup = getConfigListEntry(_("Automatic EPG download time") + (" *Restart GUI Required"), cfg.wakeup)
 
+        self.cfg_catchupon = getConfigListEntry(_("Embed Catchup player in channelselect screen") + (" *Restart GUI Required"), cfg.catchupon)
         self.cfg_catchup = getConfigListEntry(_("Prefix Catchup channels"), cfg.catchup)
         self.cfg_catchupprefix = getConfigListEntry(_("Select Catchup prefix symbol"), cfg.catchupprefix)
-        self.cfg_catchupstart = getConfigListEntry(_("Margin before catchup (mins)"), cfg.catchupstart)
-        self.cfg_catchupend = getConfigListEntry(_("Margin after catchup (mins)"), cfg.catchupend)
+        self.cfg_catchupstart = getConfigListEntry(_("Margin before Catchup (mins)"), cfg.catchupstart)
+        self.cfg_catchupend = getConfigListEntry(_("Margin after Catchup (mins)"), cfg.catchupend)
 
         self.cfg_groups = getConfigListEntry(_("Group bouquets into its own folder"), cfg.groups)
         self.cfg_autoclose = getConfigListEntry(_("Exit plugin on bouquet creation"), cfg.autoclose)
@@ -165,12 +166,13 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self.location = cfg.location.getValue()
         self.locallocation = cfg.location.getValue()
         self.org_autoupdate = cfg.autoupdate.getValue()
+        self.org_catchupon = cfg.catchupon.getValue()
 
         self.createSetup()
 
     def createSetup(self):
         self.list = []
-        # self.list.append(self.cfg_skin)
+        self.list.append(self.cfg_skin)
         self.list.append(self.cfg_location)
         self.list.append(self.cfg_locallocation)
         # self.list.append(self.cfg_timeout)
@@ -186,12 +188,14 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
 
         self.list.append(self.cfg_groups)
 
-        self.list.append(self.cfg_catchup)
-        if cfg.catchup.value is True:
-            self.list.append(self.cfg_catchupprefix)
+        self.list.append(self.cfg_catchupon)
+        if cfg.catchupon .value is True:
+            self.list.append(self.cfg_catchup)
+            if cfg.catchup.value is True:
+                self.list.append(self.cfg_catchupprefix)
 
-        self.list.append(self.cfg_catchupstart)
-        self.list.append(self.cfg_catchupend)
+            self.list.append(self.cfg_catchupstart)
+            self.list.append(self.cfg_catchupend)
 
         self.list.append(self.cfg_adult)
 

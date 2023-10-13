@@ -178,6 +178,7 @@ class BMX_Catchup(Screen):
             self.domain = re.search(r"(https|http):\/\/[^\/]+", self.refurl).group()
 
         self.simpleurl = "%s/player_api.php?username=%s&password=%s&action=get_simple_data_table&stream_id=%s" % (self.domain, self.username, self.password, self.refstreamnum)
+        self.playerapi = "%s/player_api.php?username=%s&password=%s" % (self.domain, self.username, self.password)
 
         self.onFirstExecBegin.append(self.createSetup)
         self.onLayoutFinish.append(self.__layoutFinished)
@@ -191,6 +192,45 @@ class BMX_Catchup(Screen):
     def createSetup(self):
         self["bmx_title"].setText("")
         self["bmx_description"].setText("")
+        self.downloadPlayerApi()
+
+    def downloadPlayerApi(self):
+        retries = Retry(total=1, backoff_factor=1)
+        adapter = HTTPAdapter(max_retries=retries)
+        http = requests.Session()
+        http.mount("http://", adapter)
+        http.mount("https://", adapter)
+        response = ""
+
+        try:
+            r = http.get(self.playerapi, headers=hdr, timeout=10, verify=False)
+            r.raise_for_status()
+            if r.status_code == requests.codes.ok:
+                try:
+                    response = r.json()
+                except Exception as e:
+                    print(e)
+
+        except Exception as e:
+            print(e)
+
+        self.serveroffset = 0
+
+        if response:
+            if "user_info" in response:
+                if "server_info" in response:
+                    if "time_now" in response["server_info"]:
+                        try:
+                            time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d %H:%M:%S")
+                        except:
+                            try:
+                                time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d %H-%M-%S")
+                            except:
+                                time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d-%H:%M:%S")
+
+                        self.serveroffset = datetime.now().hour - time_now_datestamp.hour
+                        print("*** serveroffset ***", self.serveroffset)
+
         self.downloadSimpleData()
 
     def downloadSimpleData(self):
@@ -243,30 +283,23 @@ class BMX_Catchup(Screen):
                         if "description" in listing:
                             description = base64.b64decode(listing["description"]).decode("utf-8")
 
-                        shift = 0
-
-                        """
-                        if "serveroffset" in glob.current_playlist["player_info"]:
-                            shift = int(glob.current_playlist["player_info"]["serveroffset"])
-                            """
-
                         if listing["start"] and listing["end"]:
 
                             start = listing["start"]
                             end = listing["end"]
 
                             start_datetime_original = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-                            start_datetime_offset = datetime.strptime(start, "%Y-%m-%d %H:%M:%S") + timedelta(hours=shift)
-                            start_datetime_margin = datetime.strptime(start, "%Y-%m-%d %H:%M:%S") + timedelta(hours=shift) - timedelta(minutes=catchupstart)
+                            start_datetime_offset = datetime.strptime(start, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.serveroffset)
+                            start_datetime_margin = datetime.strptime(start, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.serveroffset) - timedelta(minutes=catchupstart)
 
                             try:
-                                end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=shift)
-                                end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=shift) + timedelta(minutes=catchupend)
+                                end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.serveroffset)
+                                end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.serveroffset) + timedelta(minutes=catchupend)
                             except:
                                 try:
                                     end = listing["stop"]
-                                    end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=shift)
-                                    end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=shift) + timedelta(minutes=catchupend)
+                                    end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.serveroffset)
+                                    end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.serveroffset) + timedelta(minutes=catchupend)
                                 except:
                                     return
 

@@ -5,7 +5,7 @@ from . import _
 from . import globalfunctions as bmx
 from . import bouquet_globals as glob
 
-from .plugin import skin_path, common_path, playlists_json, epgimporter, version
+from .plugin import skin_directory, common_path, playlists_json, epgimporter, version, cfg
 from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
@@ -23,6 +23,7 @@ class BMX_DeleteBouquets(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "bouquets.xml")
         with open(skin, "r") as f:
             self.skin = f.read()
