@@ -212,7 +212,7 @@ class BMX_Playlists(Screen):
         http.mount("https://", adapter)
         response = ""
         try:
-            r = http.get(url[0], headers=hdr, timeout=5, verify=False)
+            r = http.get(url[0], headers=hdr, timeout=10, verify=False)
             r.raise_for_status()
             if r.status_code == requests.codes.ok:
                 if "player_api.php" in url[0]:

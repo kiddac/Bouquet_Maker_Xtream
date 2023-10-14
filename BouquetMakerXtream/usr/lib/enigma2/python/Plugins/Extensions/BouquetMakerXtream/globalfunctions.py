@@ -37,7 +37,7 @@ def download_url(url, ext):
     http.mount("https://", adapter)
     r = ""
     try:
-        r = http.get(url, headers=hdr, timeout=(10, 30), verify=False)
+        r = http.get(url, headers=hdr, timeout=(20, 60), verify=False)
         r.raise_for_status()
         if r.status_code == requests.codes.ok:
             try:
@@ -61,14 +61,14 @@ def download_url_multi(url):
     category = url[1]
     ext = url[2]
     r = ""
-    retries = 1
+    retries = 0
     adapter = HTTPAdapter(max_retries=retries)
     http = requests.Session()
     http.mount("http://", adapter)
     http.mount("https://", adapter)
     response = ""
     try:
-        r = http.get(url[0], headers=hdr, timeout=(10, 30), verify=False)
+        r = http.get(url[0], headers=hdr, timeout=(20, 60), verify=False)
         r.raise_for_status()
         if r.status_code == requests.codes.ok:
 
