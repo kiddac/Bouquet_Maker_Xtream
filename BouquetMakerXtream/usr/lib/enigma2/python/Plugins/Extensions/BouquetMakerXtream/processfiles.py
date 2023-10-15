@@ -91,12 +91,12 @@ def processfiles():
 
             directsource = "Standard"
 
-            if "get.php" in line:
-                playlisttype = "xtream"
-            else:
-                playlisttype = "external"
+            playlisttype = "xtream" if "get.php" in line else "external"
+
+            print("***", playlisttype, line)
 
             if not line.startswith("#") and line.startswith("http"):
+                print("*** true ***", line)
                 line = line.strip()
 
                 parsed_uri = urlparse(line)
@@ -148,19 +148,27 @@ def processfiles():
                     xmltv_api = "%s/xmltv.php?username=%s&password=%s&next_days=7" % (host, username, password)
                     full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, playlistformat, output)
 
+                    print("*** player_api ***", player_api)
+                    print("*** xmltv_api ***", xmltv_api)
+                    print("*** full_url ***", full_url)
+
                 if playlisttype == "external":
                     full_url = line.partition("#")[0].strip()
 
                 playlist_exists = False
 
                 if playlisttype == "xtream":
+                    print("*** is xtream ***", line)
                     if playlists_all:
+                        print("*** is playlists_all ***")
                         for playlist in playlists_all:
-
                             # extra check in case playlists.txt details have been amended
                             if "domain" in playlist["playlist_info"] and "username" in playlist["playlist_info"] and "password" in playlist["playlist_info"]:
                                 if playlist["playlist_info"]["domain"] == domain and playlist["playlist_info"]["username"] == username and playlist["playlist_info"]["password"] == password:
+
                                     playlist_exists = True
+
+                                    print("*** playlist_exists ***")
 
                                     if "livecategoryorder" not in playlist["settings"]:
                                         playlist["settings"]["livecategoryorder"] = livecategoryorder
@@ -196,6 +204,7 @@ def processfiles():
                                     break
 
                     if not playlist_exists:
+                        print("*** playlist not exist ***", line)
                         playlists_all.append({
                             "playlist_info": dict([
                                 ("index", index),
@@ -353,18 +362,29 @@ def processfiles():
         newList = []
 
         for playlist in playlists_all:
+            print("*** playlist ***", playlist)
             for line in lines:
                 if not line.startswith("#"):
-                    if "full_url" in playlist["playlist_info"]:
-                        if str(playlist["playlist_info"]["full_url"]) in line:
-                            newList.append(playlist)
-                            break
+
+                    if playlist["playlist_info"]["playlisttype"] == "xtream":
+                        if "host" in playlist["playlist_info"] and "username" in playlist["playlist_info"] and "password" in playlist["playlist_info"]:
+                            if str(playlist["playlist_info"]["domain"]) in line and str(playlist["playlist_info"]["username"]) in line and str(playlist["playlist_info"]["password"]) in line:
+                                newList.append(playlist)
+                                break
+
+                    elif playlist["playlist_info"]["playlisttype"] == "external":
+                        if "full_url" in playlist["playlist_info"]:
+                            if str(playlist["playlist_info"]["full_url"]) in line:
+                                newList.append(playlist)
+                                break
             if playlist["playlist_info"]["playlisttype"] == "local":
                 path = os.path.join(cfg.locallocation.value, playlist["playlist_info"]["full_url"])
                 if os.path.isfile(path):
                     newList.append(playlist)
 
         playlists_all = newList
+
+        print("**** playlists_all ***", playlists_all)
 
     # read local files
     filename = ""
