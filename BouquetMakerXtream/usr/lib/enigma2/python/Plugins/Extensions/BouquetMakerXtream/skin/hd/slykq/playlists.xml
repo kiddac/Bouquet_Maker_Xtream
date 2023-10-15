@@ -1,0 +1,63 @@
+<screen name="bouquetMakerXtreamPlaylists" position="0,0" size="1280,720" backgroundColor="#2a70a4" flags="wfNoBorder">
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/slykq/images/background.png" alphatest="off" position="0,0" size="1280,720" zPosition="-1" />
+	<widget name="splash" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/slykq/images/splash.png" alphatest="off" position="0,0" size="1280,720" zPosition="1000" />
+	<widget source="global.CurrentTime" render="Label" position="993,0" size="266,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1">
+		<convert type="ClockToText">Format:%H:%M | %A %-d %b</convert>
+	</widget>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/logo.png" position="center,40" size="280,84" alphatest="blend" zPosition="1" />
+	<widget source="version" render="Label" position="center, 120" size="1280,18" font="bmxregular;12" foregroundColor="#ffffff" backgroundColor="#2a70a4" halign="center" valign="center" transparent="1" /> 
+	<widget source="Title" render="Label" position="center,140" size="1280,46" foregroundColor="#ffffff" backgroundColor="#2a70a4" halign="center" font="bmxregular;32" transparent="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/panel-mid.png" position="center,200" size="656,440" alphatest="blend" zPosition="1" />
+	<widget source="playlists" render="Listbox" position="center,220" size="616,400" foregroundColor="#ffffff" backgroundColor="#2a70a4" foregroundColorSelected="#ffffff" backgroundColorSelected="#296fa3" itemHeight="80" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="1" zPosition="2">
+		<convert type="TemplatedMultiContent">
+			{"template": [
+			<!-- name -->
+			MultiContentEntryText(pos = (14, 6), size = (408, 28), font=0,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
+
+			<!-- Authorised LED -->
+			MultiContentEntryPixmapAlphaBlend(pos = (586, 16), size = (15, 16), png = 5),
+			
+			<!-- Authorised -->
+			MultiContentEntryText(pos = (430, 14), size = (314, 20), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 4),
+			
+			<!-- Active Conn -->
+			MultiContentEntryText(pos = (430, 32), size = (86, 20), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 6),
+			
+			<!-- Active Conn Num -->
+			MultiContentEntryText(pos = (546, 32), size = (52, 20), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
+			
+			<!-- Max Conn -->
+			MultiContentEntryText(pos = (430, 50), size = (80, 20), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 8),
+			
+			<!-- Max Conn Num --> 
+			MultiContentEntryText(pos = (546, 50), size = (52, 20), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
+			
+			<!-- Expires -->
+			MultiContentEntryText(pos = (14, 50), size = (288, 20), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 3),
+			],
+			"fonts": [gFont("bmxregular", 20), gFont("bmxregular", 14)],
+			"itemHeight": 80,
+			"scrollbarMode": "showOnDemand"
+			}
+		</convert>
+	</widget>
+
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,298" size="616,2" alphatest="blend" zPosition="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,378" size="616,2" alphatest="blend" zPosition="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,458" size="616,2" alphatest="blend" zPosition="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,538" size="616,2" alphatest="blend" zPosition="1" />
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/button-bg.png" position="0,680" size="1280,40" alphatest="blend" zPosition="1" />
+	
+	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_red.png" position="340,687" size="25,25" alphatest="blend" zPosition="2" />
+	<widget source="key_red" render="Label" position="380,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2" />
+	
+	<widget source="key_green" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_green.png" position="524,687" size="25,25" alphatest="blend" zPosition="2" />
+	<widget source="key_green" render="Label" position="558,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2" />
+	
+	<widget source="key_yellow" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_yellow.png" position="708,687" size="25,25" alphatest="blend" zPosition="2" />
+	<widget source="key_yellow" render="Label" position="742,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2" />
+
+	<widget source="key_blue" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_blue.png" position="892,687" size="25,25" alphatest="blend" zPosition="2" />
+	<widget source="key_blue" render="Label" position="926,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2" />
+	
+</screen>
