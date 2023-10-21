@@ -8,7 +8,7 @@
 	</widget>
 	<eLabel position="0,61" size="1280,618" backgroundColor="#26242b34" zPosition="-1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/panel-mid.png" position="center,200" size="656,440" alphatest="blend" zPosition="1"/>
-	<widget source="list" render="Listbox" position="center,220" size="616,400"  foregroundColor="#ffffff" backgroundColor="#1a242b34" foregroundColorSelected="#ffffff" backgroundColorSelected="#1a000000" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/haze/images/menu-select.png" itemHeight="40" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="0" zPosition="2">
+	<widget source="list" render="Listbox" position="center,220" size="616,400" foregroundColor="#ffffff" backgroundColor="#1a242b34" foregroundColorSelected="#ffffff" backgroundColorSelected="#1a000000" selectionPixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/haze/images/menu-select.png" itemHeight="40" scrollbarMode="showOnDemand" enableWrapAround="1" transparent="0" zPosition="2">
 		<convert type="TemplatedMultiContent">
 			{"template": [
       MultiContentEntryPixmapAlphaBlend(pos = (10, 6), size = (25, 24), png = 0),
