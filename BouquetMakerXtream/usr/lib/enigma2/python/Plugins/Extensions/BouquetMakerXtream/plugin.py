@@ -11,6 +11,7 @@ from Plugins.Plugin import PluginDescriptor
 from requests.adapters import HTTPAdapter, Retry
 from Screens.ChannelSelection import ChannelSelectionBase
 from ServiceReference import ServiceReference
+from datetime import datetime
 
 import os
 import shutil
@@ -18,6 +19,7 @@ import re
 import requests
 import sys
 import twisted.python.runtime
+import time
 
 try:
     from urlparse import urljoin
@@ -182,6 +184,7 @@ def extensionsmenu(session, **kwargs):
     return
 
 
+# Global variable
 autoStartTimer = None
 
 
@@ -196,52 +199,55 @@ class AutoStartTimer:
         self.update()
 
     def getWakeTime(self):
-        import time
         if cfg.autoupdate.value:
             clock = cfg.wakeup.value
             nowt = time.time()
             now = time.localtime(nowt)
-            return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, now.tm_wday, now.tm_yday, now.tm_isdst)))
+            waketime = int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, now.tm_wday, now.tm_yday, now.tm_isdst)))
+            return waketime
         else:
             return -1
 
     def update(self, atLeast=0):
-        import time
         self.timer.stop()
         wake = self.getWakeTime()
-        nowtime = time.time()
+        now_t = time.time()
+        now = int(now_t)
+
         if wake > 0:
-            if wake < nowtime + atLeast:
-                # Tomorrow.
-                wake += 24 * 3600
-            next = wake - int(nowtime)
-            if next > 3600:
-                next = 3600
-            if next <= 0:
-                next = 60
+            if wake < now + atLeast:
+                wake += 24 * 3600  # add 24 hours to next wake time
+            next = wake - now
             self.timer.startLongTimer(next)
         else:
             wake = -1
+
+        wdt = datetime.fromtimestamp(wake)
+        ndt = datetime.fromtimestamp(now)
+
+        print("[BouquetMakerXtream] WakeUpTime now set to", wdt, "(now=%s)" % ndt)
         return wake
 
     def onTimer(self):
-        import time
         self.timer.stop()
         now = int(time.time())
         wake = self.getWakeTime()
+        print("*** wake ", wake)
         atLeast = 0
-        if abs(wake - now) < 60:
+        if wake - now < 60:
             self.runUpdate()
             atLeast = 60
         self.update(atLeast)
 
     def runUpdate(self):
-        print("\n *********** Updating BouquetMakerXtream Bouquets ************ \n")
+        print("\n *********** BouquetMakerXtream runupdate ************ \n")
         from . import update
         self.session.open(update.BMX_Update, "auto")
 
 
 def autostart(reason, session=None, **kwargs):
+    # called with reason=1 to during shutdown, with reason=0 at startup?
+
     if cfg.catchupon.getValue() is True:
         if session is not None:
             global BMXChannelSelectionBase__init__
@@ -251,12 +257,19 @@ def autostart(reason, session=None, **kwargs):
             ChannelSelectionBase.playOriginalChannel = playOriginalChannel
 
     global autoStartTimer
+
+    now_t = time.time()
+    now = int(now_t)
+    ndt = datetime.fromtimestamp(now)
+
+    print("[BouquetMakerXtream] autostart (%s) occured at" % reason, ndt)
+
     if reason == 0:
         if session is not None:
             if autoStartTimer is None:
                 autoStartTimer = AutoStartTimer(session)
-    print("*** return 1 ***")
-    return
+    else:
+        print("[BouquetMakerXtream] Stop")
 
 
 def MyChannelSelectionBase__init__(self, session):
@@ -379,9 +392,6 @@ def Plugins(**kwargs):
     addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
     addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
     addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
-    addFont(os.path.join(font_folder, "MavenPro-Regular.ttf"), "onyxregular", 100, 0)
-    addFont(os.path.join(font_folder, "MavenPro-Medium.ttf"), "onyxbold", 100, 0)
-    addFont(os.path.join(font_folder, "VSkin-Light.ttf"), "vskinregular", 100, 0)
 
     iconFile = "icons/plugin-icon_sd.png"
     if screenwidth.width() > 1280:
@@ -393,8 +403,24 @@ def Plugins(**kwargs):
 
     extensions_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=extensionsmenu, needsRestart=True)
 
-    result = [PluginDescriptor(name=pluginname, description=description, where=[PluginDescriptor.WHERE_AUTOSTART, PluginDescriptor.WHERE_SESSIONSTART], fnc=autostart),
-              PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_PLUGINMENU, icon=iconFile, fnc=main)]
+    result = [
+        PluginDescriptor(
+            name=pluginname,
+            description=description,
+            where=[
+                PluginDescriptor.WHERE_AUTOSTART,
+                PluginDescriptor.WHERE_SESSIONSTART
+            ],
+            fnc=autostart,
+        ),
+        PluginDescriptor(
+            name=pluginname,
+            description=description,
+            where=PluginDescriptor.WHERE_PLUGINMENU,
+            icon=iconFile,
+            fnc=main
+        ),
+    ]
 
     result.append(extensions_menu)
 
