@@ -166,13 +166,12 @@ class BMX_BuildBouquets(Screen):
 
             self.host_encoded = quote(self.host)
 
-            for j in str(self.full_url).lower():
+            for j in str(self.full_url):
                 value = ord(j)
                 self.unique_ref += value
 
             if glob.current_playlist["playlist_info"]["playlisttype"] == "xtream":
 
-                self.get_api = str(glob.current_playlist["playlist_info"]["full_url"])
                 self.player_api = str(glob.current_playlist["playlist_info"]["player_api"])
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
 
@@ -242,10 +241,6 @@ class BMX_BuildBouquets(Screen):
     def process_downloads(self, streamtype):
         # print("*** process_downloads ***")
 
-        # self.livestreams = ""
-        # self.vodstreams = ""
-        # self.seriesstreams = ""
-
         if streamtype == "live":
 
             self.url_list = self.live_url_list
@@ -258,10 +253,6 @@ class BMX_BuildBouquets(Screen):
 
         if streamtype == "external":
             self.url_list = self.external_url_list
-
-        threads = len(self.url_list)
-        if threads > 10:
-            threads = 10
 
         for url in self.url_list:
             result = bmx.download_url_multi(url)

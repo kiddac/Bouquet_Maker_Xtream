@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-from .plugin import skin_directory, cfg
+from .plugin import skin_directory, cfg, autoStartTimer
 from .bmxStaticText import StaticText
 
 from Components.ActionMap import ActionMap
@@ -119,8 +119,12 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
                 cfg.save()
                 configfile.save()
 
-                if self.org_main != cfg.main.getValue() or self.org_wakeup != cfg.wakeup.getValue() or self.location != cfg.location.getValue() \
-                        or self.locallocation != cfg.locallocation.getValue() or self.org_autoupdate != cfg.autoupdate.getValue() or self.org_catchupon != cfg.catchupon.getValue():
+                autoStartTimer.update()
+
+                if self.org_main != cfg.main.getValue() or \
+                    self.location != cfg.location.getValue() or \
+                        self.locallocation != cfg.locallocation.getValue() or \
+                        self.org_catchupon != cfg.catchupon.getValue():
                     self.changedFinished()
             self.clear_caches()
             self.close()
@@ -150,7 +154,7 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_skipplaylistsscreen = getConfigListEntry(_("Skip playlist selection screen if only 1 playlist"), cfg.skipplaylistsscreen)
 
         self.cfg_autoupdate = getConfigListEntry(_("Automatic live bouquet update"), cfg.autoupdate)
-        self.cfg_wakeup = getConfigListEntry(_("Automatic EPG download time") + (" *Restart GUI Required"), cfg.wakeup)
+        self.cfg_wakeup = getConfigListEntry(_("Automatic live bouquet update time"), cfg.wakeup)
 
         self.cfg_catchupon = getConfigListEntry(_("Embed Catchup player in channelselect screen") + (" *Restart GUI Required"), cfg.catchupon)
         self.cfg_catchup = getConfigListEntry(_("Prefix Catchup channels"), cfg.catchup)
@@ -162,10 +166,8 @@ class BMX_Settings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_autoclose = getConfigListEntry(_("Exit plugin on bouquet creation"), cfg.autoclose)
 
         self.org_main = cfg.main.getValue()
-        self.org_wakeup = cfg.wakeup.getValue()
         self.location = cfg.location.getValue()
-        self.locallocation = cfg.location.getValue()
-        self.org_autoupdate = cfg.autoupdate.getValue()
+        self.locallocation = cfg.locallocation.getValue()
         self.org_catchupon = cfg.catchupon.getValue()
 
         self.createSetup()

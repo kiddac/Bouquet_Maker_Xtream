@@ -48,6 +48,61 @@ def processfiles():
                 line = line.replace("=hls", "=m3u8")
             if line.strip() == "#":
                 line = ""
+
+            playlisttype = "xtream" if "get.php" in line else "external"
+
+            if playlisttype == "xtream" and not line.startswith("#") and line.startswith("http"):
+
+                name = ""
+                port = ""
+                username = ""
+                password = ""
+                playlistformat = "m3u_plus"
+                output = "ts"
+                epgoffset = 0
+
+                parsed_uri = urlparse(line)
+
+                protocol = parsed_uri.scheme + "://"
+
+                domain = parsed_uri.hostname.lower()
+                name = domain
+                if line.partition(" #")[-1]:
+                    name = line.partition(" #")[-1].strip()
+
+                if parsed_uri.port:
+                    port = parsed_uri.port
+
+                    host = "%s%s:%s" % (protocol, domain, port)
+                else:
+                    host = "%s%s" % (protocol, domain)
+
+                if playlisttype == "xtream":
+                    query = parse_qs(parsed_uri.query, keep_blank_values=True)
+
+                    if "username" in query:
+                        username = query["username"][0].strip()
+
+                    if "password" in query:
+                        password = query["password"][0].strip()
+
+                    if "type" in query:
+                        playlistformat = query["type"][0].strip()
+
+                    if "output" in query:
+                        output = query["output"][0].strip()
+
+                    if "timeshift" in query:
+                        try:
+                            epgoffset = int(query["timeshift"][0].strip())
+                        except:
+                            pass
+
+                    if epgoffset != 0:
+                        line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s\n" % (host, username, password, playlistformat, output, epgoffset, name)
+                    else:
+                        line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s\n" % (host, username, password, playlistformat, output, name)
+
             if line != "":
                 f.write(line)
 

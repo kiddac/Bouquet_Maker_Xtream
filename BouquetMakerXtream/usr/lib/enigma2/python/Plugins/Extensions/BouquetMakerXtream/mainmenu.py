@@ -103,9 +103,15 @@ class BMX_MainMenu(Screen):
         if glob.finished and cfg.autoclose.getValue() is True:
             self.close()
 
-        # print("*** mainmenu-processfiles start ***")
         self.playlists_all = pfiles.processfiles()
-        # print("*** mainmenu-processfiles finished ***")
+
+        # clear stream data if populated after a crash
+        if self.playlists_all:
+            for playlist in self.playlists_all:
+                playlist["data"]["live_streams"] = []
+                playlist["data"]["vod_streams"] = []
+                playlist["data"]["series_streams"] = []
+
         self.createSetup()
 
     def createSetup(self):
