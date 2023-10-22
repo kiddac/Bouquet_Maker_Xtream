@@ -1,38 +1,36 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import _
-from . import globalfunctions as bmx
-from . import bouquet_globals as glob
-
-from .plugin import skin_directory, common_path, playlists_json, epgimporter, version, cfg
-from .bmxStaticText import StaticText
+import json
+import os
+from contextlib import suppress
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
-
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
-import json
-import os
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from .bmxStaticText import StaticText
+from .plugin import cfg, COMMON_PATH, EPGIMPORTER, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION
 
 
-class BMX_DeleteBouquets(Screen):
-
+class BmxDeleteBouquets(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "bouquets.xml")
-        with open(skin, "r") as f:
+        with open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
         self.setup_title = _("Delete Bouquets")
 
         # new list code
-        self.startList = []
-        self.drawList = []
-        self["list"] = List(self.drawList)
+        self.start_list = []
+        self.draw_list = []
+        self["list"] = List(self.draw_list)
 
         self["key_red"] = StaticText(_("Cancel"))
         self["key_green"] = StaticText(_("Delete"))
@@ -41,130 +39,128 @@ class BMX_DeleteBouquets(Screen):
         self["key_info"] = StaticText("")
         self["version"] = StaticText()
 
-        self.playlists_all = bmx.getPlaylistJson()
+        self.playlists_all = bmx.get_playlist_json()
 
-        self.onLayoutFinish.append(self.__layoutFinished)
+        self.onLayoutFinish.append(self.__layout_finished)
 
         self["actions"] = ActionMap(["BMXActions"], {
-            "red": self.keyCancel,
-            "green": self.deleteBouquets,
-            "yellow": self.toggleAllSelection,
-            "blue": self.clearAllSelection,
-            "cancel": self.keyCancel,
-            "ok": self.toggleSelection
+            "red": self.key_cancel,
+            "green": self.delete_bouquets,
+            "yellow": self.toggle_all_selection,
+            "blue": self.clear_all_selection,
+            "cancel": self.key_cancel,
+            "ok": self.toggle_selection,
         }, -2)
 
-        self["version"].setText(version)
+        self["version"].setText(VERSION)
 
-        self.getStartList()
+        self.get_start_list()
         self.refresh()
 
-    def __layoutFinished(self):
+    def __layout_finished(self):
         self.setTitle(self.setup_title)
 
-    def buildListEntry(self, name, index, selected):
+    def build_list_entry(self, name, index, selected):
         if selected:
-            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_on.png"))
+            pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "lock_on.png"))
         else:
-            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_off.png"))
+            pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "lock_off.png"))
         return (pixmap, str(name), index, selected)
 
-    def getStartList(self):
+    def get_start_list(self):
         for playlist in self.playlists_all:
             if playlist["playlist_info"]["bouquet"] is True:
-                self.startList.append([str(playlist["playlist_info"]["name"]), playlist["playlist_info"]["index"], False])
+                self.start_list.append([str(playlist["playlist_info"]["name"]), playlist["playlist_info"]["index"], False])
 
-        self.drawList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.startList]
-        self["list"].setList(self.drawList)
+        self.draw_list = [self.build_list_entry(x[0], x[1], x[2]) for x in self.start_list]
+        self["list"].setList(self.draw_list)
 
     def refresh(self):
-        self.drawList = []
-        self.drawList = [self.buildListEntry(x[0], x[1], x[2]) for x in self.startList]
-        self["list"].updateList(self.drawList)
+        self.draw_list = []
+        self.draw_list = [self.build_list_entry(x[0], x[1], x[2]) for x in self.start_list]
+        self["list"].updateList(self.draw_list)
 
-    def toggleSelection(self):
+    def toggle_selection(self):
         if len(self["list"].list) > 0:
             idx = self["list"].getIndex()
-            self.startList[idx][2] = not self.startList[idx][2]
+            self.start_list[idx][2] = not self.start_list[idx][2]
             self.refresh()
 
-    def toggleAllSelection(self):
+    def toggle_all_selection(self):
         for idx, item in enumerate(self["list"].list):
-            self.startList[idx][2] = not self.startList[idx][2]
+            self.start_list[idx][2] = not self.start_list[idx][2]
         self.refresh()
 
-    def getSelectionsList(self):
-        return [item[0] for item in self.startList if item[2]]
+    def get_selections_list(self):
+        return [item[0] for item in self.start_list if item[2]]
 
-    def clearAllSelection(self):
+    def clear_all_selection(self):
         for idx, item in enumerate(self["list"].list):
-            self.startList[idx][2] = False
+            self.start_list[idx][2] = False
         self.refresh()
 
-    def keyCancel(self):
+    def key_cancel(self):
         self.close()
 
-    def deleteBouquets(self):
-        selectedBouquetList = self.getSelectionsList()
+    def delete_bouquets(self):
+        selected_bouquet_list = self.get_selections_list()
 
-        for x in selectedBouquetList:
+        for x in selected_bouquet_list:
             bouquet_name = x
-            safeName = bmx.safeName(bouquet_name)
+            safe_name = bmx.safe_name(bouquet_name)
 
-            with open("/etc/enigma2/bouquets.tv", "r+") as f:
+            with open("/etc/enigma2/bouquets.tv", "r+", encoding="utf-8") as f:
                 lines = f.readlines()
                 f.seek(0)
                 f.truncate()
 
                 for line in lines:
-                    if "bouquetmakerxtream_live_" + str(safeName) + "_" in line:
+                    if "bouquetmakerxtream_live_" + str(safe_name) + "_" in line:
                         continue
-                    if "bouquetmakerxtream_vod_" + str(safeName) + "_" in line:
+                    if "bouquetmakerxtream_vod_" + str(safe_name) + "_" in line:
                         continue
-                    if "bouquetmakerxtream_series_" + str(safeName) + "_" in line:
+                    if "bouquetmakerxtream_series_" + str(safe_name) + "_" in line:
                         continue
-                    if "bouquetmakerxtream_" + str(safeName) + ".tv" in line:
+                    if "bouquetmakerxtream_" + str(safe_name) + ".tv" in line:
                         continue
                     f.write(line)
 
-            bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safeName) + "_")
-            bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safeName) + "_")
-            bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safeName) + "_")
-            bmx.purge("/etc/enigma2", str(safeName) + str(".tv"))
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safe_name) + "_")
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safe_name) + "_")
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safe_name) + "_")
+            bmx.purge("/etc/enigma2", str(safe_name) + str(".tv"))
 
-            if epgimporter is True:
-                bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(safeName) + ".channels.xml")
+            if EPGIMPORTER is True:
+                bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(safe_name) + ".channels.xml")
 
                 # remove sources from source file
-                sourcefile = "/etc/epgimport/bouquetmakerxtream.sources.xml"
+                source_file = "/etc/epgimport/bouquetmakerxtream.sources.xml"
 
-                if os.path.isfile(sourcefile):
-
+                if os.path.isfile(source_file):
                     import xml.etree.ElementTree as ET
-                    tree = ET.parse(sourcefile)
+
+                    tree = ET.parse(source_file)
                     root = tree.getroot()
 
                     for elem in root.iter():
                         for child in list(elem):
                             description = ""
                             if child.tag == "source":
-                                try:
+                                with suppress(Exception):
                                     description = child.find("description").text
-                                    if safeName in description:
+                                    if safe_name in description:
                                         elem.remove(child)
-                                except:
-                                    pass
 
-                    tree.write(sourcefile)
+                    tree.write(source_file)
 
-            self.deleteBouquetFile(bouquet_name)
-            glob.firstrun = True
-            glob.current_selection = 0
-            glob.current_playlist = []
-            bmx.refreshBouquets()
+            self.delete_bouquet_file(bouquet_name)
+            glob.FIRSTRUN = True
+            glob.CURRENT_SELECTION = 0
+            glob.CURRENT_PLAYLIST = []
+            bmx.refresh_bouquets()
         self.close()
 
-    def deleteBouquetFile(self, bouquet_name):
+    def delete_bouquet_file(self, bouquet_name):
         for playlist in self.playlists_all:
             if playlist["playlist_info"]["name"] == bouquet_name:
                 playlist["playlist_info"]["bouquet"] = False
@@ -172,5 +168,5 @@ class BMX_DeleteBouquets(Screen):
         # delete leftover empty dicts
         self.playlists_all = [_f for _f in self.playlists_all if _f]
 
-        with open(playlists_json, "w") as f:
+        with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
             json.dump(self.playlists_all, f)

@@ -1,26 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import _
 
-from .plugin import skin_directory, version, cfg
-from .bmxStaticText import StaticText
+import os
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Screens.Screen import Screen
 
-import os
+from . import _
+from .bmxStaticText import StaticText
+from .plugin import cfg, SKIN_DIRECTORY, VERSION
 
 
-class BMX_About(Screen):
-
+class BmxAbout(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "about.xml")
-        with open(skin, "r") as f:
+        with open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
 
         self.setup_title = _("About")
@@ -35,14 +34,14 @@ class BMX_About(Screen):
         self["key_green"] = StaticText(_("OK"))
         self["version"] = StaticText()
         self["about"] = Label("")
-        self.onFirstExecBegin.append(self.createSetup)
-        self.onLayoutFinish.append(self.__layoutFinished)
+        self.onFirstExecBegin.append(self.create_setup)
+        self.onLayoutFinish.append(self.__layout_finished)
 
-    def __layoutFinished(self):
+    def __layout_finished(self):
         self.setTitle(self.setup_title)
 
-    def createSetup(self):
-        self.credit = _("BouquetMakerXtream ") + str(version) + " - KiddaC\n\n"
+    def create_setup(self):
+        self.credit = _("BouquetMakerXtream ") + str(VERSION) + " - KiddaC\n\n"
         self.credit += _("Support for this plugin and latest versions can be found on https://linuxsat-support.com\n\n")
         self.credit += _("Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \nPlay your files via your TV bouquets.\n\n")
         self.credit += _("Credits:\n")

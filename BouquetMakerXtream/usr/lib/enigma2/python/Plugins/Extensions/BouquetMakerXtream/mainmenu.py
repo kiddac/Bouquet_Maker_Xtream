@@ -1,45 +1,44 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import _
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from . import processfiles as pfiles
-from .plugin import skin_directory, common_path, version, pythonFull, cfg, playlists_json
-from .bmxStaticText import StaticText
+import json
+import os
+from contextlib import suppress
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
-
 from Screens.Console import Console
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
-import os
-import json
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from . import processfiles as pfiles
+from .bmxStaticText import StaticText
+from .plugin import cfg, COMMON_PATH, PLAYLISTS_JSON, PYTHON_FULL, SKIN_DIRECTORY, VERSION
 
 
-class BMX_MainMenu(Screen):
-
+class BmxMainMenu(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
 
-        glob.finished = False
+        glob.FINISHED = False
 
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
 
         skin = os.path.join(skin_path, "mainmenu.xml")
-        with open(skin, "r") as f:
+        with open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
 
         self.list = []
-        self.drawList = []
+        self.draw_list = []
         self.playlists_all = []
-        self["list"] = List(self.drawList, enableWrapAround=True)
+        self["list"] = List(self.draw_list, enableWrapAround=True)
 
-        self.setup_title = (_("Main Menu"))
+        self.setup_title = _("Main Menu")
         self["key_red"] = StaticText(_("Back"))
         self["key_green"] = StaticText(_("OK"))
         self["version"] = StaticText()
@@ -52,45 +51,43 @@ class BMX_MainMenu(Screen):
             "menu": self.settings,
         }, -2)
 
-        self["version"].setText(version)
+        self["version"].setText(VERSION)
 
         self.onFirstExecBegin.append(self.check_dependencies)
-        self.onLayoutFinish.append(self.__layoutFinished)
+        self.onLayoutFinish.append(self.__layout_finished)
 
-    def __layoutFinished(self):
+    def __layout_finished(self):
         self.setTitle(self.setup_title)
 
     def check_dependencies(self):
-        try:
-            if cfg.locationvalid.getValue() is False:
+        with suppress(Exception):
+            if cfg.location_valid.getValue() is False:
                 self.session.open(MessageBox, _("Playlists.txt location is invalid and has been reset."), type=MessageBox.TYPE_INFO, timeout=5)
-                cfg.locationvalid.setValue(True)
+                cfg.location_valid.setValue(True)
                 cfg.save()
-        except:
-            pass
 
         dependencies = True
 
         try:
             import requests
 
-            if pythonFull < 3.9:
-                # print("*** checking multiprocessing ***")
+            if PYTHON_FULL < 3.9:
                 from multiprocessing.pool import ThreadPool
-        except Exception as e:
-            # print("**** missing dependencies ***")
+        except ImportError as e:
             print(e)
             dependencies = False
 
+        """
         try:
             import lzma
-        except Exception as e:
+        except ImportError as e:
             print(e)
             try:
                 from backports import lzma
-            except Exception as e:
-                print(e)
+            except ImportError as ex:
+                print(ex)
                 dependencies = False
+                """
 
         if dependencies is False:
             os.chmod("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/dependencies.sh", 0o0755)
@@ -100,7 +97,7 @@ class BMX_MainMenu(Screen):
             self.start()
 
     def start(self, answer=None):
-        if glob.finished and cfg.autoclose.getValue() is True:
+        if glob.FINISHED and cfg.auto_close.getValue() is True:
             self.close()
 
         self.playlists_all = pfiles.processfiles()
@@ -112,9 +109,9 @@ class BMX_MainMenu(Screen):
                 playlist["data"]["vod_streams"] = []
                 playlist["data"]["series_streams"] = []
 
-        self.createSetup()
+        self.create_setup()
 
-    def createSetup(self):
+    def create_setup(self):
         self.list = []
 
         if self.playlists_all:
@@ -137,38 +134,42 @@ class BMX_MainMenu(Screen):
         self.list.append([2, _("Add Playlist")])
         self.list.append([7, _("About")])
 
-        self.drawList = []
-        self.drawList = [buildListEntry(x[0], x[1]) for x in self.list]
-        self["list"].setList(self.drawList)
+        self.draw_list = []
+        self.draw_list = [build_list_entry(x[0], x[1]) for x in self.list]
+        self["list"].setList(self.draw_list)
 
     def playlists(self):
         from . import playlists
-        self.session.openWithCallback(self.start, playlists.BMX_Playlists)
+
+        self.session.openWithCallback(self.start, playlists.BmxPlaylists)
 
     def settings(self):
         from . import settings
-        self.session.openWithCallback(self.start, settings.BMX_Settings)
 
-    def addServer(self):
+        self.session.openWithCallback(self.start, settings.BmxSettings)
+
+    def add_server(self):
         from . import server
-        self.session.openWithCallback(self.start, server.BMX_AddServer)
+
+        self.session.openWithCallback(self.start, server.BmxAddServer)
 
     def about(self):
         from . import about
-        self.session.openWithCallback(self.start, about.BMX_About)
 
-    def deleteSet(self):
+        self.session.openWithCallback(self.start, about.BmxAbout)
+
+    def delete_set(self):
         from . import deletebouquets
-        self.session.openWithCallback(self.start, deletebouquets.BMX_DeleteBouquets)
 
-    def deleteAll(self, answer=None):
+        self.session.openWithCallback(self.start, deletebouquets.BmxDeleteBouquets)
+
+    def delete_all(self, answer=None):
         if answer is None:
-            self.session.openWithCallback(self.deleteAll, MessageBox, _("Delete all BMX created bouquets?"))
+            self.session.openWithCallback(self.delete_all, MessageBox, _("Delete all BMX created bouquets?"))
         elif answer:
-
             bmx.purge("/etc/enigma2", "bouquetmakerxtream")
 
-            with open("/etc/enigma2/bouquets.tv", "r+") as f:
+            with open("/etc/enigma2/bouquets.tv", "r+", encoding="utf-8") as f:
                 lines = f.readlines()
                 f.seek(0)
                 for line in lines:
@@ -178,7 +179,7 @@ class BMX_MainMenu(Screen):
 
             bmx.purge("/etc/epgimport", "bouquetmakerxtream")
 
-            self.playlists_all = bmx.getPlaylistJson()
+            self.playlists_all = bmx.get_playlist_json()
 
             for playlist in self.playlists_all:
                 playlist["playlist_info"]["bouquet"] = False
@@ -186,17 +187,18 @@ class BMX_MainMenu(Screen):
             # delete leftover empty dicts
             self.playlists_all = [_f for _f in self.playlists_all if _f]
 
-            with open(playlists_json, "w") as f:
+            with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
                 json.dump(self.playlists_all, f)
 
-            bmx.refreshBouquets()
-            self.createSetup()
+            bmx.refresh_bouquets()
+            self.create_setup()
         return
 
     def update(self):
         # return
         from . import update
-        self.session.openWithCallback(self.createSetup, update.BMX_Update, "manual")
+
+        self.session.openWithCallback(self.create_setup, update.BmxUpdate, "manual")
 
     def __next__(self):
         if self["list"].getCurrent():
@@ -205,39 +207,39 @@ class BMX_MainMenu(Screen):
             if index == 1:
                 self.playlists()
             if index == 2:
-                self.addServer()
+                self.add_server()
             if index == 3:
                 self.settings()
             if index == 4:
                 self.update()
             if index == 5:
-                self.deleteSet()
+                self.delete_set()
             if index == 6:
-                self.deleteAll()
+                self.delete_all()
             if index == 7:
                 self.about()
 
     def quit(self):
-        glob.firstrun = 0
+        glob.FIRSTRUN = 0
         self.close()
 
 
-def buildListEntry(index, title):
+def build_list_entry(index, title):
     png = None
 
     if index == 1:
-        png = LoadPixmap(common_path + "playlists.png")
+        png = LoadPixmap(COMMON_PATH + "playlists.png")
     if index == 3:
-        png = LoadPixmap(common_path + "settings.png")
+        png = LoadPixmap(COMMON_PATH + "settings.png")
     if index == 2:
-        png = LoadPixmap(common_path + "addplaylist.png")
+        png = LoadPixmap(COMMON_PATH + "addplaylist.png")
     if index == 4:
-        png = LoadPixmap(common_path + "updateplaylists.png")
+        png = LoadPixmap(COMMON_PATH + "updateplaylists.png")
     if index == 5:
-        png = LoadPixmap(common_path + "deleteplaylist.png")
+        png = LoadPixmap(COMMON_PATH + "deleteplaylist.png")
     if index == 6:
-        png = LoadPixmap(common_path + "deleteplaylist.png")
+        png = LoadPixmap(COMMON_PATH + "deleteplaylist.png")
     if index == 7:
-        png = LoadPixmap(common_path + "about.png")
+        png = LoadPixmap(COMMON_PATH + "about.png")
 
     return (index, str(title), png)

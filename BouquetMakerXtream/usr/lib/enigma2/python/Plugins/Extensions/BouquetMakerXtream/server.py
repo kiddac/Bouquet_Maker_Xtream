@@ -1,48 +1,49 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import _
-from . import globalfunctions as bmx
+import os
+from contextlib import suppress
 
-from .plugin import skin_directory, playlist_file, hdr, cfg
-from .bmxStaticText import StaticText
-
+import requests
 from Components.ActionMap import ActionMap
+from Components.config import ConfigEnableDisable, ConfigNumber, ConfigSelection, ConfigText, ConfigYesNo, NoSave, getConfigListEntry
 from Components.ConfigList import ConfigListScreen
-from Components.config import getConfigListEntry, NoSave, ConfigText, ConfigSelection, ConfigNumber, ConfigYesNo, ConfigEnableDisable
 from Components.Pixmap import Pixmap
+from enigma import ePoint
 from requests.adapters import HTTPAdapter
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-import os
-import requests
+from . import _
+from . import globalfunctions as bmx
+from .bmxStaticText import StaticText
+from .plugin import HDR, PLAYLIST_FILE, SKIN_DIRECTORY, cfg
 
 try:
     from http.client import HTTPConnection
+
     HTTPConnection.debuglevel = 0
-except:
+except ImportError:
     from httplib import HTTPConnection
+
     HTTPConnection.debuglevel = 0
-requests.packages.urllib3.disable_warnings()
 
 
-class BMX_AddServer(ConfigListScreen, Screen):
-
+class BmxAddServer(ConfigListScreen, Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
 
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "settings.xml")
 
         if os.path.exists("/var/lib/dpkg/status"):
             skin = os.path.join(skin_path, "DreamOS/settings.xml")
 
-        with open(skin, "r") as f:
+        with open(skin, "r", encoding="utf-8") as f:
             self.skin = f.read()
 
-        self.setup_title = (_("Add Playlist"))
+        self.setup_title = _("Add Playlist")
 
         self.onChangedEntry = []
 
@@ -69,12 +70,12 @@ class BMX_AddServer(ConfigListScreen, Screen):
             "ok": self.void,
         }, -2)
 
-        self.playlists_all = bmx.getPlaylistJson()
+        self.playlists_all = bmx.get_playlist_json()
 
-        self.onFirstExecBegin.append(self.initConfig)
-        self.onLayoutFinish.append(self.__layoutFinished)
+        self.onFirstExecBegin.append(self.init_config)
+        self.onLayoutFinish.append(self.__layout_finished)
 
-    def __layoutFinished(self):
+    def __layout_finished(self):
         self.setTitle(self.setup_title)
 
     def cancel(self, answer=None):
@@ -91,117 +92,101 @@ class BMX_AddServer(ConfigListScreen, Screen):
         return
 
     def void(self):
-        currConfig = self["config"].getCurrent()
-        if isinstance(currConfig[1], ConfigNumber):
+        curr_config = self["config"].getCurrent()
+        if isinstance(curr_config[1], ConfigNumber):
             pass
 
-    def initConfig(self):
-        self.playlisttypeCfg = NoSave(ConfigSelection(default="standard", choices=[("standard", _("Xtream codes / XUI ONE (get.php)")), ("external", _("External #EXTM3U playlist"))]))
-        self.nameCfg = NoSave(ConfigText(default="IPTV", fixed_size=False))
-        self.protocolCfg = NoSave(ConfigSelection(default=self.protocol, choices=[("http://", "http://"), ("https://", "https://")]))
-        self.serverCfg = NoSave(ConfigText(fixed_size=False))
-        self.portCfg = NoSave(ConfigText(fixed_size=False))
-        self.usernameCfg = NoSave(ConfigText(fixed_size=False))
-        self.passwordCfg = NoSave(ConfigText(fixed_size=False))
-        self.outputCfg = NoSave(ConfigSelection(default=self.output, choices=[("ts", "ts"), ("m3u8", "m3u8")]))
-        self.urlCfg = NoSave(ConfigText(default=self.address, fixed_size=False))
-        self.createSetup()
+    def init_config(self):
+        self.playlist_type_cfg = NoSave(
+            ConfigSelection(default="standard", choices=[("standard", _("Xtream codes / XUI ONE (get.php)")), ("external", _("External #EXTM3U playlist"))]))
+        self.name_cfg = NoSave(ConfigText(default="IPTV", fixed_size=False))
+        self.protocol_cfg = NoSave(ConfigSelection(default=self.protocol, choices=[("http://", "http://"), ("https://", "https://")]))
+        self.server_cfg = NoSave(ConfigText(fixed_size=False))
+        self.port_cfg = NoSave(ConfigText(fixed_size=False))
+        self.username_cfg = NoSave(ConfigText(fixed_size=False))
+        self.password_cfg = NoSave(ConfigText(fixed_size=False))
+        self.output_cfg = NoSave(ConfigSelection(default=self.output, choices=[("ts", "ts"), ("m3u8", "m3u8")]))
+        self.url_cfg = NoSave(ConfigText(default=self.address, fixed_size=False))
+        self.create_setup()
 
-    def createSetup(self):
+    def create_setup(self):
         self.list = []
 
-        self.list.append(getConfigListEntry(_("Select playlist type"), self.playlisttypeCfg))
-        if self.playlisttypeCfg.value == "standard":
-            self.list.append(getConfigListEntry(_("Short name or provider name:"), self.nameCfg))
-            self.list.append(getConfigListEntry(_("Protocol:"), self.protocolCfg))
-            self.list.append(getConfigListEntry(_("Server URL: i.e. domain.xyz"), self.serverCfg))
-            self.list.append(getConfigListEntry(_("Port: (optional)"), self.portCfg))
-            self.list.append(getConfigListEntry(_("Username:"), self.usernameCfg))
-            self.list.append(getConfigListEntry(_("Password:"), self.passwordCfg))
-            self.list.append(getConfigListEntry(_("Output:"), self.outputCfg))
+        self.list.append(getConfigListEntry(_("Select playlist type:"), self.playlist_type_cfg))
+        if self.playlist_type_cfg.value == "standard":
+            self.list.append(getConfigListEntry(_("Short name or provider name:"), self.name_cfg))
+            self.list.append(getConfigListEntry(_("Protocol:"), self.protocol_cfg))
+            self.list.append(getConfigListEntry(_("Server URL: i.e. domain.xyz"), self.server_cfg))
+            self.list.append(getConfigListEntry(_("Port: (optional) i.e. 8080"), self.port_cfg))
+            self.list.append(getConfigListEntry(_("Username:"), self.username_cfg))
+            self.list.append(getConfigListEntry(_("Password:"), self.password_cfg))
+            self.list.append(getConfigListEntry(_("Output:"), self.output_cfg))
         else:
-            self.list.append(getConfigListEntry(_("Short name or provider name:"), self.nameCfg))
-            self.list.append(getConfigListEntry(_("Protocol:"), self.protocolCfg))
-            self.list.append(getConfigListEntry(_("External url: i.e pastebin.com/raw/blahblah"), self.urlCfg))
+            self.list.append(getConfigListEntry(_("Short name or provider name:"), self.name_cfg))
+            self.list.append(getConfigListEntry(_("Protocol:"), self.protocol_cfg))
+            self.list.append(getConfigListEntry(_("External url: i.e pastebin.com/raw/blahblah"), self.url_cfg))
 
         self["config"].list = self.list
         self["config"].l.setList(self.list)
-        self.handleInputHelpers()
+        self.handle_input_helpers()
 
-    def handleInputHelpers(self):
-        from enigma import ePoint
-        currConfig = self["config"].getCurrent()
+    def handle_input_helpers(self):
 
-        if currConfig is not None:
-            if isinstance(currConfig[1], ConfigText):
-                if "VKeyIcon" in self:
-                    if isinstance(currConfig[1], ConfigNumber):
-                        try:
+        curr_config = self["config"].getCurrent()
+
+        if curr_config is not None:
+            with suppress(Exception):
+                if isinstance(curr_config[1], ConfigText):
+                    if "VKeyIcon" in self:
+                        if isinstance(curr_config[1], ConfigNumber):
                             self["VirtualKB"].setEnabled(False)
-                        except:
-                            pass
-
-                        try:
                             self["virtualKeyBoardActions"].setEnabled(False)
-                        except:
-                            pass
-
-                        self["VKeyIcon"].hide()
-                    else:
-                        try:
+                            self["VKeyIcon"].hide()
+                        else:
                             self["VirtualKB"].setEnabled(True)
-                        except:
-                            pass
-
-                        try:
                             self["virtualKeyBoardActions"].setEnabled(True)
-                        except:
-                            pass
-                        self["VKeyIcon"].show()
+                            self["VKeyIcon"].show()
 
-                if "HelpWindow" in self and currConfig[1].help_window and currConfig[1].help_window.instance is not None:
-                    helpwindowpos = self["HelpWindow"].getPosition()
-                    currConfig[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+                    if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
+                        helpwindowpos = self["HelpWindow"].getPosition()
+                        curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+                else:
 
-            else:
-                if "VKeyIcon" in self:
-                    try:
+                    if "VKeyIcon" in self:
                         self["VirtualKB"].setEnabled(False)
-                    except:
-                        pass
-                    self["VKeyIcon"].hide()
+                        self["VKeyIcon"].hide()
 
     def save(self):
         if self["config"].isChanged():
-            if self.playlisttypeCfg.value == "standard":
-                self.name = self.nameCfg.value.strip()
-                protocol = self.protocolCfg.value
-                domain = self.serverCfg.value.strip().lower()
-                port = self.portCfg.value
+            if self.playlist_type_cfg.value == "standard":
+                name = self.name_cfg.value.strip()
+                protocol = self.protocol_cfg.value
+                domain = self.server_cfg.value.strip().lower()
+                port = self.port_cfg.value
 
                 if port:
                     host = "%s%s:%s" % (protocol, domain, port)
                 else:
                     host = "%s%s" % (protocol, domain)
 
-                username = self.usernameCfg.value.strip()
-                password = self.passwordCfg.value.strip()
-                listtype = "m3u"
-                output = self.outputCfg.value
+                username = self.username_cfg.value.strip()
+                password = self.password_cfg.value.strip()
+                list_type = "m3u"
+                output = self.output_cfg.value
 
-                playlistline = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, listtype, output, self.name)
-                self.apiline = "%s/player_api.php?username=%s&password=%s" % (host, username, password)
+                playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, list_type, output, name)
+                api_line = "%s/player_api.php?username=%s&password=%s" % (host, username, password)
 
-                valid = self.checkline(self.apiline)
+                valid = self.check_line(api_line)
             else:
-                self.name = self.nameCfg.value.strip()
-                protocol = self.protocolCfg.value
-                url = self.urlCfg.value.strip()
+                name = self.name_cfg.value.strip()
+                protocol = self.protocol_cfg.value
+                url = self.url_cfg.value.strip()
                 host = "%s%s" % (protocol, url)
 
-                playlistline = "%s #%s" % (host, self.name)
+                playlist_line = "%s #%s" % (host, name)
 
-                valid = self.checkline(host)
+                valid = self.check_line(host)
 
             # check url has response
             if not valid:
@@ -209,26 +194,26 @@ class BMX_AddServer(ConfigListScreen, Screen):
                 return
 
             # check name is not blank
-            if self.name is None or len(self.name) < 3:
+            if name is None or len(name) < 3:
                 self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
-                self.createSetup()
+                self.create_setup()
                 return
 
             # check name exists
             if self.playlists_all:
                 for playlists in self.playlists_all:
-                    if playlists["playlist_info"]["name"] == self.name:
+                    if playlists["playlist_info"]["name"] == name:
                         self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
                         return
 
             # check playlists.txt file hasn't been deleted
-            if not os.path.isfile(playlist_file):
-                with open(playlist_file, "a") as f:
+            if not os.path.isfile(PLAYLIST_FILE):
+                with open(PLAYLIST_FILE, "a", encoding="utf-8") as f:
                     f.close()
 
             # update playlists.txt file
-            with open(playlist_file, "a") as f:
-                f.write("\n" + str(playlistline) + "\n")
+            with open(PLAYLIST_FILE, "a", encoding="utf-8") as f:
+                f.write("\n" + str(playlist_line) + "\n")
             self.session.open(MessageBox, _("Playlist added successfully."), type=MessageBox.TYPE_INFO, timeout=5)
             self.close()
 
@@ -236,13 +221,12 @@ class BMX_AddServer(ConfigListScreen, Screen):
         self.item = self["config"].getCurrent()
         for x in self.onChangedEntry:
             x()
-        try:
-            if isinstance(self["config"].getCurrent()[1], ConfigEnableDisable) or isinstance(self["config"].getCurrent()[1], ConfigYesNo) or isinstance(self["config"].getCurrent()[1], ConfigSelection):
-                self.createSetup()
-        except:
-            pass
 
-    def checkline(self, url):
+        with suppress(Exception):
+            if isinstance(self["config"].getCurrent()[1], (ConfigEnableDisable, ConfigYesNo, ConfigSelection)):
+                self.create_setup()
+
+    def check_line(self, url):
         valid = False
         r = ""
         adapter = HTTPAdapter(max_retries=0)
@@ -251,16 +235,14 @@ class BMX_AddServer(ConfigListScreen, Screen):
         http.mount("https://", adapter)
         response = ""
         try:
-            with http.get(url, headers=hdr, timeout=10, verify=False, stream=True) as r:
+            with http.get(url, headers=HDR, timeout=10, verify=False, stream=True) as r:
                 r.raise_for_status()
                 if r.status_code == requests.codes.ok:
                     try:
-                        if self.playlisttypeCfg.value == "standard":
+                        if self.playlist_type_cfg.value == "standard":
                             response = r.json()
-                            if "user_info" in response:
-                                if "auth" in response["user_info"]:
-                                    if response["user_info"]["auth"] == 1:
-                                        valid = True
+                            if "user_info" in response and "auth" in response["user_info"] and response["user_info"]["auth"] == 1:
+                                valid = True
                         else:
                             valid = True
                     except Exception as e:

@@ -1,0 +1,647 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2023-10-22 20:06+0100\n"
+"PO-Revision-Date: 2023-10-22 20:07+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: about.py:25 mainmenu.py:135
+msgid "About"
+msgstr ""
+
+#: about.py:33 bouquetsettings.py:51 choosecategories.py:49 mainmenu.py:42
+#: playlists.py:81 server.py:53 serverinfo.py:61 settings.py:68
+msgid "Back"
+msgstr ""
+
+#: about.py:34 mainmenu.py:43 playlists.py:82 serverinfo.py:62
+msgid "OK"
+msgstr ""
+
+#: about.py:44
+msgid "BouquetMakerXtream "
+msgstr ""
+
+#: about.py:45
+msgid ""
+"Support for this plugin and latest versions can be found on https://linuxsat-"
+"support.com\n"
+"\n"
+msgstr ""
+
+#: about.py:46
+msgid ""
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, "
+"external and local m3u8 playlists. \n"
+"Play your files via your TV bouquets.\n"
+"\n"
+msgstr ""
+
+#: about.py:47
+msgid "Credits:\n"
+msgstr ""
+
+#: about.py:48
+msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
+msgstr ""
+
+#: about.py:49
+msgid ""
+"And thanks to all the other coders and Linuxsat testers who helped in the "
+"development of this project.\n"
+"\n"
+msgstr ""
+
+#: about.py:50
+msgid ""
+"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or "
+"https://ko-fi.com/kiddac\n"
+msgstr ""
+
+#: about.py:51
+msgid "Cheers - all donations are very much appreciated."
+msgstr ""
+
+#: bouquetsettings.py:44
+msgid "Bouquets Settings"
+msgstr ""
+
+#: bouquetsettings.py:52
+msgid "Continue"
+msgstr ""
+
+#: bouquetsettings.py:251 bouquetsettings.py:252 bouquetsettings.py:253
+#: bouquetsettings.py:254
+msgid "Original Order"
+msgstr ""
+
+#: bouquetsettings.py:251 bouquetsettings.py:252 bouquetsettings.py:253
+#: bouquetsettings.py:254
+msgid "A-Z"
+msgstr ""
+
+#: bouquetsettings.py:252 bouquetsettings.py:254
+msgid "Newest"
+msgstr ""
+
+#: bouquetsettings.py:274 server.py:117 server.py:125
+msgid "Short name or provider name:"
+msgstr ""
+
+#: bouquetsettings.py:275
+msgid "Use name as bouquet prefix"
+msgstr ""
+
+#: bouquetsettings.py:278
+msgid "Show LIVE category if available:"
+msgstr ""
+
+#: bouquetsettings.py:280
+msgid "Stream Type LIVE:"
+msgstr ""
+
+#: bouquetsettings.py:283
+msgid "LIVE category bouquet order"
+msgstr ""
+
+#: bouquetsettings.py:284
+msgid "LIVE stream bouquet order"
+msgstr ""
+
+#: bouquetsettings.py:287
+msgid "Show VOD category if available:"
+msgstr ""
+
+#: bouquetsettings.py:290
+msgid "Show SERIES category if available:"
+msgstr ""
+
+#: bouquetsettings.py:294
+msgid "Stream Type VOD/SERIES:"
+msgstr ""
+
+#: bouquetsettings.py:297
+msgid "VOD/SERIES category bouquet order"
+msgstr ""
+
+#: bouquetsettings.py:298
+msgid "VOD/SERIES streams bouquet order"
+msgstr ""
+
+#: bouquetsettings.py:301 server.py:123
+msgid "Output:"
+msgstr ""
+
+#: bouquetsettings.py:305
+msgid "Use alternative EPG url:"
+msgstr ""
+
+#: bouquetsettings.py:307
+msgid "Alternative EPG url:"
+msgstr ""
+
+#: bouquetsettings.py:351
+msgid "No bouquets selected."
+msgstr ""
+
+#: bouquetsettings.py:372
+msgid ""
+"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
+"characters."
+msgstr ""
+
+#: bouquetsettings.py:380 server.py:206
+msgid "Name already used. Please enter a unique name."
+msgstr ""
+
+#: buildbouquets.py:38 update.py:57
+msgid "Building Bouquets"
+msgstr ""
+
+#: buildbouquets.py:42 update.py:60
+msgid "Building Bouquets..."
+msgstr ""
+
+#: buildbouquets.py:192 update.py:219
+msgid "Downloading live data..."
+msgstr ""
+
+#: buildbouquets.py:195 buildbouquets.py:286 buildbouquets.py:439 update.py:222
+#: update.py:313 update.py:466
+msgid "Downloading VOD data..."
+msgstr ""
+
+#: buildbouquets.py:198 buildbouquets.py:289 buildbouquets.py:442
+#: buildbouquets.py:470 buildbouquets.py:590 update.py:225 update.py:316
+#: update.py:469 update.py:498 update.py:618
+msgid "Downloading series data..."
+msgstr ""
+
+#: buildbouquets.py:205 update.py:232
+msgid "Downloading external playlist..."
+msgstr ""
+
+#: buildbouquets.py:207 update.py:234
+msgid "Loadind local playlist..."
+msgstr ""
+
+#: buildbouquets.py:213 buildbouquets.py:231 update.py:240 update.py:258
+msgid "Processing live data..."
+msgstr ""
+
+#: buildbouquets.py:219 update.py:246
+msgid "Processing VOD data..."
+msgstr ""
+
+#: buildbouquets.py:225 buildbouquets.py:296 buildbouquets.py:449
+#: buildbouquets.py:475 buildbouquets.py:595 update.py:252 update.py:323
+#: update.py:476 update.py:503 update.py:623
+msgid "Processing series data..."
+msgstr ""
+
+#: buildbouquets.py:294 buildbouquets.py:447 update.py:321 update.py:474
+msgid "Process VOD data..."
+msgstr ""
+
+#: buildbouquets.py:624 update.py:652
+msgid ""
+"Your provider does not have the 'simple' API call\n"
+"Unable to build series.\n"
+"Alternative method might be added in the future."
+msgstr ""
+
+#: buildbouquets.py:890
+msgid " IPTV Bouquets Created"
+msgstr ""
+
+#: catchup.py:133
+#, python-format
+msgid "TV Archive: %s"
+msgstr ""
+
+#: catchup.py:260
+msgid "Catchup currently not available. Missing EPG data"
+msgstr ""
+
+#: choosecategories.py:46
+msgid "Category"
+msgstr ""
+
+#: choosecategories.py:47
+msgid "Channel"
+msgstr ""
+
+#: choosecategories.py:51 deletebouquets.py:37
+msgid "Invert"
+msgstr ""
+
+#: choosecategories.py:52
+msgid "Reset"
+msgstr ""
+
+#: choosecategories.py:54
+msgid "Show Streams"
+msgstr ""
+
+#: choosecategories.py:265 choosecategories.py:469 choosecategories.py:509
+#: choosecategories.py:606 choosecategories.py:610
+msgid "Choose Live Categories"
+msgstr ""
+
+#: choosecategories.py:273 choosecategories.py:316
+msgid "Next"
+msgstr ""
+
+#: choosecategories.py:275 choosecategories.py:318 choosecategories.py:353
+msgid "Create"
+msgstr ""
+
+#: choosecategories.py:308 choosecategories.py:478 choosecategories.py:526
+#: choosecategories.py:600 choosecategories.py:618
+msgid "Choose VOD Categories"
+msgstr ""
+
+#: choosecategories.py:347 choosecategories.py:487 choosecategories.py:543
+#: choosecategories.py:592 choosecategories.py:624
+msgid "Choose Series Categories"
+msgstr ""
+
+#: deletebouquets.py:28 mainmenu.py:131
+msgid "Delete Bouquets"
+msgstr ""
+
+#: deletebouquets.py:35
+msgid "Cancel"
+msgstr ""
+
+#: deletebouquets.py:36 playlists.py:83
+msgid "Delete"
+msgstr ""
+
+#: deletebouquets.py:38
+msgid "Clear All"
+msgstr ""
+
+#: mainmenu.py:41
+msgid "Main Menu"
+msgstr ""
+
+#: mainmenu.py:65
+msgid "Playlists.txt location is invalid and has been reset."
+msgstr ""
+
+#: mainmenu.py:118
+msgid "Playlists"
+msgstr ""
+
+#: mainmenu.py:120 settings.py:61
+msgid "Main Settings"
+msgstr ""
+
+#: mainmenu.py:130
+msgid "Update Bouquets"
+msgstr ""
+
+#: mainmenu.py:132
+msgid "Delete All BMX Bouquets"
+msgstr ""
+
+#: mainmenu.py:134 server.py:46
+msgid "Add Playlist"
+msgstr ""
+
+#: mainmenu.py:168
+msgid "Delete all BMX created bouquets?"
+msgstr ""
+
+#: parsem3u.py:65
+msgid "Stream"
+msgstr ""
+
+#: playlists.py:48 settings.py:27
+msgid "Please enter the correct pin code"
+msgstr ""
+
+#: playlists.py:48 settings.py:27
+msgid "Enter pin code"
+msgstr ""
+
+#: playlists.py:57 settings.py:36
+msgid "The pin code you entered is wrong."
+msgstr ""
+
+#: playlists.py:79
+msgid "Select Playlist"
+msgstr ""
+
+#: playlists.py:84
+msgid "Info"
+msgstr ""
+
+#: playlists.py:389 playlists.py:474
+msgid "Server Not Responding"
+msgstr ""
+
+#: playlists.py:411 playlists.py:476
+msgid "Not Authorised"
+msgstr ""
+
+#: playlists.py:415 playlists.py:423 playlists.py:461
+msgid "Active"
+msgstr ""
+
+#: playlists.py:417 playlists.py:468
+msgid "Banned"
+msgstr ""
+
+#: playlists.py:419 playlists.py:472
+msgid "Disabled"
+msgstr ""
+
+#: playlists.py:421 playlists.py:470
+msgid "Expired"
+msgstr ""
+
+#: playlists.py:425 playlists.py:427
+msgid "Expires: "
+msgstr ""
+
+#: playlists.py:429
+msgid "Active Conn:"
+msgstr ""
+
+#: playlists.py:432
+msgid "Max Conn:"
+msgstr ""
+
+#: playlists.py:443 playlists.py:461
+msgid "Url OK"
+msgstr ""
+
+#: playlists.py:444
+msgid "External playlist"
+msgstr ""
+
+#: playlists.py:447
+msgid "Local file"
+msgstr ""
+
+#: playlists.py:490
+msgid "Delete selected playlist?"
+msgstr ""
+
+#: playlists.py:517
+msgid "Delete providers EPG data?"
+msgstr ""
+
+#: playlists.py:543
+msgid "Url is invalid or playlist/user no longer authorised!"
+msgstr ""
+
+#: playlists.py:546
+msgid "User Info only available for xtream/XUI One lines"
+msgstr ""
+
+#: plugin.py:116
+msgid "Bottom"
+msgstr ""
+
+#: plugin.py:116
+msgid "Top"
+msgstr ""
+
+#: plugin.py:177
+msgid "Bouquet Maker Xtream"
+msgstr ""
+
+#: plugin.py:399
+msgid "IPTV Bouquets Creator by KiddaC"
+msgstr ""
+
+#: plugin.py:400
+msgid "BouquetMakerXtream"
+msgstr ""
+
+#: server.py:54 settings.py:69
+msgid "Save"
+msgstr ""
+
+#: server.py:55
+msgid ""
+"You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/"
+"playlists.txt file"
+msgstr ""
+
+#: server.py:84 settings.py:99
+msgid "Really close without saving settings?"
+msgstr ""
+
+#: server.py:101
+msgid "Xtream codes / XUI ONE (get.php)"
+msgstr ""
+
+#: server.py:101
+msgid "External #EXTM3U playlist"
+msgstr ""
+
+#: server.py:115
+msgid "Select playlist type:"
+msgstr ""
+
+#: server.py:118 server.py:126
+msgid "Protocol:"
+msgstr ""
+
+#: server.py:119
+msgid "Server URL: i.e. domain.xyz"
+msgstr ""
+
+#: server.py:120
+msgid "Port: (optional) i.e. 8080"
+msgstr ""
+
+#: server.py:121
+msgid "Username:"
+msgstr ""
+
+#: server.py:122
+msgid "Password:"
+msgstr ""
+
+#: server.py:127
+msgid "External url: i.e pastebin.com/raw/blahblah"
+msgstr ""
+
+#: server.py:193
+msgid "Details are not valid or unauthorised"
+msgstr ""
+
+#: server.py:198
+msgid ""
+"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 "
+"characters."
+msgstr ""
+
+#: server.py:217
+msgid "Playlist added successfully."
+msgstr ""
+
+#: serverinfo.py:30
+msgid "User Information"
+msgstr ""
+
+#: serverinfo.py:44
+msgid "Status:"
+msgstr ""
+
+#: serverinfo.py:45
+msgid "Is Trial:"
+msgstr ""
+
+#: serverinfo.py:46
+msgid "Active Connections:"
+msgstr ""
+
+#: serverinfo.py:47
+msgid "Max Connections:"
+msgstr ""
+
+#: serverinfo.py:48
+msgid "Created At:"
+msgstr ""
+
+#: serverinfo.py:49
+msgid "Expiry Date:"
+msgstr ""
+
+#: serverinfo.py:50
+msgid "Allowed Output Formats:"
+msgstr ""
+
+#: serverinfo.py:51
+msgid "Real URL:"
+msgstr ""
+
+#: serverinfo.py:52
+msgid "Timezone:"
+msgstr ""
+
+#: serverinfo.py:53
+msgid "Server Offset:"
+msgstr ""
+
+#: settings.py:111
+msgid ""
+"Please change default parental pin.\n"
+"\n"
+"Pin cannot be 0000, 1111 or 1234"
+msgstr ""
+
+#: settings.py:128
+msgid "You need to restart the GUI"
+msgstr ""
+
+#: settings.py:128
+msgid "Do you want to restart now?"
+msgstr ""
+
+#: settings.py:138
+msgid "Select skin"
+msgstr ""
+
+#: settings.py:139
+msgid "playlists.txt location"
+msgstr ""
+
+#: settings.py:140
+msgid "Local M3U File location"
+msgstr ""
+
+#: settings.py:143
+msgid "Default LIVE stream type"
+msgstr ""
+
+#: settings.py:144
+msgid "Default VOD/SERIES stream type"
+msgstr ""
+
+#: settings.py:145
+msgid "BouquetMakerXtream parental control"
+msgstr ""
+
+#: settings.py:146
+msgid "BouquetMakerXtream parental pin"
+msgstr ""
+
+#: settings.py:147
+msgid "Show in main menu"
+msgstr ""
+
+#: settings.py:147
+msgid " *Restart GUI Required"
+msgstr ""
+
+#: settings.py:149
+msgid "Skip playlist selection screen if only 1 playlist"
+msgstr ""
+
+#: settings.py:151
+msgid "Automatic live bouquet update"
+msgstr ""
+
+#: settings.py:152
+msgid "Automatic live bouquet update time"
+msgstr ""
+
+#: settings.py:154
+msgid "Embed Catchup player in channelselect screen"
+msgstr ""
+
+#: settings.py:155
+msgid "Prefix Catchup channels"
+msgstr ""
+
+#: settings.py:156
+msgid "Select Catchup prefix symbol"
+msgstr ""
+
+#: settings.py:157
+msgid "Margin before Catchup (mins)"
+msgstr ""
+
+#: settings.py:158
+msgid "Margin after Catchup (mins)"
+msgstr ""
+
+#: settings.py:160
+msgid "Group bouquets into its own folder"
+msgstr ""
+
+#: settings.py:161
+msgid "Exit plugin on bouquet creation"
+msgstr ""
+
+#: settings.py:261 settings.py:276
+msgid "Choose Directory:"
+msgstr ""
+
+#: settings.py:262 settings.py:277
+msgid "Choose directory"
+msgstr ""
+
+#: update.py:84
+msgid " Providers IPTV Updated"
+msgstr ""
+
+#: update.py:141
+#, python-format
+msgid "Updating Playlist %d of %d"
+msgstr ""

@@ -25,13 +25,13 @@ if [ -d /etc/opkg ]; then
         fi
         echo ""
 
-        echo "checking python3-lzma"
-        if python -c "import lzma" &> /dev/null; then
-            echo "lzma library already installed"
-        else
-            opkg install liblzma5
-        fi
-        echo ""
+        # echo "checking python3-lzma"
+        # if python -c "import lzma" &> /dev/null; then
+        #     echo "lzma library already installed"
+        # else
+        #     opkg install liblzma5
+        # fi
+        # echo ""
 
     else
         echo "checking python-requests"
@@ -50,13 +50,13 @@ if [ -d /etc/opkg ]; then
         fi
         echo ""
 
-        echo "checking python2-lzma"
-        if python -c "import lzma" &> /dev/null; then
-            echo "lzma library already installed"
-        else
-            opkg install python-backports-lzma
-        fi
-        echo ""
+        # echo "checking python2-lzma"
+        # if python -c "import lzma" &> /dev/null; then
+        #     echo "lzma library already installed"
+        # else
+        #     opkg install python-backports-lzma
+        # fi
+        # echo ""
 
     fi
 else
@@ -79,13 +79,13 @@ else
         fi
         echo ""
 
-        echo "checking python3-lzma"
-        if python -c "import lzma" &> /dev/null; then
-            echo "lzma library already installed"
-        else
-            apt-get -y install liblzma5
-        fi
-        echo ""
+        # echo "checking python3-lzma"
+        # if python -c "import lzma" &> /dev/null; then
+        #     echo "lzma library already installed"
+        # else
+        #     apt-get -y install liblzma5
+        # fi
+        # echo ""
 
     else
         echo "checking python-requests"
@@ -104,13 +104,13 @@ else
         fi
         echo ""
 
-        echo "checking python2-lzma"
-        if python -c "import lzma" &> /dev/null; then
-            echo "lzma library already installed"
-        else
-            apt-get -y install python-backports-lzma
-        fi
-        echo ""
+        # echo "checking python2-lzma"
+        # if python -c "import lzma" &> /dev/null; then
+        #     echo "lzma library already installed"
+        # else
+        #     apt-get -y install python-backports-lzma
+        # fi
+        # echo ""
     fi
 fi
 exit 0

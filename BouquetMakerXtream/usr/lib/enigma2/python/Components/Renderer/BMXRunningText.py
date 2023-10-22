@@ -71,6 +71,7 @@ class BMXRunningText(Renderer):
         self.mPageDelay = self.mPageLength = 0
         self.lineHeight = 0     # for text height auto correction on dmm-enigma2
         self.mShown = 0
+        self.mTimer = eTimer()
 
     GUI_WIDGET = eWidget
 
@@ -82,14 +83,13 @@ class BMXRunningText(Renderer):
         self.instance.move(ePoint(0, 0))
         self.instance.resize(eSize(self.W, self.H))
         self.scroll_label = eLabel(instance)
-        self.mTimer = eTimer()
 
         try:
             self.mTimer.callback.append(self.movingLoop)
-        except:
+        except Exception:
             try:
                 self.mTimer_conn = self.mTimer.timeout.connect(self.movingLoop)
-            except:
+            except Exception:
                 pass
 
     def preWidgetRemove(self, instance):
@@ -97,7 +97,7 @@ class BMXRunningText(Renderer):
 
         try:
             self.mTimer.callback.remove(self.movingLoop)
-        except:
+        except Exception:
             self.mTimer_conn = self.mTimer.timeout.disconnect(self.movingLoop)
 
         self.mTimer = None
@@ -111,7 +111,7 @@ class BMXRunningText(Renderer):
                     x = min(limit, int(val))
                 else:
                     x = max(limit, int(val))
-            except:
+            except Exception:
                 x = default
             return x
 
