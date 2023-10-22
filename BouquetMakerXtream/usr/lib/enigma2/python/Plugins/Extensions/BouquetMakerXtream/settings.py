@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from contextlib import suppress
 
 from Components.ActionMap import ActionMap
 from Components.config import ConfigSelection, ConfigText, ConfigYesNo, config, configfile, getConfigListEntry
@@ -18,7 +17,10 @@ from Tools.BoundFunction import boundFunction
 
 from . import _
 from .bmxStaticText import StaticText
-from .plugin import autoStartTimer, cfg, SKIN_DIRECTORY
+from .plugin import autoStartTimer, cfg, SKIN_DIRECTORY, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 
 class ProtectedScreen:
@@ -85,10 +87,12 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.onLayoutFinish.append(self.__layout_finished)
 
     def clear_caches(self):
-        with suppress(Exception):
+        try:
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
             os.system("echo 3 > /proc/sys/vm/drop_caches")
+        except:
+            pass
 
     def __layout_finished(self):
         self.setTitle(self.setup_title)
@@ -211,30 +215,46 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         curr_config = self["config"].getCurrent()
 
         if curr_config is not None:
-            with suppress(Exception):
-                if isinstance(curr_config[1], ConfigText):
-                    if "VKeyIcon" in self:
-                        self["VirtualKB"].setEnabled(True)
-                        self["virtualKeyBoardActions"].setEnabled(True)
-                        self["VKeyIcon"].show()
-
-                    if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
-                        helpwindowpos = self["HelpWindow"].getPosition()
-                        curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
-                else:
-                    if "VKeyIcon" in self:
+            if isinstance(curr_config[1], ConfigText):
+                if "VKeyIcon" in self:
+                    try:
                         self["VirtualKB"].setEnabled(False)
+                    except:
+                        pass
+
+                    try:
                         self["virtualKeyBoardActions"].setEnabled(False)
-                        self["VKeyIcon"].hide()
+                    except:
+                        pass
+
+                    self["VKeyIcon"].hide()
+
+                if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
+                    helpwindowpos = self["HelpWindow"].getPosition()
+                    curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+            else:
+                if "VKeyIcon" in self:
+                    try:
+                        self["VirtualKB"].setEnabled(False)
+                    except:
+                        pass
+
+                    try:
+                        self["virtualKeyBoardActions"].setEnabled(False)
+                    except:
+                        pass
+                    self["VKeyIcon"].hide()
 
     def changedEntry(self):
         self.item = self["config"].getCurrent()
         for x in self.onChangedEntry:
             x()
 
-        with suppress(Exception):
+        try:
             if isinstance(self["config"].getCurrent()[1], (ConfigYesNo, ConfigSelection)):
                 self.create_setup()
+        except:
+            pass
 
     def getCurrentEntry(self):
         return self["config"].getCurrent() and self["config"].getCurrent()[0] or ""

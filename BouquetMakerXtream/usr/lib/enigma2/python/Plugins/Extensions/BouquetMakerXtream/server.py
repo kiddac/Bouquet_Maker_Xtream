@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from contextlib import suppress
 
 import requests
 from Components.ActionMap import ActionMap
@@ -17,7 +16,10 @@ from Screens.Screen import Screen
 from . import _
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import HDR, PLAYLIST_FILE, SKIN_DIRECTORY, cfg
+from .plugin import HDR, PLAYLIST_FILE, SKIN_DIRECTORY, cfg, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 try:
     from http.client import HTTPConnection
@@ -135,26 +137,44 @@ class BmxAddServer(ConfigListScreen, Screen):
         curr_config = self["config"].getCurrent()
 
         if curr_config is not None:
-            with suppress(Exception):
-                if isinstance(curr_config[1], ConfigText):
-                    if "VKeyIcon" in self:
-                        if isinstance(curr_config[1], ConfigNumber):
+            if isinstance(curr_config[1], ConfigText):
+                if "VKeyIcon" in self:
+                    if isinstance(curr_config[1], ConfigNumber):
+                        try:
                             self["VirtualKB"].setEnabled(False)
+                        except:
+                            pass
+
+                        try:
                             self["virtualKeyBoardActions"].setEnabled(False)
-                            self["VKeyIcon"].hide()
-                        else:
-                            self["VirtualKB"].setEnabled(True)
-                            self["virtualKeyBoardActions"].setEnabled(True)
-                            self["VKeyIcon"].show()
+                        except:
+                            pass
 
-                    if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
-                        helpwindowpos = self["HelpWindow"].getPosition()
-                        curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
-                else:
-
-                    if "VKeyIcon" in self:
-                        self["VirtualKB"].setEnabled(False)
                         self["VKeyIcon"].hide()
+                    else:
+                        try:
+                            self["VirtualKB"].setEnabled(True)
+                        except:
+                            pass
+
+                        try:
+                            self["virtualKeyBoardActions"].setEnabled(True)
+                        except:
+                            pass
+
+                        self["VKeyIcon"].show()
+
+                if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
+                    helpwindowpos = self["HelpWindow"].getPosition()
+                    curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+            else:
+                if "VKeyIcon" in self:
+                    try:
+                        self["VirtualKB"].setEnabled(False)
+                    except:
+                        pass
+
+                    self["VKeyIcon"].hide()
 
     def save(self):
         if self["config"].isChanged():
@@ -222,9 +242,11 @@ class BmxAddServer(ConfigListScreen, Screen):
         for x in self.onChangedEntry:
             x()
 
-        with suppress(Exception):
+        try:
             if isinstance(self["config"].getCurrent()[1], (ConfigEnableDisable, ConfigYesNo, ConfigSelection)):
                 self.create_setup()
+        except:
+            pass
 
     def check_line(self, url):
         valid = False

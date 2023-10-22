@@ -6,7 +6,6 @@ import json
 import os
 import re
 import shutil
-from contextlib import suppress
 from datetime import datetime
 
 import requests
@@ -26,7 +25,10 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, HDR, PLAYLIST_FILE, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION
+from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, HDR, PLAYLIST_FILE, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 try:
     from http.client import HTTPConnection
@@ -170,11 +172,13 @@ class BmxPlaylists(Screen, ProtectedScreen):
                     exists = False
                     description = ""
                     if child.tag == "source":
-                        with suppress(Exception):
+                        try:
                             description = child.find("description").text
                             for cfile in channel_file_list:
                                 if cfile in description:
                                     exists = True
+                        except:
+                            pass
 
                         if exists is False:
                             elem.remove(child)
@@ -192,10 +196,12 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self.timer.start(50, True)
 
     def clear_caches(self):
-        with suppress(Exception):
+        try:
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
             os.system("echo 3 > /proc/sys/vm/drop_caches")
+        except:
+            pass
 
     def make_url_list(self):
         # print("*** make_url_list ***")
@@ -373,8 +379,10 @@ class BmxPlaylists(Screen, ProtectedScreen):
 
     def create_setup(self):
         # print("*** create_setup ***")
-        with suppress(Exception):
+        try:
             self["splash"].hide()
+        except:
+            pass
 
         self.list = []
         index = 0
@@ -461,9 +469,11 @@ class BmxPlaylists(Screen, ProtectedScreen):
         if status == (_("Active")) or status == (_("Url OK")) or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "led_green.png"))
 
-            with suppress(Exception):
+            try:
                 if int(activenum) >= int(maxnum) and int(maxnum) != 0:
                     pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "led_yellow.png"))
+            except:
+                pass
 
         if status == (_("Banned")):
             pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "led_red.png"))
@@ -519,8 +529,10 @@ class BmxPlaylists(Screen, ProtectedScreen):
             epg_location = str(cfg.epg_location.value)
             epg_folder = os.path.join(epg_location, str(self.current_playlist["playlist_info"]["name"]))
 
-            with suppress(Exception):
+            try:
                 shutil.rmtree(epg_folder)
+            except:
+                pass
 
     def getCurrentEntry(self):
         # print("*** getCurrentEntry ***")

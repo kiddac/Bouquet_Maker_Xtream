@@ -5,7 +5,6 @@ import re
 import shutil
 import sys
 import time
-from contextlib import suppress
 from datetime import datetime
 
 import requests
@@ -42,6 +41,9 @@ except Exception:
 
 PYTHON_FULL = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 PYTHON_VER = sys.version_info.major
+
+if PYTHON_VER == 2:
+    from io import open
 
 EPGIMPORTER = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
@@ -285,11 +287,13 @@ def MyChannelSelectionBase__init__(self, session):
 
 
 def show_bmx_catchup(self):
-    with suppress(Exception):
+    try:
         global ORIGINAL_REF
         global ORIGINAL_REF_STRING
         ORIGINAL_REF = self.session.nav.getCurrentlyPlayingServiceReference()
         ORIGINAL_REF_STRING = ORIGINAL_REF.toString()
+    except:
+        pass
 
     selected_ref = self["list"].getCurrent()
     selected_ref_string = selected_ref.toString()

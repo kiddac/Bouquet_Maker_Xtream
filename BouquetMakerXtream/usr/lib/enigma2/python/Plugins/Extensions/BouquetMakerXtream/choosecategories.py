@@ -3,7 +3,6 @@
 
 import json
 import os
-from contextlib import suppress
 
 from Components.ActionMap import ActionMap
 from Components.Pixmap import Pixmap
@@ -16,7 +15,10 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, PLAYLISTS_JSON, SKIN_DIRECTORY
+from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, PLAYLISTS_JSON, SKIN_DIRECTORY, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 
 class BmxChooseCategories(Screen):
@@ -174,8 +176,10 @@ class BmxChooseCategories(Screen):
                 if glob.CURRENT_PLAYLIST["settings"]["show_series"] is True:
                     self.series_url_list.append([self.p_series_streams_url, 5, "json"])
 
-        with suppress(Exception):
+        try:
             self["splash"].hide()
+        except:
+            pass
 
         if glob.CURRENT_PLAYLIST["settings"]["show_live"] is True:
             self.load_live()
@@ -199,8 +203,10 @@ class BmxChooseCategories(Screen):
         if stream_type == "external":
             self.url_list = self.external_url_list
 
-        with suppress(Exception):
+        try:
             self["splash"].show()
+        except:
+            pass
 
         results = ""
 
@@ -253,8 +259,10 @@ class BmxChooseCategories(Screen):
                             glob.CURRENT_PLAYLIST["data"]["vod_streams"] = response
                         elif category == 5:
                             glob.CURRENT_PLAYLIST["data"]["series_streams"] = response
-        with suppress(Exception):
+        try:
             self["splash"].hide()
+        except:
+            pass
 
     def load_live(self):
         # print("*** load_live ***")

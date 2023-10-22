@@ -3,7 +3,6 @@
 
 import json
 import os
-from contextlib import suppress
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -14,7 +13,10 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, EPGIMPORTER, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION
+from .plugin import cfg, COMMON_PATH, EPGIMPORTER, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 
 class BmxDeleteBouquets(Screen):
@@ -146,10 +148,12 @@ class BmxDeleteBouquets(Screen):
                         for child in list(elem):
                             description = ""
                             if child.tag == "source":
-                                with suppress(Exception):
+                                try:
                                     description = child.find("description").text
                                     if safe_name in description:
                                         elem.remove(child)
+                                except:
+                                    pass
 
                     tree.write(source_file)
 

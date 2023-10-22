@@ -1,13 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from contextlib import suppress
 import os
 import re
 
 from . import _
 from . import bouquet_globals as glob
 from .plugin import cfg, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 
 def parse_m3u8_playlist(response):
@@ -28,8 +30,10 @@ def parse_m3u8_playlist(response):
 
     for line in response:
         if PYTHON_VER == 3:
-            with suppress(Exception):
+            try:
                 line = line.decode("utf-8")
+            except Exception:
+                pass
 
         if not line.startswith("#EXTINF") and not line.startswith("http"):
             continue
@@ -48,8 +52,10 @@ def parse_m3u8_playlist(response):
                     line = re.sub('tvg-logo="(.*?)"', "", line)
 
             if "group-title=" in line and "format" not in line:
-                with suppress(Exception):
+                try:
                     group_title = (re.search('group-title="(.*?)"', line).group(1).strip())
+                except Exception:
+                    group_title = ""
 
             if "tvg-name=" in line:
                 try:
@@ -65,8 +71,10 @@ def parse_m3u8_playlist(response):
                 name = _("Stream") + " " + str(channel_num)
 
             if "tvg-id=" in line:
-                with suppress(Exception):
-                    epg_id = re.search('tvg-id="(.*?)"', line).group(1).strip()
+                try:
+                    epg_id = re.search('tvg-id=\"(.*?)\"', line).group(1).strip()
+                except:
+                    epg_id = ""
 
         elif line.startswith("http"):
             source = line.strip()

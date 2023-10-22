@@ -3,7 +3,6 @@
 
 import json
 import os
-from contextlib import suppress
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -17,7 +16,10 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import processfiles as pfiles
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, PLAYLISTS_JSON, PYTHON_FULL, SKIN_DIRECTORY, VERSION
+from .plugin import cfg, COMMON_PATH, PLAYLISTS_JSON, PYTHON_FULL, SKIN_DIRECTORY, VERSION, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 
 class BmxMainMenu(Screen):
@@ -60,11 +62,13 @@ class BmxMainMenu(Screen):
         self.setTitle(self.setup_title)
 
     def check_dependencies(self):
-        with suppress(Exception):
+        try:
             if cfg.location_valid.getValue() is False:
                 self.session.open(MessageBox, _("Playlists.txt location is invalid and has been reset."), type=MessageBox.TYPE_INFO, timeout=5)
                 cfg.location_valid.setValue(True)
                 cfg.save()
+        except Exception:
+            pass
 
         dependencies = True
 

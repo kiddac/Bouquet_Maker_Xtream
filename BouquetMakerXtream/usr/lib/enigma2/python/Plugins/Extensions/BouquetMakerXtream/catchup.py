@@ -141,8 +141,6 @@ class BmxCatchup(Screen):
         self.username = ""
         self.password = ""
         self.domain = ""
-        self.error_message = ""
-        self.isCatchupChannel = False
 
         self.ref_url = glob.CURRENT_REF.getPath()
         # http://domain.xyx:0000/live/user/pass/12345.ts

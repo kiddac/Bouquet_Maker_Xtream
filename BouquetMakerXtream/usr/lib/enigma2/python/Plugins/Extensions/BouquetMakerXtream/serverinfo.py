@@ -12,7 +12,10 @@ from Screens.Screen import Screen
 from . import _
 from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
-from .plugin import cfg, SKIN_DIRECTORY
+from .plugin import cfg, SKIN_DIRECTORY, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 
 class BmxUserInfo(Screen):

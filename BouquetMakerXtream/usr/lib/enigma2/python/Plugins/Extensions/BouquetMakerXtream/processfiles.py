@@ -4,9 +4,11 @@
 import json
 import os
 import re
-from contextlib import suppress
 
-from .plugin import cfg, PLAYLIST_FILE, PLAYLISTS_JSON
+from .plugin import cfg, PLAYLIST_FILE, PLAYLISTS_JSON, PYTHON_VER
+
+if PYTHON_VER == 2:
+    from io import open
 
 try:
     from urlparse import parse_qs, urlparse
@@ -94,8 +96,10 @@ def processfiles():
                         output = query["output"][0].strip()
 
                     if "timeshift" in query:
-                        with suppress(Exception):
+                        try:
                             epg_offset = int(query["timeshift"][0].strip())
+                        except:
+                            pass
 
                     if epg_offset != 0:
                         line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s\n" % (host, username, password, playlistformat, output, epg_offset, name)
@@ -191,8 +195,10 @@ def processfiles():
                         output = query["output"][0].strip()
 
                     if "timeshift" in query:
-                        with suppress(Exception):
+                        try:
                             epg_offset = int(query["timeshift"][0].strip())
+                        except:
+                            pass
 
                     player_api = "%s/player_api.php?username=%s&password=%s" % (host, username, password)
                     xmltv_api = "%s/xmltv.php?username=%s&password=%s&next_days=7" % (host, username, password)

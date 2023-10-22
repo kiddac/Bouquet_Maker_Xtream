@@ -3,7 +3,6 @@
 
 import json
 import os
-from contextlib import suppress
 
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
@@ -16,13 +15,18 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .plugin import EPGIMPORTER, cfg, PLAYLISTS_JSON, PYTHON_VER, SKIN_DIRECTORY
 
+if PYTHON_VER == 2:
+    from io import open
+
 try:
     from urllib import quote
 except ImportError:
     from urllib.parse import quote
 
-with suppress(Exception):
+try:
     from xml.dom import minidom
+except ImportError:
+    pass
 
 
 class BmxBuildBouquets(Screen):
