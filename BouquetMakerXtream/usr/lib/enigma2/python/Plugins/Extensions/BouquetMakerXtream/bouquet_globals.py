@@ -1,4 +1,3 @@
-"""Module providing temporary global variables"""
 CATCHUP_SHIFT = 0
 FIXEPG = False
 CURRENT_PLAYLIST = []

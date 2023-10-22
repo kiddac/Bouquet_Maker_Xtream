@@ -84,7 +84,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self["key_green"] = StaticText(_("OK"))
         self["key_yellow"] = StaticText(_("Delete"))
         self["key_blue"] = StaticText(_("Info"))
-        self["version"] = StaticText()
+        self["version"] = StaticText("")
 
         self.list = []
         self.draw_list = []

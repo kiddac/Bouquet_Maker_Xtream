@@ -10,7 +10,8 @@ from enigma import eTimer
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-from . import _, parsem3u
+from . import _
+from . import parsem3u
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .plugin import EPGIMPORTER, SCREENWIDTH, cfg, PLAYLISTS_JSON, PYTHON_VER, SKIN_DIRECTORY

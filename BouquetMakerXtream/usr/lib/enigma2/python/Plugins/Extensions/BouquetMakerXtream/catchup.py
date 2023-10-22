@@ -130,10 +130,10 @@ class BmxCatchup(Screen):
             "red": self.quit
         }, -2)
 
-        self.setup_title = _("TV Archive: %s" % glob.NAME.lstrip(cfg.catchup_prefix.value))
+        self.setup_title = _("TV Archive: %s") % glob.NAME.lstrip(cfg.catchup_prefix.value)
 
-        self["bmx_title"] = StaticText()
-        self["bmx_description"] = StaticText()
+        self["bmx_title"] = StaticText("")
+        self["bmx_description"] = StaticText("")
 
         self.ref_url = ""
         self.ref_stream = ""

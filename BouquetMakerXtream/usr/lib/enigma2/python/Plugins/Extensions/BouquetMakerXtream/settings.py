@@ -140,8 +140,8 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
 
     def init_config(self):
         self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
-        self.cfg_location = getConfigListEntry(_("playlists.txt location") + (" *Restart GUI Required"), cfg.location)
-        self.cfg_local_location = getConfigListEntry(_("Local M3U File location") + (" *Restart GUI Required"), cfg.local_location)
+        self.cfg_location = getConfigListEntry(_("playlists.txt location") + _(" *Restart GUI Required"), cfg.location)
+        self.cfg_local_location = getConfigListEntry(_("Local M3U File location") + _(" *Restart GUI Required"), cfg.local_location)
         # self.cfg_position = getConfigListEntry(_("Bouquet placement"), cfg.position)
         # self.cfg_timeout = getConfigListEntry(_("Server timeout (seconds)"), cfg.timeout)
         self.cfg_live_type = getConfigListEntry(_("Default LIVE stream type"), cfg.live_type)
@@ -155,7 +155,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_autoupdate = getConfigListEntry(_("Automatic live bouquet update"), cfg.autoupdate)
         self.cfg_wakeup = getConfigListEntry(_("Automatic live bouquet update time"), cfg.wakeup)
 
-        self.cfg_catchup_on = getConfigListEntry(_("Embed Catchup player in channelselect screen") + (" *Restart GUI Required"), cfg.catchup_on)
+        self.cfg_catchup_on = getConfigListEntry(_("Embed Catchup player in channelselect screen") + _(" *Restart GUI Required"), cfg.catchup_on)
         self.cfg_catchup = getConfigListEntry(_("Prefix Catchup channels"), cfg.catchup)
         self.cfg_catchup_prefix = getConfigListEntry(_("Select Catchup prefix symbol"), cfg.catchup_prefix)
         self.cfg_catchup_start = getConfigListEntry(_("Margin before Catchup (mins)"), cfg.catchup_start)

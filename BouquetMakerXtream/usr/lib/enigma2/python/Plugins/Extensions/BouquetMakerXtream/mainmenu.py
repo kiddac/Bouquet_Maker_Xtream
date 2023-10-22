@@ -43,7 +43,7 @@ class BmxMainMenu(Screen):
         self.setup_title = _("Main Menu")
         self["key_red"] = StaticText(_("Back"))
         self["key_green"] = StaticText(_("OK"))
-        self["version"] = StaticText()
+        self["version"] = StaticText("")
 
         self["actions"] = ActionMap(["BMXActions"], {
             "red": self.quit,

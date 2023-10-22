@@ -39,7 +39,7 @@ class BmxDeleteBouquets(Screen):
         self["key_yellow"] = StaticText(_("Invert"))
         self["key_blue"] = StaticText(_("Clear All"))
         self["key_info"] = StaticText("")
-        self["version"] = StaticText()
+        self["version"] = StaticText("")
 
         self.playlists_all = bmx.get_playlist_json()
 
