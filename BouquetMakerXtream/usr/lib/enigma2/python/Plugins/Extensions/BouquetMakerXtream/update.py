@@ -16,8 +16,6 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .plugin import EPGIMPORTER, SCREENWIDTH, cfg, PLAYLISTS_JSON, PYTHON_VER, SKIN_DIRECTORY
 
-if PYTHON_VER == 2:
-    from io import open
 
 try:
     from urllib import quote
@@ -39,7 +37,7 @@ class BmxUpdate(Screen):
         if self.runtype == "manual":
             skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
             skin = os.path.join(skin_path, "progress.xml")
-            with open(skin, "r", encoding="utf-8") as f:
+            with open(skin, "r") as f:
                 self.skin = f.read()
         else:
             skin = """
@@ -149,7 +147,7 @@ class BmxUpdate(Screen):
     def delete_existing_refs(self):
         # print("*** delete_existing_refs ***")
 
-        with open("/etc/enigma2/bouquets.tv", "r+", encoding="utf-8") as f:
+        with open("/etc/enigma2/bouquets.tv", "r+") as f:
             lines = f.readlines()
             f.seek(0)
             f.truncate()
@@ -416,7 +414,7 @@ class BmxUpdate(Screen):
 
                     bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_live_" + self.safe_name + "_" + bmx.safe_name(category["category_name"]) + '.tv" ORDER BY bouquet\n'
 
-            with open(filename, "a+", encoding="utf-8") as f:
+            with open(filename, "a+") as f:
                 f.write(str(bouquet_tv_string))
 
             for category in live_categories:
@@ -456,7 +454,7 @@ class BmxUpdate(Screen):
                     else:
                         filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_live_" + str(bouquet_title) + ".tv"
 
-                    with open(filename, "w+", encoding="utf-8") as f:
+                    with open(filename, "w+") as f:
                         f.write(output_string)
 
         if live_categories:
@@ -572,7 +570,7 @@ class BmxUpdate(Screen):
 
                     bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_vod_" + self.safe_name + "_" + bmx.safe_name(category["category_name"]) + '.tv" ORDER BY bouquet\n'
 
-            with open(filename, "a+", encoding="utf-8") as f:
+            with open(filename, "a+") as f:
                 f.write(str(bouquet_tv_string))
 
             for category in vod_categories:
@@ -611,7 +609,7 @@ class BmxUpdate(Screen):
                     else:
                         filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_vod_" + str(bouquet_title) + ".tv"
 
-                    with open(filename, "w+", encoding="utf-8") as f:
+                    with open(filename, "w+") as f:
                         f.write(output_string)
 
         if vod_categories:
@@ -759,7 +757,7 @@ class BmxUpdate(Screen):
 
                         bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_series_" + self.safe_name + "_" + bmx.safe_name(category["category_name"]) + '.tv" ORDER BY bouquet\n'
 
-                with open(filename, "a+", encoding="utf-8") as f:
+                with open(filename, "a+") as f:
                     f.write(bouquet_tv_string)
 
                 for category in series_categories:
@@ -798,7 +796,7 @@ class BmxUpdate(Screen):
                         else:
                             filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_series_" + str(bouquet_title) + ".tv"
 
-                        with open(filename, "w+", encoding="utf-8") as f:
+                        with open(filename, "w+") as f:
                             f.write(output_string)
         if series_categories:
             self.progress_value += 1
@@ -824,14 +822,14 @@ class BmxUpdate(Screen):
         # print("*** build_bouquet_tv_grouped_file ***")
         exists = False
         groupname = "userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
-        with open("/etc/enigma2/bouquets.tv", "r", encoding="utf-8") as f:
+        with open("/etc/enigma2/bouquets.tv", "r") as f:
             for ln, line in enumerate(f):
                 if str(groupname) in line:
                     exists = True
                     break
 
         if exists is False:
-            with open("/etc/enigma2/bouquets.tv", "a+", encoding="utf-8") as f:
+            with open("/etc/enigma2/bouquets.tv", "a+") as f:
                 bouquet_tv_string = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(groupname) + '" ORDER BY bouquet\n'
                 f.write(str(bouquet_tv_string))
 
@@ -848,7 +846,7 @@ class BmxUpdate(Screen):
         source_file = "/etc/epgimport/bouquetmakerxtream.sources.xml"
 
         if not os.path.isfile(source_file) or os.stat(source_file).st_size == 0:
-            with open(source_file, "w", encoding="utf-8") as f:
+            with open(source_file, "w") as f:
                 xml_str = '<?xml version="1.0" encoding="utf-8"?>\n'
                 xml_str += "<sources>\n"
                 xml_str += '<sourcecat sourcecatname="BouquetMakerXtream EPG">\n'
@@ -878,7 +876,7 @@ class BmxUpdate(Screen):
             tree.write(source_file)
 
         try:
-            with open(source_file, "r+", encoding="utf-8") as f:
+            with open(source_file, "r+") as f:
                 xml_str = f.read()
                 f.seek(0)
                 doc = minidom.parseString(xml_str)
@@ -901,10 +899,10 @@ class BmxUpdate(Screen):
         channel_path = os.path.join(file_path, epg_filename)
 
         if not os.path.isfile(channel_path):
-            with open(channel_path, "a", encoding="utf-8") as f:
+            with open(channel_path, "a") as f:
                 f.close()
 
-        with open(channel_path, "w", encoding="utf-8") as f:
+        with open(channel_path, "w") as f:
             xml_str = '<?xml version="1.0" encoding="utf-8"?>\n'
             xml_str += "<channels>\n"
 
@@ -933,7 +931,7 @@ class BmxUpdate(Screen):
                     break
                 x += 1
 
-        with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "w") as f:
             json.dump(self.playlists_all, f)
 
     def done(self, answer=None):

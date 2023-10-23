@@ -25,10 +25,8 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, HDR, PLAYLIST_FILE, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION, PYTHON_VER
+from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, HDR, PLAYLIST_FILE, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION
 
-if PYTHON_VER == 2:
-    from io import open
 
 try:
     from http.client import HTTPConnection
@@ -75,7 +73,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
 
         skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "playlists.xml")
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = _("Select Playlist")
@@ -373,7 +371,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
 
     def write_json_file(self):
         # print("*** write_json_file ***")
-        with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "w") as f:
             json.dump(self.playlists_all, f)
         self.create_setup()
 
@@ -500,7 +498,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
                 self.session.openWithCallback(self.delete_server, MessageBox, _("Delete selected playlist?"))
             elif answer:
                 if glob.CURRENT_PLAYLIST["playlist_info"]["playlist_type"] != "local":
-                    with open(PLAYLIST_FILE, "r+", encoding="utf-8") as f:
+                    with open(PLAYLIST_FILE, "r+") as f:
                         lines = f.readlines()
                         f.seek(0)
                         f.truncate()

@@ -16,10 +16,7 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import processfiles as pfiles
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, PLAYLISTS_JSON, PYTHON_FULL, SKIN_DIRECTORY, VERSION, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import cfg, COMMON_PATH, PLAYLISTS_JSON, PYTHON_FULL, SKIN_DIRECTORY, VERSION
 
 
 class BmxMainMenu(Screen):
@@ -32,7 +29,7 @@ class BmxMainMenu(Screen):
         skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
 
         skin = os.path.join(skin_path, "mainmenu.xml")
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.list = []
@@ -173,7 +170,7 @@ class BmxMainMenu(Screen):
         elif answer:
             bmx.purge("/etc/enigma2", "bouquetmakerxtream")
 
-            with open("/etc/enigma2/bouquets.tv", "r+", encoding="utf-8") as f:
+            with open("/etc/enigma2/bouquets.tv", "r+") as f:
                 lines = f.readlines()
                 f.seek(0)
                 for line in lines:
@@ -191,7 +188,7 @@ class BmxMainMenu(Screen):
             # delete leftover empty dicts
             self.playlists_all = [_f for _f in self.playlists_all if _f]
 
-            with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+            with open(PLAYLISTS_JSON, "w") as f:
                 json.dump(self.playlists_all, f)
 
             bmx.refresh_bouquets()

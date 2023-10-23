@@ -8,9 +8,6 @@ from . import _
 from . import bouquet_globals as glob
 from .plugin import cfg, PYTHON_VER
 
-if PYTHON_VER == 2:
-    from io import open
-
 
 def parse_m3u8_playlist(response):
     live_streams = []
@@ -22,7 +19,7 @@ def parse_m3u8_playlist(response):
 
     if glob.CURRENT_PLAYLIST["playlist_info"]["playlist_type"] == "local":
         local_file = os.path.join(cfg.local_location.value + glob.CURRENT_PLAYLIST["playlist_info"]["full_url"])
-        with open(local_file, encoding="utf-8") as f:
+        with open(local_file) as f:
             response = f.readlines()
 
     elif glob.CURRENT_PLAYLIST["playlist_info"]["playlist_type"] == "external":

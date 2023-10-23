@@ -10,10 +10,7 @@ from Screens.Screen import Screen
 
 from . import _
 from .bmxStaticText import StaticText
-from .plugin import cfg, SKIN_DIRECTORY, VERSION, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import cfg, SKIN_DIRECTORY, VERSION
 
 
 class BmxAbout(Screen):
@@ -22,7 +19,7 @@ class BmxAbout(Screen):
         self.session = session
         skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "about.xml")
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = (_("About"))

@@ -42,9 +42,6 @@ except Exception:
 PYTHON_FULL = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 PYTHON_VER = sys.version_info.major
 
-if PYTHON_VER == 2:
-    from io import open
-
 EPGIMPORTER = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
     EPGIMPORTER = True
@@ -53,7 +50,7 @@ ISDREAMBOX = False
 if os.path.exists("/usr/bin/apt-get"):
     ISDREAMBOX = True
 
-with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version.txt", "r", encoding="utf-8") as f:
+with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version.txt", "r") as f:
     VERSION = f.readline()
 
 SCREENWIDTH = getDesktop(0).size()
@@ -144,12 +141,12 @@ if not os.path.exists(DIR_ETC):
 
 # check if playlists.txt file exists in specified location
 if not os.path.isfile(PLAYLIST_FILE):
-    with open(PLAYLIST_FILE, "a", encoding="utf-8") as f:
+    with open(PLAYLIST_FILE, "a") as f:
         f.close()
 
 # check if playlists.json file exists in specified location
 if not os.path.isfile(PLAYLISTS_JSON):
-    with open(PLAYLISTS_JSON, "a", encoding="utf-8") as f:
+    with open(PLAYLISTS_JSON, "a") as f:
         f.close()
 
 # remove dodgy versions of my plugin

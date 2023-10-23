@@ -5,10 +5,7 @@ import json
 import os
 import re
 
-from .plugin import cfg, PLAYLIST_FILE, PLAYLISTS_JSON, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import cfg, PLAYLIST_FILE, PLAYLISTS_JSON
 
 try:
     from urlparse import parse_qs, urlparse
@@ -19,28 +16,28 @@ except ImportError:
 def processfiles():
     # check if playlists.txt file exists in specified location
     if not os.path.isfile(PLAYLIST_FILE):
-        with open(PLAYLIST_FILE, "a", encoding="utf-8") as f:
+        with open(PLAYLIST_FILE, "a") as f:
             f.close()
 
     # check if playlists.json file exists in specified location
     if not os.path.isfile(PLAYLISTS_JSON):
-        with open(PLAYLISTS_JSON, "a", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "a") as f:
             f.close()
 
     playlists_all = []
 
     if os.path.isfile(PLAYLISTS_JSON):
-        with open(PLAYLISTS_JSON, "r", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "r") as f:
             try:
                 playlists_all = json.load(f)
             except Exception:
                 os.remove(PLAYLISTS_JSON)
 
     # check playlist.txt entries are valid
-    with open(PLAYLIST_FILE, "r+", encoding="utf-8") as f:
+    with open(PLAYLIST_FILE, "r+") as f:
         lines = f.readlines()
 
-    with open(PLAYLIST_FILE, "w", encoding="utf-8") as f:
+    with open(PLAYLIST_FILE, "w") as f:
         for line in lines:
             line = re.sub(" +", " ", line)
             line = line.strip(" ")
@@ -484,7 +481,7 @@ def processfiles():
                 })
                 index += 1
 
-    with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+    with open(PLAYLISTS_JSON, "w") as f:
         json.dump(playlists_all, f)
 
     return playlists_all

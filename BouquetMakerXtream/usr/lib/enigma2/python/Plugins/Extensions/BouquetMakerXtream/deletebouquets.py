@@ -13,10 +13,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, EPGIMPORTER, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import cfg, COMMON_PATH, EPGIMPORTER, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION
 
 
 class BmxDeleteBouquets(Screen):
@@ -25,7 +22,7 @@ class BmxDeleteBouquets(Screen):
         self.session = session
         skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "bouquets.xml")
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
         self.setup_title = _("Delete Bouquets")
 
@@ -111,7 +108,7 @@ class BmxDeleteBouquets(Screen):
             bouquet_name = x
             safe_name = bmx.safe_name(bouquet_name)
 
-            with open("/etc/enigma2/bouquets.tv", "r+", encoding="utf-8") as f:
+            with open("/etc/enigma2/bouquets.tv", "r+") as f:
                 lines = f.readlines()
                 f.seek(0)
                 f.truncate()
@@ -172,5 +169,5 @@ class BmxDeleteBouquets(Screen):
         # delete leftover empty dicts
         self.playlists_all = [_f for _f in self.playlists_all if _f]
 
-        with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "w") as f:
             json.dump(self.playlists_all, f)

@@ -9,16 +9,13 @@ import requests
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
 
-from .plugin import HDR, PLAYLISTS_JSON, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import HDR, PLAYLISTS_JSON
 
 
 def get_playlist_json():
     playlists_all = []
     if os.path.isfile(PLAYLISTS_JSON) and os.stat(PLAYLISTS_JSON).st_size > 0:
-        with open(PLAYLISTS_JSON, encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON) as f:
             try:
                 playlists_all = json.load(f)
             except Exception:

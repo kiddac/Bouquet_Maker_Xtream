@@ -17,10 +17,8 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import parsem3u as parsem3u
 from .bmxStaticText import StaticText
-from .plugin import cfg, EPGIMPORTER, HAS_CONCURRENT, HAS_MULTIPROCESSING, PLAYLIST_FILE, PLAYLISTS_JSON, SKIN_DIRECTORY, PYTHON_VER
+from .plugin import cfg, EPGIMPORTER, HAS_CONCURRENT, HAS_MULTIPROCESSING, PLAYLIST_FILE, PLAYLISTS_JSON, SKIN_DIRECTORY
 
-if PYTHON_VER == 2:
-    from io import open
 
 try:
     from urlparse import parse_qs, urlparse
@@ -40,7 +38,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         if os.path.exists("/var/lib/dpkg/status"):
             skin = os.path.join(skin_path, "DreamOS/settings.xml")
 
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = (_("Bouquets Settings"))
@@ -450,10 +448,10 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             if glob.CURRENT_PLAYLIST["playlist_info"]["playlist_type"] != "local":
                 # update playlists.txt file
                 if not os.path.isfile(PLAYLIST_FILE):
-                    with open(PLAYLIST_FILE, "w+", encoding="utf-8") as f:
+                    with open(PLAYLIST_FILE, "w+") as f:
                         f.close()
 
-                with open(PLAYLIST_FILE, "r+", encoding="utf-8") as f:
+                with open(PLAYLIST_FILE, "r+") as f:
                     lines = f.readlines()
                     f.seek(0)
                     for line in lines:
@@ -513,7 +511,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.write_json_file()
 
     def write_json_file(self):
-        with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "w") as f:
             json.dump(self.playlists_all, f)
         self.clear_caches()
 

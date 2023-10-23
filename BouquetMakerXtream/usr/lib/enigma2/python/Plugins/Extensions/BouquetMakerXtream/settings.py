@@ -17,10 +17,7 @@ from Tools.BoundFunction import boundFunction
 
 from . import _
 from .bmxStaticText import StaticText
-from .plugin import autoStartTimer, cfg, SKIN_DIRECTORY, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import autoStartTimer, cfg, SKIN_DIRECTORY
 
 
 class ProtectedScreen:
@@ -57,7 +54,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         if os.path.exists("/var/lib/dpkg/status"):
             skin = os.path.join(skin_path, "DreamOS/settings.xml")
 
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = _("Main Settings")

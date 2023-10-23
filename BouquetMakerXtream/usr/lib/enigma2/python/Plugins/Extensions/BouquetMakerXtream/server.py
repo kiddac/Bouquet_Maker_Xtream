@@ -16,10 +16,7 @@ from Screens.Screen import Screen
 from . import _
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import HDR, PLAYLIST_FILE, SKIN_DIRECTORY, cfg, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import HDR, PLAYLIST_FILE, SKIN_DIRECTORY, cfg
 
 try:
     from http.client import HTTPConnection
@@ -42,7 +39,7 @@ class BmxAddServer(ConfigListScreen, Screen):
         if os.path.exists("/var/lib/dpkg/status"):
             skin = os.path.join(skin_path, "DreamOS/settings.xml")
 
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = _("Add Playlist")
@@ -228,11 +225,11 @@ class BmxAddServer(ConfigListScreen, Screen):
 
             # check playlists.txt file hasn't been deleted
             if not os.path.isfile(PLAYLIST_FILE):
-                with open(PLAYLIST_FILE, "a", encoding="utf-8") as f:
+                with open(PLAYLIST_FILE, "a") as f:
                     f.close()
 
             # update playlists.txt file
-            with open(PLAYLIST_FILE, "a", encoding="utf-8") as f:
+            with open(PLAYLIST_FILE, "a") as f:
                 f.write("\n" + str(playlist_line) + "\n")
             self.session.open(MessageBox, _("Playlist added successfully."), type=MessageBox.TYPE_INFO, timeout=5)
             self.close()

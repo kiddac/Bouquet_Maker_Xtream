@@ -12,10 +12,7 @@ from Screens.Screen import Screen
 from . import _
 from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
-from .plugin import cfg, SKIN_DIRECTORY, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import cfg, SKIN_DIRECTORY
 
 
 class BmxUserInfo(Screen):
@@ -27,7 +24,7 @@ class BmxUserInfo(Screen):
 
         skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "userinfo.xml")
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = _("User Information")

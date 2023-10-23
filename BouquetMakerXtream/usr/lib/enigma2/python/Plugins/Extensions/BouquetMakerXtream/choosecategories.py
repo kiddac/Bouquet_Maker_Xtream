@@ -15,10 +15,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, PLAYLISTS_JSON, SKIN_DIRECTORY, PYTHON_VER
-
-if PYTHON_VER == 2:
-    from io import open
+from .plugin import cfg, COMMON_PATH, HAS_CONCURRENT, HAS_MULTIPROCESSING, PLAYLISTS_JSON, SKIN_DIRECTORY
 
 
 class BmxChooseCategories(Screen):
@@ -28,7 +25,7 @@ class BmxChooseCategories(Screen):
 
         skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
         skin = os.path.join(skin_path, "categories.xml")
-        with open(skin, "r", encoding="utf-8") as f:
+        with open(skin, "r") as f:
             self.skin = f.read()
 
         self.setup_title = ""
@@ -668,5 +665,5 @@ class BmxChooseCategories(Screen):
                     break
                 x += 1
 
-        with open(PLAYLISTS_JSON, "w", encoding="utf-8") as f:
+        with open(PLAYLISTS_JSON, "w") as f:
             json.dump(self.playlists_all, f)
