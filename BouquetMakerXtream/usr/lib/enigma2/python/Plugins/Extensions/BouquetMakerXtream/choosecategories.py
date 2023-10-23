@@ -119,7 +119,7 @@ class BmxChooseCategories(Screen):
     def page_up(self):
         if self.selected_list.getCurrent():
             instance = self.selected_list.master.master.instance
-            instance.moveSelection(instance.page_up)
+            instance.moveSelection(instance.pageUp)
 
             if self.selected_list == self["list1"]:
                 self.selection_changed()
@@ -127,7 +127,7 @@ class BmxChooseCategories(Screen):
     def page_down(self):
         if self.selected_list.getCurrent():
             instance = self.selected_list.master.master.instance
-            instance.moveSelection(instance.page_down)
+            instance.moveSelection(instance.pageDown)
 
             if self.selected_list == self["list1"]:
                 self.selection_changed()
