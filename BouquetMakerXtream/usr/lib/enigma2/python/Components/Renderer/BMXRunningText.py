@@ -86,10 +86,10 @@ class BMXRunningText(Renderer):
 
         try:
             self.mTimer.callback.append(self.movingLoop)
-        except Exception:
+        except:
             try:
                 self.mTimer_conn = self.mTimer.timeout.connect(self.movingLoop)
-            except Exception:
+            except:
                 pass
 
     def preWidgetRemove(self, instance):
@@ -97,7 +97,7 @@ class BMXRunningText(Renderer):
 
         try:
             self.mTimer.callback.remove(self.movingLoop)
-        except Exception:
+        except:
             self.mTimer_conn = self.mTimer.timeout.disconnect(self.movingLoop)
 
         self.mTimer = None
@@ -111,7 +111,7 @@ class BMXRunningText(Renderer):
                     x = min(limit, int(val))
                 else:
                     x = max(limit, int(val))
-            except Exception:
+            except:
                 x = default
             return x
 

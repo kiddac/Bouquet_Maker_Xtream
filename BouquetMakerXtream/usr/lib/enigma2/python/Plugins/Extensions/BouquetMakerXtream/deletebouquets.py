@@ -13,14 +13,14 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, COMMON_PATH, EPGIMPORTER, PLAYLISTS_JSON, SKIN_DIRECTORY, VERSION
+from .plugin import cfg, common_path, epgimporter, playlists_json, skin_directory, version
 
 
 class BmxDeleteBouquets(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "bouquets.xml")
         with open(skin, "r") as f:
             self.skin = f.read()
@@ -38,75 +38,75 @@ class BmxDeleteBouquets(Screen):
         self["key_info"] = StaticText("")
         self["version"] = StaticText("")
 
-        self.playlists_all = bmx.get_playlist_json()
+        self.playlists_all = bmx.getPlaylistJson()
 
-        self.onLayoutFinish.append(self.__layout_finished)
+        self.onLayoutFinish.append(self.__layoutFinished)
 
         self["actions"] = ActionMap(["BMXActions"], {
-            "red": self.key_cancel,
-            "green": self.delete_bouquets,
-            "yellow": self.toggle_all_selection,
-            "blue": self.clear_all_selection,
-            "cancel": self.key_cancel,
-            "ok": self.toggle_selection,
+            "red": self.keyCancel,
+            "green": self.deleteBouquets,
+            "yellow": self.toggleAllSelection,
+            "blue": self.clearAllSelection,
+            "cancel": self.keyCancel,
+            "ok": self.toggleSelection
         }, -2)
 
-        self["version"].setText(VERSION)
+        self["version"].setText(version)
 
-        self.get_start_list()
+        self.getStartList()
         self.refresh()
 
-    def __layout_finished(self):
+    def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
-    def build_list_entry(self, name, index, selected):
+    def buildListEntry(self, name, index, selected):
         if selected:
-            pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "lock_on.png"))
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_on.png"))
         else:
-            pixmap = LoadPixmap(cached=True, path=os.path.join(COMMON_PATH, "lock_off.png"))
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_off.png"))
         return (pixmap, str(name), index, selected)
 
-    def get_start_list(self):
+    def getStartList(self):
         for playlist in self.playlists_all:
             if playlist["playlist_info"]["bouquet"] is True:
                 self.start_list.append([str(playlist["playlist_info"]["name"]), playlist["playlist_info"]["index"], False])
 
-        self.draw_list = [self.build_list_entry(x[0], x[1], x[2]) for x in self.start_list]
+        self.draw_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.start_list]
         self["list"].setList(self.draw_list)
 
     def refresh(self):
         self.draw_list = []
-        self.draw_list = [self.build_list_entry(x[0], x[1], x[2]) for x in self.start_list]
+        self.draw_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.start_list]
         self["list"].updateList(self.draw_list)
 
-    def toggle_selection(self):
+    def toggleSelection(self):
         if len(self["list"].list) > 0:
             idx = self["list"].getIndex()
             self.start_list[idx][2] = not self.start_list[idx][2]
             self.refresh()
 
-    def toggle_all_selection(self):
+    def toggleAllSelection(self):
         for idx, item in enumerate(self["list"].list):
             self.start_list[idx][2] = not self.start_list[idx][2]
         self.refresh()
 
-    def get_selections_list(self):
+    def getSelectionsList(self):
         return [item[0] for item in self.start_list if item[2]]
 
-    def clear_all_selection(self):
+    def clearAllSelection(self):
         for idx, item in enumerate(self["list"].list):
             self.start_list[idx][2] = False
         self.refresh()
 
-    def key_cancel(self):
+    def keyCancel(self):
         self.close()
 
-    def delete_bouquets(self):
-        selected_bouquet_list = self.get_selections_list()
+    def deleteBouquets(self):
+        selected_bouquet_list = self.getSelectionsList()
 
         for x in selected_bouquet_list:
             bouquet_name = x
-            safe_name = bmx.safe_name(bouquet_name)
+            safe_name = bmx.safeName(bouquet_name)
 
             with open("/etc/enigma2/bouquets.tv", "r+") as f:
                 lines = f.readlines()
@@ -129,7 +129,7 @@ class BmxDeleteBouquets(Screen):
             bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safe_name) + "_")
             bmx.purge("/etc/enigma2", str(safe_name) + str(".tv"))
 
-            if EPGIMPORTER is True:
+            if epgimporter is True:
                 bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(safe_name) + ".channels.xml")
 
                 # remove sources from source file
@@ -154,14 +154,14 @@ class BmxDeleteBouquets(Screen):
 
                     tree.write(source_file)
 
-            self.delete_bouquet_file(bouquet_name)
-            glob.FIRSTRUN = True
-            glob.CURRENT_SELECTION = 0
-            glob.CURRENT_PLAYLIST = []
-            bmx.refresh_bouquets()
+            self.deleteBouquetFile(bouquet_name)
+            glob.firstrun = True
+            glob.current_selection = 0
+            glob.current_playlist = []
+            bmx.refreshBouquets()
         self.close()
 
-    def delete_bouquet_file(self, bouquet_name):
+    def deleteBouquetFile(self, bouquet_name):
         for playlist in self.playlists_all:
             if playlist["playlist_info"]["name"] == bouquet_name:
                 playlist["playlist_info"]["bouquet"] = False
@@ -169,5 +169,5 @@ class BmxDeleteBouquets(Screen):
         # delete leftover empty dicts
         self.playlists_all = [_f for _f in self.playlists_all if _f]
 
-        with open(PLAYLISTS_JSON, "w") as f:
+        with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)

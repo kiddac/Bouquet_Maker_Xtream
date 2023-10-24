@@ -1,9 +1,8 @@
-CATCHUP_SHIFT = 0
-FIXEPG = False
-CURRENT_PLAYLIST = []
-NAME = ""
-OLD_NAME = ""
-FIRSTRUN = 0
-CURRENT_SELECTION = 0
-FINISHED = False
-CURRENT_REF = ""
+fixepg = False
+current_playlist = []
+name = ""
+old_name = ""
+firstrun = 0
+current_selection = 0
+finished = False
+currentref = ""

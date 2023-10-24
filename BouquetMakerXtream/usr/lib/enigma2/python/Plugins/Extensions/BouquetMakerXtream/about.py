@@ -10,14 +10,14 @@ from Screens.Screen import Screen
 
 from . import _
 from .bmxStaticText import StaticText
-from .plugin import cfg, SKIN_DIRECTORY, VERSION
+from .plugin import cfg, skin_directory, version
 
 
 class BmxAbout(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
         self.session = session
-        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "about.xml")
         with open(skin, "r") as f:
             self.skin = f.read()
@@ -34,14 +34,14 @@ class BmxAbout(Screen):
         self["key_green"] = StaticText(_("OK"))
         self["version"] = StaticText("")
         self["about"] = Label("")
-        self.onFirstExecBegin.append(self.create_setup)
-        self.onLayoutFinish.append(self.__layout_finished)
+        self.onFirstExecBegin.append(self.createSetup)
+        self.onLayoutFinish.append(self.__layoutFinished)
 
-    def __layout_finished(self):
+    def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
-    def create_setup(self):
-        self.credit = "BouquetMakerXtream " + str(VERSION) + " - KiddaC\n\n"
+    def createSetup(self):
+        self.credit = "BouquetMakerXtream " + str(version) + " - KiddaC\n\n"
         self.credit += (_("Support for this plugin and latest versions can be found on https://linuxsat-support.com\n\n"))
         self.credit += (_("Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \nPlay your files via your TV bouquets.\n\n"))
         self.credit += (_("Credits:\n"))

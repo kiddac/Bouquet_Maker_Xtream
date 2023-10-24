@@ -17,13 +17,13 @@ from Screens.Screen import Screen
 from . import _
 from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
-from .plugin import cfg, HDR, SCREENWIDTH
+from .plugin import cfg, hdr, screenwidth
 
 try:
     from http.client import HTTPConnection
 
     HTTPConnection.debuglevel = 0
-except ImportError:
+except:
     from httplib import HTTPConnection
 
     HTTPConnection.debuglevel = 0
@@ -31,7 +31,7 @@ except ImportError:
 
 class BmxCatchup(Screen):
     def __init__(self, session):
-        if SCREENWIDTH.width() == 2560:
+        if screenwidth.width() == 2560:
             skin = """
                 <screen name="BMXCatchup" position="center,center" size="1600,1068" >
 
@@ -58,7 +58,7 @@ class BmxCatchup(Screen):
 
                 </screen>"""
 
-        elif SCREENWIDTH.width() > 1280:
+        elif screenwidth.width() > 1280:
             skin = """
                 <screen name="BMXCatchup" position="center,center" size="1200,801" >
 
@@ -122,7 +122,7 @@ class BmxCatchup(Screen):
         self.epg_short_list = []
 
         self["epg_short_list"] = List(self.epg_short_list, enableWrapAround=True)
-        self["epg_short_list"].onSelectionChanged.append(self.display_short_epg)
+        self["epg_short_list"].onSelectionChanged.append(self.displayShortEpg)
 
         self["actions"] = ActionMap(["BMXActions"], {
             "ok": self.play,
@@ -130,7 +130,7 @@ class BmxCatchup(Screen):
             "red": self.quit
         }, -2)
 
-        self.setup_title = _("TV Archive: %s") % glob.NAME.lstrip(cfg.catchup_prefix.value)
+        self.setup_title = _("TV Archive: %s") % glob.name.lstrip(cfg.catchup_prefix.value)
 
         self["bmx_title"] = StaticText("")
         self["bmx_description"] = StaticText("")
@@ -142,7 +142,7 @@ class BmxCatchup(Screen):
         self.password = ""
         self.domain = ""
 
-        self.ref_url = glob.CURRENT_REF.getPath()
+        self.ref_url = glob.currentref.getPath()
         # http://domain.xyx:0000/live/user/pass/12345.ts
 
         if "/live/" not in self.ref_url:
@@ -176,21 +176,21 @@ class BmxCatchup(Screen):
         self.simple_url = "%s/player_api.php?username=%s&password=%s&action=get_simple_data_table&stream_id=%s" % (self.domain, self.username, self.password, self.ref_stream_num)
         self.player_api = "%s/player_api.php?username=%s&password=%s" % (self.domain, self.username, self.password)
 
-        self.onFirstExecBegin.append(self.create_setup)
-        self.onLayoutFinish.append(self.__layout_finished)
+        self.onFirstExecBegin.append(self.createSetup)
+        self.onLayoutFinish.append(self.__layoutFinished)
 
-    def __layout_finished(self):
+    def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
     def quit(self):
         self.close()
 
-    def create_setup(self):
+    def createSetup(self):
         self["bmx_title"].setText("")
         self["bmx_description"].setText("")
-        self.download_player_api()
+        self.downloadPlayerApi()
 
-    def download_player_api(self):
+    def downloadPlayerApi(self):
         retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
         http = requests.Session()
@@ -199,7 +199,7 @@ class BmxCatchup(Screen):
         response = ""
 
         try:
-            r = http.get(self.player_api, headers=HDR, timeout=10, verify=False)
+            r = http.get(self.player_api, headers=hdr, timeout=10, verify=False)
             r.raise_for_status()
             if r.status_code == requests.codes.ok:
                 try:
@@ -218,18 +218,18 @@ class BmxCatchup(Screen):
                     if "time_now" in response["server_info"]:
                         try:
                             time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d %H:%M:%S")
-                        except Exception:
+                        except:
                             try:
                                 time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d %H-%M-%S")
-                            except Exception:
+                            except:
                                 time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d-%H:%M:%S")
 
-                        self.server_offset = (datetime.now().hour - time_now_datestamp.hour)
+                        self.server_offset = datetime.now().hour - time_now_datestamp.hour
                         # print("*** server_offset ***", self.server_offset)
 
-        self.download_simple_data()
+        self.downloadSimpleData()
 
-    def download_simple_data(self):
+    def downloadSimpleData(self):
         retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
         http = requests.Session()
@@ -238,7 +238,7 @@ class BmxCatchup(Screen):
         response = ""
 
         try:
-            r = http.get(self.simple_url, headers=HDR, timeout=10, verify=False)
+            r = http.get(self.simple_url, headers=hdr, timeout=10, verify=False)
             r.raise_for_status()
             if r.status_code == requests.codes.ok:
                 try:
@@ -288,35 +288,35 @@ class BmxCatchup(Screen):
                             try:
                                 end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset)
                                 end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset) + timedelta(minutes=catchup_end)
-                            except Exception:
+                            except:
                                 try:
                                     end = listing["stop"]
                                     end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset)
                                     end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset) + timedelta(minutes=catchup_end)
-                                except Exception:
+                                except:
                                     return
 
                             epg_date_all = start_datetime_offset.strftime("%a %d/%m")
-                            epg_time_all = (str(start_datetime_offset.strftime("%H:%M")) + " - " + str(end_datetime_offset.strftime("%H:%M")))
+                            epg_time_all = str(start_datetime_offset.strftime("%H:%M")) + " - " + str(end_datetime_offset.strftime("%H:%M"))
 
                         epg_duration = int((end_datetime_margin - start_datetime_margin).total_seconds() / 60.0)
 
                         url_datestring = str(start_datetime_original.strftime("%Y-%m-%d:%H-%M"))
 
-                        self.epg_short_list.append(build_catchup_epg_list_entry(str(epg_date_all), str(epg_time_all), str(title), str(description), str(url_datestring), str(epg_duration), index, self.ref_stream_num))
+                        self.epg_short_list.append(buildCatchupEpgListEntry(str(epg_date_all), str(epg_time_all), str(title), str(description), str(url_datestring), str(epg_duration), index, self.ref_stream_num))
 
                         index += 1
 
                 self.epg_short_list.reverse()
                 self["epg_short_list"].setList(self.epg_short_list)
 
-                self.display_short_epg()
+                self.displayShortEpg()
 
     def reverse(self):
         self.epg_short_list.reverse()
         self["epg_short_list"].setList(self.epg_short_list)
 
-    def display_short_epg(self):
+    def displayShortEpg(self):
         if self["epg_short_list"].getCurrent():
             title = str(self["epg_short_list"].getCurrent()[0])
             description = str(self["epg_short_list"].getCurrent()[3])
@@ -334,5 +334,5 @@ class BmxCatchup(Screen):
             self.session.open(MoviePlayer, sref)
 
 
-def build_catchup_epg_list_entry(date_all, time_all, title, description, start, duration, index, refstreamnum):
+def buildCatchupEpgListEntry(date_all, time_all, title, description, start, duration, index, refstreamnum):
     return (title, date_all, time_all, description, start, duration, index, refstreamnum,)

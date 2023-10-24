@@ -9,26 +9,26 @@ import requests
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
 
-from .plugin import HDR, PLAYLISTS_JSON
+from .plugin import hdr, playlists_json
 
 
-def get_playlist_json():
+def getPlaylistJson():
     playlists_all = []
-    if os.path.isfile(PLAYLISTS_JSON) and os.stat(PLAYLISTS_JSON).st_size > 0:
-        with open(PLAYLISTS_JSON) as f:
+    if os.path.isfile(playlists_json) and os.stat(playlists_json).st_size > 0:
+        with open(playlists_json) as f:
             try:
                 playlists_all = json.load(f)
-            except Exception:
-                os.remove(PLAYLISTS_JSON)
+            except:
+                os.remove(playlists_json)
     return playlists_all
 
 
-def refresh_bouquets():
+def refreshBouquets():
     eDVBDB.getInstance().reloadServicelist()
     eDVBDB.getInstance().reloadBouquets()
 
 
-def download_url(url, ext):
+def downloadUrl(url, ext):
     r = ""
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
@@ -37,7 +37,7 @@ def download_url(url, ext):
     http.mount("https://", adapter)
     r = ""
     try:
-        r = http.get(url, headers=HDR, timeout=(20, 60), verify=False)
+        r = http.get(url, headers=hdr, timeout=(20, 60), verify=False)
         r.raise_for_status()
         if r.status_code == requests.codes.ok:
             try:
@@ -56,7 +56,7 @@ def download_url(url, ext):
     return ""
 
 
-def download_url_multi(url):
+def downloadUrlMulti(url):
     category = url[1]
     ext = url[2]
     r = ""
@@ -67,7 +67,7 @@ def download_url_multi(url):
     http.mount("https://", adapter)
     response = ""
     try:
-        r = http.get(url[0], headers=HDR, timeout=(20, 60), verify=False)
+        r = http.get(url[0], headers=hdr, timeout=(20, 60), verify=False)
         r.raise_for_status()
         if r.status_code == requests.codes.ok:
             try:
@@ -86,7 +86,7 @@ def download_url_multi(url):
     return category, ""
 
 
-def safe_name(name):
+def safeName(name):
     name = name.encode("ascii", errors="ignore").decode()
     name = re.sub(r"[\<\>\:\"\/\\\|\?\*]", "_", str(name))
     name = re.sub(r" ", "_", name)
