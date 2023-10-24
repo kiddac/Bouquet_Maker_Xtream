@@ -17,24 +17,24 @@ from Tools.BoundFunction import boundFunction
 
 from . import _
 from .bmxStaticText import StaticText
-from .plugin import autoStartTimer, cfg, SKIN_DIRECTORY
+from .plugin import autoStartTimer, cfg, skin_directory
 
 
 class ProtectedScreen:
     def __init__(self):
-        if self.is_protected():
-            self.onFirstExecBegin.append(boundFunction(self.session.openWithCallback, self.pin_entered, PinInput, pinList=[cfg.adultpin.value], triesEntry=cfg.retries.adultpin, title=_("Please enter the correct pin code"), windowTitle=_("Enter pin code")))
+        if self.isProtected():
+            self.onFirstExecBegin.append(boundFunction(self.session.openWithCallback, self.pinEntered, PinInput, pinList=[cfg.adultpin.value], triesEntry=cfg.retries.adultpin, title=_("Please enter the correct pin code"), windowTitle=_("Enter pin code")))
 
-    def is_protected(self):
-        return config.plugins.BouquetMakerXtream.adult.value
+    def isProtected(self):
+        return (config.plugins.BouquetMakerXtream.adult.value)
 
-    def pin_entered(self, result):
+    def pinEntered(self, result):
         if result is None:
-            self.close_protected_screen()
+            self.closeProtectedScreen()
         elif not result:
-            self.session.openWithCallback(self.close_protected_screen, MessageBox, _("The pin code you entered is wrong."), MessageBox.TYPE_ERROR)
+            self.session.openWithCallback(self.closeProtectedScreen, MessageBox, _("The pin code you entered is wrong."), MessageBox.TYPE_ERROR)
 
-    def close_protected_screen(self, result=None):
+    def closeProtectedScreen(self, result=None):
         self.close(None)
 
 
@@ -49,7 +49,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
 
         self.session = session
 
-        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "settings.xml")
         if os.path.exists("/var/lib/dpkg/status"):
             skin = os.path.join(skin_path, "DreamOS/settings.xml")
@@ -57,7 +57,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         with open(skin, "r") as f:
             self.skin = f.read()
 
-        self.setup_title = _("Main Settings")
+        self.setup_title = (_("Main Settings"))
 
         self.onChangedEntry = []
 
@@ -80,10 +80,10 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             "ok": self.ok,
         }, -2)
 
-        self.init_config()
-        self.onLayoutFinish.append(self.__layout_finished)
+        self.initConfig()
+        self.onLayoutFinish.append(self.__layoutFinished)
 
-    def clear_caches(self):
+    def clearCaches(self):
         try:
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
@@ -91,7 +91,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         except:
             pass
 
-    def __layout_finished(self):
+    def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
     def cancel(self, answer=None):
@@ -121,21 +121,21 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
                 autoStartTimer.update()
 
                 if self.org_main != cfg.main.getValue() or self.location != cfg.location.getValue() or self.local_location != cfg.local_location.getValue() or self.org_catchup_on != cfg.catchup_on.getValue():
-                    self.changed_finished()
-            self.clear_caches()
+                    self.changedFinished()
+            self.clearCaches()
             self.close()
 
-    def changed_finished(self):
-        self.session.openWithCallback(self.execute_restart, MessageBox, _("You need to restart the GUI") + "\n" + _("Do you want to restart now?"), MessageBox.TYPE_YESNO)
+    def changedFinished(self):
+        self.session.openWithCallback(self.executeRestart, MessageBox, _("You need to restart the GUI") + "\n" + _("Do you want to restart now?"), MessageBox.TYPE_YESNO)
         self.close()
 
-    def execute_restart(self, result):
+    def executeRestart(self, result):
         if result:
             Standby.quitMainloop(3)
         else:
             self.close()
 
-    def init_config(self):
+    def initConfig(self):
         self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
         self.cfg_location = getConfigListEntry(_("playlists.txt location") + _(" *Restart GUI Required"), cfg.location)
         self.cfg_local_location = getConfigListEntry(_("Local M3U File location") + _(" *Restart GUI Required"), cfg.local_location)
@@ -166,9 +166,9 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.local_location = cfg.local_location.getValue()
         self.org_catchup_on = cfg.catchup_on.getValue()
 
-        self.create_setup()
+        self.createSetup()
 
-    def create_setup(self):
+    def createSetup(self):
         self.list = []
         self.list.append(self.cfg_skin)
         self.list.append(self.cfg_location)
@@ -206,29 +206,29 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
 
         self["config"].list = self.list
         self["config"].l.setList(self.list)
-        self.handle_input_helpers()
+        self.handleInputHelpers()
 
-    def handle_input_helpers(self):
-        curr_config = self["config"].getCurrent()
+    def handleInputHelpers(self):
+        currConfig = self["config"].getCurrent()
 
-        if curr_config is not None:
-            if isinstance(curr_config[1], ConfigText):
+        if currConfig is not None:
+            if isinstance(currConfig[1], ConfigText):
                 if "VKeyIcon" in self:
                     try:
-                        self["VirtualKB"].setEnabled(False)
+                        self["VirtualKB"].setEnabled(True)
                     except:
                         pass
 
                     try:
-                        self["virtualKeyBoardActions"].setEnabled(False)
+                        self["virtualKeyBoardActions"].setEnabled(True)
                     except:
                         pass
+                    self["VKeyIcon"].show()
 
-                    self["VKeyIcon"].hide()
-
-                if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
+                if "HelpWindow" in self and currConfig[1].help_window and currConfig[1].help_window.instance is not None:
                     helpwindowpos = self["HelpWindow"].getPosition()
-                    curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+                    currConfig[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+
             else:
                 if "VKeyIcon" in self:
                     try:
@@ -248,8 +248,8 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             x()
 
         try:
-            if isinstance(self["config"].getCurrent()[1], (ConfigYesNo, ConfigSelection)):
-                self.create_setup()
+            if isinstance(self["config"].getCurrent()[1], ConfigYesNo) or isinstance(self["config"].getCurrent()[1], ConfigSelection):
+                self.createSetup()
         except:
             pass
 
@@ -262,18 +262,18 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
     def ok(self):
         sel = self["config"].getCurrent()[1]
         if sel and sel == cfg.location:
-            self.open_directory_browser(cfg.location.value, "location")
+            self.openDirectoryBrowser(cfg.location.value, "location")
 
         elif sel and sel == cfg.local_location:
-            self.open_directory_browser(cfg.local_location.value, "local_location")
+            self.openDirectoryBrowser(cfg.local_location.value, "local_location")
         else:
             pass
 
-    def open_directory_browser(self, path, cfgitem):
+    def openDirectoryBrowser(self, path, cfgitem):
         if cfgitem == "location":
             try:
                 self.session.openWithCallback(
-                    self.open_directory_browser_cb,
+                    self.openDirectoryBrowserCB,
                     LocationBox,
                     windowTitle=_("Choose Directory:"),
                     text=_("Choose directory"),
@@ -288,7 +288,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         elif cfgitem == "local_location":
             try:
                 self.session.openWithCallback(
-                    self.open_directory_browser_cb2,
+                    self.openDirectoryBrowserCB2,
                     LocationBox,
                     windowTitle=_("Choose Directory:"),
                     text=_("Choose directory"),
@@ -300,12 +300,12 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             except Exception as e:
                 print(e)
 
-    def open_directory_browser_cb(self, path):
+    def openDirectoryBrowserCB(self, path):
         if path is not None:
             cfg.location.setValue(path)
         return
 
-    def open_directory_browser_cb2(self, path):
+    def openDirectoryBrowserCB2(self, path):
         if path is not None:
             cfg.local_location.setValue(path)
         return

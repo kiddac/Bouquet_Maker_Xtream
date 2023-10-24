@@ -22,50 +22,52 @@ from . import bouquet_globals as glob
 
 try:
     from urlparse import urljoin
-except ImportError:
+except:
     from urllib.parse import urljoin
 
 try:
     from multiprocessing.pool import ThreadPool
 
-    HAS_MULTIPROCESSING = True
-except ImportError:
-    HAS_MULTIPROCESSING = False
+    hasMultiprocessing = True
+except:
+    hasMultiprocessing = False
 
 try:
     from concurrent.futures import ThreadPoolExecutor
+    if twisted.python.runtime.platform.supportsThreads():
+        hasConcurrent = True
+    else:
+        hasConcurrent = False
+except:
+    hasConcurrent = False
 
-    HAS_CONCURRENT = bool(twisted.python.runtime.platform.supportsThreads())
-except Exception:
-    HAS_CONCURRENT = False
+pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
+pythonVer = sys.version_info.major
 
-PYTHON_FULL = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
-PYTHON_VER = sys.version_info.major
-
-EPGIMPORTER = False
+epgimporter = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
-    EPGIMPORTER = True
+    epgimporter = True
 
-ISDREAMBOX = False
+isDreambox = False
 if os.path.exists("/usr/bin/apt-get"):
-    ISDREAMBOX = True
+    isDreambox = True
 
 with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version.txt", "r") as f:
-    VERSION = f.readline()
+    version = f.readline()
 
-SCREENWIDTH = getDesktop(0).size()
+screenwidth = getDesktop(0).size()
 
-DIR_ETC = "/etc/enigma2/bouquetmakerxtream/"
-DIR_PLUGINS = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
+dir_etc = "/etc/enigma2/bouquetmakerxtream/"
+dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
 
-if SCREENWIDTH.width() == 2560:
-    SKIN_DIRECTORY = os.path.join(DIR_PLUGINS, "skin/uhd/")
-elif SCREENWIDTH.width() > 1280:
-    SKIN_DIRECTORY = os.path.join(DIR_PLUGINS, "skin/fhd/")
+if screenwidth.width() == 2560:
+    skin_directory = os.path.join(dir_plugins, "skin/uhd/")
+elif screenwidth.width() > 1280:
+    skin_directory = os.path.join(dir_plugins, "skin/fhd/")
 else:
-    SKIN_DIRECTORY = os.path.join(DIR_PLUGINS, "skin/hd/")
+    skin_directory = os.path.join(dir_plugins, "skin/hd/")
 
-folders = os.listdir(SKIN_DIRECTORY)
+folders = os.listdir(skin_directory)
 if "common" in folders:
     folders.remove("common")
 
@@ -90,8 +92,8 @@ if os.path.exists("/usr/bin/apt-get"):
 cfg.live_type = ConfigSelection(default="4097", choices=live_stream_type_choices)
 cfg.vod_type = ConfigSelection(default="4097", choices=vod_stream_type_choices)
 
-cfg.location = ConfigDirectory(default=DIR_ETC)
-cfg.local_location = ConfigDirectory(default=DIR_ETC)
+cfg.location = ConfigDirectory(default=dir_etc)
+cfg.local_location = ConfigDirectory(default=dir_etc)
 cfg.main = ConfigYesNo(default=True)
 cfg.skin = ConfigSelection(default="default", choices=folders)
 cfg.parental = ConfigYesNo(default=False)
@@ -115,39 +117,37 @@ cfg.location_valid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
 cfg.auto_close = ConfigYesNo(default=False)
 
-skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.value)
-COMMON_PATH = os.path.join(SKIN_DIRECTORY, "common/")
-PLAYLISTS_JSON = os.path.join(DIR_ETC, "bmx_playlists.json")
-PLAYLIST_FILE = os.path.join(DIR_ETC, "playlists.txt")
+skin_path = os.path.join(skin_directory, cfg.skin.value)
+common_path = os.path.join(skin_directory, "common/")
+playlists_json = os.path.join(dir_etc, "bmx_playlists.json")
+playlist_file = os.path.join(dir_etc, "playlists.txt")
 
 location = cfg.location.getValue()
 if location:
     if os.path.exists(location):
-        PLAYLIST_FILE = os.path.join(cfg.location.value, "playlists.txt")
+        playlist_file = os.path.join(cfg.location.value, "playlists.txt")
         cfg.location_valid.setValue(True)
         cfg.save()
     else:
-        cfg.location.setValue(DIR_ETC)
+        cfg.location.setValue(dir_etc)
         cfg.location_valid.setValue(False)
         cfg.save()
 
-font_folder = os.path.join(DIR_PLUGINS, "fonts/")
+font_folder = os.path.join(dir_plugins, "fonts/")
 
-HDR = {"User-Agent": "Enigma2 - BouquetMakerXtream Plugin"}
+hdr = {"User-Agent": "Enigma2 - BouquetMakerXtream Plugin"}
 
 # create folder for working files
-if not os.path.exists(DIR_ETC):
-    os.makedirs(DIR_ETC)
+if not os.path.exists(dir_etc):
+    os.makedirs(dir_etc)
 
 # check if playlists.txt file exists in specified location
-if not os.path.isfile(PLAYLIST_FILE):
-    with open(PLAYLIST_FILE, "a") as f:
-        f.close()
+if not os.path.isfile(playlist_file):
+    open(playlist_file, "a").close()
 
 # check if playlists.json file exists in specified location
-if not os.path.isfile(PLAYLISTS_JSON):
-    with open(PLAYLISTS_JSON, "a") as f:
-        f.close()
+if not os.path.isfile(playlists_json):
+    open(playlists_json, "a").close()
 
 # remove dodgy versions of my plugin
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/XStreamityPro/"):
@@ -186,9 +186,9 @@ def extensionsmenu(session, **kwargs):
 
 # Global variables
 autoStartTimer = None
-ORIGINAL_REF = None
-ORIGINAL_REF_STRING = None
-BmxChannelSelectionBase__init = None
+originalref = None
+originalrefstring = None
+BmxChannelSelectionBase__init__ = None
 _session = None
 
 
@@ -197,12 +197,12 @@ class AutoStartTimer:
         self.session = session
         self.timer = eTimer()
         try:
-            self.timer_conn = self.timer.timeout.connect(self.on_timer)
-        except Exception:
-            self.timer.callback.append(self.on_timer)
+            self.timer_conn = self.timer.timeout.connect(self.onTimer)
+        except:
+            self.timer.callback.append(self.onTimer)
         self.update()
 
-    def get_wake_time(self):
+    def getWakeTime(self):
         if cfg.autoupdate.value:
             clock = cfg.wakeup.value
             nowt = time.time()
@@ -212,14 +212,14 @@ class AutoStartTimer:
         else:
             return -1
 
-    def update(self, at_least=0):
+    def update(self, atLeast=0):
         self.timer.stop()
-        wake = self.get_wake_time()
+        wake = self.getWakeTime()
         now_t = time.time()
         now = int(now_t)
 
         if wake > 0:
-            if wake < now + at_least:
+            if wake < now + atLeast:
                 wake += 24 * 3600  # add 24 hours to next wake time
             next = wake - now
             self.timer.startLongTimer(next)
@@ -232,18 +232,18 @@ class AutoStartTimer:
         print("[BouquetMakerXtream] WakeUpTime now set to", wdt, "(now=%s)" % ndt)
         return wake
 
-    def on_timer(self):
+    def onTimer(self):
         self.timer.stop()
         now = int(time.time())
-        wake = self.get_wake_time()
+        wake = self.getWakeTime()
         # print("*** wake ", wake)
-        at_least = 0
+        atLeast = 0
         if wake - now < 60:
-            self.run_update()
-            at_least = 60
-        self.update(at_least)
+            self.runUpdate()
+            atLeast = 60
+        self.update(atLeast)
 
-    def run_update(self):
+    def runUpdate(self):
         print("\n *********** BouquetMakerXtream runupdate ************ \n")
         from . import update
 
@@ -254,11 +254,11 @@ def autostart(reason, session=None, **kwargs):
     # called with reason=1 to during shutdown, with reason=0 at startup?
 
     if cfg.catchup_on.getValue() is True and session is not None:
-        global BmxChannelSelectionBase__init
-        BmxChannelSelectionBase__init = ChannelSelectionBase.__init__
+        global BmxChannelSelectionBase__init__
+        BmxChannelSelectionBase__init__ = ChannelSelectionBase.__init__
         ChannelSelectionBase.__init__ = MyChannelSelectionBase__init__
-        ChannelSelectionBase.showBmxCatchup = show_bmx_catchup
-        ChannelSelectionBase.play_original_channel = play_original_channel
+        ChannelSelectionBase.showBmxCatchup = showBmxCatchup
+        ChannelSelectionBase.playOriginalChannel = playOriginalChannel
 
     global autoStartTimer
     global _session
@@ -277,32 +277,32 @@ def autostart(reason, session=None, **kwargs):
 
 
 def MyChannelSelectionBase__init__(self, session):
-    BmxChannelSelectionBase__init(self, session)
+    BmxChannelSelectionBase__init__(self, session)
     self["BmxCatchupAction"] = HelpableActionMap(self, "BMXCatchupActions", {
         "catchup": self.showBmxCatchup,
     })
 
 
-def show_bmx_catchup(self):
+def showBmxCatchup(self):
     try:
-        global ORIGINAL_REF
-        global ORIGINAL_REF_STRING
-        ORIGINAL_REF = self.session.nav.getCurrentlyPlayingServiceReference()
-        ORIGINAL_REF_STRING = ORIGINAL_REF.toString()
+        global originalref
+        global originalrefstring
+        originalref = self.session.nav.getCurrentlyPlayingServiceReference()
+        originalrefstring = originalref.toString()
     except:
         pass
 
     selected_ref = self["list"].getCurrent()
     selected_ref_string = selected_ref.toString()
 
-    glob.CURRENT_REF = ServiceReference(selected_ref)
+    glob.currentref = ServiceReference(selected_ref)
 
     path = str(selected_ref.getPath())
 
     if "http" not in path:
         return
 
-    glob.NAME = glob.CURRENT_REF.getServiceName()
+    glob.name = glob.currentref.getServiceName()
 
     is_catchup_channel = False
     ref_url = ""
@@ -312,8 +312,8 @@ def show_bmx_catchup(self):
     password = ""
     domain = ""
 
-    original_path = ServiceReference(ORIGINAL_REF).getPath()
-    ref_url = glob.CURRENT_REF.getPath()
+    original_path = ServiceReference(originalref).getPath()
+    ref_url = glob.currentref.getPath()
 
     # http://domain.xyx:0000/live/user/pass/12345.ts
 
@@ -354,7 +354,7 @@ def show_bmx_catchup(self):
     response = ""
 
     try:
-        r = http.get(get_live_streams, headers=HDR, timeout=10, verify=False)
+        r = http.get(get_live_streams, headers=hdr, timeout=10, verify=False)
         r.raise_for_status()
         if r.status_code == requests.codes.ok:
             try:
@@ -377,15 +377,15 @@ def show_bmx_catchup(self):
     if live_streams and is_catchup_channel:
         from . import catchup
 
-        if (ORIGINAL_REF_STRING == selected_ref_string) or (urljoin(original_path, "/") == urljoin(ref_url, "/")):
+        if (originalrefstring == selected_ref_string) or (urljoin(original_path, "/") == urljoin(ref_url, "/")):
             self.session.nav.stopService()
-            self.session.openWithCallback(self.play_original_channel, catchup.BmxCatchup)
+            self.session.openWithCallback(self.playOriginalChannel, catchup.BmxCatchup)
         else:
             self.session.open(catchup.BmxCatchup)
 
 
-def play_original_channel(self, answer=None):
-    self.session.nav.playService(eServiceReference(ORIGINAL_REF_STRING))
+def playOriginalChannel(self, answer=None):
+    self.session.nav.playService(eServiceReference(originalrefstring))
 
 
 def Plugins(**kwargs):
@@ -394,9 +394,9 @@ def Plugins(**kwargs):
     addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
     addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
 
-    icon_file = "icons/plugin-icon_sd.png"
-    if SCREENWIDTH.width() > 1280:
-        icon_file = "icons/plugin-icon.png"
+    iconFile = "icons/plugin-icon_sd.png"
+    if screenwidth.width() > 1280:
+        iconFile = "icons/plugin-icon.png"
     description = _("IPTV Bouquets Creator by KiddaC")
     pluginname = _("BouquetMakerXtream")
 
@@ -418,7 +418,7 @@ def Plugins(**kwargs):
             name=pluginname,
             description=description,
             where=PluginDescriptor.WHERE_PLUGINMENU,
-            icon=icon_file,
+            icon=iconFile,
             fnc=main
         ),
     ]

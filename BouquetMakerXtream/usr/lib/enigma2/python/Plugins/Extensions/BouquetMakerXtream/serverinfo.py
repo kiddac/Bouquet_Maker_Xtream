@@ -12,7 +12,7 @@ from Screens.Screen import Screen
 from . import _
 from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
-from .plugin import cfg, SKIN_DIRECTORY
+from .plugin import cfg, skin_directory
 
 
 class BmxUserInfo(Screen):
@@ -22,12 +22,12 @@ class BmxUserInfo(Screen):
         Screen.__init__(self, session)
         self.session = session
 
-        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "userinfo.xml")
         with open(skin, "r") as f:
             self.skin = f.read()
 
-        self.setup_title = _("User Information")
+        self.setup_title = (_("User Information"))
 
         self["status"] = Label("")
         self["expiry"] = Label("")
@@ -61,48 +61,48 @@ class BmxUserInfo(Screen):
         self["key_red"] = StaticText(_("Back"))
         self["key_green"] = StaticText(_("OK"))
 
-        self.onFirstExecBegin.append(self.create_user_setup)
-        self.onLayoutFinish.append(self.__layout_finished)
+        self.onFirstExecBegin.append(self.createUserSetup)
+        self.onLayoutFinish.append(self.__layoutFinished)
 
-    def __layout_finished(self):
+    def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
-    def create_user_setup(self):
-        if "status" in glob.CURRENT_PLAYLIST["user_info"]:
-            self["status"].setText(str(glob.CURRENT_PLAYLIST["user_info"]["status"]))
+    def createUserSetup(self):
+        if "status" in glob.current_playlist["user_info"]:
+            self["status"].setText(str(glob.current_playlist["user_info"]["status"]))
 
-        if "exp_date" in glob.CURRENT_PLAYLIST["user_info"]:
+        if "exp_date" in glob.current_playlist["user_info"]:
             try:
-                self["expiry"].setText(str(datetime.fromtimestamp(int(glob.CURRENT_PLAYLIST["user_info"]["exp_date"])).strftime("%d-%m-%Y  %H:%M")))
-            except Exception:
+                self["expiry"].setText(str(datetime.fromtimestamp(int(glob.current_playlist["user_info"]["exp_date"])).strftime("%d-%m-%Y  %H:%M")))
+            except:
                 self["expiry"].setText("Null")
 
-        if "created_at" in glob.CURRENT_PLAYLIST["user_info"]:
+        if "created_at" in glob.current_playlist["user_info"]:
             try:
-                self["created"].setText(str(datetime.fromtimestamp(int(glob.CURRENT_PLAYLIST["user_info"]["created_at"])).strftime("%d-%m-%Y  %H:%M")))
-            except Exception:
+                self["created"].setText(str(datetime.fromtimestamp(int(glob.current_playlist["user_info"]["created_at"])).strftime("%d-%m-%Y  %H:%M")))
+            except:
                 self["created"].setText("Null")
 
-        if "is_trial" in glob.CURRENT_PLAYLIST["user_info"]:
-            self["trial"].setText(str(glob.CURRENT_PLAYLIST["user_info"]["is_trial"]))
+        if "is_trial" in glob.current_playlist["user_info"]:
+            self["trial"].setText(str(glob.current_playlist["user_info"]["is_trial"]))
 
-        if "active_cons" in glob.CURRENT_PLAYLIST["user_info"]:
-            self["activeconn"].setText(str(glob.CURRENT_PLAYLIST["user_info"]["active_cons"]))
+        if "active_cons" in glob.current_playlist["user_info"]:
+            self["activeconn"].setText(str(glob.current_playlist["user_info"]["active_cons"]))
 
-        if "max_connections" in glob.CURRENT_PLAYLIST["user_info"]:
-            self["maxconn"].setText(str(glob.CURRENT_PLAYLIST["user_info"]["max_connections"]))
+        if "max_connections" in glob.current_playlist["user_info"]:
+            self["maxconn"].setText(str(glob.current_playlist["user_info"]["max_connections"]))
 
-        if "allowed_output_formats" in glob.CURRENT_PLAYLIST["user_info"]:
-            self["formats"].setText(str(json.dumps(glob.CURRENT_PLAYLIST["user_info"]["allowed_output_formats"])).lstrip("[").rstrip("]"))
+        if "allowed_output_formats" in glob.current_playlist["user_info"]:
+            self["formats"].setText(str(json.dumps(glob.current_playlist["user_info"]["allowed_output_formats"])).lstrip("[").rstrip("]"))
 
-        if "url" in glob.CURRENT_PLAYLIST["server_info"]:
-            self["realurl"].setText(str(glob.CURRENT_PLAYLIST["server_info"]["url"]))
+        if "url" in glob.current_playlist["server_info"]:
+            self["realurl"].setText(str(glob.current_playlist["server_info"]["url"]))
 
-        if "timezone" in glob.CURRENT_PLAYLIST["server_info"]:
-            self["timezone"].setText(str(glob.CURRENT_PLAYLIST["server_info"]["timezone"]))
+        if "timezone" in glob.current_playlist["server_info"]:
+            self["timezone"].setText(str(glob.current_playlist["server_info"]["timezone"]))
 
-        if "server_offset" in glob.CURRENT_PLAYLIST["data"]:
-            self["server_offset"].setText(str(glob.CURRENT_PLAYLIST["data"]["server_offset"]))
+        if "server_offset" in glob.current_playlist["data"]:
+            self["server_offset"].setText(str(glob.current_playlist["data"]["server_offset"]))
 
     def quit(self):
         self.close()

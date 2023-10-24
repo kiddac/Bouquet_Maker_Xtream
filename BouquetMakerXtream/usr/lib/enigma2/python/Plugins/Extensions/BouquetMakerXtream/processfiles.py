@@ -5,39 +5,37 @@ import json
 import os
 import re
 
-from .plugin import cfg, PLAYLIST_FILE, PLAYLISTS_JSON
+from .plugin import cfg, playlist_file, playlists_json
 
 try:
     from urlparse import parse_qs, urlparse
-except ImportError:
+except:
     from urllib.parse import parse_qs, urlparse
 
 
-def processfiles():
+def processFiles():
     # check if playlists.txt file exists in specified location
-    if not os.path.isfile(PLAYLIST_FILE):
-        with open(PLAYLIST_FILE, "a") as f:
-            f.close()
+    if not os.path.isfile(playlist_file):
+        open(playlist_file, "a").close()
 
     # check if playlists.json file exists in specified location
-    if not os.path.isfile(PLAYLISTS_JSON):
-        with open(PLAYLISTS_JSON, "a") as f:
-            f.close()
+    if not os.path.isfile(playlists_json):
+        open(playlists_json, "a").close()
 
     playlists_all = []
 
-    if os.path.isfile(PLAYLISTS_JSON):
-        with open(PLAYLISTS_JSON, "r") as f:
+    if os.path.isfile(playlists_json):
+        with open(playlists_json, "r") as f:
             try:
                 playlists_all = json.load(f)
-            except Exception:
-                os.remove(PLAYLISTS_JSON)
+            except:
+                os.remove(playlists_json)
 
     # check playlist.txt entries are valid
-    with open(PLAYLIST_FILE, "r+") as f:
+    with open(playlist_file, "r+") as f:
         lines = f.readlines()
 
-    with open(PLAYLIST_FILE, "w") as f:
+    with open(playlist_file, "w") as f:
         for line in lines:
             line = re.sub(" +", " ", line)
             line = line.strip(" ")
@@ -265,7 +263,7 @@ def processfiles():
                                 ("full_url", full_url),
                                 ("playlist_type", playlist_type),
                                 ("valid", False),
-                                ("bouquet", False),
+                                ("bouquet", False)
                             ]),
 
                             "settings": dict([
@@ -282,7 +280,7 @@ def processfiles():
                                 ("epg_offset", server_offset),
                                 ("epg_alternative", epg_alternative),
                                 ("epg_alternative_url", epg_alternative_url),
-                                ("directsource", directsource),
+                                ("directsource", directsource)
                             ]),
                             "data": dict([
                                 ("live_categories", []),
@@ -302,7 +300,7 @@ def processfiles():
                                 ("epg_date", ""),
                                 ("data_downloaded", False),
                                 ("epg_importer_files", False),
-                                ("server_offset", server_offset),
+                                ("server_offset", server_offset)
                             ]),
                         })
                         index += 1
@@ -348,7 +346,7 @@ def processfiles():
                                 ("full_url", full_url),
                                 ("playlist_type", playlist_type),
                                 ("valid", False),
-                                ("bouquet", False),
+                                ("bouquet", False)
                             ]),
                             "settings": dict([
                                 ("prefix_name", prefix_name),
@@ -360,7 +358,7 @@ def processfiles():
                                 ("live_category_order", live_category_order),
                                 ("live_stream_order", live_stream_order),
                                 ("vod_category_order", vod_category_order),
-                                ("vod_stream_order", vod_stream_order),
+                                ("vod_stream_order", vod_stream_order)
                             ]),
                             "data": dict([
                                 ("live_categories", []),
@@ -374,7 +372,7 @@ def processfiles():
                                 ("series_categories_hidden", series_categories_hidden),
                                 ("live_streams_hidden", live_streams_hidden),
                                 ("vod_streams_hidden", vod_streams_hidden),
-                                ("series_streams_hidden", series_streams_hidden),
+                                ("series_streams_hidden", series_streams_hidden)
                             ]),
                         })
                         index += 1
@@ -450,7 +448,7 @@ def processfiles():
                         ("full_url", filename),
                         ("playlist_type", "local"),
                         ("valid", True),
-                        ("bouquet", False),
+                        ("bouquet", False)
                     ]),
                     "settings": dict([
                         ("prefix_name", prefix_name),
@@ -462,7 +460,7 @@ def processfiles():
                         ("live_category_order", live_category_order),
                         ("live_stream_order", live_stream_order),
                         ("vod_category_order", vod_category_order),
-                        ("vod_stream_order", vod_stream_order),
+                        ("vod_stream_order", vod_stream_order)
                     ]),
                     "data": dict([
                         ("live_categories", []),
@@ -476,12 +474,12 @@ def processfiles():
                         ("series_categories_hidden", series_categories_hidden),
                         ("live_streams_hidden", live_streams_hidden),
                         ("vod_streams_hidden", vod_streams_hidden),
-                        ("series_streams_hidden", series_streams_hidden),
+                        ("series_streams_hidden", series_streams_hidden)
                     ]),
                 })
                 index += 1
 
-    with open(PLAYLISTS_JSON, "w") as f:
+    with open(playlists_json, "w") as f:
         json.dump(playlists_all, f)
 
     return playlists_all

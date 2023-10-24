@@ -16,13 +16,13 @@ from Screens.Screen import Screen
 from . import _
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import HDR, PLAYLIST_FILE, SKIN_DIRECTORY, cfg
+from .plugin import hdr, playlist_file, skin_directory, cfg
 
 try:
     from http.client import HTTPConnection
 
     HTTPConnection.debuglevel = 0
-except ImportError:
+except:
     from httplib import HTTPConnection
 
     HTTPConnection.debuglevel = 0
@@ -33,7 +33,7 @@ class BmxAddServer(ConfigListScreen, Screen):
         Screen.__init__(self, session)
         self.session = session
 
-        skin_path = os.path.join(SKIN_DIRECTORY, cfg.skin.getValue())
+        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
         skin = os.path.join(skin_path, "settings.xml")
 
         if os.path.exists("/var/lib/dpkg/status"):
@@ -69,12 +69,12 @@ class BmxAddServer(ConfigListScreen, Screen):
             "ok": self.void,
         }, -2)
 
-        self.playlists_all = bmx.get_playlist_json()
+        self.playlists_all = bmx.getPlaylistJson()
 
-        self.onFirstExecBegin.append(self.init_config)
-        self.onLayoutFinish.append(self.__layout_finished)
+        self.onFirstExecBegin.append(self.initConfig)
+        self.onLayoutFinish.append(self.__layoutFinished)
 
-    def __layout_finished(self):
+    def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
     def cancel(self, answer=None):
@@ -95,9 +95,8 @@ class BmxAddServer(ConfigListScreen, Screen):
         if isinstance(curr_config[1], ConfigNumber):
             pass
 
-    def init_config(self):
-        self.playlist_type_cfg = NoSave(
-            ConfigSelection(default="standard", choices=[("standard", _("Xtream codes / XUI ONE (get.php)")), ("external", _("External #EXTM3U playlist"))]))
+    def initConfig(self):
+        self.playlist_type_cfg = NoSave(ConfigSelection(default="standard", choices=[("standard", _("Xtream codes / XUI ONE (get.php)")), ("external", _("External #EXTM3U playlist"))]))
         self.name_cfg = NoSave(ConfigText(default="IPTV", fixed_size=False))
         self.protocol_cfg = NoSave(ConfigSelection(default=self.protocol, choices=[("http://", "http://"), ("https://", "https://")]))
         self.server_cfg = NoSave(ConfigText(fixed_size=False))
@@ -106,9 +105,9 @@ class BmxAddServer(ConfigListScreen, Screen):
         self.password_cfg = NoSave(ConfigText(fixed_size=False))
         self.output_cfg = NoSave(ConfigSelection(default=self.output, choices=[("ts", "ts"), ("m3u8", "m3u8")]))
         self.url_cfg = NoSave(ConfigText(default=self.address, fixed_size=False))
-        self.create_setup()
+        self.createSetup()
 
-    def create_setup(self):
+    def createSetup(self):
         self.list = []
 
         self.list.append(getConfigListEntry(_("Select playlist type:"), self.playlist_type_cfg))
@@ -127,16 +126,15 @@ class BmxAddServer(ConfigListScreen, Screen):
 
         self["config"].list = self.list
         self["config"].l.setList(self.list)
-        self.handle_input_helpers()
+        self.handleInputHelpers()
 
-    def handle_input_helpers(self):
+    def handleInputHelpers(self):
+        currConfig = self["config"].getCurrent()
 
-        curr_config = self["config"].getCurrent()
-
-        if curr_config is not None:
-            if isinstance(curr_config[1], ConfigText):
+        if currConfig is not None:
+            if isinstance(currConfig[1], ConfigText):
                 if "VKeyIcon" in self:
-                    if isinstance(curr_config[1], ConfigNumber):
+                    if isinstance(currConfig[1], ConfigNumber):
                         try:
                             self["VirtualKB"].setEnabled(False)
                         except:
@@ -158,19 +156,18 @@ class BmxAddServer(ConfigListScreen, Screen):
                             self["virtualKeyBoardActions"].setEnabled(True)
                         except:
                             pass
-
                         self["VKeyIcon"].show()
 
-                if "HelpWindow" in self and curr_config[1].help_window and curr_config[1].help_window.instance is not None:
+                if "HelpWindow" in self and currConfig[1].help_window and currConfig[1].help_window.instance is not None:
                     helpwindowpos = self["HelpWindow"].getPosition()
-                    curr_config[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+                    currConfig[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
+
             else:
                 if "VKeyIcon" in self:
                     try:
                         self["VirtualKB"].setEnabled(False)
                     except:
                         pass
-
                     self["VKeyIcon"].hide()
 
     def save(self):
@@ -194,7 +191,7 @@ class BmxAddServer(ConfigListScreen, Screen):
                 playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, list_type, output, name)
                 api_line = "%s/player_api.php?username=%s&password=%s" % (host, username, password)
 
-                valid = self.check_line(api_line)
+                valid = self.checkLine(api_line)
             else:
                 name = self.name_cfg.value.strip()
                 protocol = self.protocol_cfg.value
@@ -203,7 +200,7 @@ class BmxAddServer(ConfigListScreen, Screen):
 
                 playlist_line = "%s #%s" % (host, name)
 
-                valid = self.check_line(host)
+                valid = self.checkLine(host)
 
             # check url has response
             if not valid:
@@ -213,7 +210,7 @@ class BmxAddServer(ConfigListScreen, Screen):
             # check name is not blank
             if name is None or len(name) < 3:
                 self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
-                self.create_setup()
+                self.createSetup()
                 return
 
             # check name exists
@@ -224,12 +221,12 @@ class BmxAddServer(ConfigListScreen, Screen):
                         return
 
             # check playlists.txt file hasn't been deleted
-            if not os.path.isfile(PLAYLIST_FILE):
-                with open(PLAYLIST_FILE, "a") as f:
+            if not os.path.isfile(playlist_file):
+                with open(playlist_file, "a") as f:
                     f.close()
 
             # update playlists.txt file
-            with open(PLAYLIST_FILE, "a") as f:
+            with open(playlist_file, "a") as f:
                 f.write("\n" + str(playlist_line) + "\n")
             self.session.open(MessageBox, _("Playlist added successfully."), type=MessageBox.TYPE_INFO, timeout=5)
             self.close()
@@ -240,12 +237,13 @@ class BmxAddServer(ConfigListScreen, Screen):
             x()
 
         try:
-            if isinstance(self["config"].getCurrent()[1], (ConfigEnableDisable, ConfigYesNo, ConfigSelection)):
-                self.create_setup()
+            if isinstance(self["config"].getCurrent()[1], ConfigEnableDisable) or isinstance(self["config"].getCurrent()[1], ConfigYesNo) or isinstance(self["config"].getCurrent()[1], ConfigSelection):
+                self.createSetup()
         except:
             pass
 
-    def check_line(self, url):
+
+    def checkLine(self, url):
         valid = False
         r = ""
         adapter = HTTPAdapter(max_retries=0)
@@ -254,7 +252,7 @@ class BmxAddServer(ConfigListScreen, Screen):
         http.mount("https://", adapter)
         response = ""
         try:
-            with http.get(url, headers=HDR, timeout=10, verify=False, stream=True) as r:
+            with http.get(url, headers=hdr, timeout=10, verify=False, stream=True) as r:
                 r.raise_for_status()
                 if r.status_code == requests.codes.ok:
                     try:
