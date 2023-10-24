@@ -329,8 +329,8 @@ class BmxBuildBouquets(Screen):
                     bouquet_id1 = bouquet_id1 + calc_remainder
                     bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
 
-                    service_ref = "1:0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":1:" + str(format(self.unique_ref, "08x")) + ":0:0:0:" + "http%3a//example.m3u8"
-                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":1:" + str(format(self.unique_ref, "08x")) + ":0:0:0:"
+                    service_ref = "1:0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
+                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
 
                     if "custom_sid" in channel:
                         if channel["custom_sid"] and channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
@@ -498,7 +498,7 @@ class BmxBuildBouquets(Screen):
                     bouquet_id1 = bouquet_id1 + calc_remainder
                     bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
 
-                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":1:" + str(format(self.unique_ref, "08x")) + ":0:0:0:"
+                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
 
                     bouquet_string = ""
 
@@ -665,7 +665,7 @@ class BmxBuildBouquets(Screen):
                                     bouquet_id1 = bouquet_id1 + calc_remainder
                                     bouquet_id2 = int(series_stream_id) - int(calc_remainder * 65535)
 
-                                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":1:" + str(format(self.unique_ref, "08x")) + ":0:0:0:"
+                                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
                                     bouquet_string = ""
                                     bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + quote(series_url) + ":" + str(series_name) + "\n"
 
@@ -689,7 +689,7 @@ class BmxBuildBouquets(Screen):
                         bouquet_id1 = bouquet_id1 + calc_remainder
                         bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
 
-                        custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":1:" + str(format(self.unique_ref, "08x")) + ":0:0:0:"
+                        custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
 
                         bouquet_string = ""
 
