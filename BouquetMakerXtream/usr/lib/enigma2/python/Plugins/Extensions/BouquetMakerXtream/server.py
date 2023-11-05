@@ -242,7 +242,6 @@ class BmxAddServer(ConfigListScreen, Screen):
         except:
             pass
 
-
     def checkLine(self, url):
         valid = False
         r = ""

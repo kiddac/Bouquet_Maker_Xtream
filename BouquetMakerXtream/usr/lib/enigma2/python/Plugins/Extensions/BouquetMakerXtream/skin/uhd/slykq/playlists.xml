@@ -12,28 +12,28 @@
 		<convert type="TemplatedMultiContent">
 			{"template": [
 			<!-- name -->
-			MultiContentEntryText(pos = (28, 12), size = (816, 56), font=0,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
+			MultiContentEntryText(pos = (28, 12), size = (816, 56), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
 
 			<!-- Authorised LED -->
 			MultiContentEntryPixmapAlphaBlend(pos = (1172, 32), size = (31, 32), png = 5),
 			
 			<!-- Authorised -->
-			MultiContentEntryText(pos = (860, 28), size = (630, 40), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 4),
+			MultiContentEntryText(pos = (860, 28), size = (630, 40), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 4),
 			
 			<!-- Active Conn -->
-			MultiContentEntryText(pos = (860, 64), size = (172, 40), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 6),
+			MultiContentEntryText(pos = (860, 64), size = (172, 40), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 6),
 			
 			<!-- Active Conn Num -->
-			MultiContentEntryText(pos = (1092, 64), size = (104, 40), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
+			MultiContentEntryText(pos = (1092, 64), size = (104, 40), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
 			
 			<!-- Max Conn -->
-			MultiContentEntryText(pos = (860, 100), size = (160, 40), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 8),
+			MultiContentEntryText(pos = (860, 100), size = (160, 40), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 8),
 			
 			<!-- Max Conn Num --> 
-			MultiContentEntryText(pos = (1092, 100), size = (104, 40), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
+			MultiContentEntryText(pos = (1092, 100), size = (104, 40), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
 			
 			<!-- Expires -->
-			MultiContentEntryText(pos = (28, 100), size = (576, 40), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 3),
+			MultiContentEntryText(pos = (28, 100), size = (576, 40), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 3),
 			],
 			"fonts": [gFont("bmxregular", 40), gFont("bmxregular", 28)],
 			"itemHeight": 160,

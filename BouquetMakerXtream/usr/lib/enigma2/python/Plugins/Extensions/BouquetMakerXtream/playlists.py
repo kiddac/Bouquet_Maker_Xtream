@@ -112,7 +112,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self.start()
 
     def start(self):
-        # print("*** start ***")
         self["version"].setText(version)
 
         if epgimporter:
@@ -130,8 +129,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self.clearCaches()
 
     def epgimportCleanup(self):
-        # print("*** epgimportCleanup ***")
-
         channel_file_list = []
         old_channel_files = pythonglob.glob("/etc/epgimport/bouquetmakerxtream.*.channels.xml")
 
@@ -183,7 +180,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
             tree.write(source_file)
 
     def delayedDownload(self):
-        # print("*** delayedDownload ***")
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:
@@ -202,7 +198,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
             pass
 
     def makeUrlList(self):
-        # print("*** makeUrlList ***")
         x = 0
         for playlists in self.playlists_all:
             if playlists["playlist_info"]["playlist_type"] == "xtream":
@@ -226,7 +221,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
             self.createSetup()
 
     def downloadUrl(self, url):
-        # print("*** downloadUrl ***")
         index = url[1]
         r = ""
         retries = Retry(total=2, backoff_factor=1)
@@ -264,9 +258,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
         return index, ""
 
     def processDownloads(self):
-        # print("*** processDownloads ***")
         results = []
-
         threads = min(len(self.url_list), 10)
 
         if hasConcurrent or hasMultiprocessing:
@@ -319,7 +311,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self.buildPlaylistList()
 
     def buildPlaylistList(self):
-        # print("*** buildPlaylistList ***")
         for playlists in self.playlists_all:
             if "user_info" in playlists:
                 if "message" in playlists["user_info"]:
@@ -370,13 +361,11 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self.writeJsonFile()
 
     def writeJsonFile(self):
-        # print("*** writeJsonFile ***")
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
         self.createSetup()
 
     def createSetup(self):
-        # print("*** createSetup ***")
         try:
             self["splash"].hide()
         except:
@@ -463,7 +452,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
             self.openBouquetSettings()
 
     def buildListEntry(self, index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlist_type):
-        # print("*** buildListEntry ***")
         if status == (_("Active")) or status == (_("Url OK")) or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_green.png"))
 
@@ -490,7 +478,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
         self.close()
 
     def deleteServer(self, answer=None):
-        # print("*** deleteServer ***")
         if self.list != []:
             self.current_playlist = glob.current_playlist.copy()
 
@@ -520,7 +507,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
                 self.writeJsonFile()
 
     def deleteEpgData(self, data=None):
-        # print("*** deleteEpgData ***")
         if data is None:
             self.session.openWithCallback(self.deleteEpgData, MessageBox, _("Delete providers EPG data?"))
         else:
@@ -533,7 +519,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
                 pass
 
     def getCurrentEntry(self):
-        # print("*** getCurrentEntry ***")
         if self.list != []:
             glob.current_selection = self["playlists"].getIndex()
             glob.current_playlist = self.playlists_all[glob.current_selection]
@@ -573,7 +558,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
                 return
 
     def checkOnePlaylist(self):
-        # print("*** checkOnePlaylist ***")
         if len(self.list) == 1 and cfg.skip_playlists_screen.getValue() is True:
             self.quit()
 

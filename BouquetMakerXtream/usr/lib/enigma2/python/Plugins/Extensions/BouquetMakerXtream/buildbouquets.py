@@ -4,6 +4,7 @@
 import json
 import os
 
+from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
 from enigma import eTimer
@@ -41,6 +42,11 @@ class BmxBuildBouquets(Screen):
         self.setup_title = (_("Building Bouquets"))
 
         self.categories = []
+
+        self["actions"] = ActionMap(["BMXActions"], {
+            "red": self.void,
+            "cancel": self.void,
+        }, -2)
 
         self["action"] = Label(_("Building Bouquets..."))
         self["status"] = Label("")
@@ -85,6 +91,9 @@ class BmxBuildBouquets(Screen):
             self.starttimer.callback.append(self.start)
         self.starttimer.start(100, True)
 
+    def void(self):
+        pass
+
     def nextJob(self, actiontext, function):
         self["action"].setText(actiontext)
         self.timer = eTimer()
@@ -95,7 +104,6 @@ class BmxBuildBouquets(Screen):
         self.timer.start(50, True)
 
     def start(self):
-        # print("*** start ***")
         self["progress"].setRange((0, self.progress_range))
         self["progress"].setValue(self.progress_value)
         self.safe_name = bmx.safeName(glob.current_playlist["playlist_info"]["name"])
@@ -103,8 +111,6 @@ class BmxBuildBouquets(Screen):
         self.deleteExistingRefs()
 
     def deleteExistingRefs(self):
-        # print("*** deleteExistingRefs ***")
-
         with open("/etc/enigma2/bouquets.tv", "r+") as f:
             lines = f.readlines()
             f.seek(0)
@@ -146,7 +152,6 @@ class BmxBuildBouquets(Screen):
         self.makeUrlList()
 
     def makeUrlList(self):
-        # print("*** makeUrlList ***")
         self.live_url_list = []
         self.vod_url_list = []
         self.series_url_list = []
@@ -237,7 +242,6 @@ class BmxBuildBouquets(Screen):
         self.parseM3u8Playlist()
 
     def processDownloads(self, stream_type):
-        # print("*** processDownloads ***")
         if stream_type == "live":
             self.url_list = self.live_url_list
 
@@ -269,8 +273,6 @@ class BmxBuildBouquets(Screen):
                     self.parseM3u8Playlist(response)
 
     def loadLive(self):
-        # print("*** loadLive ***")
-
         self.live_stream_data = []
         stream_list = []
         stream_type = glob.current_playlist["settings"]["live_type"]
@@ -329,8 +331,8 @@ class BmxBuildBouquets(Screen):
                     bouquet_id1 = bouquet_id1 + calc_remainder
                     bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
 
-                    service_ref = "1:0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
-                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
+                    service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
+                    custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
                     if "custom_sid" in channel:
                         if channel["custom_sid"] and channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
@@ -404,9 +406,9 @@ class BmxBuildBouquets(Screen):
                     string_list = []
 
                     if glob.current_playlist["settings"]["prefix_name"] is True and cfg.groups.value is False:
-                        output_string += "#NAME " + self.safe_name + "-Live | " + category["category_name"] + "\n"
+                        output_string += "#NAME " + self.safe_name + " " + category["category_name"] + "\n"
                     else:
-                        output_string += "#NAME " + "Live | " + category["category_name"] + "\n"
+                        output_string += "#NAME " + " " + category["category_name"] + "\n"
 
                     for stream in self.live_stream_data:
                         if str(category["category_id"]) == str(stream["category_id"]):
@@ -454,7 +456,6 @@ class BmxBuildBouquets(Screen):
                 self.finished()
 
     def loadVod(self):
-        # print("*** loadVod ***")
         self.vod_stream_data = []
         stream_list = []
         stream_type = glob.current_playlist["settings"]["vod_type"]
@@ -498,7 +499,7 @@ class BmxBuildBouquets(Screen):
                     bouquet_id1 = bouquet_id1 + calc_remainder
                     bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
 
-                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
+                    custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
                     bouquet_string = ""
 
@@ -600,7 +601,6 @@ class BmxBuildBouquets(Screen):
                 self.finished()
 
     def loadSeries(self):
-        # print("*** loadSeries ***")
         self.series_stream_data = []
         stream_list = []
         stream_type = glob.current_playlist["settings"]["vod_type"]
@@ -665,7 +665,7 @@ class BmxBuildBouquets(Screen):
                                     bouquet_id1 = bouquet_id1 + calc_remainder
                                     bouquet_id2 = int(series_stream_id) - int(calc_remainder * 65535)
 
-                                    custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
+                                    custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
                                     bouquet_string = ""
                                     bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + quote(series_url) + ":" + str(series_name) + "\n"
 
@@ -689,7 +689,7 @@ class BmxBuildBouquets(Screen):
                         bouquet_id1 = bouquet_id1 + calc_remainder
                         bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
 
-                        custom_sid = ":0:1:" + str(format(bouquet_id1, "04x")) + ":" + str(format(bouquet_id2, "04x")) + ":" + str(format(self.unique_ref, "08x")) + ":0:0:0:0:"
+                        custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
                         bouquet_string = ""
 
@@ -778,21 +778,17 @@ class BmxBuildBouquets(Screen):
         self.finished()
 
     def parseM3u8Playlist(self, response=None):
-        # print("*** parseM3u8Playlist ***")
         self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
         self.makeM3u8CategoriesJson()
 
     def makeM3u8CategoriesJson(self):
-        # print("*** makeM3u8CategoriesJson  ***")
         parsem3u.makeM3u8CategoriesJson(self.live_streams, self.vod_streams, self.series_streams)
         self.makeM3u8StreamsJson()
 
     def makeM3u8StreamsJson(self):
-        # print("*** makeM3u8StreamsJson ***")
         parsem3u.makeM3u8StreamsJson(self.live_streams, self.vod_streams, self.series_streams)
 
     def buildBouquetTvGroupedFile(self):
-        # print("*** buildBouquetTvGroupedFile ***")
         exists = False
         groupname = "userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
         with open("/etc/enigma2/bouquets.tv", "r") as f:
@@ -809,8 +805,6 @@ class BmxBuildBouquets(Screen):
         self.bouquet_tv = True
 
     def buildXmltvSource(self):
-        # print("*** buildXmltvSource ***")
-
         import xml.etree.ElementTree as ET
 
         file_path = "/etc/epgimport/"
@@ -865,8 +859,6 @@ class BmxBuildBouquets(Screen):
         self.buildXmltvChannels()
 
     def buildXmltvChannels(self):
-        # print("*** build_xmltv channels ***")
-
         file_path = "/etc/epgimport/"
         epg_filename = "bouquetmakerxtream." + str(self.safe_name) + ".channels.xml"
         channel_path = os.path.join(file_path, epg_filename)
@@ -886,7 +878,6 @@ class BmxBuildBouquets(Screen):
             f.write(xml_str)
 
     def finished(self):
-        # print("**** self finished ***")
         self.updateJson()
         bmx.refreshBouquets()
         self.session.openWithCallback(self.exit, MessageBox, str(self.total_count) + _(" IPTV Bouquets Created"), MessageBox.TYPE_INFO, timeout=10)

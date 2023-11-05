@@ -156,7 +156,6 @@ class BmxChooseCategories(Screen):
         self.timer.start(5, True)
 
     def makeUrlList(self):
-        # print("*** makeUrlList ***")
         self.live_url_list = []
         self.vod_url_list = []
         self.series_url_list = []
@@ -186,8 +185,6 @@ class BmxChooseCategories(Screen):
             self.loadSeries()
 
     def processDownloads(self, stream_type):
-        # print("*** processDownloads ***")
-
         if stream_type == "live":
             self.url_list = self.live_url_list
 
@@ -262,7 +259,6 @@ class BmxChooseCategories(Screen):
             pass
 
     def loadLive(self):
-        # print("*** loadLive ***")
         self.level = 1
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             self.processDownloads("live")

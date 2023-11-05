@@ -25,14 +25,6 @@ if [ -d /etc/opkg ]; then
         fi
         echo ""
 
-        # echo "checking python3-lzma"
-        # if python -c "import lzma" &> /dev/null; then
-        #     echo "lzma library already installed"
-        # else
-        #     opkg install liblzma5
-        # fi
-        # echo ""
-
     else
         echo "checking python-requests"
         if python -c "import requests" &> /dev/null; then
@@ -50,13 +42,13 @@ if [ -d /etc/opkg ]; then
         fi
         echo ""
 
-        # echo "checking python2-lzma"
-        # if python -c "import lzma" &> /dev/null; then
-        #     echo "lzma library already installed"
-        # else
-        #     opkg install python-backports-lzma
-        # fi
-        # echo ""
+        echo "checking PIL modules"
+        if python -c "import PIL" &> /dev/null; then
+            echo "PIL library already installed"
+        else
+            opkg install python-image
+            opkg install python-imaging
+        fi
 
     fi
 else
@@ -79,14 +71,6 @@ else
         fi
         echo ""
 
-        # echo "checking python3-lzma"
-        # if python -c "import lzma" &> /dev/null; then
-        #     echo "lzma library already installed"
-        # else
-        #     apt-get -y install liblzma5
-        # fi
-        # echo ""
-
     else
         echo "checking python-requests"
         if python -c "import requests" &> /dev/null; then
@@ -104,13 +88,14 @@ else
         fi
         echo ""
 
-        # echo "checking python2-lzma"
-        # if python -c "import lzma" &> /dev/null; then
-        #     echo "lzma library already installed"
-        # else
-        #     apt-get -y install python-backports-lzma
-        # fi
-        # echo ""
+        echo "checking PIL modules"
+        if python -c "import PIL" &> /dev/null; then
+            echo "PIL library already installed"
+        else
+            apt-get -y install python-image
+            apt-get -y install python-imaging
+        fi
+        echo ""
     fi
 fi
 exit 0

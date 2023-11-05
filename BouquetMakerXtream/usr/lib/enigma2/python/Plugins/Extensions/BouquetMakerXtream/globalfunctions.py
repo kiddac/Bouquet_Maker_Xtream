@@ -8,7 +8,6 @@ import re
 import requests
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
-
 from .plugin import hdr, playlists_json
 
 

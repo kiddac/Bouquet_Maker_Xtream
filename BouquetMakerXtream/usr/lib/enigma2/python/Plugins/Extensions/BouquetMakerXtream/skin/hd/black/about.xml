@@ -12,5 +12,7 @@
 	<widget source="key_red" render="Label" position="534,680" size="160,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" transparent="1" noWrap="1" zPosition="2"/>
 	<widget source="key_green" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_green.png" position="700,687" size="25,25" alphatest="blend" zPosition="2"/>
 	<widget source="key_green" render="Label" position="734,680" size="160,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/paypal.png" position="92,562" size="67,67" zPosition="1"/>
+	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/kofi.png" position="1121,562" size="67,67" zPosition="1"/>
 </screen>
 

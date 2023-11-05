@@ -129,6 +129,7 @@ class BmxMainMenu(Screen):
 
         if self.bouquets_exist:
             self.list.append([4, _("Update Bouquets")])
+            self.list.append([8, _("Download Picons")])
             self.list.append([5, _("Delete Bouquets")])
             self.list.append([6, _("Delete All BMX Bouquets")])
 
@@ -201,6 +202,11 @@ class BmxMainMenu(Screen):
 
         self.session.openWithCallback(self.createSetup, update.BmxUpdate, "manual")
 
+    def makePicons(self):
+        from . import picons
+
+        self.session.openWithCallback(self.start, picons.BmxDownloadPicons)
+
     def __next__(self):
         if self["list"].getCurrent():
             index = self["list"].getCurrent()[0]
@@ -219,6 +225,8 @@ class BmxMainMenu(Screen):
                 self.deleteAll()
             if index == 7:
                 self.about()
+            if index == 8:
+                self.makePicons()
 
     def quit(self):
         glob.firstrun = 0
@@ -242,5 +250,7 @@ def buildListEntry(index, title):
         png = LoadPixmap(common_path + "deleteplaylist.png")
     if index == 7:
         png = LoadPixmap(common_path + "about.png")
+    if index == 8:
+        png = LoadPixmap(common_path + "picons.png")
 
     return (index, str(title), png)

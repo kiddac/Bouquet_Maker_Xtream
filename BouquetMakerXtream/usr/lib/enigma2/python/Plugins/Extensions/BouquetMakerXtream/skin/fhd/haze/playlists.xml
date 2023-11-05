@@ -1,5 +1,5 @@
 <screen name="bouquetMakerXtreamPlaylists" position="0,0" size="1920,1080" flags="wfNoBorder" backgroundColor="#ff000000">
-	<widget name="splash" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/haze/images/splash.png"  position="0,0" size="1920,1080" zPosition="1000"/>
+	<widget name="splash" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/haze/images/splash.png" position="0,0" size="1920,1080" zPosition="1000"/>
 	<eLabel position="0,0" size="1920,90" backgroundColor="#34000000" zPosition="-1"/>
 	<eLabel position="0,91" size="1920,1" backgroundColor="#ffffff" zPosition="-1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/logo_hz.png" position="0,0" size="300,90" alphatest="blend" zPosition="2"/>
@@ -12,19 +12,19 @@
 		<convert type="TemplatedMultiContent">
 			{"template": [
 			<!-- name -->
-			MultiContentEntryText(pos = (30, 24), size = (570, 60), font=0,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
+			MultiContentEntryText(pos = (30, 24), size = (570, 60), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
 
 			<!-- Authorised LED -->
 			MultiContentEntryPixmapAlphaBlend(pos = (435, 39), size = (23, 24), png = 5),
 			
 			<!-- Authorised -->
-			MultiContentEntryText(pos = (30, 69), size = (258, 30), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 4),
+			MultiContentEntryText(pos = (30, 69), size = (258, 30), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 4),
 			
 			<!-- Active Conn Num -->
-			MultiContentEntryText(pos = (318, 69), size = (60, 30), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
+			MultiContentEntryText(pos = (318, 69), size = (60, 30), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
 
 			<!-- Max Conn Num --> 
-			MultiContentEntryText(pos = (395, 69), size = (60, 30), font=1,  color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
+			MultiContentEntryText(pos = (395, 69), size = (60, 30), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
 
 			],
 			"fonts": [gFont("bmxregular", 30), gFont("bmxregular", 21)],

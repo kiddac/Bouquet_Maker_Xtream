@@ -116,6 +116,7 @@ cfg.groups = ConfigYesNo(default=False)
 cfg.location_valid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
 cfg.auto_close = ConfigYesNo(default=False)
+cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[("/media/hdd/picon/", "/media/hdd/picon"), ("/media/usb/picon/", "/media/usb/picon"), ("/usr/share/enigma2/picon/", "/usr/share/enigma2/picon")])
 
 skin_path = os.path.join(skin_directory, cfg.skin.value)
 common_path = os.path.join(skin_directory, "common/")
@@ -236,7 +237,6 @@ class AutoStartTimer:
         self.timer.stop()
         now = int(time.time())
         wake = self.getWakeTime()
-        # print("*** wake ", wake)
         atLeast = 0
         if wake - now < 60:
             self.runUpdate()

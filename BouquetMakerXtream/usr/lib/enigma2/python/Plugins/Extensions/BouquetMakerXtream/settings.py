@@ -166,6 +166,8 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.local_location = cfg.local_location.getValue()
         self.org_catchup_on = cfg.catchup_on.getValue()
 
+        self.cfg_picon_location = getConfigListEntry(_("Picon download location"), cfg.picon_location)
+
         self.createSetup()
 
     def createSetup(self):
@@ -173,6 +175,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.list.append(self.cfg_skin)
         self.list.append(self.cfg_location)
         self.list.append(self.cfg_local_location)
+        self.list.append(self.cfg_picon_location)
         # self.list.append(self.cfg_timeout)
         self.list.append(self.cfg_skip_playlists_screen)
         # self.list.append(self.cfg_position)

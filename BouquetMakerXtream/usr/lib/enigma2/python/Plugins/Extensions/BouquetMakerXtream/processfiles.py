@@ -378,7 +378,6 @@ def processFiles():
                         index += 1
 
         # remove old playlists from playlists.json
-
         newList = []
 
         for playlist in playlists_all:

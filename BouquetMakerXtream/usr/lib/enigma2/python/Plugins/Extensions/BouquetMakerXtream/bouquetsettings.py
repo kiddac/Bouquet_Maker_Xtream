@@ -95,7 +95,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.close()
 
     def start(self):
-        # print("*** self start ***")
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:
@@ -106,7 +105,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.timer.start(5, True)
 
     def makeUrlList(self):
-        # print("*** makeUrlList ***")
         self.url_list = []
 
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
@@ -123,10 +121,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.checkCategories()
 
     def processDownloads(self):
-        # print("*** processDownloads ***")
-
         results = ""
-
         threads = min(len(self.url_list), 10)
 
         if hasConcurrent or hasMultiprocessing:
@@ -182,21 +177,17 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                         self.parseM3u8Playlist(response)
 
     def parseM3u8Playlist(self, response=None):
-        # print("*** parseM3u8Playlist ***")
         self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
         self.makeM3u8CategoriesJson()
 
     def makeM3u8CategoriesJson(self):
-        # print("*** makeM3u8CategoriesJson  ***")
         parsem3u.makeM3u8CategoriesJson(self.live_streams, self.vod_streams, self.series_streams)
         self.makeM3u8StreamsJson()
 
     def makeM3u8StreamsJson(self):
-        # print("*** makeM3u8StreamsJson  ***")
         parsem3u.makeM3u8StreamsJson(self.live_streams, self.vod_streams, self.series_streams)
 
     def checkCategories(self):
-        # print("*** checkCategories ***")
         if not glob.current_playlist["data"]["live_categories"]:
             self.hide_live = True
             glob.current_playlist["settings"]["show_live"] = False
@@ -364,7 +355,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         return self["config"].getCurrent() and str(self["config"].getCurrent()[1].getText()) or ""
 
     def save(self):
-        # print("*** save ***")
         if self.list:
             if self.show_live_cfg.value is False and self.show_vod_cfg.value is False and self.show_series_cfg.value is False:
                 self.session.open(MessageBox, _("No bouquets selected."), MessageBox.TYPE_ERROR, timeout=5)
