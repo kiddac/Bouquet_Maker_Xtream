@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Jakarta\n"
 "POT-Creation-Date: 2023-10-22 23:11+0200\n"
-"PO-Revision-Date: 2023-10-23 09:58+0200\n"
+"PO-Revision-Date: 2023-10-25 08:17+0200\n"
 "Last-Translator: \n"
 "Language-Team: Jakarta\n"
 "Language: fr\n"
@@ -52,7 +52,7 @@ msgstr ""
 
 #: about.py:47
 msgid "Credits:\n"
-msgstr "Credits:\n"
+msgstr "Crédits:\n"
 
 #: about.py:48
 msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
@@ -329,7 +329,7 @@ msgstr "Mise à jour des bouquets"
 
 #: mainmenu.py:132
 msgid "Delete All BMX Bouquets"
-msgstr "Supprimer tous les bouquets BMX"
+msgstr "Supprimer les bouquets BMX"
 
 #: mainmenu.py:134 server.py:46
 msgid "Add Playlist"
