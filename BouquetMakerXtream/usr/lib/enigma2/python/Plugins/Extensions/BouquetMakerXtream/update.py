@@ -352,7 +352,7 @@ class BmxUpdate(Screen):
         if live_categories and self.live_streams:
             x = 0
             for channel in self.live_streams:
-                if x > 10000:
+                if cfg.max_live.value != 0 and x > cfg.max_live.value:
                     break
 
                 stream_id = str(channel["stream_id"])
@@ -532,7 +532,7 @@ class BmxUpdate(Screen):
         if vod_categories and self.vod_streams:
             x = 0
             for channel in self.vod_streams:
-                if x > 5000:
+                if cfg.max_vod.value != 0 and x > cfg.max_vod.value:
                     break
 
                 stream_id = str(channel["stream_id"])
@@ -691,11 +691,11 @@ class BmxUpdate(Screen):
                         try:
                             x = 0
                             for line in lines:
+                                if cfg.max_series.value != 0 and x > cfg.max_series.value:
+                                    break
+
                                 if pythonVer == 3:
                                     line = line.decode()
-
-                                if x > 1000:
-                                    break
 
                                 series_url = line.split(" ")[0]
                                 series_name = line.split(":")[-1].strip()

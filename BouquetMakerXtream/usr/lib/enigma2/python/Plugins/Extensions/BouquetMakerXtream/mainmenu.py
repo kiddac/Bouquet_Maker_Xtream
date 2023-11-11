@@ -203,9 +203,8 @@ class BmxMainMenu(Screen):
         self.session.openWithCallback(self.createSetup, update.BmxUpdate, "manual")
 
     def makePicons(self):
-        from . import picons
-
-        self.session.openWithCallback(self.start, picons.BmxDownloadPicons)
+        from . import piconsettings
+        self.session.openWithCallback(self.start, piconsettings.BmxPiconSettings)
 
     def __next__(self):
         if self["list"].getCurrent():

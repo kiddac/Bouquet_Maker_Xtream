@@ -2,6 +2,8 @@
 # ~ # -*- coding: utf-8 -*-
 
 import os
+import re
+import unicodedata
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -14,7 +16,10 @@ from . import bouquet_globals as glob
 from . import downloadpicons
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, skin_directory, version
+from .plugin import cfg, common_path, skin_directory, version, pythonVer
+
+if pythonVer == 3:
+    unicode = str
 
 
 class BmxDownloadPicons(Screen):
@@ -137,7 +142,10 @@ class BmxDownloadPicons(Screen):
                 x = 0
                 self.picon_list = []
                 for channel in self.live_streams:
-                    if x > 10000:
+
+                    custom_sid = ""
+
+                    if cfg.max_live.value != 0 and x > cfg.max_live.value:
                         break
 
                     stream_id = str(channel["stream_id"])
@@ -149,6 +157,8 @@ class BmxDownloadPicons(Screen):
                         channel_id = str(channel["epg_channel_id"])
                         if channel_id and "&" in channel_id:
                             channel_id = channel_id.replace("&", "&amp;")
+
+                        piconname = name
 
                         bouquet_id1 = 0
                         calc_remainder = int(stream_id) // 65535
@@ -171,11 +181,21 @@ class BmxDownloadPicons(Screen):
                         if channel["stream_icon"] and "http" in channel["stream_icon"] \
                                 and ("png" in channel["stream_icon"].lower() or "jpg" in channel["stream_icon"].lower() or "jpeg" in channel["stream_icon"].lower()):
 
-                            self.picon_list.append([custom_sid,  channel["stream_icon"]])
+                            if cfg.picon_type.value == "SRP":
+                                self.picon_list.append([custom_sid, channel["stream_icon"]])
+                            else:
+                                if pythonVer == 2:
+                                    piconname = unicodedata.normalize("NFKD", unicode(piconname, "utf_8", errors="ignore")).encode("ASCII", "ignore")
+                                elif pythonVer == 3:
+                                    piconname = unicodedata.normalize("NFKD", piconname).encode("ASCII", "ignore").decode("ascii")
+
+                                    piconname = re.sub("[^a-z0-9]", "", piconname.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
+
+                                self.picon_list.append([piconname, channel["stream_icon"]])
                             x += 1
 
+                # self.picon_list.sort(key=lambda x: x[1])
                 """
-                self.picon_list.sort(key=lambda x: x[1])
                 with open('/tmp/bmxpiconlist.txt', 'w+') as f:
                     for item in self.picon_list:
                         f.write("%s\n" % item)

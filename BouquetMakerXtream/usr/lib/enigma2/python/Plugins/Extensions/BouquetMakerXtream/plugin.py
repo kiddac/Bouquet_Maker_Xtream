@@ -59,6 +59,7 @@ screenwidth = getDesktop(0).size()
 
 dir_etc = "/etc/enigma2/bouquetmakerxtream/"
 dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
+dir_custom = "/media/hdd/picon/"
 
 if screenwidth.width() == 2560:
     skin_directory = os.path.join(dir_plugins, "skin/uhd/")
@@ -89,6 +90,16 @@ if os.path.exists("/usr/bin/apt-get"):
     live_stream_type_choices.append(("8193", "DreamOS GStreamer(8193)"))
     vod_stream_type_choices.append(("8193", "DreamOS GStreamer(8193)"))
 
+SizeList = [
+    ("xpicons", _("XPicons - 220x132 Pixel")),
+    ("zzzpicons", _("ZZZPicons - 400x240 Pixel"))]
+
+# ("minipicons", _("MiniPicons - 50x30 Pixel")),
+# ("picons", _("Picons - 100x60 Pixel")),
+# ("zpicons", _("ZPicons - 220x88 Pixel (Display Duo2)")),
+# ("zzpicons1", _("ZZPicons1 - 400x160 bzw")),
+# ("zzpicons2", _("ZZPicons2 - 400x170 Pixel")),
+
 cfg.live_type = ConfigSelection(default="4097", choices=live_stream_type_choices)
 cfg.vod_type = ConfigSelection(default="4097", choices=vod_stream_type_choices)
 
@@ -116,7 +127,31 @@ cfg.groups = ConfigYesNo(default=False)
 cfg.location_valid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
 cfg.auto_close = ConfigYesNo(default=False)
-cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[("/media/hdd/picon/", "/media/hdd/picon"), ("/media/usb/picon/", "/media/usb/picon"), ("/usr/share/enigma2/picon/", "/usr/share/enigma2/picon")])
+
+cfg.picon_bitdepth = ConfigSelection(default="24bit", choices=[("24", _("24 Bit")), ("8bit", _("8 Bit"))])
+cfg.picon_type = ConfigSelection(default="SRP", choices=[("SRP", _("Service Reference Picons")), ("SNP", _("Service Name Picons"))])
+cfg.picon_overwrite = ConfigYesNo(default=False)
+cfg.picon_size = ConfigSelection(default="xpicons", choices=SizeList)
+cfg.picon_custom = ConfigDirectory(default=dir_custom)
+cfg.max_live = ConfigSelectionNumber(0, 50000, 5000, default=10000, wraparound=True)
+cfg.max_vod = ConfigSelectionNumber(0, 10000, 1000, default=5000, wraparound=True)
+cfg.max_series = ConfigSelectionNumber(0, 5000, 1000, default=1000, wraparound=True)
+cfg.max_threads = ConfigSelectionNumber(5, 40, 5, default=20, wraparound=True)
+
+cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[
+    ("/media/hdd/picon/", "/media/hdd/picon"),
+    ("/media/usb/picon/", "/media/usb/picon"),
+    ("/usr/share/enigma2/picon/", "/usr/share/enigma2/picon"),
+    ("/picons/piconHD/", "/picons/piconHD"),
+    ("/data/picon/", "/data/picon"),
+    ("/data/picons//piconHD/", "/data/picons/piconHD"),
+    ("custom", "Custom location")
+]
+)
+
+
+# vti picon symlink - ln -s /media/hdd/picon /usr/share/enigma2
+# newenigma2 symlink - # ln -s /data/picons /picons
 
 skin_path = os.path.join(skin_directory, cfg.skin.value)
 common_path = os.path.join(skin_directory, "common/")

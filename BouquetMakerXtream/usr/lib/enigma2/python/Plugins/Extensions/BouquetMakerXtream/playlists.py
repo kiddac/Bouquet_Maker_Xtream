@@ -186,7 +186,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
             try:
                 self.timer.callback.append(self.makeUrlList)
             except:
-                self.self.makeUrlList()
+                self.makeUrlList()
         self.timer.start(50, True)
 
     def clearCaches(self):

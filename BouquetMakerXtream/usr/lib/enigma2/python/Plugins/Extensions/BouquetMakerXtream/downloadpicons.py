@@ -87,17 +87,31 @@ class BmxDownloadPicons(Screen):
             "cancel": self.keyCancel
         }, -2)
 
+        self.downloadlocation = cfg.picon_location.value
+
+        if not os.path.exists(self.downloadlocation):
+            try:
+                os.makedirs(self.downloadlocation)
+            except Exception as e:
+                print(e)
+                return
+
         self.job_current = 0
         self.job_picon_name = ""
         self.job_total = len(self.selected)
         self.picon_num = 0
         self.pause = 100
         self.complete = False
-        self.onFirstExecBegin.append(self.start)
+
+        self.bitdepth = cfg.picon_bitdepth.value
+        self.piconsize = cfg.picon_size.value
+        self.overwrite = cfg.picon_overwrite.value
 
         os.system("echo 1 > /proc/sys/vm/drop_caches")
         os.system("echo 2 > /proc/sys/vm/drop_caches")
         os.system("echo 3 > /proc/sys/vm/drop_caches")
+
+        self.onFirstExecBegin.append(self.start)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -126,13 +140,19 @@ class BmxDownloadPicons(Screen):
             self.showError(_("No picons selected."))
 
     def fetch_url(self, url, i):
+
+        if cfg.picon_overwrite.value is False:
+            if os.path.exists(str(cfg.picon_location.value) + str(url[i][0]) + ".png"):
+                print("*** file exists ***")
+                return
+
         maxsize = False
 
-        url[i][1] = url[i][1].replace("728px", "220px")
-        url[i][1] = url[i][1].replace("1200px", "220px")
-        url[i][1] = url[i][1].replace("1280px", "220px")
-        url[i][1] = url[i][1].replace("1920px", "220px")
-        url[i][1] = url[i][1].replace("2000px", "220px")
+        url[i][1] = url[i][1].replace("728px", "400px")
+        url[i][1] = url[i][1].replace("1200px", "400px")
+        url[i][1] = url[i][1].replace("1280px", "400px")
+        url[i][1] = url[i][1].replace("1920px", "400px")
+        url[i][1] = url[i][1].replace("2000px", "400px")
 
         image_formats = ("image/png", "image/jpeg", "image/jpg")
         retries = Retry(total=1, backoff_factor=1)
@@ -189,15 +209,15 @@ class BmxDownloadPicons(Screen):
                 try:
                     self.timer3.callback.append(self.finished)
                 except:
-                    self.self.finished()
+                    self.finished()
             self.timer3.start(3000, True)
 
     def buildPicons(self):
         results = ""
 
         threads = len(self.selected)
-        if threads > 30:
-            threads = 30
+        if threads > cfg.max_threads.value:
+            threads = cfg.max_threads.value
 
         if hasConcurrent:
             try:
@@ -249,9 +269,11 @@ class BmxDownloadPicons(Screen):
         self.close()
 
     def makePicon(self, image_file, piconname, url):
-        piconSize = [220, 132]
-        self.bitdepth = "24bit"  # "8bit"
-        self.downloadlocation = cfg.picon_location.value
+        if self.piconsize == "xpicons":
+            piconSize = [220, 132]
+        elif self.piconsize == "zzzpicons":
+            piconSize = [400, 240]
+
         im = None
         imagetype = ""
 
@@ -293,14 +315,11 @@ class BmxDownloadPicons(Screen):
 
                 try:
                     im.thumbnail(thumbsize, Image.Resampling.LANCZOS)
-
-                except Exception as e:
-                    print("*** lanczos failed ***", e)
+                except Exception:
                     try:
                         im.thumbnail(thumbsize, Image.ANTIALIAS)
-
-                    except Exception as e:
-                        print("*** antialias failed ***", e)
+                    except Exception:
+                        pass
 
                 # merge blank and resized image
 
@@ -319,16 +338,16 @@ class BmxDownloadPicons(Screen):
 
                 im = blank
 
-                # save picon
-                im.save(self.downloadlocation + "/" + piconname + ".png", optimize=True)
-                im.close()
+                self.savePicon(im, piconname)
+
+            except IOError as oe:
+                print(oe, piconname, url)
+                return
 
             except Exception as e:
                 print(e, piconname, url)
                 return
-            except IOError as oe:
-                print(oe, piconname, url)
-                return
+
             except:
                 print(piconname, url)
                 return
@@ -336,13 +355,10 @@ class BmxDownloadPicons(Screen):
         else:
             width, height = piconSize
             blank = Image.new("RGBA", (width, height), (255, 255, 255, 0))
-            blank.save(self.downloadlocation + "/" + piconname + ".png", optimize=True)
-            blank.close()
+
+            self.savePicon(blank, piconname)
 
     def savePicon(self, im, piconname):
-        if not os.path.exists(self.downloadlocation):
-            os.makedirs(self.downloadlocation)
-
         try:
             if self.bitdepth == "8bit":
                 alpha = im.split()[-1]
@@ -358,5 +374,6 @@ class BmxDownloadPicons(Screen):
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
             os.system("echo 3 > /proc/sys/vm/drop_caches")
+
         except Exception as e:
             print("*** failed to save ***", e)
