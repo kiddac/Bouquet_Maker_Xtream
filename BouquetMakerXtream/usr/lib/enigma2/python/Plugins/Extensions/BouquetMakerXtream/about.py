@@ -1,16 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
-import os
+from . import _
+from .bmxStaticText import StaticText
+from .plugin import cfg, skin_directory, version
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Screens.Screen import Screen
 
-from . import _
-from .bmxStaticText import StaticText
-from .plugin import cfg, skin_directory, version
+import os
 
 
 class BmxAbout(Screen):

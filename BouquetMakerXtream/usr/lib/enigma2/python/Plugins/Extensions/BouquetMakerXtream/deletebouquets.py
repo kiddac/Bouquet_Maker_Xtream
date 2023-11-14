@@ -1,19 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json
-import os
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from .bmxStaticText import StaticText
+from .plugin import cfg, common_path, epgimporter, playlists_json, skin_directory, version
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
-from . import _
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, epgimporter, playlists_json, skin_directory, version
+import json
+import os
 
 
 class BmxDeleteBouquets(Screen):

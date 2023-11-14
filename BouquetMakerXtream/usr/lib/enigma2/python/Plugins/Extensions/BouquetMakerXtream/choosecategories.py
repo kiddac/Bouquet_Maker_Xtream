@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json
-import os
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from .bmxStaticText import StaticText
+from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, playlists_json, skin_directory
 
 from Components.ActionMap import ActionMap
 from Components.Pixmap import Pixmap
@@ -11,11 +14,8 @@ from enigma import eTimer
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
-from . import _
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, playlists_json, skin_directory
+import json
+import os
 
 
 class BmxChooseCategories(Screen):

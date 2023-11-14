@@ -1,14 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from .plugin import hdr, playlists_json
+
+from enigma import eDVBDB
+from requests.adapters import HTTPAdapter
+
 import json
 import os
 import re
-
 import requests
-from enigma import eDVBDB
-from requests.adapters import HTTPAdapter
-from .plugin import hdr, playlists_json
 
 
 def getPlaylistJson():
@@ -44,6 +45,31 @@ def downloadUrl(url, ext):
                     response = r.json()
                 else:
                     response = r.content
+                return response
+            except Exception as e:
+                print(e)
+                return ""
+
+    except Exception as e:
+        print(e)
+
+    return ""
+
+
+def downloadApi(url):
+    r = ""
+    retries = 0
+    adapter = HTTPAdapter(max_retries=retries)
+    http = requests.Session()
+    http.mount("http://", adapter)
+    http.mount("https://", adapter)
+    r = ""
+    try:
+        r = http.get(url, headers=hdr, timeout=5, verify=False)
+        r.raise_for_status()
+        if r.status_code == requests.codes.ok:
+            try:
+                response = r.json()
                 return response
             except Exception as e:
                 print(e)

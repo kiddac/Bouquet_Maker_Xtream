@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+from . import _
+from .bmxStaticText import StaticText
+from .plugin import autoStartTimer, cfg, skin_directory
 
 from Components.ActionMap import ActionMap
 from Components.config import ConfigSelection, ConfigText, ConfigYesNo, config, configfile, getConfigListEntry
@@ -15,9 +17,7 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.BoundFunction import boundFunction
 
-from . import _
-from .bmxStaticText import StaticText
-from .plugin import autoStartTimer, cfg, skin_directory
+import os
 
 
 class ProtectedScreen:

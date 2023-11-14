@@ -1,18 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json
-import os
-from datetime import datetime
-
-from Components.ActionMap import ActionMap
-from Components.Label import Label
-from Screens.Screen import Screen
-
 from . import _
 from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
 from .plugin import cfg, skin_directory
+
+from Components.ActionMap import ActionMap
+from datetime import datetime
+from Components.Label import Label
+from Screens.Screen import Screen
+
+import json
+import os
 
 
 class BmxUserInfo(Screen):

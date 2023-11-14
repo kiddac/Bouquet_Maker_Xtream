@@ -1,8 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json
-import os
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from . import processfiles as pfiles
+from .bmxStaticText import StaticText
+from .plugin import cfg, common_path, playlists_json, pythonFull, skin_directory, version
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -11,12 +15,8 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
-from . import _
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from . import processfiles as pfiles
-from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, playlists_json, pythonFull, skin_directory, version
+import json
+import os
 
 
 class BmxMainMenu(Screen):

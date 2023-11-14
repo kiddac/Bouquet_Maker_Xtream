@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-import re
-
 from . import _
 from . import bouquet_globals as glob
 from .plugin import cfg, pythonVer
+
+import os
+import re
 
 
 def parseM3u8Playlist(response):

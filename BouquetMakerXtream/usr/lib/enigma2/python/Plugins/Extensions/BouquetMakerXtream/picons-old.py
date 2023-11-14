@@ -17,15 +17,10 @@ import os
 import re
 import unicodedata
 
-"""
 try:
     from urllib import quote
 except:
     from urllib.parse import quote
-    """
-
-if pythonVer == 3:
-    unicode = str
 
 
 class BmxDownloadPicons(Screen):
@@ -145,8 +140,15 @@ class BmxDownloadPicons(Screen):
                 self.picon_list = []
                 for channel in self.live_streams:
 
+                    if cfg.max_live.value != 0 and x > cfg.max_live.value:
+                        break
+
                     stream_icon = str(channel["stream_icon"])
-                    stream_id = str(channel["stream_id"])
+
+                    # stream_icon = quote(stream_icon).replace("%3A", ":")
+
+                    if " " in stream_icon or "%20" in stream_icon:
+                        continue
 
                     blocked = False
 
@@ -154,33 +156,14 @@ class BmxDownloadPicons(Screen):
                         if domain in stream_icon:
                             blocked = True
 
-                    if " " in stream_icon or "%20" in stream_icon:
-                        continue
-
-                    if blocked:
-                        continue
-
-                    if not stream_icon:
-                        continue
-
-                    if "http" not in stream_icon:
-                        continue
-
-                    if not channel["category_id"]:
-                        continue
-
-                    if not stream_id:
-                        continue
-
-                    if channel["stream_type"] != "live":
+                    if blocked or not stream_icon or "http" not in stream_icon or not channel["category_id"] or not channel["stream_id"] or channel["stream_type"] != "live":
                         continue
 
                     custom_sid = ""
 
-                    if cfg.max_live.value != 0 and x > cfg.max_live.value:
-                        break
+                    stream_id = str(channel["stream_id"])
 
-                    if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
+                    if channel["category_id"] and str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
                         name = channel["name"]
                         name = name.replace(":", "").replace('"', "").strip("-")
 
@@ -208,7 +191,8 @@ class BmxDownloadPicons(Screen):
                         custom_sid = custom_sid.replace(":", "_")
                         custom_sid = custom_sid.upper()
 
-                        if "png" in stream_icon.lower() or "jpg" in stream_icon.lower() or "jpeg" in stream_icon.lower():
+                        if "http" in stream_icon \
+                                and ("png" in stream_icon.lower() or "jpg" in stream_icon.lower() or "jpeg" in stream_icon.lower()):
 
                             if cfg.picon_type.value == "SRP":
                                 self.picon_list.append([custom_sid, stream_icon])
@@ -224,7 +208,7 @@ class BmxDownloadPicons(Screen):
 
                                 piconname = re.sub("[^a-z0-9]", "", piconname.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
 
-                                self.picon_list.append([piconname, stream_icon])
+                                self.picon_list.append([piconname, stream_icon, x])
                             x += 1
 
                 # self.picon_list.sort(key=lambda x: x[1])

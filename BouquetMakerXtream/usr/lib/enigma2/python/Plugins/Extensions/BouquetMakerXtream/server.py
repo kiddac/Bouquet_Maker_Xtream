@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+from . import _
+from . import globalfunctions as bmx
+from .bmxStaticText import StaticText
+from .plugin import hdr, playlist_file, skin_directory, cfg
 
-import requests
 from Components.ActionMap import ActionMap
 from Components.config import ConfigEnableDisable, ConfigNumber, ConfigSelection, ConfigText, ConfigYesNo, NoSave, getConfigListEntry
 from Components.ConfigList import ConfigListScreen
@@ -13,10 +15,9 @@ from requests.adapters import HTTPAdapter
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-from . import _
-from . import globalfunctions as bmx
-from .bmxStaticText import StaticText
-from .plugin import hdr, playlist_file, skin_directory, cfg
+import os
+import requests
+
 
 try:
     from http.client import HTTPConnection

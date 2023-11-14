@@ -1,7 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+from . import _
+from . import picons
+from .bmxStaticText import StaticText
+from .plugin import cfg, skin_directory
 
 from Components.ActionMap import ActionMap
 from Components.config import ConfigSelection, ConfigText, config, configfile, getConfigListEntry
@@ -13,10 +16,7 @@ from Screens.LocationBox import LocationBox
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-from . import _
-from . import picons
-from .bmxStaticText import StaticText
-from .plugin import cfg, skin_directory
+import os
 
 
 class BmxPiconSettings(ConfigListScreen, Screen):
@@ -118,7 +118,9 @@ class BmxPiconSettings(ConfigListScreen, Screen):
         # self.cfg_picon_bitdepth = getConfigListEntry(_("Picon bit depth. 8bit is 256 colours max."), cfg.picon_bitdepth)
         self.cfg_picon_overwrite = getConfigListEntry(_("Overwrite picons with the same name"), cfg.picon_overwrite)
         self.cfg_picon_custom = getConfigListEntry(_("Custom location. Manual symlink required"), cfg.picon_custom)
-        self.cfg_max_threads = getConfigListEntry(_("Max download threads. Increase for speed. Reduce if downloads are freezing."), cfg.max_threads)
+        self.cfg_max_threads = getConfigListEntry(_("Max download threads. Increase for speed. Reduce if downloads are freezing"), cfg.max_threads)
+        self.cfg_picon_max_size = getConfigListEntry(_("Max size of source picon"), cfg.picon_max_size)
+        self.cfg_picon_max_width = getConfigListEntry(_("Max width of source picon"), cfg.picon_max_width)
 
         self.createSetup()
 
@@ -133,6 +135,8 @@ class BmxPiconSettings(ConfigListScreen, Screen):
         # self.list.append(self.cfg_picon_bitdepth)
         self.list.append(self.cfg_picon_overwrite)
         self.list.append(self.cfg_max_threads)
+        self.list.append(self.cfg_picon_max_size)
+        self.list.append(self.cfg_picon_max_width)
 
         self["config"].list = self.list
         self["config"].l.setList(self.list)

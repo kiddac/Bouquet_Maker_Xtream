@@ -1,24 +1,26 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
-import re
-import shutil
-import sys
-import time
-from datetime import datetime
 
-import requests
-import twisted.python.runtime
+from . import _
+from . import bouquet_globals as glob
+
 from Components.ActionMap import HelpableActionMap
 from Components.config import ConfigClock, ConfigDirectory, ConfigInteger, ConfigPIN, ConfigSelection, ConfigSelectionNumber, ConfigSubsection, ConfigYesNo, config
+from datetime import datetime
 from enigma import addFont, eServiceReference, eTimer, getDesktop
 from Plugins.Plugin import PluginDescriptor
 from requests.adapters import HTTPAdapter, Retry
 from Screens.ChannelSelection import ChannelSelectionBase
 from ServiceReference import ServiceReference
 
-from . import _
-from . import bouquet_globals as glob
+
+import os
+import re
+import requests
+import shutil
+import sys
+import time
+import twisted.python.runtime
 
 try:
     from urlparse import urljoin
@@ -137,10 +139,13 @@ cfg.max_live = ConfigSelectionNumber(0, 50000, 5000, default=10000, wraparound=T
 cfg.max_vod = ConfigSelectionNumber(0, 10000, 1000, default=5000, wraparound=True)
 cfg.max_series = ConfigSelectionNumber(0, 5000, 1000, default=1000, wraparound=True)
 cfg.max_threads = ConfigSelectionNumber(5, 40, 5, default=20, wraparound=True)
+cfg.picon_max_size = ConfigSelection(default=100000, choices=[(100000, _("100KB")), (200000, _("200KB")), (300000, _("300KB")), (400000, _("400KB")), (500000, _("500KB")), (0, _("No limit"))])
+cfg.picon_max_width = ConfigSelection(default=1000, choices=[(480, _("480px")), (728, _("728px")), (1000, _("1000px")), (1280, _("1280px")), (1920, _("1920px")), (0, _("No limit"))])
 
 cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[
     ("/media/hdd/picon/", "/media/hdd/picon"),
     ("/media/usb/picon/", "/media/usb/picon"),
+    ("/media/mmc/picon/", "/media/mmc/picon"),
     ("/usr/share/enigma2/picon/", "/usr/share/enigma2/picon"),
     ("/picons/piconHD/", "/picons/piconHD"),
     ("/data/picon/", "/data/picon"),

@@ -1,11 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from .plugin import cfg, playlist_file, playlists_json
+
 import json
 import os
 import re
 
-from .plugin import cfg, playlist_file, playlists_json
 
 try:
     from urlparse import parse_qs, urlparse

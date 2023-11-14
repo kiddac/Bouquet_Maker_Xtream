@@ -1,23 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import base64
-import re
-from datetime import datetime, timedelta
+from . import _
+from . import bouquet_globals as glob
+from .bmxStaticText import StaticText
+from .plugin import cfg, hdr, screenwidth
 
-import requests
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
+from datetime import datetime, timedelta
 from enigma import eServiceReference
 from requests.adapters import HTTPAdapter, Retry
 from Screens.InfoBar import MoviePlayer
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-from . import _
-from . import bouquet_globals as glob
-from .bmxStaticText import StaticText
-from .plugin import cfg, hdr, screenwidth
+import base64
+import re
+import requests
 
 try:
     from http.client import HTTPConnection

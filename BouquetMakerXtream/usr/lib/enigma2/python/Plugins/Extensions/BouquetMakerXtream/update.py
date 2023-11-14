@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import json
-import os
+from . import _
+from . import parsem3u
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from .plugin import epgimporter, screenwidth, cfg, playlists_json, pythonVer, skin_directory
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
@@ -11,11 +14,8 @@ from enigma import eTimer
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-from . import _
-from . import parsem3u
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from .plugin import epgimporter, screenwidth, cfg, playlists_json, pythonVer, skin_directory
+import json
+import os
 
 
 try:

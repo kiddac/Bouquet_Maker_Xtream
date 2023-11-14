@@ -1,18 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import glob as pythonglob
-import json
-import os
-import re
-import shutil
-from datetime import datetime
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from .bmxStaticText import StaticText
+from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, hdr, playlist_file, playlists_json, skin_directory, version
 
-import requests
 from Components.ActionMap import ActionMap
 from Components.config import config
 from Components.Pixmap import Pixmap
 from Components.Sources.List import List
+from datetime import datetime
 from enigma import eTimer
 from requests.adapters import HTTPAdapter, Retry
 from Screens.InputBox import PinInput
@@ -21,11 +20,12 @@ from Screens.Screen import Screen
 from Tools.BoundFunction import boundFunction
 from Tools.LoadPixmap import LoadPixmap
 
-from . import _
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, hdr, playlist_file, playlists_json, skin_directory, version
+import glob as pythonglob
+import json
+import os
+import re
+import requests
+import shutil
 
 
 try:

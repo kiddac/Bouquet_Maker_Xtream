@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from . import _
+from . import bouquet_globals as glob
+from . import globalfunctions as bmx
+from . import parsem3u as parsem3u
+from .bmxStaticText import StaticText
+from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory
+
 import json
 import os
 
@@ -11,13 +18,6 @@ from Components.Pixmap import Pixmap
 from enigma import eTimer, ePoint
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
-
-from . import _
-from . import bouquet_globals as glob
-from . import globalfunctions as bmx
-from . import parsem3u as parsem3u
-from .bmxStaticText import StaticText
-from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory
 
 
 try:
