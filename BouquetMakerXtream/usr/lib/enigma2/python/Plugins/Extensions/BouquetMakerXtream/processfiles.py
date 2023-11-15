@@ -197,7 +197,7 @@ def processFiles():
                             pass
 
                     player_api = "%s/player_api.php?username=%s&password=%s" % (host, username, password)
-                    xmltv_api = "%s/xmltv.php?username=%s&password=%s&next_days=7" % (host, username, password)
+                    xmltv_api = "%s/xmltv.php?username=%s&password=%s" % (host, username, password)
                     full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, playlistformat, output)
 
                 if playlist_type == "external":
