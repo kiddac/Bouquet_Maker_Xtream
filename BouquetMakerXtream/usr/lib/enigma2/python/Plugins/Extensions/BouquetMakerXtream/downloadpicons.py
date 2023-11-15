@@ -118,6 +118,14 @@ class BmxDownloadPicons(Screen):
         os.system("echo 2 > /proc/sys/vm/drop_caches")
         os.system("echo 3 > /proc/sys/vm/drop_caches")
 
+        self.finishedtimer = eTimer()
+        try:
+            self.finishedtimer_conn = self.finishedtimer.timeout.connect(self.check_finished)
+        except:
+            self.finishedtimer.callback.append(self.check_finished)
+
+        self.finishedtimer.start(2000, False)
+
         self.onFirstExecBegin.append(self.start)
 
     def __layoutFinished(self):
@@ -144,7 +152,7 @@ class BmxDownloadPicons(Screen):
             self.timer.start(100, True)
 
         else:
-            self.showError(_("No picons selected."))
+            self.showError(_("No picons found."))
 
     def addtoblocklist(self, url):
         if url not in self.blockinglist:
@@ -174,6 +182,8 @@ class BmxDownloadPicons(Screen):
         http.mount("https://", adapter)
 
         response = ""
+
+        """
         try:
             response = http.get(url[1], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", "Accept": "image/png,image/jpeg"}, stream=True, timeout=20, verify=False, allow_redirects=True)
             # response.raise_for_status()
@@ -181,7 +191,7 @@ class BmxDownloadPicons(Screen):
             if response:
 
                 if response.status_code == requests.codes.ok:
-                    if "content-length" in response.headers and cfg.picon_max_size.value != 0 and int(response.headers["content-length"]) > cfg.picon_max_size.value:
+                    if "content-length" in response.headers and cfg.picon_max_size.value != "0" and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
                         print("*** Picon source too large ***", url)
                         maxsize = True
 
@@ -212,13 +222,44 @@ class BmxDownloadPicons(Screen):
             self.addtoblocklist(url[1])
         except:
             self.addtoblocklist(url[1])
+            """
+
+        response = http.get(url[1], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", "Accept": "image/png,image/jpeg"}, stream=True, timeout=20, verify=False, allow_redirects=True)
+        # response.raise_for_status()
+
+        if response:
+            if response.status_code == requests.codes.ok:
+                if "content-length" in response.headers and cfg.picon_max_size.value != "0" and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
+                    print("*** Picon source too large ***", url)
+                    maxsize = True
+
+                    self.addtoblocklist(url[1])
+
+                if "content-type" in response.headers and maxsize is False:
+                    if response.headers["content-type"] in image_formats:
+                        try:
+                            content = response.content
+                            image_file = io.BytesIO(content)
+                            self.makePicon(image_file,  url[0], url[1])
+
+                        except Exception as e:
+                            print("**** bad response***", e, url[1])
+            else:
+                print("**** bad response***", url[1])
+                self.addtoblocklist(url[1])
+
+        else:
+            self.addtoblocklist(url[1])
+            print("*** no response ***", url[1])
 
     def log_result(self, result=None):
         self.progresscurrent += 1
         self["progress"].setValue(self.progresscurrent)
         self["status"].setText("Picon %d of %d" % (self.progresscurrent, self.job_total))
-        if self.progresscurrent == self.job_total - 1 or self.progresscurrent == self.job_total:
 
+    def check_finished(self):
+        if self.progresscurrent == self.job_total:
+            self.finishedtimer.stop()
             self.timer3 = eTimer()
             try:
                 self.timer3_conn = self.timer3.timeout.connect(self.finished)
@@ -245,11 +286,9 @@ class BmxDownloadPicons(Screen):
                 for url in self.selected:
                     try:
                         results = executor.submit(self.fetch_url, url)
-                        try:
-                            results.add_done_callback(self.log_result)
-                        except Exception as e:
-                            print(e)
+                        results.add_done_callback(self.log_result)
                     except Exception as e:
+                        self.log_result()
                         print(e)
 
             except Exception as e:
@@ -305,7 +344,7 @@ class BmxDownloadPicons(Screen):
             # get image format
             imagetype = im.format
 
-            if cfg.picon_max_width.value != 0 and im.size[0] > cfg.picon_max_width.value:
+            if cfg.picon_max_width.value != "0" and im.size[0] > int(cfg.picon_max_width.value):
                 return
 
             # create blank image
@@ -389,10 +428,6 @@ class BmxDownloadPicons(Screen):
             else:
                 im.save(self.downloadlocation + "/" + piconname + ".png", optimize=True)
                 # im.close()
-
-            os.system("echo 1 > /proc/sys/vm/drop_caches")
-            os.system("echo 2 > /proc/sys/vm/drop_caches")
-            os.system("echo 3 > /proc/sys/vm/drop_caches")
 
         except Exception as e:
             print("*** failed to save ***", e)

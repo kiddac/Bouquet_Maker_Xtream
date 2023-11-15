@@ -236,7 +236,7 @@ class BmxDownloadPicons(Screen):
                 from . import downloadpicons
                 self.session.openWithCallback(self.finished, downloadpicons.BmxDownloadPicons, self.picon_list)
 
-    def finished(self):
+    def finished(self, answer=None):
         try:
             self.session.openWithCallback(self.close, MessageBox, "Finished.\n\nRestart your GUI if downloaded to picons folder.\n\nYour created picons can be found in \n" + str(cfg.picon_location.value), MessageBox.TYPE_INFO, timeout=10)
         except:

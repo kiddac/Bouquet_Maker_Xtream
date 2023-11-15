@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-11-15 19:18+0000\n"
-"PO-Revision-Date: 2023-11-15 19:18+0000\n"
+"POT-Creation-Date: 2023-11-15 20:41+0000\n"
+"PO-Revision-Date: 2023-11-15 20:43+0000\n"
 "Last-Translator: Masta2002\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -35,7 +35,7 @@ msgid ""
 "support.com\n"
 "\n"
 msgstr ""
-"Support für dieses Plugin und die neuesten Versionen finden Sie unter "
+"Support für dieses Plugin und die neuesten Versionen findest du unter "
 "https://linuxsat-support.com\n"
 "\n"
 
@@ -75,8 +75,8 @@ msgid ""
 "If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or "
 "https://ko-fi.com/kiddac\n"
 msgstr ""
-"Wenn Sie mich auf ein Bier oder einen Kaffee einladen möchten: https://"
-"paypal.me/kiddac oder https://ko-fi.com/kiddac\n"
+"Wenn Du mich auf ein Bier oder einen Kaffee einladen möchten: https://paypal."
+"me/kiddac oder https://ko-fi.com/kiddac\n"
 
 #: about.py:50
 msgid "Cheers - all donations are very much appreciated."
@@ -138,15 +138,15 @@ msgstr "Kategorie SERIEN anzeigen, falls verfügbar:"
 
 #: bouquetsettings.py:287
 msgid "Stream Type VOD/SERIES:"
-msgstr "Stream-Typ VOD/SERIE:"
+msgstr "Stream-Typ VOD/SERIEN:"
 
 #: bouquetsettings.py:290
 msgid "VOD/SERIES category bouquet order"
-msgstr "VOD/SERIES-Kategorie-Bouquet-Reihenfolge"
+msgstr "VOD/SERIEN Kategorie Bouquet Reihenfolge"
 
 #: bouquetsettings.py:291
 msgid "VOD/SERIES streams bouquet order"
-msgstr "VOD/SERIES-Streams-Bouquet-Reihenfolge"
+msgstr "VOD/SERIEN Streams Bouquet Reihenfolge"
 
 #: bouquetsettings.py:294 server.py:122
 msgid "Output:"
@@ -231,7 +231,7 @@ msgid ""
 "Unable to build series.\n"
 "Alternative method might be added in the future."
 msgstr ""
-"Ihr Anbieter verfügt nicht über den \"einfachen\" API-Aufruf\n"
+"Dein Anbieter verfügt nicht über den \"einfachen\" API-Aufruf\n"
 "Es können keine Serien erstellt werden.\n"
 "Eine alternative Methode könnte in Zukunft hinzugefügt werden."
 
@@ -315,13 +315,17 @@ msgstr "Herunterladen von Picons"
 msgid "Making BouquetMakerXtream Picons"
 msgstr "BouquetMakerXtream Picons erstellen"
 
-#: downloadpicons-old.py:147 downloadpicons.py:147
+#: downloadpicons-old.py:147
 msgid "No picons selected."
 msgstr "Keine Picons ausgewählt."
 
 #: downloadpicons-old.py:288 downloadpicons.py:282
 msgid "Create Picons"
 msgstr "Picons erstellen"
+
+#: downloadpicons.py:147
+msgid "No picons found."
+msgstr "Keine Picons gefunden."
 
 #: mainmenu.py:40
 msgid "Main Menu"
@@ -353,7 +357,7 @@ msgstr "Lösche alle BMX Bouquets"
 
 #: mainmenu.py:136 server.py:46
 msgid "Add Playlist"
-msgstr "Playlisteliste hinzufügen"
+msgstr "Playliste hinzufügen"
 
 #: mainmenu.py:170
 msgid "Delete all BMX created bouquets?"
@@ -369,7 +373,7 @@ msgstr "Herunterladen"
 
 #: piconsettings.py:38
 msgid "Picon Settings"
-msgstr ""
+msgstr "Picon Einstellungen"
 
 #: piconsettings.py:78 server.py:84 settings.py:100
 msgid "Really close without saving settings?"
@@ -389,32 +393,34 @@ msgstr "Picon download verzeichnis"
 
 #: piconsettings.py:116
 msgid "Picon size"
-msgstr ""
+msgstr "Picon größe"
 
 #: piconsettings.py:117
 msgid "Picon type"
-msgstr ""
+msgstr "Picon Typ"
 
 #: piconsettings.py:119
 msgid "Overwrite picons with the same name"
-msgstr ""
+msgstr "Picons mit demselben Namen überschreiben"
 
 #: piconsettings.py:120
 msgid "Custom location. Manual symlink required"
-msgstr ""
+msgstr "Benutzerdefiniertes Verzeichnis. Manueller Symlink erforderlich"
 
 #: piconsettings.py:121
 msgid ""
 "Max download threads. Increase for speed. Reduce if downloads are freezing"
 msgstr ""
+"Max. Download Threads. Erhöhe für Geschwindigkeit. Reduzie, wenn Downloads "
+"einfrieren"
 
 #: piconsettings.py:122
 msgid "Max size of source picon"
-msgstr ""
+msgstr "Max. Größe des Quell Picons"
 
 #: piconsettings.py:123
 msgid "Max width of source picon"
-msgstr ""
+msgstr "Max. Breite des Quell Picons"
 
 #: piconsettings.py:207 settings.py:286 settings.py:301
 msgid "Choose Directory:"
@@ -510,11 +516,11 @@ msgstr "Benutzerinformationen sind nur für xtream/XUI One-lines verfügbar"
 
 #: plugin.py:96
 msgid "XPicons - 220x132 Pixel"
-msgstr ""
+msgstr "XPicons - 220x132 Pixel"
 
 #: plugin.py:97
 msgid "ZZZPicons - 400x240 Pixel"
-msgstr ""
+msgstr "ZZZPicons - 400x240 Pixel"
 
 #: plugin.py:130
 msgid "Bottom"
@@ -526,63 +532,63 @@ msgstr "Oben"
 
 #: plugin.py:133
 msgid "24 Bit"
-msgstr ""
+msgstr "24 Bit"
 
 #: plugin.py:133
 msgid "8 Bit"
-msgstr ""
+msgstr "8 Bit"
 
 #: plugin.py:134
 msgid "Service Reference Picons"
-msgstr ""
+msgstr "Service Referenz Picons"
 
 #: plugin.py:134
 msgid "Service Name Picons"
-msgstr ""
+msgstr "Service Name Picons"
 
 #: plugin.py:142
 msgid "100KB"
-msgstr ""
+msgstr "100KB"
 
 #: plugin.py:142
 msgid "200KB"
-msgstr ""
+msgstr "200KB"
 
 #: plugin.py:142
 msgid "300KB"
-msgstr ""
+msgstr "300KB"
 
 #: plugin.py:142
 msgid "400KB"
-msgstr ""
+msgstr "400KB"
 
 #: plugin.py:142
 msgid "500KB"
-msgstr ""
+msgstr "500KB"
 
 #: plugin.py:142 plugin.py:143
 msgid "No limit"
-msgstr ""
+msgstr "Kein Limit"
 
 #: plugin.py:143
 msgid "480px"
-msgstr ""
+msgstr "480px"
 
 #: plugin.py:143
 msgid "728px"
-msgstr ""
+msgstr "728px"
 
 #: plugin.py:143
 msgid "1000px"
-msgstr ""
+msgstr "1000px"
 
 #: plugin.py:143
 msgid "1280px"
-msgstr ""
+msgstr "1280px"
 
 #: plugin.py:143
 msgid "1920px"
-msgstr ""
+msgstr "1920px"
 
 #: plugin.py:217
 msgid "Bouquet Maker Xtream"
@@ -756,11 +762,11 @@ msgstr "Auswahl Playliste überspringen, wenn nur eine Playliste existiert"
 
 #: settings.py:152
 msgid "Automatic live bouquet update"
-msgstr "Automatisches live Bouquet update"
+msgstr "Automatisches live Bouquet Update"
 
 #: settings.py:153
 msgid "Automatic live bouquet update time"
-msgstr "Automatisches live Bouquet updatezeiz"
+msgstr "Automatisches live Bouquet Updatezeit"
 
 #: settings.py:155
 msgid "Embed Catchup player in channelselect screen"
@@ -792,15 +798,15 @@ msgstr "Beende das Plugin bei der Bouquet-Erstellung"
 
 #: settings.py:164
 msgid "Max Live channels. 0 = unlimited (slow)."
-msgstr ""
+msgstr "Max. Live Kanäle. 0 = unbegrenzt (langsam)."
 
 #: settings.py:165
 msgid "Max VOD channels. 0 = unlimited (slow)"
-msgstr ""
+msgstr "Max. VOD Kanäle. 0 = unbegrenzt (langsam)"
 
 #: settings.py:166
 msgid "Max Series channels. 0 = unlimited (slow)"
-msgstr ""
+msgstr "Max. Serien Kanäle. 0 = unbegrenzt (langsam)"
 
 #: update.py:96
 msgid " Providers IPTV Updated"
@@ -810,9 +816,3 @@ msgstr " Providers IPTV aktualisiert"
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "Update Playlist %d von %d"
-
-#~ msgid "Building Picons..."
-#~ msgstr "Picons erstellen..."
-
-#~ msgid "BouquetMakerXtream "
-#~ msgstr "BouquetMakerXtream "
