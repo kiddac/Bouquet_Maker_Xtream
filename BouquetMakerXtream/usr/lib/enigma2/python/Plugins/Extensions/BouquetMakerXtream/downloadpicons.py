@@ -3,7 +3,6 @@
 
 from . import _
 from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, pythonVer
-
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
@@ -63,11 +62,6 @@ except:
     from httplib import HTTPConnection
     HTTPConnection.debuglevel = 0
 
-try:
-    requests.packages.urllib3.disable_warnings()
-except:
-    pass
-
 
 class BmxDownloadPicons(Screen):
 
@@ -105,7 +99,6 @@ class BmxDownloadPicons(Screen):
         self.job_picon_name = ""
         self.job_total = len(self.selected)
         self.picon_num = 0
-        self.pause = 50
         self.complete = False
 
         self.bitdepth = cfg.picon_bitdepth.value
@@ -149,7 +142,7 @@ class BmxDownloadPicons(Screen):
                     self.timer.callback.append(self.buildPicons)
                 except:
                     self.buildPicons()
-            self.timer.start(100, True)
+            self.timer.start(200, True)
 
         else:
             self.showError(_("No picons found."))
@@ -158,8 +151,8 @@ class BmxDownloadPicons(Screen):
         if url not in self.blockinglist:
             self.blockinglist.append(url)
 
-    def fetch_url(self, url):
-        if url[1] in self.blockinglist:
+    def fetch_url(self, url, i):
+        if url[i][1] in self.blockinglist:
             return
 
         if cfg.picon_overwrite.value is False:
@@ -168,11 +161,11 @@ class BmxDownloadPicons(Screen):
 
         maxsize = False
 
-        url[1] = url[1].replace("728px", "400px")
-        url[1] = url[1].replace("1200px", "400px")
-        url[1] = url[1].replace("1280px", "400px")
-        url[1] = url[1].replace("1920px", "400px")
-        url[1] = url[1].replace("2000px", "400px")
+        url[i][1] = url[i][1].replace("728px", "400px")
+        url[i][1] = url[i][1].replace("1200px", "400px")
+        url[i][1] = url[i][1].replace("1280px", "400px")
+        url[i][1] = url[i][1].replace("1920px", "400px")
+        url[i][1] = url[i][1].replace("2000px", "400px")
 
         image_formats = ("image/png", "image/jpeg")
         retries = Retry(total=0, backoff_factor=0)
@@ -182,75 +175,32 @@ class BmxDownloadPicons(Screen):
         http.mount("https://", adapter)
 
         response = ""
-
-        """
-        try:
-            response = http.get(url[1], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", "Accept": "image/png,image/jpeg"}, stream=True, timeout=20, verify=False, allow_redirects=True)
-            # response.raise_for_status()
-
-            if response:
-
-                if response.status_code == requests.codes.ok:
-                    if "content-length" in response.headers and cfg.picon_max_size.value != "0" and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
-                        print("*** Picon source too large ***", url)
-                        maxsize = True
-
-                        self.addtoblocklist(url[1])
-
-                    if "content-type" in response.headers and maxsize is False:
-                        if response.headers["content-type"] in image_formats:
-                            try:
-                                content = response.content
-                                image_file = io.BytesIO(content)
-                                self.makePicon(image_file,  url[0], url[1])
-
-                            except Exception as e:
-                                print("**** bad response***", e, url[1])
-                else:
-                    print("**** bad response***", url[1])
-                    self.addtoblocklist(url[1])
-
-            else:
-                self.addtoblocklist(url[1])
-                print("*** no response ***", url[1])
-
-        except requests.HTTPError as ex:
-            print(ex)
-            self.addtoblocklist(url[1])
-        except requests.Timeout as t:
-            print(t)
-            self.addtoblocklist(url[1])
-        except:
-            self.addtoblocklist(url[1])
-            """
-
-        response = http.get(url[1], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", "Accept": "image/png,image/jpeg"}, stream=True, timeout=20, verify=False, allow_redirects=True)
-        # response.raise_for_status()
+        response = http.get(url[i][1], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", "Accept": "image/png,image/jpeg"}, stream=True, timeout=20, verify=False, allow_redirects=True)
 
         if response:
             if response.status_code == requests.codes.ok:
                 if "content-length" in response.headers and cfg.picon_max_size.value != "0" and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
-                    print("*** Picon source too large ***", url)
+                    print("*** Picon source too large ***", url[i])
                     maxsize = True
 
-                    self.addtoblocklist(url[1])
+                    self.addtoblocklist(url[i][1])
 
                 if "content-type" in response.headers and maxsize is False:
                     if response.headers["content-type"] in image_formats:
                         try:
                             content = response.content
                             image_file = io.BytesIO(content)
-                            self.makePicon(image_file,  url[0], url[1])
+                            self.makePicon(image_file,  url[i][0], url[i][1])
 
                         except Exception as e:
-                            print("**** bad response***", e, url[1])
+                            print("**** bad response***", e, url[i][1])
             else:
                 print("**** bad response***", url[1])
-                self.addtoblocklist(url[1])
+                self.addtoblocklist(url[i][1])
 
         else:
-            self.addtoblocklist(url[1])
-            print("*** no response ***", url[1])
+            self.addtoblocklist(url[i][1])
+            print("*** no response ***", url[i][1])
 
     def log_result(self, result=None):
         self.progresscurrent += 1
@@ -283,13 +233,12 @@ class BmxDownloadPicons(Screen):
                 from concurrent.futures import ThreadPoolExecutor
                 executor = ThreadPoolExecutor(max_workers=threads)
 
-                for url in self.selected:
+                for i in range(self.job_total):
                     try:
-                        results = executor.submit(self.fetch_url, url)
+                        results = executor.submit(self.fetch_url, self.selected, i)
                         results.add_done_callback(self.log_result)
-                    except Exception as e:
-                        self.log_result()
-                        print(e)
+                    except:
+                        pass
 
             except Exception as e:
                 print(e)
@@ -300,11 +249,11 @@ class BmxDownloadPicons(Screen):
                 from multiprocessing.pool import ThreadPool
                 pool = ThreadPool(threads)
 
-                for url in self.selected:
+                for i in range(self.job_total):
                     try:
-                        pool.apply_async(self.fetch_url, args=(url), callback=self.log_result)
-                    except Exception as e:
-                        print(e)
+                        pool.apply_async(self.fetch_url, args=(self.selected, i), callback=self.log_result)
+                    except:
+                        pass
 
                 pool.close()
 
@@ -413,7 +362,6 @@ class BmxDownloadPicons(Screen):
         else:
             width, height = piconSize
             blank = Image.new("RGBA", (width, height), (255, 255, 255, 0))
-
             self.savePicon(blank, piconname)
 
     def savePicon(self, im, piconname):
@@ -424,10 +372,8 @@ class BmxDownloadPicons(Screen):
                 mask = Image.eval(alpha, lambda a: 255 if a <= 128 else 0)
                 im.paste(255, mask)
                 im.save(self.downloadlocation + "/" + piconname + ".png", transparency=255)
-                # im.close()
             else:
                 im.save(self.downloadlocation + "/" + piconname + ".png", optimize=True)
-                # im.close()
 
         except Exception as e:
             print("*** failed to save ***", e)

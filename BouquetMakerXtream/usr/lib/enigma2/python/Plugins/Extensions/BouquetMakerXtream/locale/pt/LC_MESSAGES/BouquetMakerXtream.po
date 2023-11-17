@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2023-11-05 20:25+0000\n"
-"PO-Revision-Date: 2023-11-05 20:25+0000\n"
+"PO-Revision-Date: 2023-11-16 11:53+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.1\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: locale/pt\n"
 "X-Poedit-SearchPath-1: .\n"
@@ -29,23 +29,19 @@ msgstr "CONFIRMAR"
 
 #: about.py:45
 msgid ""
-"Support for this plugin and latest versions can be found on https://linuxsat-"
-"support.com\n"
+"Support for this plugin and latest versions can be found on https://linuxsat-support.com\n"
 "\n"
 msgstr ""
-"O suporte para este plugin e as versões mais recentes podem ser encontrados "
-"em https://linuxsat-support.com\n"
+"O suporte para este plugin e as versões mais recentes podem ser encontrados em https://linuxsat-support.com\n"
 "\n"
 
 #: about.py:46
 msgid ""
-"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, "
-"external and local m3u8 playlists. \n"
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \n"
 "Play your files via your TV bouquets.\n"
 "\n"
 msgstr ""
-"O plugin permite a criação simples de bouquets a partir de códigos Xtream "
-"standard/XUI One, listas de reprodução m3u8 externas e locais.\n"
+"O plugin permite a criação simples de bouquets a partir de códigos Xtream standard/XUI One, listas de reprodução m3u8 externas e locais.\n"
 "Reproduza os seus ficheiros através dos seus bouquets de TV.\n"
 "\n"
 
@@ -55,27 +51,19 @@ msgstr "Créditos:\n"
 
 #: about.py:48
 msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
-msgstr ""
-"AutoBouquetsMaker, EpgImporter, AutoBackup (utilizado como referência de "
-"código).\n"
+msgstr "AutoBouquetsMaker, EpgImporter, AutoBackup (utilizado como referência de código).\n"
 
 #: about.py:49
 msgid ""
-"And thanks to all the other coders and Linuxsat testers who helped in the "
-"development of this project.\n"
+"And thanks to all the other coders and Linuxsat testers who helped in the development of this project.\n"
 "\n"
 msgstr ""
-"E obrigado a todos os outros programadores e testadores da Linuxsat que "
-"ajudaram no desenvolvimento deste projeto.\n"
+"E obrigado a todos os outros programadores e testadores da Linuxsat que ajudaram no desenvolvimento deste projeto.\n"
 "\n"
 
 #: about.py:50
-msgid ""
-"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or "
-"https://ko-fi.com/kiddac\n"
-msgstr ""
-"Se quiser pagar-me uma cerveja ou um café: https://paypal.me/kiddac ou "
-"https://ko-fi.com/kiddac\n"
+msgid "If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/kiddac\n"
+msgstr "Se quiser pagar-me uma cerveja ou um café: https://paypal.me/kiddac ou https://ko-fi.com/kiddac\n"
 
 # Felicidades - todas as doações são muito apreciadas.
 #: about.py:51
@@ -175,12 +163,8 @@ msgstr "Nenhum buquê selecionado."
 
 # O nome do buquê não pode estar em branco. Introduza um nome de bouquet exclusivo. Mínimo de 3 caracteres.
 #: bouquetsettings.py:381
-msgid ""
-"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
-"characters."
-msgstr ""
-"O nome do buquê não pode estar em branco. Introduza um nome de bouquet "
-"exclusivo. Mínimo de 3 caracteres."
+msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."
+msgstr "O nome do buquê não pode estar em branco. Introduza um nome de bouquet exclusivo. Mínimo de 3 caracteres."
 
 # Nome já utilizado. Introduza um nome exclusivo.
 #: bouquetsettings.py:389 server.py:220
@@ -335,23 +319,23 @@ msgstr "Apagar tudo"
 
 #: downloadpicons.py:80
 msgid "Downloadng Picons"
-msgstr ""
+msgstr "Descarregar Picons"
 
 #: downloadpicons.py:82
 msgid "Building Picons..."
-msgstr ""
+msgstr "Construir Picons..."
 
 #: downloadpicons.py:126
 msgid "No picons selected."
-msgstr ""
+msgstr "Não foram seleccionados picões."
 
 #: downloadpicons.py:180
 msgid "Making BouquetMakerXtream Picons"
-msgstr ""
+msgstr "Fazer BouquetMakerXtream Picons"
 
 #: downloadpicons.py:245
 msgid "Create Picons"
-msgstr ""
+msgstr "Criar Picons"
 
 #: mainmenu.py:40
 msgid "Main Menu"
@@ -376,7 +360,7 @@ msgstr "Atualizar buquês"
 
 #: mainmenu.py:132 picons.py:28
 msgid "Download Picons"
-msgstr ""
+msgstr "Descarregar Picons"
 
 # Excluir todos os buquês de BMX
 #: mainmenu.py:134
@@ -398,7 +382,7 @@ msgstr "Tipo de Transmissão ao Vivo"
 
 #: picons.py:36
 msgid "Download"
-msgstr ""
+msgstr "Descarregar"
 
 #: playlists.py:48 settings.py:26
 msgid "Please enter the correct pin code"
@@ -481,8 +465,7 @@ msgstr "Excluir dados de EPG dos provedores?"
 
 #: playlists.py:538
 msgid "Url is invalid or playlist/user no longer authorised!"
-msgstr ""
-"Url é inválido ou lista de reprodução / usuário não está mais autorizado!"
+msgstr "Url é inválido ou lista de reprodução / usuário não está mais autorizado!"
 
 # Informações do usuário disponíveis apenas para linhas xtream/XUI One
 #: playlists.py:541
@@ -520,12 +503,8 @@ msgstr "Salvar"
 
 # Você pode adicionar manualmente urls de listas de reprodução ao arquivo /etc/enigma2/bouquetmakerxtream/playlists.txt
 #: server.py:54
-msgid ""
-"You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/"
-"playlists.txt file"
-msgstr ""
-"Você pode adicionar manualmente urls de listas de reprodução ao arquivo /etc/"
-"enigma2/bouquetmakerxtream/playlists.txt"
+msgid "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/playlists.txt file"
+msgstr "Você pode adicionar manualmente urls de listas de reprodução ao arquivo /etc/enigma2/bouquetmakerxtream/playlists.txt"
 
 #: server.py:83 settings.py:100
 msgid "Really close without saving settings?"
@@ -579,12 +558,8 @@ msgstr "Os dados não são válidos ou não são autorizados"
 
 # O nome do buquê não pode estar em branco. Introduza um nome de bouquet exclusivo. Mínimo de 2 caracteres.
 #: server.py:212
-msgid ""
-"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 "
-"characters."
-msgstr ""
-"O nome do buquê não pode estar em branco. Introduza um nome de bouquet "
-"exclusivo. Mínimo de 2 caracteres."
+msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."
+msgstr "O nome do buquê não pode estar em branco. Introduza um nome de bouquet exclusivo. Mínimo de 2 caracteres."
 
 #: server.py:231
 msgid "Playlist added successfully."
@@ -700,9 +675,7 @@ msgstr "Mostrar no menu principal"
 
 #: settings.py:150
 msgid "Skip playlist selection screen if only 1 playlist"
-msgstr ""
-"Pular a tela de seleção da lista de reprodução se houver apenas 1 lista de "
-"reprodução"
+msgstr "Pular a tela de seleção da lista de reprodução se houver apenas 1 lista de reprodução"
 
 #: settings.py:152
 msgid "Automatic live bouquet update"
@@ -748,7 +721,7 @@ msgstr "Plugin de saída na criação de buquês"
 
 #: settings.py:169
 msgid "Picon download location"
-msgstr ""
+msgstr "Local de descarregamento do Picon"
 
 #: settings.py:281 settings.py:296
 msgid "Choose Directory:"

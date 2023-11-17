@@ -5,7 +5,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, hdr, playlist_file, playlists_json, skin_directory, version
+from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, hdr, playlist_file, playlists_json, skin_directory, version, epgimporter
 
 from Components.ActionMap import ActionMap
 from Components.config import config
@@ -36,10 +36,6 @@ except:
     from httplib import HTTPConnection
 
     HTTPConnection.debuglevel = 0
-
-epgimporter = False
-if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
-    epgimporter = True
 
 
 class ProtectedScreen:

@@ -440,7 +440,7 @@ class BmxBuildBouquets(Screen):
             self["progress"].setValue(self.progress_value)
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            if live_categories:
+            if live_categories and epgimporter is True:
                 self.buildXmltvSource()
 
             if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:

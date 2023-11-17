@@ -96,12 +96,6 @@ SizeList = [
     ("xpicons", _("XPicons - 220x132 Pixel")),
     ("zzzpicons", _("ZZZPicons - 400x240 Pixel"))]
 
-# ("minipicons", _("MiniPicons - 50x30 Pixel")),
-# ("picons", _("Picons - 100x60 Pixel")),
-# ("zpicons", _("ZPicons - 220x88 Pixel (Display Duo2)")),
-# ("zzpicons1", _("ZZPicons1 - 400x160 bzw")),
-# ("zzpicons2", _("ZZPicons2 - 400x170 Pixel")),
-
 cfg.live_type = ConfigSelection(default="4097", choices=live_stream_type_choices)
 cfg.vod_type = ConfigSelection(default="4097", choices=vod_stream_type_choices)
 

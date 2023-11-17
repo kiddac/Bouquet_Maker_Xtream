@@ -17,13 +17,6 @@ import os
 import re
 import unicodedata
 
-"""
-try:
-    from urllib import quote
-except:
-    from urllib.parse import quote
-    """
-
 if pythonVer == 3:
     unicode = str
 
@@ -100,7 +93,6 @@ class BmxDownloadPicons(Screen):
                 if idx != index:
                     self.start_list[idx][2] = False
             self.start_list[index][2] = not self.start_list[index][2]
-
             self.refresh()
 
     def getSelectionsList(self):

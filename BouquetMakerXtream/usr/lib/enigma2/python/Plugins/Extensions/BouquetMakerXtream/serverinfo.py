@@ -38,7 +38,7 @@ class BmxUserInfo(Screen):
         self["formats"] = Label("")
         self["realurl"] = Label("")
         self["timezone"] = Label("")
-        self["server_offset"] = Label("")
+        self["serveroffset"] = Label("")
 
         # fake labels for skin text translations
         t_status = _("Status:")
@@ -102,7 +102,7 @@ class BmxUserInfo(Screen):
             self["timezone"].setText(str(glob.current_playlist["server_info"]["timezone"]))
 
         if "server_offset" in glob.current_playlist["data"]:
-            self["server_offset"].setText(str(glob.current_playlist["data"]["server_offset"]))
+            self["serveroffset"].setText(str(glob.current_playlist["data"]["server_offset"]))
 
     def quit(self):
         self.close()
