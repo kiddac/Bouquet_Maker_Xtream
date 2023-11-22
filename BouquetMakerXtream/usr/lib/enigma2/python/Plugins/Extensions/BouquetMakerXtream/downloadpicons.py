@@ -79,6 +79,7 @@ class BmxDownloadPicons(Screen):
         self.setup_title = _("Downloadng Picons")
 
         self["action"] = Label(_("Making BouquetMakerXtream Picons"))
+        self["info"] = Label("")
         self["status"] = Label("")
         self["progress"] = ProgressBar()
 
@@ -101,17 +102,32 @@ class BmxDownloadPicons(Screen):
         self.picon_num = 0
         self.complete = False
 
+        self.badurlcount = 0
+        self.typecount = 0
+        self.existscount = 0
+        self.sizecount = 0
+        self.successcount = 0
+
+        self.badurllist = []
+        self.typelist = []
+        self.existslist = []
+        self.sizelist = []
+        self.successlist = []
+
         self.bitdepth = cfg.picon_bitdepth.value
         self.piconsize = cfg.picon_size.value
         self.overwrite = cfg.picon_overwrite.value
 
         self.blockinglist = []
+        self.sizeblockinglist = []
+        self.typeblockinglist = []
 
         os.system("echo 1 > /proc/sys/vm/drop_caches")
         os.system("echo 2 > /proc/sys/vm/drop_caches")
         os.system("echo 3 > /proc/sys/vm/drop_caches")
 
         self.finishedtimer = eTimer()
+
         try:
             self.finishedtimer_conn = self.finishedtimer.timeout.connect(self.check_finished)
         except:
@@ -147,19 +163,27 @@ class BmxDownloadPicons(Screen):
         else:
             self.showError(_("No picons found."))
 
-    def addtoblocklist(self, url):
-        if url not in self.blockinglist:
-            self.blockinglist.append(url)
-
     def fetch_url(self, url, i):
-        if url[i][1] in self.blockinglist:
-            return
-
         if cfg.picon_overwrite.value is False:
-            if os.path.exists(str(cfg.picon_location.value) + str(url[0]) + ".png"):
+            if os.path.exists(str(cfg.picon_location.value) + str(url[i][0]) + ".png"):
+                self.existscount += 1
+                self.existslist.append(url[i])
                 return
 
-        maxsize = False
+        if url[i][1] in self.blockinglist:
+            self.barurlcount += 1
+            self.badurllist.append(url[i])
+            return
+
+        if url[i][1] in self.sizeblockinglist:
+            self.sizecount += 1
+            self.sizelist.append(url[i])
+            return
+
+        if url[i][1] in self.typeblockinglist:
+            self.typecount += 1
+            self.typelist.append(url[i])
+            return
 
         url[i][1] = url[i][1].replace("728px", "400px")
         url[i][1] = url[i][1].replace("1200px", "400px")
@@ -175,37 +199,64 @@ class BmxDownloadPicons(Screen):
         http.mount("https://", adapter)
 
         response = ""
-        response = http.get(url[i][1], headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36", "Accept": "image/png,image/jpeg"}, stream=True, timeout=20, verify=False, allow_redirects=True)
+        # hdr = {'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin'}
+        hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko', 'Accept': 'image/png,image/jpeg'}
+        try:
+            response = http.get(url[i][1], headers=hdr, stream=True, timeout=5, verify=False, allow_redirects=False)
+        except:
+            print("**** exception ***", url[i][1])
+            self.badurlcount += 1
+            self.badurllist.append(url[i])
+            if url[i][1] not in self.blockinglist:
+                self.blockinglist.append(url[i][1])
+                return
 
         if response:
-            if response.status_code == requests.codes.ok:
-                if "content-length" in response.headers and cfg.picon_max_size.value != "0" and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
-                    print("*** Picon source too large ***", url[i])
-                    maxsize = True
+            if "content-length" in response.headers and int(cfg.picon_max_size.value) != 0 and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
+                print("*** Picon source too large ***", url[i])
+                self.sizecount += 1
+                self.sizelist.append(url[i])
+                if url[i][1] not in self.sizeblockinglist:
+                    self.sizeblockinglist.append(url[i][1])
+                return
 
-                    self.addtoblocklist(url[i][1])
+            if "content-type" in response.headers and response.headers["content-type"] in image_formats:
+                try:
+                    content = response.content
+                    image_file = io.BytesIO(content)
+                    self.makePicon(image_file,  url[i][0], url[i][1])
+                    self.successcount += 1
+                    self.successlist.append(url[i])
+                    return
 
-                if "content-type" in response.headers and maxsize is False:
-                    if response.headers["content-type"] in image_formats:
-                        try:
-                            content = response.content
-                            image_file = io.BytesIO(content)
-                            self.makePicon(image_file,  url[i][0], url[i][1])
+                except Exception as e:
+                    print("**** image builder failed***", e, url[i][1])
+                    self.typecount += 1
+                    self.typelist.append(url[i])
+                    if url[i][1] not in self.typeblockinglist:
+                        self.typeblockinglist.append(url[i][1])
+                    return
 
-                        except Exception as e:
-                            print("**** bad response***", e, url[i][1])
             else:
-                print("**** bad response***", url[1])
-                self.addtoblocklist(url[i][1])
-
+                print("*** not png or jpeg ***", url[i][1])
+                self.typecount += 1
+                self.typelist.append(url[i])
+                if url[i][1] not in self.typeblockinglist:
+                    self.typeblockinglist.append(url[i][1])
+                    return
         else:
-            self.addtoblocklist(url[i][1])
-            print("*** no response ***", url[i][1])
+            print("**** bad response***", url[i][1])
+            self.badurlcount += 1
+            self.badurllist.append(url[i])
+            if url[i][1] not in self.blockinglist:
+                self.blockinglist.append(url[i][1])
+                return
 
     def log_result(self, result=None):
         self.progresscurrent += 1
         self["progress"].setValue(self.progresscurrent)
-        self["status"].setText("Picon %d of %d" % (self.progresscurrent, self.job_total))
+        self["info"].setText(_("Success: " + "%s   " + _("Size: ") + "%s   " + _("Type: ") + "%s   " + _("Url: ") + "%s   " + _("Exists: ") + "%s") % (self.successcount, self.sizecount, self.typecount, self.badurlcount, self.existscount))
+        self["status"].setText(_("Picon %d of %d") % (self.progresscurrent, self.job_total))
 
     def check_finished(self):
         if self.progresscurrent == self.job_total:
@@ -224,8 +275,8 @@ class BmxDownloadPicons(Screen):
         results = ""
 
         threads = len(self.selected)
-        if threads > cfg.max_threads.value:
-            threads = cfg.max_threads.value
+        if threads > int(cfg.max_threads.value):
+            threads = int(cfg.max_threads.value)
 
         if hasConcurrent:
             print("******* trying concurrent futures ******")
@@ -261,16 +312,51 @@ class BmxDownloadPicons(Screen):
                 print(e)
 
     def finished(self):
+        print("*** finished ***")
         if self.complete is False:
+
+            with open('/tmp/bmxsuccesslist.txt', 'w+') as f:
+                for item in self.successlist:
+                    f.write("%s\n" % item)
+                f.truncate()
+
+            with open('/tmp/bmxbadlist.txt', 'w+') as f:
+                for item in self.badurllist:
+                    f.write("%s\n" % item)
+                f.truncate()
+
+            with open('/tmp/bmxtypelist.txt', 'w+') as f:
+                for item in self.typelist:
+                    f.write("%s\n" % item)
+                f.truncate()
+
+            with open('/tmp/bmxsizelist.txt', 'w+') as f:
+                for item in self.sizelist:
+                    f.write("%s\n" % item)
+                f.truncate()
+
+            with open('/tmp/bmxexistslist.txt', 'w+') as f:
+                for item in self.existslist:
+                    f.write("%s\n" % item)
+                f.truncate()
+
             self.complete = True
-            self.done()
 
-    def showError(self, message):
+            os.system("echo 1 > /proc/sys/vm/drop_caches")
+            os.system("echo 2 > /proc/sys/vm/drop_caches")
+            os.system("echo 3 > /proc/sys/vm/drop_caches")
+
+            self.session.openWithCallback(
+                self.close, MessageBox,
+                _("Finished.\n\n") +
+                _("Success: ") + str(self.successcount) + "   " + _("Bad size: ") + str(self.sizecount) + "   " + _("bad type: ") + str(self.typecount) + "   " + _("bad url: ") + str(self.badurlcount) + "   " + _("Exists: ") + str(self.existscount) + "\n\n" +
+                _("Restart your GUI to refresh picons.") + "\n\n" + _("Your created picons can be found in") + "\n" + str(cfg.picon_location.value) + "\n\n" +
+                _("Your failed picon list can be found in") + "\n" + "/tmp/", MessageBox.TYPE_INFO, timeout=10
+            )
+
+    def showError(self, message=None):
         question = self.session.open(MessageBox, message, MessageBox.TYPE_ERROR)
-        question.setTitle(_("Create Picons"))
-        self.close()
-
-    def done(self, answer=None):
+        question.setTitle(_("Picon Error"))
         self.close()
 
     def makePicon(self, image_file, piconname, url):
@@ -293,7 +379,7 @@ class BmxDownloadPicons(Screen):
             # get image format
             imagetype = im.format
 
-            if cfg.picon_max_width.value != "0" and im.size[0] > int(cfg.picon_max_width.value):
+            if int(cfg.picon_max_width.value) != 0 and im.size[0] > int(cfg.picon_max_width.value):
                 return
 
             # create blank image

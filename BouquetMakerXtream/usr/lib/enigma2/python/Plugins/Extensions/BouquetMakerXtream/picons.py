@@ -9,7 +9,6 @@ from .plugin import cfg, common_path, skin_directory, version, pythonVer
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
-from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 
@@ -118,8 +117,6 @@ class BmxDownloadPicons(Screen):
                     glob.current_playlist = playlist
                     break
 
-            self.deletePiconSet(str(self.unique_ref))
-
             stream_type = glob.current_playlist["settings"]["live_type"]
 
             full_url = glob.current_playlist["playlist_info"]["full_url"]
@@ -129,6 +126,8 @@ class BmxDownloadPicons(Screen):
                 value = ord(j)
                 self.unique_ref += value
 
+            self.deletePiconSet(str(self.unique_ref))
+
             response = bmx.downloadApi(url)
 
             if response:
@@ -137,8 +136,24 @@ class BmxDownloadPicons(Screen):
                 self.picon_list = []
                 for channel in self.live_streams:
 
-                    stream_icon = str(channel["stream_icon"])
-                    stream_id = str(channel["stream_id"])
+                    if int(cfg.max_live.value) != 0 and x > int(cfg.max_live.value):
+                        break
+
+                    if "stream_id" in channel and channel["stream_id"]:
+                        stream_id = str(channel["stream_id"])
+                    else:
+                        continue
+
+                    if "category_id" not in channel or not channel["category_id"]:
+                        continue
+
+                    if "stream_icon" not in channel or not channel["stream_icon"]:
+                        continue
+                    else:
+                        stream_icon = str(channel["stream_icon"])
+
+                    if "http" not in stream_icon:
+                        continue
 
                     blocked = False
 
@@ -146,22 +161,12 @@ class BmxDownloadPicons(Screen):
                         if domain in stream_icon:
                             blocked = True
 
+                    """
                     if " " in stream_icon or "%20" in stream_icon:
                         continue
+                        """
 
                     if blocked:
-                        continue
-
-                    if not stream_icon:
-                        continue
-
-                    if "http" not in stream_icon:
-                        continue
-
-                    if not channel["category_id"]:
-                        continue
-
-                    if not stream_id:
                         continue
 
                     if channel["stream_type"] != "live":
@@ -169,18 +174,12 @@ class BmxDownloadPicons(Screen):
 
                     custom_sid = ""
 
-                    if cfg.max_live.value != 0 and x > cfg.max_live.value:
-                        break
-
                     if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
-                        name = channel["name"]
-                        name = name.replace(":", "").replace('"', "").strip("-")
-
-                        channel_id = str(channel["epg_channel_id"])
-                        if channel_id and "&" in channel_id:
-                            channel_id = channel_id.replace("&", "&amp;")
-
-                        piconname = name
+                        if "name" in channel and channel["name"]:
+                            name = channel["name"]
+                            name = name.replace(":", "").replace('"', "").strip("-")
+                        else:
+                            continue
 
                         bouquet_id1 = 0
                         calc_remainder = int(stream_id) // 65535
@@ -189,8 +188,8 @@ class BmxDownloadPicons(Screen):
 
                         custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
-                        if "custom_sid" in channel:
-                            if channel["custom_sid"] and channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
+                        if "custom_sid" in channel and channel["custom_sid"]:
+                            if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
                                 if channel["custom_sid"][0].isdigit():
                                     channel["custom_sid"] = channel["custom_sid"][1:]
 
@@ -200,36 +199,53 @@ class BmxDownloadPicons(Screen):
                         custom_sid = custom_sid.replace(":", "_")
                         custom_sid = custom_sid.upper()
 
-                        if "png" in stream_icon.lower() or "jpg" in stream_icon.lower() or "jpeg" in stream_icon.lower():
+                        if "epg_channel_id" in channel and channel["epg_channel_id"]:
+                            channel_id = str(channel["epg_channel_id"])
+                            if "&" in channel_id:
+                                channel_id = channel_id.replace("&", "&amp;")
 
-                            if cfg.picon_type.value == "SRP":
-                                self.picon_list.append([custom_sid, stream_icon])
-                            else:
-                                try:
-                                    if pythonVer == 2:
-                                        piconname = unicodedata.normalize("NFKD", unicode(str(piconname), "utf_8", errors="ignore")).encode("ASCII", "ignore")
+                        piconname = name
 
-                                    elif pythonVer == 3:
-                                        piconname = unicodedata.normalize("NFKD", piconname).encode("ASCII", "ignore").decode()
-                                except:
-                                    pass
+                        if cfg.picon_type.value == "SRP":
+                            self.picon_list.append([custom_sid, stream_icon])
+                        else:
+                            try:
+                                if pythonVer == 2:
+                                    piconname = unicodedata.normalize("NFKD", unicode(str(piconname), "utf_8", errors="ignore")).encode("ASCII", "ignore")
 
-                                piconname = re.sub("[^a-z0-9]", "", piconname.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
+                                elif pythonVer == 3:
+                                    piconname = unicodedata.normalize("NFKD", piconname).encode("ASCII", "ignore").decode()
+                            except:
+                                pass
 
-                                self.picon_list.append([piconname, stream_icon])
-                            x += 1
+                            piconname = re.sub("[^a-z0-9]", "", piconname.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
+
+                            if piconname and stream_icon:
+                                if cfg.picon_type.value == "SRP":
+                                    self.picon_list.append([piconname, stream_icon])
+                                else:
+                                    exists = False
+                                    for sublist in self.picon_list:
+                                        if str(sublist[0]) == str(piconname):
+                                            exists = True
+                                            break
+                                    if exists is False:
+                                        self.picon_list.append([piconname, stream_icon])
+
+                x += 1
 
                 # self.picon_list.sort(key=lambda x: x[1])
 
                 with open('/tmp/bmxpiconlist.txt', 'w+') as f:
                     for item in self.picon_list:
                         f.write("%s\n" % item)
+                    f.truncate()
 
                 from . import downloadpicons
                 self.session.openWithCallback(self.finished, downloadpicons.BmxDownloadPicons, self.picon_list)
 
     def finished(self, answer=None):
         try:
-            self.session.openWithCallback(self.close, MessageBox, "Finished.\n\nRestart your GUI if downloaded to picons folder.\n\nYour created picons can be found in \n" + str(cfg.picon_location.value), MessageBox.TYPE_INFO, timeout=10)
+            self.close()
         except:
             pass

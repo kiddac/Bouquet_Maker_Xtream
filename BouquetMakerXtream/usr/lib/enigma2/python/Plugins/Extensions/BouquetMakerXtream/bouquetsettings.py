@@ -246,7 +246,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.vod_category_order_cfg = NoSave(ConfigSelection(default=vod_category_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
         self.vod_stream_order_cfg = NoSave(ConfigSelection(default=vod_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
 
-        self.catchup_shift_cfg = NoSave(ConfigSelectionNumber(min=-9, max=9, stepwidth=1, default=0, wraparound=True))
+        # self.catchup_shift_cfg = NoSave(ConfigSelectionNumber(min=-9, max=9, stepwidth=1, default=0, wraparound=True))
         # self.fix_epg_cfg = NoSave(ConfigYesNo(default=glob.fixepg)
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":

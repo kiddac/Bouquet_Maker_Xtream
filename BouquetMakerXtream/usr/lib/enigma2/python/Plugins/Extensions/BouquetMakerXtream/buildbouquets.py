@@ -49,6 +49,7 @@ class BmxBuildBouquets(Screen):
         }, -2)
 
         self["action"] = Label(_("Building Bouquets..."))
+        self["info"] = Label("")
         self["status"] = Label("")
         self["progress"] = ProgressBar()
 
@@ -305,26 +306,31 @@ class BmxBuildBouquets(Screen):
         if live_categories and self.live_streams:
             x = 0
             for channel in self.live_streams:
-                if cfg.max_live.value != 0 and x > cfg.max_live.value:
+                if int(cfg.max_live.value) != 0 and x > int(cfg.max_live.value):
                     break
 
-                stream_id = str(channel["stream_id"])
+                if "stream_id" in channel and channel["stream_id"]:
+                    stream_id = str(channel["stream_id"])
+                else:
+                    continue
+
+                if "category_id" not in channel or not channel["category_id"]:
+                    continue
 
                 if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
-                    name = channel["name"]
-                    name = name.replace(":", "").replace('"', "").strip("-")
+                    if "name" in channel and channel["name"]:
+                        name = channel["name"]
+                        name = name.replace(":", "").replace('"', "").strip("-")
+                    else:
+                        continue
 
-                    if "tv_archive" in channel:
+                    if "tv_archive" in channel and channel["tv_archive"]:
                         catchup = int(channel["tv_archive"])
                     else:
                         catchup = 0
 
                     if cfg.catchup.value is True and catchup == 1:
                         name = str(cfg.catchup_prefix.value) + str(name)
-
-                    channel_id = str(channel["epg_channel_id"])
-                    if channel_id and "&" in channel_id:
-                        channel_id = channel_id.replace("&", "&amp;")
 
                     bouquet_id1 = 0
                     calc_remainder = int(stream_id) // 65535
@@ -334,8 +340,8 @@ class BmxBuildBouquets(Screen):
                     service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
-                    if "custom_sid" in channel:
-                        if channel["custom_sid"] and channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
+                    if "custom_sid" in channel and channel["custom_sid"]:
+                        if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
                             if channel["custom_sid"][0].isdigit():
                                 channel["custom_sid"] = channel["custom_sid"][1:]
 
@@ -343,7 +349,11 @@ class BmxBuildBouquets(Screen):
                             custom_sid = channel["custom_sid"]
 
                     xml_str = ""
-                    if channel_id and channel_id != "None":
+
+                    if "epg_channel_id" in channel and channel["epg_channel_id"]:
+                        channel_id = str(channel["epg_channel_id"])
+                        if "&" in channel_id:
+                            channel_id = channel_id.replace("&", "&amp;")
                         xml_str = '\t<channel id="' + str(channel_id) + '">' + str(service_ref) + "</channel><!-- " + str(name) + " -->\n"
 
                     bouquet_string = ""
@@ -374,8 +384,15 @@ class BmxBuildBouquets(Screen):
             filename = ""
 
             for category in live_categories:
+                if "category_id" not in category or not category["category_id"]:
+                    continue
+
                 exists = False
                 for item in stream_list:
+
+                    if "category_id" not in item or not item["category_id"]:
+                        continue
+
                     if category["category_id"] == item["category_id"]:
                         exists = True
                         break
@@ -396,8 +413,14 @@ class BmxBuildBouquets(Screen):
                     f.write(str(bouquet_tv_string))
 
                 for category in live_categories:
+                    if "category_id" not in category or not category["category_id"]:
+                        continue
+
                     exists = False
                     for item in stream_list:
+                        if "category_id" not in item or not item["category_id"]:
+                            continue
+
                         if category["category_id"] == item["category_id"]:
                             exists = True
                             break
@@ -486,16 +509,25 @@ class BmxBuildBouquets(Screen):
         if vod_categories and self.vod_streams:
             x = 0
             for channel in self.vod_streams:
-                if cfg.max_vod.value != 0 and x > cfg.max_vod.value:
+                if int(cfg.max_vod.value) != 0 and x > int(cfg.max_vod.value):
                     break
 
-                stream_id = str(channel["stream_id"])
+                if "stream_id" in channel and channel["stream_id"]:
+                    stream_id = str(channel["stream_id"])
+                else:
+                    continue
+
+                if "category_id" not in channel or not channel["category_id"]:
+                    continue
 
                 if str(channel["category_id"]) not in glob.current_playlist["data"]["vod_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["vod_streams_hidden"]:
-                    extension = channel["container_extension"]
+                    if "name" in channel and channel["name"]:
+                        name = channel["name"]
+                        name = name.replace(":", "").replace('"', "").strip("-")
+                    else:
+                        continue
 
-                    name = channel["name"]
-                    name = name.replace(":", "").replace('"', "").strip("-")
+                    extension = channel["container_extension"]
 
                     bouquet_id1 = 0
                     calc_remainder = int(stream_id) // 65535
@@ -531,8 +563,14 @@ class BmxBuildBouquets(Screen):
             filename = ""
 
             for category in vod_categories:
+                if "category_id" not in category or not category["category_id"]:
+                    continue
+
                 exists = False
                 for item in stream_list:
+                    if "category_id" not in item or not item["category_id"]:
+                        continue
+
                     if category["category_id"] == item["category_id"]:
                         exists = True
                         break
@@ -553,8 +591,14 @@ class BmxBuildBouquets(Screen):
                     f.write(str(bouquet_tv_string))
 
                 for category in vod_categories:
+                    if "category_id" not in category or not category["category_id"]:
+                        continue
+
                     exists = False
                     for item in stream_list:
+                        if "category_id" not in item or not item["category_id"]:
+                            continue
+
                         if category["category_id"] == item["category_id"]:
                             exists = True
                             break
@@ -636,9 +680,9 @@ class BmxBuildBouquets(Screen):
                     lines = series_simple_result.splitlines()
 
                     if pythonVer == 3:
-                        lines = [x for x in lines if "/series/" in x.decode() or "/S01/" in x.decode() or "/E01" in x.decode() and "/live" not in x.decode() and "/movie/" not in x.decode()]
+                        lines = [x for x in lines if "/series/" in x.decode() or " S01 " in x.decode() or " E01" in x.decode() and "/live" not in x.decode() and "/movie/" not in x.decode()]
                     else:
-                        lines = [x for x in lines if "/series/" in x or "/S01/" in x or "/E01" in x and "/live" not in x and "/movie/" not in x]
+                        lines = [x for x in lines if "/series/" in x or " S01 " in x or " E01" in x and "/live" not in x and "/movie/" not in x]
 
                     build_list = [x for x in self.series_streams if str(x["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(x["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]]
 
@@ -646,7 +690,7 @@ class BmxBuildBouquets(Screen):
                         try:
                             x = 0
                             for line in lines:
-                                if cfg.max_series.value != 0 and x > cfg.max_series.value:
+                                if int(cfg.max_series.value) != 0 and x > int(cfg.max_series.value):
                                     break
 
                                 if pythonVer == 3:
@@ -684,7 +728,13 @@ class BmxBuildBouquets(Screen):
 
             else:
                 for channel in self.series_streams:
-                    stream_id = str(channel["series_id"])
+                    if "series_id" in channel and channel["series_id"]:
+                        stream_id = str(channel["series_id"])
+                    else:
+                        continue
+
+                    if "category_id" not in channel or not channel["category_id"]:
+                        continue
 
                     if str(channel["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(channel["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]:
                         name = channel["name"]
@@ -720,8 +770,13 @@ class BmxBuildBouquets(Screen):
                 filename = ""
 
                 for category in series_categories:
+                    if "category_id" not in category or not category["category_id"]:
+                        continue
+
                     exists = False
                     for item in stream_list:
+                        if "category_id" not in item or not item["category_id"]:
+                            continue
                         if category["category_id"] == item["category_id"]:
                             exists = True
                             break
@@ -743,8 +798,14 @@ class BmxBuildBouquets(Screen):
                         f.write(bouquet_tv_string)
 
                     for category in series_categories:
+                        if "category_id" not in category or not category["category_id"]:
+                            continue
+
                         exists = False
                         for item in stream_list:
+                            if "category_id" not in item or not item["category_id"]:
+                                continue
+
                             if category["category_id"] == item["category_id"]:
                                 exists = True
                                 break
