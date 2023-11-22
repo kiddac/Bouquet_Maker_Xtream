@@ -6,6 +6,7 @@
 		<convert type="ClockToText">Format:%A, %b %d, %H.%M</convert>
 	</widget>
 	<widget name="action" position="center,518" size="1280,30" font="bmxregular;23" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
+	<widget name="info" position="center,562" size="1280,30" font="bmxregular;19" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
 	<widget name="status" position="center,630" size="1280,30" font="bmxregular;23" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
 	<widget name="progress" position="205,609" size="870,6" borderWidth="1" borderColor="#555555" foregroundColor="#0d84a4" backgroundColor="#000000" zPosition="3"/>
 </screen>
