@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, pythonVer
+from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, pythonVer, dir_custom
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
@@ -87,7 +87,10 @@ class BmxDownloadPicons(Screen):
             "cancel": self.keyCancel
         }, -2)
 
-        self.downloadlocation = cfg.picon_location.value
+        if cfg.picon_location.value == "custom" and str(cfg.picon_location.value) != str(dir_custom):
+            self.downloadlocation = cfg.picon_custom.value
+        else:
+            self.downloadlocation = cfg.picon_location.value
 
         if not os.path.exists(self.downloadlocation):
             try:
@@ -165,7 +168,7 @@ class BmxDownloadPicons(Screen):
 
     def fetch_url(self, url, i):
         if cfg.picon_overwrite.value is False:
-            if os.path.exists(str(cfg.picon_location.value) + str(url[i][0]) + ".png"):
+            if os.path.exists(str(self.downloadlocation) + str(url[i][0]) + ".png"):
                 self.existscount += 1
                 self.existslist.append(url[i])
                 return
@@ -350,7 +353,7 @@ class BmxDownloadPicons(Screen):
                 self.close, MessageBox,
                 _("Finished.\n\n") +
                 _("Success: ") + str(self.successcount) + "   " + _("Bad size: ") + str(self.sizecount) + "   " + _("bad type: ") + str(self.typecount) + "   " + _("bad url: ") + str(self.badurlcount) + "   " + _("Exists: ") + str(self.existscount) + "\n\n" +
-                _("Restart your GUI to refresh picons.") + "\n\n" + _("Your created picons can be found in") + "\n" + str(cfg.picon_location.value) + "\n\n" +
+                _("Restart your GUI to refresh picons.") + "\n\n" + _("Your created picons can be found in") + "\n" + str(self.downloadlocation) + "\n\n" +
                 _("Your failed picon list can be found in") + "\n" + "/tmp/", MessageBox.TYPE_INFO, timeout=10
             )
 

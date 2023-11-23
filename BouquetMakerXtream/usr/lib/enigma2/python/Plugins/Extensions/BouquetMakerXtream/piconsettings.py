@@ -94,8 +94,10 @@ class BmxPiconSettings(ConfigListScreen, Screen):
 
         self.clearCaches()
 
+        """
         if cfg.picon_location.value == "custom":
             cfg.picon_location.setValue(cfg.picon_custom.value)
+            """
 
         self.session.openWithCallback(self.close, picons.BmxDownloadPicons)
         # self.close()
