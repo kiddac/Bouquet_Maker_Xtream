@@ -170,7 +170,7 @@ if location:
 
 font_folder = os.path.join(dir_plugins, "fonts/")
 
-hdr = {"User-Agent": "Enigma2 - BouquetMakerXtream Plugin"}
+hdr = {'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin'}
 
 # create folder for working files
 if not os.path.exists(dir_etc):
