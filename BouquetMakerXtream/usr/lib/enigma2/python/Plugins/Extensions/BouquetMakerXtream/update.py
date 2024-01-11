@@ -496,9 +496,9 @@ class BmxUpdate(Screen):
                         string_list = []
 
                         if glob.current_playlist["settings"]["prefix_name"] is True and cfg.groups.value is False:
-                            output_string += "#NAME " + self.safe_name + " " + category["category_name"] + "\n"
+                            output_string += "#NAME " + self.safe_name + " - " + category["category_name"] + "\n"
                         else:
-                            output_string += "#NAME " + " " + category["category_name"] + "\n"
+                            output_string += "#NAME " + category["category_name"] + "\n"
 
                         for stream in self.live_stream_data:
                             if str(category["category_id"]) == str(stream["category_id"]):
@@ -677,9 +677,9 @@ class BmxUpdate(Screen):
                         string_list = []
 
                         if glob.current_playlist["settings"]["prefix_name"] is True and cfg.groups.value is False:
-                            output_string += "#NAME " + self.safe_name + "-VOD | " + category["category_name"] + "\n"
+                            output_string += "#NAME " + self.safe_name + " VOD - " + category["category_name"] + "\n"
                         else:
-                            output_string += "#NAME " + "VOD | " + category["category_name"] + "\n"
+                            output_string += "#NAME " + "VOD - " + category["category_name"] + "\n"
 
                         for stream in self.vod_stream_data:
                             if str(category["category_id"]) == str(stream["category_id"]):
@@ -885,9 +885,9 @@ class BmxUpdate(Screen):
                             string_list = []
 
                             if glob.current_playlist["settings"]["prefix_name"] is True and cfg.groups.value is False:
-                                output_string += "#NAME " + self.safe_name + "-Series | " + category["category_name"] + "\n"
+                                output_string += "#NAME " + self.safe_name + " Series - " + category["category_name"] + "\n"
                             else:
-                                output_string += "#NAME " + "Series | " + category["category_name"] + "\n"
+                                output_string += "#NAME " + "Series - " + category["category_name"] + "\n"
 
                             for stream in self.series_stream_data:
                                 if str(category["category_id"]) == str(stream["category_id"]):
