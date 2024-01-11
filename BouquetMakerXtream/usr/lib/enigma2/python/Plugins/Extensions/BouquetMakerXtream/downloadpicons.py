@@ -165,6 +165,7 @@ class BmxDownloadPicons(Screen):
         os.system("echo 2 > /proc/sys/vm/drop_caches")
         os.system("echo 3 > /proc/sys/vm/drop_caches")
 
+        """
         self.finishedtimer = eTimer()
 
         try:
@@ -173,6 +174,18 @@ class BmxDownloadPicons(Screen):
             self.finishedtimer.callback.append(self.check_finished)
 
         self.finishedtimer.start(2000, False)
+
+        self.onFirstExecBegin.append(self.start)
+        """
+
+        self.updatedisplaytimer = eTimer()
+
+        try:
+            self.updatedisplaytimer_conn = self.updatedisplaytimer.timeout.connect(self.log_result)
+        except:
+            self.updatedisplaytimer.callback.append(self.log_result)
+
+        self.updatedisplaytimer.start(1000, False)
 
         self.onFirstExecBegin.append(self.start)
 
@@ -203,6 +216,7 @@ class BmxDownloadPicons(Screen):
             self.showError(_("No picons found."))
 
     def fetch_url(self, url, i):
+        self.progresscurrent += 1
         if cfg.picon_overwrite.value is False:
             if os.path.exists(str(self.downloadlocation) + str(url[i][0]) + ".png"):
                 self.existscount += 1
@@ -292,11 +306,23 @@ class BmxDownloadPicons(Screen):
                 return
 
     def log_result(self, result=None):
-        self.progresscurrent += 1
+        # self.progresscurrent += 1
         self["progress"].setValue(self.progresscurrent)
         self["info"].setText(_("Success: " + "%s   " + _("Size: ") + "%s   " + _("Type: ") + "%s   " + _("Url: ") + "%s   " + _("Exists: ") + "%s") % (self.successcount, self.sizecount, self.typecount, self.badurlcount, self.existscount))
         self["status"].setText(_("Picon %d of %d") % (self.progresscurrent, self.job_total))
 
+        if self.progresscurrent == self.job_total:
+            self.updatedisplaytimer.stop()
+            self.timer3 = eTimer()
+            try:
+                self.timer3_conn = self.timer3.timeout.connect(self.finished)
+            except:
+                try:
+                    self.timer3.callback.append(self.finished)
+                except:
+                    self.finished()
+            self.timer3.start(2000, True)
+    """
     def check_finished(self):
         if self.progresscurrent == self.job_total:
             self.finishedtimer.stop()
@@ -309,9 +335,10 @@ class BmxDownloadPicons(Screen):
                 except:
                     self.finished()
             self.timer3.start(2000, True)
+            """
 
     def buildPicons(self):
-        results = ""
+        # results = ""
 
         threads = len(self.selected)
         if threads > int(cfg.max_threads.value):
@@ -325,8 +352,9 @@ class BmxDownloadPicons(Screen):
 
                 for i in range(self.job_total):
                     try:
-                        results = executor.submit(self.fetch_url, self.selected, i)
-                        results.add_done_callback(self.log_result)
+                        executor.submit(self.fetch_url, self.selected, i)
+                        # results = executor.submit(self.fetch_url, self.selected, i)
+                        # results.add_done_callback(self.log_result)
                     except:
                         pass
 
@@ -341,7 +369,8 @@ class BmxDownloadPicons(Screen):
 
                 for i in range(self.job_total):
                     try:
-                        pool.apply_async(self.fetch_url, args=(self.selected, i), callback=self.log_result)
+                        # pool.apply_async(self.fetch_url, args=(self.selected, i), callback=self.log_result)
+                        pool.apply_async(self.fetch_url, args=(self.selected, i))
                     except:
                         pass
 
@@ -390,7 +419,7 @@ class BmxDownloadPicons(Screen):
                 _("Finished.\n\n") +
                 _("Success: ") + str(self.successcount) + "   " + _("Bad size: ") + str(self.sizecount) + "   " + _("bad type: ") + str(self.typecount) + "   " + _("bad url: ") + str(self.badurlcount) + "   " + _("Exists: ") + str(self.existscount) + "\n\n" +
                 _("Restart your GUI to refresh picons.") + "\n\n" + _("Your created picons can be found in") + "\n" + str(self.downloadlocation) + "\n\n" +
-                _("Your failed picon list can be found in") + "\n" + "/tmp/", MessageBox.TYPE_INFO, timeout=10
+                _("Your failed picon list can be found in") + "\n" + "/tmp/", MessageBox.TYPE_INFO
             )
 
     def showError(self, message=None):
