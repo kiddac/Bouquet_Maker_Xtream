@@ -1,0 +1,669 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2023-10-23 18:41+0100\n"
+"PO-Revision-Date: 2023-12-09 17:16+0000\n"
+"Last-Translator: Frenske <voorzitter@openpli.org>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.1\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: about.py:25 mainmenu.py:136
+msgid "About"
+msgstr "Informatie"
+
+#: about.py:33 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:41
+#: playlists.py:81 server.py:52 serverinfo.py:61 settings.py:67
+msgid "Back"
+msgstr "Terug"
+
+#: about.py:34 mainmenu.py:42 playlists.py:82 serverinfo.py:62
+msgid "OK"
+msgstr "Ok"
+
+#: about.py:45
+msgid ""
+"Support for this plugin and latest versions can be found on https://linuxsat-"
+"support.com\n"
+"\n"
+msgstr ""
+"Ondersteuning voor deze plugin en de nieuwste versies kunt u vinden op "
+"https://linuxsat-support.com\n"
+"\n"
+
+#: about.py:46
+msgid ""
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, "
+"external and local m3u8 playlists. \n"
+"Play your files via your TV bouquets.\n"
+"\n"
+msgstr ""
+"Met deze plugin kunt u eenvoudig boeketten aanmaken van standaard Xtream-"
+"codes / XUI One, externe en lokale m3u8-lijsten. \n"
+"Vervolgens kunt u deze bestanden afspelen via uw TV boeketten.\n"
+"\n"
+
+#: about.py:47
+msgid "Credits:\n"
+msgstr "Credits:\n"
+
+#: about.py:48
+msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
+msgstr ""
+"AutoBouquetsMaker, EpgImporter, AutoBackup (gebruikt als referentiecode).\n"
+
+#: about.py:49
+msgid ""
+"And thanks to all the other coders and Linuxsat testers who helped in the "
+"development of this project.\n"
+"\n"
+msgstr ""
+"En ook dank aan alle andere programmeurs en Linuxsat testers die hebben "
+"geholpen bij de ontwikkeling van dit project.\n"
+"\n"
+
+#: about.py:50
+msgid ""
+"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or "
+"https://ko-fi.com/kiddac\n"
+msgstr ""
+"Als je mij wilt tracteren op een biertje of een kop koffie check dan: "
+"https://paypal.me/kiddac of https://ko-fi.com/kiddac\n"
+
+#: about.py:51
+msgid "Cheers - all donations are very much appreciated."
+msgstr "Proost - alle donaties worden zeer gewaardeerd."
+
+#: bouquetsettings.py:44
+msgid "Bouquets Settings"
+msgstr "Boeket instellingen"
+
+#: bouquetsettings.py:52
+msgid "Continue"
+msgstr "Ga verder"
+
+#: bouquetsettings.py:253 bouquetsettings.py:254 bouquetsettings.py:255
+#: bouquetsettings.py:256
+msgid "Original Order"
+msgstr "Oorspronkelijke volgorde"
+
+#: bouquetsettings.py:253 bouquetsettings.py:254 bouquetsettings.py:255
+#: bouquetsettings.py:256
+msgid "A-Z"
+msgstr "A-Z"
+
+#: bouquetsettings.py:254 bouquetsettings.py:256
+msgid "Newest"
+msgstr "Nieuwste"
+
+#: bouquetsettings.py:276 server.py:116 server.py:124
+msgid "Short name or provider name:"
+msgstr "Korte (eigen) naam van de map of een provider naam:"
+
+#: bouquetsettings.py:277
+msgid "Use name as bouquet prefix"
+msgstr "Gebruik de hierboven ingevulde naam als voorvoegsel van het boeket:"
+
+#: bouquetsettings.py:280
+msgid "Show LIVE category if available:"
+msgstr "Toon de LIVE categorie indien beschikbaar:"
+
+#: bouquetsettings.py:282
+msgid "Stream Type LIVE:"
+msgstr "Stream type LIVE:"
+
+#: bouquetsettings.py:285
+msgid "LIVE category bouquet order"
+msgstr "LiveTV boeket sortering"
+
+#: bouquetsettings.py:286
+msgid "LIVE stream bouquet order"
+msgstr "Volgorde van het LiveTV stream boeket:"
+
+#: bouquetsettings.py:289
+msgid "Show VOD category if available:"
+msgstr "Toon de categorie VOD indien beschikbaar:"
+
+#: bouquetsettings.py:292
+msgid "Show SERIES category if available:"
+msgstr "Toon de categorie Series indien beschikbaar:"
+
+#: bouquetsettings.py:296
+msgid "Stream Type VOD/SERIES:"
+msgstr "Stream type VOD/Series:"
+
+#: bouquetsettings.py:299
+msgid "VOD/SERIES category bouquet order"
+msgstr "Volgorde van de VOD/Series boeketten:"
+
+#: bouquetsettings.py:300
+msgid "VOD/SERIES streams bouquet order"
+msgstr "Volgorde van het VOD/Series stream-bouquet:"
+
+#: bouquetsettings.py:303 server.py:122
+msgid "Output:"
+msgstr "Uitvoerformaat:"
+
+#: bouquetsettings.py:307
+msgid "Use alternative EPG url:"
+msgstr "Gebruik een alternatieve URL voor EPG:"
+
+#: bouquetsettings.py:309
+msgid "Alternative EPG url:"
+msgstr "Alternatieve URL van de EPG:"
+
+#: bouquetsettings.py:370
+msgid "No bouquets selected."
+msgstr "Geen boeketten gekozen."
+
+#: bouquetsettings.py:391
+msgid ""
+"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
+"characters."
+msgstr ""
+"De boeketnaam mag niet leeg zijn. Voer een unieke boeketnaam in. Minimaal 3 "
+"tekens."
+
+#: bouquetsettings.py:399 server.py:223
+msgid "Name already used. Please enter a unique name."
+msgstr "Deze naam is al in gebruik. Gebruik een unieke naam."
+
+#: buildbouquets.py:41 update.py:60
+msgid "Building Bouquets"
+msgstr "Bouwen van boeketten"
+
+#: buildbouquets.py:45 update.py:63
+msgid "Building Bouquets..."
+msgstr "Boeketten worden gebouwd..."
+
+#: buildbouquets.py:195 update.py:222
+msgid "Downloading live data..."
+msgstr "Live data wordt gedownload..."
+
+#: buildbouquets.py:198 buildbouquets.py:289 buildbouquets.py:442 update.py:225
+#: update.py:316 update.py:469
+msgid "Downloading VOD data..."
+msgstr "VOD data wordt gedownload..."
+
+#: buildbouquets.py:201 buildbouquets.py:292 buildbouquets.py:445
+#: buildbouquets.py:473 buildbouquets.py:593 update.py:228 update.py:319
+#: update.py:472 update.py:501 update.py:621
+msgid "Downloading series data..."
+msgstr "Series data wordt gedownload..."
+
+#: buildbouquets.py:208 update.py:235
+msgid "Downloading external playlist..."
+msgstr "De externe afspeellijst wordt gedownload..."
+
+#: buildbouquets.py:210 update.py:237
+msgid "Loadind local playlist..."
+msgstr "De lokale afspeellijst wordt gedownload..."
+
+#: buildbouquets.py:216 buildbouquets.py:234 update.py:243 update.py:261
+msgid "Processing live data..."
+msgstr "De Live data wordt verwerkt..."
+
+#: buildbouquets.py:222 update.py:249
+msgid "Processing VOD data..."
+msgstr "De VOD data wordt verwerkt..."
+
+#: buildbouquets.py:228 buildbouquets.py:299 buildbouquets.py:452
+#: buildbouquets.py:478 buildbouquets.py:598 update.py:255 update.py:326
+#: update.py:479 update.py:506 update.py:626
+msgid "Processing series data..."
+msgstr "De series data wordt verwerkt..."
+
+#: buildbouquets.py:297 buildbouquets.py:450 update.py:324 update.py:477
+msgid "Process VOD data..."
+msgstr "Verwerk VOD data..."
+
+#: buildbouquets.py:627 update.py:655
+msgid ""
+"Your provider does not have the 'simple' API call\n"
+"Unable to build series.\n"
+"Alternative method might be added in the future."
+msgstr ""
+"Uw provider biedt geen 'eenvoudige' API aan.\n"
+"Ik kan dus geen series opmaken.\n"
+"In de toekomst wordt mogelijk een alternatieve methode toegevoegd."
+
+#: buildbouquets.py:893
+msgid " IPTV Bouquets Created"
+msgstr " De IPTV boeketten zijn opgemaakt"
+
+#: catchup.py:133
+#, python-format
+msgid "TV Archive: %s"
+msgstr "TV Archief: %s"
+
+#: catchup.py:258
+msgid "Catchup currently not available. Missing EPG data"
+msgstr "Uitzi=ending gemist niet beschikbaar. De EPG data ontbreekt"
+
+#: choosecategories.py:45
+msgid "Category"
+msgstr "Categorie"
+
+#: choosecategories.py:46
+msgid "Channel"
+msgstr "Zender"
+
+#: choosecategories.py:50 deletebouquets.py:36
+msgid "Invert"
+msgstr "Keer om"
+
+#: choosecategories.py:51
+msgid "Reset"
+msgstr "Reset"
+
+#: choosecategories.py:53
+msgid "Show Streams"
+msgstr "Toon de streams"
+
+#: choosecategories.py:270 choosecategories.py:474 choosecategories.py:514
+#: choosecategories.py:611 choosecategories.py:615
+msgid "Choose Live Categories"
+msgstr "Kies de Live categorieën"
+
+#: choosecategories.py:278 choosecategories.py:321
+msgid "Next"
+msgstr "Volgende"
+
+#: choosecategories.py:280 choosecategories.py:323 choosecategories.py:358
+msgid "Create"
+msgstr "Maak"
+
+#: choosecategories.py:313 choosecategories.py:483 choosecategories.py:531
+#: choosecategories.py:605 choosecategories.py:623
+msgid "Choose VOD Categories"
+msgstr "Kies de VOD categorieën"
+
+#: choosecategories.py:352 choosecategories.py:492 choosecategories.py:548
+#: choosecategories.py:597 choosecategories.py:629
+msgid "Choose Series Categories"
+msgstr "Kies de Series categorieën"
+
+#: deletebouquets.py:27 mainmenu.py:132
+msgid "Delete Bouquets"
+msgstr "Wis boeketten"
+
+#: deletebouquets.py:34
+msgid "Cancel"
+msgstr "Annuleer"
+
+#: deletebouquets.py:35 playlists.py:83
+msgid "Delete"
+msgstr "Wissen"
+
+#: deletebouquets.py:37
+msgid "Clear All"
+msgstr "Wis alles"
+
+#: mainmenu.py:40
+msgid "Main Menu"
+msgstr "Hoofdmenu"
+
+#: mainmenu.py:64
+msgid "Playlists.txt location is invalid and has been reset."
+msgstr "De locatie van playlists.txt is ongeldig en is opnieuw ingesteld."
+
+#: mainmenu.py:119
+msgid "Playlists"
+msgstr "Afspeellijsten"
+
+#: mainmenu.py:121 settings.py:60
+msgid "Main Settings"
+msgstr "Belangrijkste instellingen"
+
+#: mainmenu.py:131
+msgid "Update Bouquets"
+msgstr "Update de boeketten"
+
+#: mainmenu.py:133
+msgid "Delete All BMX Bouquets"
+msgstr "Verwijder alle BMX boeketten"
+
+#: mainmenu.py:135 server.py:45
+msgid "Add Playlist"
+msgstr "Voeg een afspeellijst toe"
+
+#: mainmenu.py:169
+msgid "Delete all BMX created bouquets?"
+msgstr "Verwijder alle met BMX vervaardigde boeketten?"
+
+#: parsem3u.py:68
+msgid "Stream"
+msgstr "Stream"
+
+#: playlists.py:48 settings.py:26
+msgid "Please enter the correct pin code"
+msgstr "Voer de juiste pincode in"
+
+#: playlists.py:48 settings.py:26
+msgid "Enter pin code"
+msgstr "Voer een pincode in"
+
+#: playlists.py:57 settings.py:35
+msgid "The pin code you entered is wrong."
+msgstr "De ingevoerde pincode is onjuist."
+
+#: playlists.py:79
+msgid "Select Playlist"
+msgstr "Kies een afspeellijst"
+
+#: playlists.py:84
+msgid "Info"
+msgstr "Informatie"
+
+#: playlists.py:395 playlists.py:482
+msgid "Server Not Responding"
+msgstr "De server reageert niet"
+
+#: playlists.py:417 playlists.py:484
+msgid "Not Authorised"
+msgstr "Uw gegevens zijn niet juist"
+
+#: playlists.py:421 playlists.py:429 playlists.py:467
+msgid "Active"
+msgstr "Actief"
+
+#: playlists.py:423 playlists.py:476
+msgid "Banned"
+msgstr "Gebanned"
+
+#: playlists.py:425 playlists.py:480
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: playlists.py:427 playlists.py:478
+msgid "Expired"
+msgstr "Verlopen"
+
+#: playlists.py:431 playlists.py:433
+msgid "Expires: "
+msgstr "Verloopt op: "
+
+#: playlists.py:435
+msgid "Active Conn:"
+msgstr "Actieve verbinding:"
+
+#: playlists.py:438
+msgid "Max Conn:"
+msgstr "Max aantal connecties:"
+
+#: playlists.py:449 playlists.py:467
+msgid "Url OK"
+msgstr "De URL is in orde"
+
+#: playlists.py:450
+msgid "External playlist"
+msgstr "Externe afspeellijst"
+
+#: playlists.py:453
+msgid "Local file"
+msgstr "Lokaal bestand"
+
+#: playlists.py:498
+msgid "Delete selected playlist?"
+msgstr "Verwijder de gekozen afspeellijst?"
+
+#: playlists.py:525
+msgid "Delete providers EPG data?"
+msgstr "Verwijder de EPG data?"
+
+#: playlists.py:553
+msgid "Url is invalid or playlist/user no longer authorised!"
+msgstr "DE URL is onjuist of de gebruiker is niet meer geautoriseerd!"
+
+#: playlists.py:556
+msgid "User Info only available for xtream/XUI One lines"
+msgstr "De gebruikers-informatie is enkel beschikbaar voor Xtream / XUI lijnen"
+
+#: plugin.py:115
+msgid "Bottom"
+msgstr "Onderzijde"
+
+#: plugin.py:115
+msgid "Top"
+msgstr "Bovenzijde"
+
+#: plugin.py:176
+msgid "Bouquet Maker Xtream"
+msgstr "Bouquet Maker Xtream"
+
+#: plugin.py:400
+msgid "IPTV Bouquets Creator by KiddaC"
+msgstr "IPTV boeketten. Ontwikkeld door KiddaC"
+
+#: plugin.py:401
+msgid "BouquetMakerXtream"
+msgstr "BouquetMakerXtream"
+
+#: server.py:53 settings.py:68
+msgid "Save"
+msgstr "Sla op"
+
+#: server.py:54
+msgid ""
+"You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/"
+"playlists.txt file"
+msgstr ""
+"U kunt URL's van afspeellijsten handmatig toevoegen aan het bestand /etc/"
+"enigma2/bouquetmakerxtream/playlists.txt"
+
+#: server.py:83 settings.py:100
+msgid "Really close without saving settings?"
+msgstr "Wilt u echt afsluiten zonder de instellingen op te slaan?"
+
+#: server.py:100
+msgid "Xtream codes / XUI ONE (get.php)"
+msgstr "Xtream codes / XUI ONE (get.php)"
+
+#: server.py:100
+msgid "External #EXTM3U playlist"
+msgstr "Extern #EXTM3U afspeellijst"
+
+#: server.py:114
+msgid "Select playlist type:"
+msgstr "Kies het type afspeellijst:"
+
+#: server.py:117 server.py:125
+msgid "Protocol:"
+msgstr "Gebruikte protocol:"
+
+#: server.py:118
+msgid "Server URL: i.e. domain.xyz"
+msgstr "Server URL: Zoals bijvoorbeeld iptvserver1.xyz"
+
+#: server.py:119
+msgid "Port: (optional) i.e. 8080"
+msgstr "Poort (optioneel) Dit kan 80 zijn of iedere andere poort:"
+
+#: server.py:120
+msgid "Username:"
+msgstr "Gebruikersnaam:"
+
+#: server.py:121
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: server.py:126
+msgid "External url: i.e pastebin.com/raw/blahblah"
+msgstr "Externe URL: zoals pastebin.com/raw/blahblah"
+
+#: server.py:210
+msgid "Details are not valid or unauthorised"
+msgstr "De invoer is onjuist of niet geautoriseerd"
+
+#: server.py:215
+msgid ""
+"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 "
+"characters."
+msgstr ""
+"De boeketnaam mag niet leeg zijn. Voer een unieke boeketnaam in. Minimaal 2 "
+"tekens."
+
+#: server.py:234
+msgid "Playlist added successfully."
+msgstr "De afspeellijst is met succes toegevoegd."
+
+#: serverinfo.py:30
+msgid "User Information"
+msgstr "Gebruikersinformatie"
+
+#: serverinfo.py:44
+msgid "Status:"
+msgstr "Status:"
+
+#: serverinfo.py:45
+msgid "Is Trial:"
+msgstr "Ter test:"
+
+#: serverinfo.py:46
+msgid "Active Connections:"
+msgstr "Actieve verbindingen:"
+
+#: serverinfo.py:47
+msgid "Max Connections:"
+msgstr "Max. verbindingen:"
+
+#: serverinfo.py:48
+msgid "Created At:"
+msgstr "Gemaakt op:"
+
+#: serverinfo.py:49
+msgid "Expiry Date:"
+msgstr "Verloopdatum:"
+
+#: serverinfo.py:50
+msgid "Allowed Output Formats:"
+msgstr "Toegestane uitvoerformaten:"
+
+#: serverinfo.py:51
+msgid "Real URL:"
+msgstr "Werkelijke URL:"
+
+#: serverinfo.py:52
+msgid "Timezone:"
+msgstr "Tijdzone:"
+
+#: serverinfo.py:53
+msgid "Server Offset:"
+msgstr "Server Offset:"
+
+#: settings.py:112
+msgid ""
+"Please change default parental pin.\n"
+"\n"
+"Pin cannot be 0000, 1111 or 1234"
+msgstr ""
+"Wijzig de standaard pincode.\n"
+"\n"
+"De code mag niet 0000, 1111 or 1234 zijn"
+
+#: settings.py:129
+msgid "You need to restart the GUI"
+msgstr "U dient Enigma te herstarten"
+
+#: settings.py:129
+msgid "Do you want to restart now?"
+msgstr "Wilt u nu herstarten?"
+
+#: settings.py:139
+msgid "Select skin"
+msgstr "Kies de te gebruiken skin:"
+
+#: settings.py:140
+msgid "playlists.txt location"
+msgstr "Locatie van het playlist.txt bestand "
+
+#: settings.py:140 settings.py:141 settings.py:148 settings.py:155
+msgid " *Restart GUI Required"
+msgstr " (herstart van Enigma Is noodzakelijk)"
+
+#: settings.py:141
+msgid "Local M3U File location"
+msgstr "Locatie van het lokale M3U bestand"
+
+#: settings.py:144
+msgid "Default LIVE stream type"
+msgstr "Standaardtype LiveTV stream:"
+
+#: settings.py:145
+msgid "Default VOD/SERIES stream type"
+msgstr "Standaardtype VOD/Series stream:"
+
+#: settings.py:146
+msgid "BouquetMakerXtream parental control"
+msgstr "Activeer ouderlijk toezicht BouquetMakerXtream:"
+
+#: settings.py:147
+msgid "BouquetMakerXtream parental pin"
+msgstr "Pincode ouderlijk toezicht BouquetMakerXtream"
+
+#: settings.py:148
+msgid "Show in main menu"
+msgstr "Toon deze applicatie in het hoofdmenu:"
+
+#: settings.py:150
+msgid "Skip playlist selection screen if only 1 playlist"
+msgstr "Sla het keuzescherm over als er maar één afspeellijst is:"
+
+#: settings.py:152
+msgid "Automatic live bouquet update"
+msgstr "Automatische Live boeket-update:"
+
+#: settings.py:153
+msgid "Automatic live bouquet update time"
+msgstr "Tijdstip van de automatisch Live boeket update:"
+
+#: settings.py:155
+msgid "Embed Catchup player in channelselect screen"
+msgstr "Voeg 'terugkijken' toe aan het zender keuzescherm:"
+
+#: settings.py:156
+msgid "Prefix Catchup channels"
+msgstr "Voorvoegsel Catchup zenders"
+
+#: settings.py:157
+msgid "Select Catchup prefix symbol"
+msgstr "Kies het Catchup voorvoegsel symbool"
+
+#: settings.py:158
+msgid "Margin before Catchup (mins)"
+msgstr "Marge voor inhaalslag (min)"
+
+#: settings.py:159
+msgid "Margin after Catchup (mins)"
+msgstr "Marge na de inhaalslag (min)"
+
+#: settings.py:161
+msgid "Group bouquets into its own folder"
+msgstr "Plaats de boeketten in een eigen map:"
+
+#: settings.py:162
+msgid "Exit plugin on bouquet creation"
+msgstr "Sluit de plug-in af nadat alle boeketten opgemaakt zijn:"
+
+#: settings.py:278 settings.py:293
+msgid "Choose Directory:"
+msgstr "Kies de Directory:"
+
+#: settings.py:279 settings.py:294
+msgid "Choose directory"
+msgstr "Kies de directory"
+
+#: update.py:87
+msgid " Providers IPTV Updated"
+msgstr " De IPTV providers zijn geactualiseerd"
+
+#: update.py:144
+#, python-format
+msgid "Updating Playlist %d of %d"
+msgstr "De afspeellijst  %d of %d wordt geactualiseerd"
