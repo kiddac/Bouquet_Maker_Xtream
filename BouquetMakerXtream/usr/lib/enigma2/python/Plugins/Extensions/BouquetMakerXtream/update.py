@@ -292,9 +292,25 @@ class BmxUpdate(Screen):
             self.url_list = self.external_url_list
 
         for url in self.url_list:
-            result = bmx.downloadUrlMulti(url)
-            category = result[0]
-            response = result[1]
+
+            category = ""
+            response = ""
+
+            try:
+                result = bmx.downloadUrlMulti(url)
+            except:
+                pass
+
+            if result:
+                category = result[0]
+                response = result[1]
+
+            self.live_categories = ""
+            self.vod_categories = ""
+            self.series_categories = ""
+            self.live_streams = ""
+            self.vod_streams = ""
+            self.series_streams = ""
 
             if response:
                 if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
@@ -323,7 +339,8 @@ class BmxUpdate(Screen):
         stream_list = []
         stream_type = glob.current_playlist["settings"]["live_type"]
 
-        glob.current_playlist["data"]["live_categories"] = self.live_categories
+        if self.live_categories:
+            glob.current_playlist["data"]["live_categories"] = self.live_categories
 
         live_categories = glob.current_playlist["data"]["live_categories"]
 
@@ -533,7 +550,8 @@ class BmxUpdate(Screen):
         stream_list = []
         stream_type = glob.current_playlist["settings"]["vod_type"]
 
-        glob.current_playlist["data"]["vod_categories"] = self.vod_categories
+        if self.vod_categories:
+            glob.current_playlist["data"]["vod_categories"] = self.vod_categories
 
         vod_categories = glob.current_playlist["data"]["vod_categories"]
 
@@ -705,7 +723,8 @@ class BmxUpdate(Screen):
         stream_type = glob.current_playlist["settings"]["vod_type"]
         series_simple_result = []
 
-        glob.current_playlist["data"]["series_categories"] = self.series_categories
+        if self.series_categories:
+            glob.current_playlist["data"]["series_categories"] = self.series_categories
 
         series_categories = glob.current_playlist["data"]["series_categories"]
 

@@ -102,7 +102,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 self.timer.callback.append(self.makeUrlList)
             except:
                 self.makeUrlList()
-        self.timer.start(5, True)
+        self.timer.start(10, True)
 
     def makeUrlList(self):
         self.url_list = []

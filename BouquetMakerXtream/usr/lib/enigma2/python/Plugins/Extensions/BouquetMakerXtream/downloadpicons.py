@@ -11,20 +11,52 @@ from PIL import Image, ImageFile, PngImagePlugin, ImageChops
 from requests.adapters import HTTPAdapter, Retry
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
-from struct import unpack_from
 
 import io
 import os
 import re
 import requests
+import string
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 _simple_palette = re.compile(b"^\xff*\x00\xff*$")
 
 
-def i16(c, o=0):
-    return unpack_from(">H", c, o)[0]
+# png code courtest of adw on stackoverflow
+def patched_chunk_tRNS(self, pos, len):
+    i16 = PngImagePlugin.i16
+    s = ImageFile._safe_read(self.fp, len)
+    if self.im_mode == "P":
+        i = string.find(s, chr(0))
+        if i >= 0:
+            self.im_info["transparency"] = map(ord, s)
+    elif self.im_mode == "L":
+        self.im_info["transparency"] = i16(s)
+    elif self.im_mode == "RGB":
+        self.im_info["transparency"] = (i16(s), i16(s[2:]), i16(s[4:]))
+    return s
+
+
+# png code courtest of adw on stackoverflow
+def patched_load(self):
+    if self.im and self.palette and self.palette.dirty:
+        self.im.putpalette(*self.palette.getdata())
+        self.palette.dirty = 0
+        self.palette.rawmode = None
+        try:
+            trans = self.info["transparency"]
+        except KeyError:
+            self.palette.mode = "RGB"
+        else:
+            try:
+                for i, a in enumerate(trans):
+                    self.im.putpalettealpha(i, a)
+            except TypeError:
+                self.im.putpalettealpha(trans, 0)
+            self.palette.mode = "RGBA"
+    if self.im:
+        return self.im.pixel_access(self.readonly)
 
 
 def mycall(self, cid, pos, length):
@@ -35,6 +67,7 @@ def mycall(self, cid, pos, length):
 
 
 def mychunk_TRNS(self, pos, length):
+    i16 = PngImagePlugin.i16
     s = ImageFile._safe_read(self.fp, length)
     if self.im_mode == "P":
         if _simple_palette.match(s):
@@ -50,7 +83,10 @@ def mychunk_TRNS(self, pos, length):
     return s
 
 
-if pythonVer != 2:
+if pythonVer == 2:
+    Image.Image.load = patched_load
+    PngImagePlugin.PngStream.chunk_tRNS = patched_chunk_tRNS
+else:
     PngImagePlugin.ChunkStream.call = mycall
     PngImagePlugin.PngStream.chunk_TRNS = mychunk_TRNS
 

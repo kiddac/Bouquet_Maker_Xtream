@@ -219,7 +219,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
     def downloadUrl(self, url):
         index = url[1]
         r = ""
-        retries = Retry(total=2, backoff_factor=1)
+        retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
         http = requests.Session()
         http.mount("http://", adapter)
