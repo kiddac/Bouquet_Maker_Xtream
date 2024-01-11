@@ -85,6 +85,8 @@ class BmxBuildBouquets(Screen):
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.progress_range += 1
 
+        self.updateJson()
+
         self.starttimer = eTimer()
         try:
             self.starttimer_conn = self.starttimer.timeout.connect(self.start)

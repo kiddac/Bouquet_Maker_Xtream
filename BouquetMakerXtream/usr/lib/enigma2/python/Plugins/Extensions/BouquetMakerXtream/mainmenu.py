@@ -192,14 +192,13 @@ class BmxMainMenu(Screen):
                 json.dump(self.playlists_all, f)
 
             bmx.refreshBouquets()
-            self.createSetup()
+            self.start()
         return
 
     def update(self):
         # return
         from . import update
-
-        self.session.openWithCallback(self.createSetup, update.BmxUpdate, "manual")
+        self.session.openWithCallback(self.start, update.BmxUpdate, "manual")
 
     def makePicons(self):
         from . import piconsettings

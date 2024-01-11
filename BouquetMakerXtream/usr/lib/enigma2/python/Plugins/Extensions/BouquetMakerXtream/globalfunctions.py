@@ -92,7 +92,7 @@ def downloadUrlMulti(url):
     http.mount("https://", adapter)
     response = ""
     try:
-        r = http.get(url[0], headers=hdr, timeout=(20, 60), verify=False)
+        r = http.get(url[0], headers=hdr, timeout=(5, 20), verify=False)
         r.raise_for_status()
         if r.status_code == requests.codes.ok:
             try:
