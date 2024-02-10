@@ -33,7 +33,7 @@ class BmxDownloadPicons(Screen):
         # new list code
         self.start_list = []
         self.draw_list = []
-        self["list"] = List(self.draw_list)
+        self["list"] = List(self.draw_list, enableWrapAround=True)
 
         self["key_red"] = StaticText(_("Cancel"))
         self["key_green"] = StaticText(_("Download"))
