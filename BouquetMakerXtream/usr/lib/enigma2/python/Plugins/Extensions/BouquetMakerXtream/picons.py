@@ -11,10 +11,10 @@ from Components.ActionMap import ActionMap
 from Components.Sources.List import List
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
+from unicodedata import normalize
 
 import os
 import re
-import unicodedata
 
 if pythonVer == 3:
     unicode = str
@@ -211,10 +211,10 @@ class BmxDownloadPicons(Screen):
                         else:
                             try:
                                 if pythonVer == 2:
-                                    piconname = unicodedata.normalize("NFKD", unicode(str(piconname), "utf_8", errors="ignore")).encode("ASCII", "ignore")
+                                    piconname = normalize("NFKD", unicode(str(piconname), "utf_8", errors="ignore")).encode("ASCII", "ignore")
 
                                 elif pythonVer == 3:
-                                    piconname = unicodedata.normalize("NFKD", piconname).encode("ASCII", "ignore").decode()
+                                    piconname = normalize("NFKD", piconname).encode("ASCII", "ignore").decode()
                             except:
                                 pass
 
