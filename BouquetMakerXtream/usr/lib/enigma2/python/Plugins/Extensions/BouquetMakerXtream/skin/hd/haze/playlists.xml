@@ -15,16 +15,16 @@
 			MultiContentEntryText(pos = (20, 16), size = (380, 40), font=0, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 1),
 
 			<!-- Authorised LED -->
-			MultiContentEntryPixmapAlphaBlend(pos = (290, 26), size = (15, 16), png = 5),
+			MultiContentEntryPixmapAlphaBlend(pos = (290-20, 39), size = (15, 16), png = 5),
 			
 			<!-- Authorised -->
 			MultiContentEntryText(pos = (20, 46), size = (172, 20), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_LEFT, text = 4),
 			
 			<!-- Active Conn Num -->
-			MultiContentEntryText(pos = (212, 46), size = (40, 20), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
+			MultiContentEntryText(pos = (212-20, 46), size = (40, 20), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 7),
 
 			<!-- Max Conn Num --> 
-			MultiContentEntryText(pos = (263, 46), size = (40, 20), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
+			MultiContentEntryText(pos = (263-20, 46), size = (40, 20), font=1, color = 0x00ffffff, color_sel = 0x00ffffff, backcolor_sel = None, flags = RT_HALIGN_RIGHT, text = 9),
 
 			],
 			"fonts": [gFont("bmxregular", 20), gFont("bmxregular", 14)],
@@ -43,12 +43,18 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="0,649" size="320,2" alphatest="blend" zPosition="1"/>
 	<eLabel position="0,679" size="1280,1" backgroundColor="#ffffff" zPosition="-1"/>
 	<eLabel position="0,680" size="1280,40" backgroundColor="#34000000" zPosition="-1"/>
-	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_red.png" position="340,687" size="25,25" alphatest="blend" zPosition="2"/>
-	<widget source="key_red" render="Label" position="380,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
-	<widget source="key_green" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_green.png" position="524,687" size="25,25" alphatest="blend" zPosition="2"/>
-	<widget source="key_green" render="Label" position="558,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
-	<widget source="key_yellow" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_yellow.png" position="708,687" size="25,25" alphatest="blend" zPosition="2"/>
-	<widget source="key_yellow" render="Label" position="742,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
-	<widget source="key_blue" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_blue.png" position="892,687" size="25,25" alphatest="blend" zPosition="2"/>
-	<widget source="key_blue" render="Label" position="926,680" size="110,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	
+	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_red.png" position="20,687" size="25,25" alphatest="blend" zPosition="2"/>
+	<widget source="key_red" render="Label" position="60,680" size="250,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	
+	<widget source="key_green" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_green.png" position="330,687" size="25,25" alphatest="blend" zPosition="2"/>
+	<widget source="key_green" render="Label" position="370,680" size="250,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	
+	<widget source="key_yellow" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_yellow.png" position="640,687" size="25,25" alphatest="blend" zPosition="2"/>
+	<widget source="key_yellow" render="Label" position="680,680" size="250,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	
+	<widget source="key_blue" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_blue.png" position="950,687" size="25,25" alphatest="blend" zPosition="2"/>
+	<widget source="key_blue" render="Label" position="990,680" size="250,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
+	
+	
 </screen>
