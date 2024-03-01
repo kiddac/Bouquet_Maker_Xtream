@@ -6,9 +6,10 @@ from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
 from .plugin import cfg, skin_directory
 
+from Components.Label import Label
 from Components.ActionMap import ActionMap
 from datetime import datetime
-from Components.Label import Label
+
 from Screens.Screen import Screen
 
 import json
@@ -40,26 +41,24 @@ class BmxUserInfo(Screen):
         self["timezone"] = Label("")
         self["serveroffset"] = Label("")
 
-        # fake labels for skin text translations
-        t_status = _("Status:")
-        t_istrial = _("Is Trial:")
-        t_activeconnections = _("Active Connections:")
-        t_maxconnections = _("Max Connections:")
-        t_createdat = _("Created At:")
-        t_expirydate = _("Expiry Date:")
-        t_allowedformats = _("Allowed Output Formats:")
-        t_realurl = _("Real URL:")
-        t_timezone = _("Timezone:")
-        t_server_offset = _("Server Offset:")
+        self["t_status"] = StaticText(_("Status:"))
+        self["t_expiry"] = StaticText(_("Expiry Date:"))
+        self["t_created"] = StaticText(_("Created At:"))
+        self["t_trial"] = StaticText(_("Is Trial:"))
+        self["t_activeconn"] = StaticText(_("Active Connections:"))
+        self["t_maxconn"] = StaticText(_("Max Connections:"))
+        self["t_formats"] = StaticText(_("Allowed Output Formats:"))
+        self["t_realurl"] = StaticText(_("Real URL:"))
+        self["t_timezone"] = StaticText(_("Timezone:"))
+        self["t_serveroffset"] = StaticText(_("Server Offset:"))
 
         self["actions"] = ActionMap(["BMXActions"], {
             "ok": self.quit,
             "cancel": self.quit,
             "red": self.quit,
-        }, -2)
+            "menu": self.quit}, -2)
 
-        self["key_red"] = StaticText(_("Back"))
-        self["key_green"] = StaticText(_("OK"))
+        self["key_red"] = StaticText(_("Close"))
 
         self.onFirstExecBegin.append(self.createUserSetup)
         self.onLayoutFinish.append(self.__layoutFinished)
