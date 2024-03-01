@@ -6,16 +6,17 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/common/logo.png" position="center,80" size="560,168" alphatest="blend" zPosition="1"/>
 	<widget source="Title" render="Label" position="center,280" size="2560,94" foregroundColor="#ffffff" backgroundColor="#2a70a4" halign="center" font="bmxregular;64" transparent="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/common/panel-mid.png" position="center,400" size="1312,880" alphatest="blend" zPosition="1"/>
-	<eLabel text="Status:" position="787,440" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Is Trial:" position="787,520" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Active Connections:" position="787,600" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Max Connections:" position="787,680" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Created At:" position="787,760" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Expiry Date:" position="787,840" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Allowed Output Formats:" position="787,920" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Real URL:" position="787,1000" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Timezone:" position="787,1080" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-	<eLabel text="Server Offset:" position="787,1160" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_status" render="Label" position="787,440" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_trial" render="Label" position="787,520" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_activeconn" render="Label" position="787,600" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_maxconn" render="Label" position="787,680" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_created" render="Label" position="787,760" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_expiry" render="Label" position="787,840" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_formats" render="Label" position="787,920" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_realurl" render="Label" position="787,1000" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_timezone" render="Label" position="787,1080" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+	<widget source="t_serveroffset" render="Label" position="787,1160" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
+
 	<widget name="status" position="1279,440" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
 	<widget name="trial" position="1279,520" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
 	<widget name="activeconn" position="1279,600" size="492,80" font="bmxregular;36" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
@@ -36,6 +37,7 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/common/divider.png" position="center,1078" size="984,6" alphatest="blend" zPosition="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/common/divider.png" position="center,1158" size="984,6" alphatest="blend" zPosition="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/common/button-bg.png" position="0,1360" size="2560,80" alphatest="blend" zPosition="1"/>
+
 	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/uhd/common/key_red.png" position="1212,1375" size="51,51" alphatest="blend" zPosition="2"/>
 	<widget source="key_red" render="Label" position="1282,1360" size="320,80" font="bmxregular;32" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
 </screen>
