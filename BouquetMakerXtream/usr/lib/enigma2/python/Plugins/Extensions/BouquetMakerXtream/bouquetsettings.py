@@ -363,6 +363,10 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
             self["config"].instance.moveSelectionTo(1)  # hack to hide texthelper
 
+            domain = ""
+            protocol = ""
+            port = ""
+
             if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
                 protocol = glob.current_playlist["playlist_info"]["protocol"]
                 domain = glob.current_playlist["playlist_info"]["domain"]
