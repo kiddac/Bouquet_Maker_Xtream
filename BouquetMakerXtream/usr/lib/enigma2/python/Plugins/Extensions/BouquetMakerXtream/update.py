@@ -71,6 +71,13 @@ class BmxUpdate(Screen):
         self["status"] = Label("")
         self["progress"] = ProgressBar()
 
+        self.live_categories = ""
+        self.vod_categories = ""
+        self.series_categories = ""
+        self.live_streams = ""
+        self.vod_streams = ""
+        self.series_streams = ""
+
         self.bouq = 0
 
         self.playlists_all = bmx.getPlaylistJson()
@@ -99,41 +106,42 @@ class BmxUpdate(Screen):
                 self.done()
 
     def bouquetLoop(self):
-        glob.current_playlist = self.bouquets[self.bouq]
+        if self.bouquets:
+            glob.current_playlist = self.bouquets[self.bouq]
 
-        self.bouquet_tv = False
-        self.userbouquet = False
+            self.bouquet_tv = False
+            self.userbouquet = False
 
-        self.total_count = 0
+            self.total_count = 0
 
-        self.unique_ref = 0
+            self.unique_ref = 0
 
-        self.progress_value = 0
-        self.progress_range = 0
+            self.progress_value = 0
+            self.progress_range = 0
 
-        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            if glob.current_playlist["settings"]["show_live"] is True:
-                self.progress_range += 2
+            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                if glob.current_playlist["settings"]["show_live"] is True:
+                    self.progress_range += 2
 
-            if glob.current_playlist["settings"]["show_vod"] is True:
-                self.progress_range += 2
+                if glob.current_playlist["settings"]["show_vod"] is True:
+                    self.progress_range += 2
 
-            if glob.current_playlist["settings"]["show_series"] is True:
-                self.progress_range += 2
+                if glob.current_playlist["settings"]["show_series"] is True:
+                    self.progress_range += 2
 
-        else:
-            self.progress_range += 1
-
-            if glob.current_playlist["settings"]["show_live"] is True:
+            else:
                 self.progress_range += 1
 
-            if glob.current_playlist["settings"]["show_vod"] is True:
-                self.progress_range += 1
+                if glob.current_playlist["settings"]["show_live"] is True:
+                    self.progress_range += 1
 
-            if glob.current_playlist["settings"]["show_series"] is True:
-                self.progress_range += 1
+                if glob.current_playlist["settings"]["show_vod"] is True:
+                    self.progress_range += 1
 
-        self.start()
+                if glob.current_playlist["settings"]["show_series"] is True:
+                    self.progress_range += 1
+
+            self.start()
 
     def nextJob(self, actiontext, function):
         self["action"].setText(actiontext)
@@ -279,6 +287,14 @@ class BmxUpdate(Screen):
         self.parseM3u8Playlist()
 
     def processDownloads(self, stream_type):
+
+        self.live_categories = ""
+        self.vod_categories = ""
+        self.series_categories = ""
+        self.live_streams = ""
+        self.vod_streams = ""
+        self.series_streams = ""
+
         if stream_type == "live":
             self.url_list = self.live_url_list
 
@@ -323,7 +339,7 @@ class BmxUpdate(Screen):
                     elif category == 2:
                         self.series_categories = response
 
-                    if category == 3:
+                    elif category == 3:
                         self.live_streams = response
 
                     elif category == 4:
@@ -959,7 +975,7 @@ class BmxUpdate(Screen):
                 xml_str += "</sources>\n"
                 f.write(xml_str)
 
-        tree = ET.parse(source_file)
+        tree = ET.parse(source_file, parser=ET.XMLParser(encoding="utf-8"))
         root = tree.getroot()
         sourcecat = root.find("sourcecat")
 
