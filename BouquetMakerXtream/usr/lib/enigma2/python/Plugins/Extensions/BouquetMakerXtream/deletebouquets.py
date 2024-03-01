@@ -136,23 +136,26 @@ class BmxDeleteBouquets(Screen):
                 source_file = "/etc/epgimport/bouquetmakerxtream.sources.xml"
 
                 if os.path.isfile(source_file):
-                    import xml.etree.ElementTree as ET
+                    try:
+                        import xml.etree.ElementTree as ET
 
-                    tree = ET.parse(source_file)
-                    root = tree.getroot()
+                        tree = ET.parse(source_file, parser=ET.XMLParser(encoding="utf-8"))
+                        root = tree.getroot()
 
-                    for elem in root.iter():
-                        for child in list(elem):
-                            description = ""
-                            if child.tag == "source":
-                                try:
-                                    description = child.find("description").text
-                                    if safe_name in description:
-                                        elem.remove(child)
-                                except:
-                                    pass
+                        for elem in root.iter():
+                            for child in list(elem):
+                                description = ""
+                                if child.tag == "source":
+                                    try:
+                                        description = child.find("description").text
+                                        if safe_name in description:
+                                            elem.remove(child)
+                                    except:
+                                        pass
 
-                    tree.write(source_file)
+                        tree.write(source_file)
+                    except Exception as e:
+                        print(e)
 
             self.deleteBouquetFile(bouquet_name)
             glob.firstrun = True

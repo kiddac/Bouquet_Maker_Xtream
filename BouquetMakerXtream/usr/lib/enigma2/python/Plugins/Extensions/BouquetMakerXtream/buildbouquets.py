@@ -894,7 +894,7 @@ class BmxBuildBouquets(Screen):
                 xml_str += "</sources>\n"
                 f.write(xml_str)
 
-        tree = ET.parse(source_file)
+        tree = ET.parse(source_file, parser=ET.XMLParser(encoding="utf-8"))
         root = tree.getroot()
         sourcecat = root.find("sourcecat")
 

@@ -154,26 +154,29 @@ class BmxPlaylists(Screen, ProtectedScreen):
         source_file = "/etc/epgimport/bouquetmakerxtream.sources.xml"
 
         if os.path.isfile(source_file):
-            import xml.etree.ElementTree as ET
+            try:
+                import xml.etree.ElementTree as ET
 
-            tree = ET.parse(source_file)
-            root = tree.getroot()
-            for elem in root.iter():
-                for child in list(elem):
-                    exists = False
-                    description = ""
-                    if child.tag == "source":
-                        try:
-                            description = child.find("description").text
-                            for cfile in channel_file_list:
-                                if cfile in description:
-                                    exists = True
-                        except:
-                            pass
+                tree = ET.parse(source_file, parser=ET.XMLParser(encoding="utf-8"))
+                root = tree.getroot()
+                for elem in root.iter():
+                    for child in list(elem):
+                        exists = False
+                        description = ""
+                        if child.tag == "source":
+                            try:
+                                description = child.find("description").text
+                                for cfile in channel_file_list:
+                                    if cfile in description:
+                                        exists = True
+                            except:
+                                pass
 
-                        if exists is False:
-                            elem.remove(child)
-            tree.write(source_file)
+                            if exists is False:
+                                elem.remove(child)
+                tree.write(source_file)
+            except Exception as e:
+                print(e)
 
     def delayedDownload(self):
         try:
