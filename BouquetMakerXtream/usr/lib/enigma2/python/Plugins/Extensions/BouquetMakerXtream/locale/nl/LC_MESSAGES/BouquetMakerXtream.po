@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-01-13 23:19+0000\n"
-"PO-Revision-Date: 2024-01-13 23:20+0000\n"
+"POT-Creation-Date: 2024-03-01 13:48+0000\n"
+"PO-Revision-Date: 2024-03-01 13:48+0000\n"
 "Last-Translator: Frenske <voorzitter@openpli.org>\n"
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
@@ -19,13 +19,11 @@ msgid "About"
 msgstr "Informatie"
 
 #: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:40
-#: piconsettings.py:45 playlists.py:77 server.py:53 serverinfo.py:61
-#: settings.py:67
+#: piconsettings.py:45 playlists.py:77 server.py:53 settings.py:67
 msgid "Back"
 msgstr "Terug"
 
 #: about.py:33 mainmenu.py:41 piconsettings.py:46 playlists.py:78
-#: serverinfo.py:62
 msgid "OK"
 msgstr "Ok"
 
@@ -164,7 +162,7 @@ msgstr "Alternatieve URL van de EPG:"
 msgid "No bouquets selected."
 msgstr "Geen boeketten gekozen."
 
-#: bouquetsettings.py:381
+#: bouquetsettings.py:385
 msgid ""
 "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
 "characters."
@@ -172,7 +170,7 @@ msgstr ""
 "De boeketnaam mag niet leeg zijn. Voer een unieke boeketnaam in. Minimaal 3 "
 "tekens."
 
-#: bouquetsettings.py:389 server.py:221
+#: bouquetsettings.py:393 server.py:221
 msgid "Name already used. Please enter a unique name."
 msgstr "Deze naam is al in gebruik. Gebruik een unieke naam."
 
@@ -184,48 +182,48 @@ msgstr "Bouwen van boeketten"
 msgid "Building Bouquets..."
 msgstr "Boeketten worden gebouwd..."
 
-#: buildbouquets.py:203 update.py:237
+#: buildbouquets.py:203 update.py:245
 msgid "Downloading live data..."
 msgstr "Live data wordt gedownload..."
 
-#: buildbouquets.py:206 buildbouquets.py:294 buildbouquets.py:472 update.py:240
-#: update.py:356 update.py:534
+#: buildbouquets.py:206 buildbouquets.py:294 buildbouquets.py:472 update.py:248
+#: update.py:372 update.py:550
 msgid "Downloading VOD data..."
 msgstr "VOD data wordt gedownload..."
 
 #: buildbouquets.py:209 buildbouquets.py:297 buildbouquets.py:475
-#: buildbouquets.py:502 buildbouquets.py:646 update.py:243 update.py:359
-#: update.py:537 update.py:567 update.py:711
+#: buildbouquets.py:502 buildbouquets.py:646 update.py:251 update.py:375
+#: update.py:553 update.py:583 update.py:727
 msgid "Downloading series data..."
 msgstr "Series data wordt gedownload..."
 
-#: buildbouquets.py:216 update.py:250
+#: buildbouquets.py:216 update.py:258
 msgid "Downloading external playlist..."
 msgstr "De externe afspeellijst wordt gedownload..."
 
-#: buildbouquets.py:218 update.py:252
+#: buildbouquets.py:218 update.py:260
 msgid "Loadind local playlist..."
 msgstr "De lokale afspeellijst wordt gedownload..."
 
-#: buildbouquets.py:224 buildbouquets.py:242 update.py:258 update.py:276
+#: buildbouquets.py:224 buildbouquets.py:242 update.py:266 update.py:284
 msgid "Processing live data..."
 msgstr "De Live data wordt verwerkt..."
 
-#: buildbouquets.py:230 update.py:264
+#: buildbouquets.py:230 update.py:272
 msgid "Processing VOD data..."
 msgstr "De VOD data wordt verwerkt..."
 
 #: buildbouquets.py:236 buildbouquets.py:304 buildbouquets.py:482
-#: buildbouquets.py:507 buildbouquets.py:651 update.py:270 update.py:366
-#: update.py:544 update.py:572 update.py:716
+#: buildbouquets.py:507 buildbouquets.py:651 update.py:278 update.py:382
+#: update.py:560 update.py:588 update.py:732
 msgid "Processing series data..."
 msgstr "De series data wordt verwerkt..."
 
-#: buildbouquets.py:302 buildbouquets.py:480 update.py:364 update.py:542
+#: buildbouquets.py:302 buildbouquets.py:480 update.py:380 update.py:558
 msgid "Process VOD data..."
 msgstr "Verwerk VOD data..."
 
-#: buildbouquets.py:679 update.py:747
+#: buildbouquets.py:679 update.py:763
 msgid ""
 "Your provider does not have the 'simple' API call\n"
 "Unable to build series.\n"
@@ -510,67 +508,67 @@ msgstr "Kies een afspeellijst"
 msgid "Info"
 msgstr "Informatie"
 
-#: playlists.py:380 playlists.py:466
+#: playlists.py:383 playlists.py:469
 msgid "Server Not Responding"
 msgstr "De server reageert niet"
 
-#: playlists.py:402 playlists.py:468
+#: playlists.py:405 playlists.py:471
 msgid "Not Authorised"
 msgstr "Uw gegevens zijn niet juist"
 
-#: playlists.py:406 playlists.py:414 playlists.py:451
+#: playlists.py:409 playlists.py:417 playlists.py:454
 msgid "Active"
 msgstr "Actief"
 
-#: playlists.py:408 playlists.py:460
+#: playlists.py:411 playlists.py:463
 msgid "Banned"
 msgstr "Gebanned"
 
-#: playlists.py:410 playlists.py:464
+#: playlists.py:413 playlists.py:467
 msgid "Disabled"
 msgstr "Uitgeschakeld"
 
-#: playlists.py:412 playlists.py:462
+#: playlists.py:415 playlists.py:465
 msgid "Expired"
 msgstr "Verlopen"
 
-#: playlists.py:416 playlists.py:418
+#: playlists.py:419 playlists.py:421
 msgid "Expires: "
 msgstr "Verloopt op: "
 
-#: playlists.py:420
+#: playlists.py:423
 msgid "Active Conn:"
 msgstr "Actieve verbinding:"
 
-#: playlists.py:423
+#: playlists.py:426
 msgid "Max Conn:"
 msgstr "Max aantal connecties:"
 
-#: playlists.py:434 playlists.py:451
+#: playlists.py:437 playlists.py:454
 msgid "Url OK"
 msgstr "De URL is in orde"
 
-#: playlists.py:435
+#: playlists.py:438
 msgid "External playlist"
 msgstr "Externe afspeellijst"
 
-#: playlists.py:438
+#: playlists.py:441
 msgid "Local file"
 msgstr "Lokaal bestand"
 
-#: playlists.py:481
+#: playlists.py:484
 msgid "Delete selected playlist?"
 msgstr "Verwijder de gekozen afspeellijst?"
 
-#: playlists.py:507
+#: playlists.py:510
 msgid "Delete providers EPG data?"
 msgstr "Verwijder de EPG data?"
 
-#: playlists.py:534
+#: playlists.py:537
 msgid "Url is invalid or playlist/user no longer authorised!"
 msgstr "DE URL is onjuist of de gebruiker is niet meer geautoriseerd!"
 
-#: playlists.py:537
+#: playlists.py:540
 msgid "User Info only available for xtream/XUI One lines"
 msgstr "De gebruikers-informatie is enkel beschikbaar voor Xtream / XUI lijnen"
 
@@ -726,7 +724,7 @@ msgstr ""
 msgid "Playlist added successfully."
 msgstr "De afspeellijst is met succes toegevoegd."
 
-#: serverinfo.py:30
+#: serverinfo.py:31
 msgid "User Information"
 msgstr "Gebruikersinformatie"
 
@@ -735,24 +733,24 @@ msgid "Status:"
 msgstr "Status:"
 
 #: serverinfo.py:45
-msgid "Is Trial:"
-msgstr "Ter test:"
+msgid "Expiry Date:"
+msgstr "Verloopdatum:"
 
 #: serverinfo.py:46
-msgid "Active Connections:"
-msgstr "Actieve verbindingen:"
-
-#: serverinfo.py:47
-msgid "Max Connections:"
-msgstr "Max. verbindingen:"
-
-#: serverinfo.py:48
 msgid "Created At:"
 msgstr "Gemaakt op:"
 
+#: serverinfo.py:47
+msgid "Is Trial:"
+msgstr "Ter test:"
+
+#: serverinfo.py:48
+msgid "Active Connections:"
+msgstr "Actieve verbindingen:"
+
 #: serverinfo.py:49
-msgid "Expiry Date:"
-msgstr "Verloopdatum:"
+msgid "Max Connections:"
+msgstr "Max. verbindingen:"
 
 #: serverinfo.py:50
 msgid "Allowed Output Formats:"
@@ -769,6 +767,10 @@ msgstr "Tijdzone:"
 #: serverinfo.py:53
 msgid "Server Offset:"
 msgstr "Server Offset:"
+
+#: serverinfo.py:61
+msgid "Close"
+msgstr ""
 
 #: settings.py:112
 msgid ""
@@ -868,11 +870,11 @@ msgstr ""
 msgid "Max Series channels. 0 = unlimited (slow)"
 msgstr ""
 
-#: update.py:97
+#: update.py:104
 msgid " Providers IPTV Updated"
 msgstr " De IPTV providers zijn geactualiseerd"
 
-#: update.py:151
+#: update.py:159
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "De afspeellijst  %d of %d wordt geactualiseerd"

@@ -1,41 +1,39 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-10-23 18:41+0100\n"
-"PO-Revision-Date: 2023-10-22 20:07+0100\n"
+"POT-Creation-Date: 2024-03-01 13:46+0000\n"
+"PO-Revision-Date: 2024-03-01 13:46+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPath-1: .\n"
 
-#: about.py:25 mainmenu.py:136
+#: about.py:24 mainmenu.py:136
 msgid "About"
 msgstr ""
 
-#: about.py:33 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:41
-#: playlists.py:81 server.py:52 serverinfo.py:61 settings.py:67
+#: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:40
+#: piconsettings.py:45 playlists.py:77 server.py:53 settings.py:67
 msgid "Back"
 msgstr ""
 
-#: about.py:34 mainmenu.py:42 playlists.py:82 serverinfo.py:62
+#: about.py:33 mainmenu.py:41 piconsettings.py:46 playlists.py:78
 msgid "OK"
 msgstr ""
 
-#: about.py:45
+#: about.py:44
 msgid ""
 "Support for this plugin and latest versions can be found on https://linuxsat-"
 "support.com\n"
 "\n"
 msgstr ""
 
-#: about.py:46
+#: about.py:45
 msgid ""
 "Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, "
 "external and local m3u8 playlists. \n"
@@ -43,28 +41,28 @@ msgid ""
 "\n"
 msgstr ""
 
-#: about.py:47
+#: about.py:46
 msgid "Credits:\n"
 msgstr ""
 
-#: about.py:48
+#: about.py:47
 msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
 msgstr ""
 
-#: about.py:49
+#: about.py:48
 msgid ""
 "And thanks to all the other coders and Linuxsat testers who helped in the "
 "development of this project.\n"
 "\n"
 msgstr ""
 
-#: about.py:50
+#: about.py:49
 msgid ""
 "If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or "
 "https://ko-fi.com/kiddac\n"
 msgstr ""
 
-#: about.py:51
+#: about.py:50
 msgid "Cheers - all donations are very much appreciated."
 msgstr ""
 
@@ -76,147 +74,147 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: bouquetsettings.py:253 bouquetsettings.py:254 bouquetsettings.py:255
-#: bouquetsettings.py:256
+#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246
+#: bouquetsettings.py:247
 msgid "Original Order"
 msgstr ""
 
-#: bouquetsettings.py:253 bouquetsettings.py:254 bouquetsettings.py:255
-#: bouquetsettings.py:256
+#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246
+#: bouquetsettings.py:247
 msgid "A-Z"
 msgstr ""
 
-#: bouquetsettings.py:254 bouquetsettings.py:256
+#: bouquetsettings.py:245 bouquetsettings.py:247
 msgid "Newest"
 msgstr ""
 
-#: bouquetsettings.py:276 server.py:116 server.py:124
+#: bouquetsettings.py:267 server.py:116 server.py:124
 msgid "Short name or provider name:"
 msgstr ""
 
-#: bouquetsettings.py:277
+#: bouquetsettings.py:268
 msgid "Use name as bouquet prefix"
 msgstr ""
 
-#: bouquetsettings.py:280
+#: bouquetsettings.py:271
 msgid "Show LIVE category if available:"
 msgstr ""
 
-#: bouquetsettings.py:282
+#: bouquetsettings.py:273
 msgid "Stream Type LIVE:"
 msgstr ""
 
-#: bouquetsettings.py:285
+#: bouquetsettings.py:276
 msgid "LIVE category bouquet order"
 msgstr ""
 
-#: bouquetsettings.py:286
+#: bouquetsettings.py:277
 msgid "LIVE stream bouquet order"
 msgstr ""
 
-#: bouquetsettings.py:289
+#: bouquetsettings.py:280
 msgid "Show VOD category if available:"
 msgstr ""
 
-#: bouquetsettings.py:292
+#: bouquetsettings.py:283
 msgid "Show SERIES category if available:"
 msgstr ""
 
-#: bouquetsettings.py:296
+#: bouquetsettings.py:287
 msgid "Stream Type VOD/SERIES:"
 msgstr ""
 
-#: bouquetsettings.py:299
+#: bouquetsettings.py:290
 msgid "VOD/SERIES category bouquet order"
 msgstr ""
 
-#: bouquetsettings.py:300
+#: bouquetsettings.py:291
 msgid "VOD/SERIES streams bouquet order"
 msgstr ""
 
-#: bouquetsettings.py:303 server.py:122
+#: bouquetsettings.py:294 server.py:122
 msgid "Output:"
 msgstr ""
 
-#: bouquetsettings.py:307
+#: bouquetsettings.py:298
 msgid "Use alternative EPG url:"
 msgstr ""
 
-#: bouquetsettings.py:309
+#: bouquetsettings.py:300
 msgid "Alternative EPG url:"
 msgstr ""
 
-#: bouquetsettings.py:370
+#: bouquetsettings.py:360
 msgid "No bouquets selected."
 msgstr ""
 
-#: bouquetsettings.py:391
+#: bouquetsettings.py:385
 msgid ""
 "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
 "characters."
 msgstr ""
 
-#: bouquetsettings.py:399 server.py:223
+#: bouquetsettings.py:393 server.py:221
 msgid "Name already used. Please enter a unique name."
 msgstr ""
 
-#: buildbouquets.py:41 update.py:60
+#: buildbouquets.py:42 update.py:61
 msgid "Building Bouquets"
 msgstr ""
 
-#: buildbouquets.py:45 update.py:63
+#: buildbouquets.py:51 update.py:69
 msgid "Building Bouquets..."
 msgstr ""
 
-#: buildbouquets.py:195 update.py:222
+#: buildbouquets.py:203 update.py:245
 msgid "Downloading live data..."
 msgstr ""
 
-#: buildbouquets.py:198 buildbouquets.py:289 buildbouquets.py:442 update.py:225
-#: update.py:316 update.py:469
+#: buildbouquets.py:206 buildbouquets.py:294 buildbouquets.py:472 update.py:248
+#: update.py:372 update.py:550
 msgid "Downloading VOD data..."
 msgstr ""
 
-#: buildbouquets.py:201 buildbouquets.py:292 buildbouquets.py:445
-#: buildbouquets.py:473 buildbouquets.py:593 update.py:228 update.py:319
-#: update.py:472 update.py:501 update.py:621
+#: buildbouquets.py:209 buildbouquets.py:297 buildbouquets.py:475
+#: buildbouquets.py:502 buildbouquets.py:646 update.py:251 update.py:375
+#: update.py:553 update.py:583 update.py:727
 msgid "Downloading series data..."
 msgstr ""
 
-#: buildbouquets.py:208 update.py:235
+#: buildbouquets.py:216 update.py:258
 msgid "Downloading external playlist..."
 msgstr ""
 
-#: buildbouquets.py:210 update.py:237
+#: buildbouquets.py:218 update.py:260
 msgid "Loadind local playlist..."
 msgstr ""
 
-#: buildbouquets.py:216 buildbouquets.py:234 update.py:243 update.py:261
+#: buildbouquets.py:224 buildbouquets.py:242 update.py:266 update.py:284
 msgid "Processing live data..."
 msgstr ""
 
-#: buildbouquets.py:222 update.py:249
+#: buildbouquets.py:230 update.py:272
 msgid "Processing VOD data..."
 msgstr ""
 
-#: buildbouquets.py:228 buildbouquets.py:299 buildbouquets.py:452
-#: buildbouquets.py:478 buildbouquets.py:598 update.py:255 update.py:326
-#: update.py:479 update.py:506 update.py:626
+#: buildbouquets.py:236 buildbouquets.py:304 buildbouquets.py:482
+#: buildbouquets.py:507 buildbouquets.py:651 update.py:278 update.py:382
+#: update.py:560 update.py:588 update.py:732
 msgid "Processing series data..."
 msgstr ""
 
-#: buildbouquets.py:297 buildbouquets.py:450 update.py:324 update.py:477
+#: buildbouquets.py:302 buildbouquets.py:480 update.py:380 update.py:558
 msgid "Process VOD data..."
 msgstr ""
 
-#: buildbouquets.py:627 update.py:655
+#: buildbouquets.py:679 update.py:763
 msgid ""
 "Your provider does not have the 'simple' API call\n"
 "Unable to build series.\n"
 "Alternative method might be added in the future."
 msgstr ""
 
-#: buildbouquets.py:893
+#: buildbouquets.py:956
 msgid " IPTV Bouquets Created"
 msgstr ""
 
@@ -249,26 +247,26 @@ msgstr ""
 msgid "Show Streams"
 msgstr ""
 
-#: choosecategories.py:270 choosecategories.py:474 choosecategories.py:514
-#: choosecategories.py:611 choosecategories.py:615
+#: choosecategories.py:266 choosecategories.py:470 choosecategories.py:510
+#: choosecategories.py:607 choosecategories.py:611
 msgid "Choose Live Categories"
 msgstr ""
 
-#: choosecategories.py:278 choosecategories.py:321
+#: choosecategories.py:274 choosecategories.py:317
 msgid "Next"
 msgstr ""
 
-#: choosecategories.py:280 choosecategories.py:323 choosecategories.py:358
+#: choosecategories.py:276 choosecategories.py:319 choosecategories.py:354
 msgid "Create"
 msgstr ""
 
-#: choosecategories.py:313 choosecategories.py:483 choosecategories.py:531
-#: choosecategories.py:605 choosecategories.py:623
+#: choosecategories.py:309 choosecategories.py:479 choosecategories.py:527
+#: choosecategories.py:601 choosecategories.py:619
 msgid "Choose VOD Categories"
 msgstr ""
 
-#: choosecategories.py:352 choosecategories.py:492 choosecategories.py:548
-#: choosecategories.py:597 choosecategories.py:629
+#: choosecategories.py:348 choosecategories.py:488 choosecategories.py:544
+#: choosecategories.py:593 choosecategories.py:625
 msgid "Choose Series Categories"
 msgstr ""
 
@@ -276,11 +274,11 @@ msgstr ""
 msgid "Delete Bouquets"
 msgstr ""
 
-#: deletebouquets.py:34
+#: deletebouquets.py:34 picons.py:38
 msgid "Cancel"
 msgstr ""
 
-#: deletebouquets.py:35 playlists.py:83
+#: deletebouquets.py:35 playlists.py:79
 msgid "Delete"
 msgstr ""
 
@@ -288,31 +286,111 @@ msgstr ""
 msgid "Clear All"
 msgstr ""
 
-#: mainmenu.py:40
+#: downloadpicons.py:115
+msgid "Downloadng Picons"
+msgstr ""
+
+#: downloadpicons.py:117
+msgid "Making BouquetMakerXtream Picons"
+msgstr ""
+
+#: downloadpicons.py:216
+msgid "No picons found."
+msgstr ""
+
+#: downloadpicons.py:311
+msgid "Size: "
+msgstr ""
+
+#: downloadpicons.py:311
+msgid "Type: "
+msgstr ""
+
+#: downloadpicons.py:311
+msgid "Url: "
+msgstr ""
+
+#: downloadpicons.py:311 downloadpicons.py:420
+msgid "Exists: "
+msgstr ""
+
+#: downloadpicons.py:311
+#, python-format
+msgid "Success: %s   "
+msgstr ""
+
+#: downloadpicons.py:312
+#, python-format
+msgid "Picon %d of %d"
+msgstr ""
+
+#: downloadpicons.py:419
+msgid ""
+"Finished.\n"
+"\n"
+msgstr ""
+
+#: downloadpicons.py:420
+msgid "Success: "
+msgstr ""
+
+#: downloadpicons.py:420
+msgid "Bad size: "
+msgstr ""
+
+#: downloadpicons.py:420
+msgid "bad type: "
+msgstr ""
+
+#: downloadpicons.py:420
+msgid "bad url: "
+msgstr ""
+
+#: downloadpicons.py:421
+msgid "Restart your GUI to refresh picons."
+msgstr ""
+
+#: downloadpicons.py:421
+msgid "Your created picons can be found in"
+msgstr ""
+
+#: downloadpicons.py:422
+msgid "Your failed picon list can be found in"
+msgstr ""
+
+#: downloadpicons.py:427
+msgid "Picon Error"
+msgstr ""
+
+#: mainmenu.py:39
 msgid "Main Menu"
 msgstr ""
 
-#: mainmenu.py:64
+#: mainmenu.py:63
 msgid "Playlists.txt location is invalid and has been reset."
 msgstr ""
 
-#: mainmenu.py:119
+#: mainmenu.py:118
 msgid "Playlists"
 msgstr ""
 
-#: mainmenu.py:121 settings.py:60
+#: mainmenu.py:120 settings.py:60
 msgid "Main Settings"
 msgstr ""
 
-#: mainmenu.py:131
+#: mainmenu.py:130
 msgid "Update Bouquets"
+msgstr ""
+
+#: mainmenu.py:131 picons.py:31
+msgid "Download Picons"
 msgstr ""
 
 #: mainmenu.py:133
 msgid "Delete All BMX Bouquets"
 msgstr ""
 
-#: mainmenu.py:135 server.py:45
+#: mainmenu.py:135 server.py:46
 msgid "Add Playlist"
 msgstr ""
 
@@ -324,122 +402,247 @@ msgstr ""
 msgid "Stream"
 msgstr ""
 
-#: playlists.py:48 settings.py:26
+#: picons.py:39
+msgid "Download"
+msgstr ""
+
+#: piconsettings.py:38
+msgid "Picon Settings"
+msgstr ""
+
+#: piconsettings.py:78 server.py:84 settings.py:100
+msgid "Really close without saving settings?"
+msgstr ""
+
+#: piconsettings.py:106 settings.py:129
+msgid "You need to restart the GUI"
+msgstr ""
+
+#: piconsettings.py:106 settings.py:129
+msgid "Do you want to restart now?"
+msgstr ""
+
+#: piconsettings.py:117
+msgid "Picon download location"
+msgstr ""
+
+#: piconsettings.py:118
+msgid "Picon size"
+msgstr ""
+
+#: piconsettings.py:119
+msgid "Picon type"
+msgstr ""
+
+#: piconsettings.py:121
+msgid "Overwrite picons with the same name"
+msgstr ""
+
+#: piconsettings.py:122
+msgid "Custom location. Manual symlink required"
+msgstr ""
+
+#: piconsettings.py:123
+msgid ""
+"Max download threads. Increase for speed. Reduce if downloads are freezing"
+msgstr ""
+
+#: piconsettings.py:124
+msgid "Max size of source picon"
+msgstr ""
+
+#: piconsettings.py:125
+msgid "Max width of source picon"
+msgstr ""
+
+#: piconsettings.py:209 settings.py:286 settings.py:301
+msgid "Choose Directory:"
+msgstr ""
+
+#: piconsettings.py:210 settings.py:287 settings.py:302
+msgid "Choose directory"
+msgstr ""
+
+#: playlists.py:44 settings.py:26
 msgid "Please enter the correct pin code"
 msgstr ""
 
-#: playlists.py:48 settings.py:26
+#: playlists.py:44 settings.py:26
 msgid "Enter pin code"
 msgstr ""
 
-#: playlists.py:57 settings.py:35
+#: playlists.py:53 settings.py:35
 msgid "The pin code you entered is wrong."
 msgstr ""
 
-#: playlists.py:79
+#: playlists.py:75
 msgid "Select Playlist"
 msgstr ""
 
-#: playlists.py:84
+#: playlists.py:80
 msgid "Info"
 msgstr ""
 
-#: playlists.py:395 playlists.py:482
+#: playlists.py:383 playlists.py:469
 msgid "Server Not Responding"
 msgstr ""
 
-#: playlists.py:417 playlists.py:484
+#: playlists.py:405 playlists.py:471
 msgid "Not Authorised"
 msgstr ""
 
-#: playlists.py:421 playlists.py:429 playlists.py:467
+#: playlists.py:409 playlists.py:417 playlists.py:454
 msgid "Active"
 msgstr ""
 
-#: playlists.py:423 playlists.py:476
+#: playlists.py:411 playlists.py:463
 msgid "Banned"
 msgstr ""
 
-#: playlists.py:425 playlists.py:480
+#: playlists.py:413 playlists.py:467
 msgid "Disabled"
 msgstr ""
 
-#: playlists.py:427 playlists.py:478
+#: playlists.py:415 playlists.py:465
 msgid "Expired"
 msgstr ""
 
-#: playlists.py:431 playlists.py:433
+#: playlists.py:419 playlists.py:421
 msgid "Expires: "
 msgstr ""
 
-#: playlists.py:435
+#: playlists.py:423
 msgid "Active Conn:"
 msgstr ""
 
-#: playlists.py:438
+#: playlists.py:426
 msgid "Max Conn:"
 msgstr ""
 
-#: playlists.py:449 playlists.py:467
+#: playlists.py:437 playlists.py:454
 msgid "Url OK"
 msgstr ""
 
-#: playlists.py:450
+#: playlists.py:438
 msgid "External playlist"
 msgstr ""
 
-#: playlists.py:453
+#: playlists.py:441
 msgid "Local file"
 msgstr ""
 
-#: playlists.py:498
+#: playlists.py:484
 msgid "Delete selected playlist?"
 msgstr ""
 
-#: playlists.py:525
+#: playlists.py:510
 msgid "Delete providers EPG data?"
 msgstr ""
 
-#: playlists.py:553
+#: playlists.py:537
 msgid "Url is invalid or playlist/user no longer authorised!"
 msgstr ""
 
-#: playlists.py:556
+#: playlists.py:540
 msgid "User Info only available for xtream/XUI One lines"
 msgstr ""
 
-#: plugin.py:115
+#: plugin.py:96
+msgid "XPicons - 220x132 Pixel"
+msgstr ""
+
+#: plugin.py:97
+msgid "ZZZPicons - 400x240 Pixel"
+msgstr ""
+
+#: plugin.py:124
 msgid "Bottom"
 msgstr ""
 
-#: plugin.py:115
+#: plugin.py:124
 msgid "Top"
 msgstr ""
 
-#: plugin.py:176
+#: plugin.py:127
+msgid "24 Bit"
+msgstr ""
+
+#: plugin.py:127
+msgid "8 Bit"
+msgstr ""
+
+#: plugin.py:128
+msgid "Service Reference Picons"
+msgstr ""
+
+#: plugin.py:128
+msgid "Service Name Picons"
+msgstr ""
+
+#: plugin.py:136
+msgid "100KB"
+msgstr ""
+
+#: plugin.py:136
+msgid "200KB"
+msgstr ""
+
+#: plugin.py:136
+msgid "300KB"
+msgstr ""
+
+#: plugin.py:136
+msgid "400KB"
+msgstr ""
+
+#: plugin.py:136
+msgid "500KB"
+msgstr ""
+
+#: plugin.py:136 plugin.py:137
+msgid "No limit"
+msgstr ""
+
+#: plugin.py:137
+msgid "480px"
+msgstr ""
+
+#: plugin.py:137
+msgid "728px"
+msgstr ""
+
+#: plugin.py:137
+msgid "1000px"
+msgstr ""
+
+#: plugin.py:137
+msgid "1280px"
+msgstr ""
+
+#: plugin.py:137
+msgid "1920px"
+msgstr ""
+
+#: plugin.py:211
 msgid "Bouquet Maker Xtream"
 msgstr ""
 
-#: plugin.py:400
+#: plugin.py:434
 msgid "IPTV Bouquets Creator by KiddaC"
 msgstr ""
 
-#: plugin.py:401
+#: plugin.py:435
 msgid "BouquetMakerXtream"
 msgstr ""
 
-#: server.py:53 settings.py:68
+#: server.py:54 settings.py:68
 msgid "Save"
 msgstr ""
 
-#: server.py:54
+#: server.py:55
 msgid ""
 "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/"
 "playlists.txt file"
-msgstr ""
-
-#: server.py:83 settings.py:100
-msgid "Really close without saving settings?"
 msgstr ""
 
 #: server.py:100
@@ -478,21 +681,21 @@ msgstr ""
 msgid "External url: i.e pastebin.com/raw/blahblah"
 msgstr ""
 
-#: server.py:210
+#: server.py:208
 msgid "Details are not valid or unauthorised"
 msgstr ""
 
-#: server.py:215
+#: server.py:213
 msgid ""
 "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 "
 "characters."
 msgstr ""
 
-#: server.py:234
+#: server.py:232
 msgid "Playlist added successfully."
 msgstr ""
 
-#: serverinfo.py:30
+#: serverinfo.py:31
 msgid "User Information"
 msgstr ""
 
@@ -501,23 +704,23 @@ msgid "Status:"
 msgstr ""
 
 #: serverinfo.py:45
-msgid "Is Trial:"
+msgid "Expiry Date:"
 msgstr ""
 
 #: serverinfo.py:46
-msgid "Active Connections:"
-msgstr ""
-
-#: serverinfo.py:47
-msgid "Max Connections:"
-msgstr ""
-
-#: serverinfo.py:48
 msgid "Created At:"
 msgstr ""
 
+#: serverinfo.py:47
+msgid "Is Trial:"
+msgstr ""
+
+#: serverinfo.py:48
+msgid "Active Connections:"
+msgstr ""
+
 #: serverinfo.py:49
-msgid "Expiry Date:"
+msgid "Max Connections:"
 msgstr ""
 
 #: serverinfo.py:50
@@ -536,19 +739,15 @@ msgstr ""
 msgid "Server Offset:"
 msgstr ""
 
+#: serverinfo.py:61
+msgid "Close"
+msgstr ""
+
 #: settings.py:112
 msgid ""
 "Please change default parental pin.\n"
 "\n"
 "Pin cannot be 0000, 1111 or 1234"
-msgstr ""
-
-#: settings.py:129
-msgid "You need to restart the GUI"
-msgstr ""
-
-#: settings.py:129
-msgid "Do you want to restart now?"
 msgstr ""
 
 #: settings.py:139
@@ -627,19 +826,23 @@ msgstr ""
 msgid "Exit plugin on bouquet creation"
 msgstr ""
 
-#: settings.py:278 settings.py:293
-msgid "Choose Directory:"
+#: settings.py:164
+msgid "Max Live channels. 0 = unlimited (slow)."
 msgstr ""
 
-#: settings.py:279 settings.py:294
-msgid "Choose directory"
+#: settings.py:165
+msgid "Max VOD channels. 0 = unlimited (slow)"
 msgstr ""
 
-#: update.py:87
+#: settings.py:166
+msgid "Max Series channels. 0 = unlimited (slow)"
+msgstr ""
+
+#: update.py:104
 msgid " Providers IPTV Updated"
 msgstr ""
 
-#: update.py:144
+#: update.py:159
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr ""
