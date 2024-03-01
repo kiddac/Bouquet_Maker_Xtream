@@ -16,7 +16,6 @@
 	<widget source="t_realurl" render="Label" position="590,750" size="369,60" font="bmxregular;27" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
 	<widget source="t_timezone" render="Label" position="590,810" size="369,60" font="bmxregular;27" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
 	<widget source="t_serveroffset" render="Label" position="590,870" size="369,60" font="bmxregular;27" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-
 	<widget name="status" position="959,330" size="369,60" font="bmxregular;27" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
 	<widget name="trial" position="959,390" size="369,60" font="bmxregular;27" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
 	<widget name="activeconn" position="959,450" size="369,60" font="bmxregular;27" foregroundColor="#ffffff" backgroundColor="#2a70a4" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
@@ -37,7 +36,6 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/divider.png" position="center,808" size="738,4" alphatest="blend" zPosition="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/divider.png" position="center,868" size="738,4" alphatest="blend" zPosition="1"/>
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/button-bg.png" position="0,1020" size="1920,60" alphatest="blend" zPosition="1"/>
-
 	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/fhd/common/key_red.png" position="909,1031" size="38,38" alphatest="blend" zPosition="2"/>
 	<widget source="key_red" render="Label" position="90,1020" size="375,60" font="bmxregular;24" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
 </screen>

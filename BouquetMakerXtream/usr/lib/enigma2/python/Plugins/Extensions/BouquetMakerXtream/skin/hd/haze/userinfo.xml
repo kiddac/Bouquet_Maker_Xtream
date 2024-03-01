@@ -17,7 +17,6 @@
 	<widget source="t_realurl" render="Label" position="393,500" size="246,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#26242b34" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
 	<widget source="t_timezone" render="Label" position="393,540" size="246,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#26242b34" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
 	<widget source="t_serveroffset" render="Label" position="393,580" size="246,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#26242b34" valign="center" halign="left" transparent="1" noWrap="1" zPosition="2"/>
-
 	<widget name="status" position="639,220" size="246,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#26242b34" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
 	<widget name="trial" position="639,260" size="246,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#26242b34" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
 	<widget name="activeconn" position="639,300" size="246,40" font="bmxregular;18" foregroundColor="#ffffff" backgroundColor="#26242b34" valign="center" halign="right" transparent="1" noWrap="1" zPosition="2"/>
@@ -39,7 +38,6 @@
 	<ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/divider.png" position="center,578" size="492,2" alphatest="blend" zPosition="1"/>
 	<eLabel position="0,679" size="1280,1" backgroundColor="#ffffff" zPosition="-1"/>
 	<eLabel position="0,680" size="1280,40" backgroundColor="#1a000000" zPosition="-1"/>
-
 	<widget source="key_red" render="Pixmap" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/skin/hd/common/key_red.png" position="20,687" size="25,25" alphatest="blend" zPosition="2"/>
 	<widget source="key_red" render="Label" position="60,680" size="250,40" font="bmxregular;16" foregroundColor="#ffffff" backgroundColor="#0a3162" valign="center" transparent="1" noWrap="1" zPosition="2"/>
 </screen>

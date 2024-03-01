@@ -462,13 +462,13 @@ class BmxPlaylists(Screen, ProtectedScreen):
 
         if status == (_("Banned")):
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
-        if status == (_("Expired")):
+        elif status == (_("Expired")):
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_grey.png"))
-        if status == (_("Disabled")):
+        elif status == (_("Disabled")):
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_grey.png"))
-        if status == (_("Server Not Responding")):
+        elif status == (_("Server Not Responding")):
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
-        if status == (_("Not Authorised")):
+        elif status == (_("Not Authorised")):
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
 
         return (index, str(name), str(url), str(expires), str(status), pixmap, str(active), str(activenum), str(maxc), str(maxnum), str(fullurl), str(playlist_type))
