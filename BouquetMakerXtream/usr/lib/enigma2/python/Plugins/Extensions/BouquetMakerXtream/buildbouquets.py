@@ -334,10 +334,13 @@ class BmxBuildBouquets(Screen):
                     if cfg.catchup.value is True and catchup == 1:
                         name = str(cfg.catchup_prefix.value) + str(name)
 
-                    bouquet_id1 = 0
-                    calc_remainder = int(stream_id) // 65535
-                    bouquet_id1 = bouquet_id1 + calc_remainder
-                    bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+                    # bouquet_id1 = 0
+                    # calc_remainder = int(stream_id) // 65535
+                    # bouquet_id1 = bouquet_id1 + calc_remainder
+                    # bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
 
                     service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
@@ -531,10 +534,13 @@ class BmxBuildBouquets(Screen):
 
                     extension = channel["container_extension"]
 
-                    bouquet_id1 = 0
-                    calc_remainder = int(stream_id) // 65535
-                    bouquet_id1 = bouquet_id1 + calc_remainder
-                    bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+                    # bouquet_id1 = 0
+                    # calc_remainder = int(stream_id) // 65535
+                    # bouquet_id1 = bouquet_id1 + calc_remainder
+                    # bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
 
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
@@ -653,80 +659,77 @@ class BmxBuildBouquets(Screen):
                 self.finished()
 
     def loadSeries(self):
+        print("*** loadSeries ***")
         self.series_stream_data = []
         stream_list = []
         stream_type = glob.current_playlist["settings"]["vod_type"]
-        series_simple_result = []
-
         series_categories = glob.current_playlist["data"]["series_categories"]
+        self.series_streams = glob.current_playlist["data"]["series_streams"]
 
-        if series_categories:
-            self.series_streams = glob.current_playlist["data"]["series_streams"]
+        # Return if there are no series categories or if all categories are hidden
+        if not series_categories or len(series_categories) == len(glob.current_playlist["data"]["series_categories_hidden"]):
+            self.finished()
+            return
 
-            if glob.current_playlist["settings"]["vod_category_order"] == "alphabetical":
-                series_categories = sorted(series_categories, key=lambda k: k["category_name"].lower())
+        # Sort series categories alphabetically
+        if series_categories and glob.current_playlist["settings"]["vod_category_order"] == "alphabetical":
+            series_categories = sorted(series_categories, key=lambda k: k["category_name"].lower())
 
-            if len(glob.current_playlist["data"]["series_categories"]) == len(glob.current_playlist["data"]["series_categories_hidden"]):
-                self.finished()
-
-        if series_categories and self.series_streams:
+        if self.series_streams:
+            print("*** self.series_streams ***")
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 url = str(self.simple)
                 series_simple_result = bmx.downloadUrl(url, "text")
 
-                if series_simple_result:
-                    if "#EXTM3U" in str(series_simple_result):
-                        self.session.open(MessageBox, _("Your provider does not have the 'simple' API call\nUnable to build series.\nAlternative method might be added in the future."), MessageBox.TYPE_INFO, timeout=10)
-                        return stream_list
+                if series_simple_result and "#EXTM3U" in str(series_simple_result):
+                    self.session.open(MessageBox, _("Your provider does not have the 'simple' API call\nUnable to build series.\nAlternative method might be added in the future."), MessageBox.TYPE_INFO, timeout=10)
+                    self.finished()
 
-                    lines = series_simple_result.splitlines()
+                lines = series_simple_result.splitlines()
 
-                    if pythonVer == 3:
-                        lines = [x for x in lines if "/series/" in x.decode() or " S01 " in x.decode() or " E01" in x.decode() and "/live" not in x.decode() and "/movie/" not in x.decode()]
-                    else:
-                        lines = [x for x in lines if "/series/" in x or " S01 " in x or " E01" in x and "/live" not in x and "/movie/" not in x]
+                # Convert bytes to strings (if Python 3)
+                if pythonVer == 3:
+                    lines = [x.decode() for x in lines]
 
-                    build_list = [x for x in self.series_streams if str(x["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(x["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]]
+                lines = [x for x in lines if ("/live" not in x and "/movie/" not in x) and ("/series/" in x or "S01" in x or "E01" in x)]
 
-                    if build_list:
-                        try:
-                            x = 0
-                            for line in lines:
-                                if int(cfg.max_series.value) != 0 and x > int(cfg.max_series.value):
-                                    break
+                build_list = [x for x in self.series_streams if str(x["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(x["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]]
 
-                                if pythonVer == 3:
-                                    line = line.decode()
+                if build_list:
+                    print("**** starting process buildlist ***")
+                    try:
+                        x = 0
 
-                                series_url = line.split(" ")[0]
-                                series_name = line.split(":")[-1].strip()
-                                series_name = series_name.replace(":", "").replace('"', "").strip("-")
-                                series_stream_id = series_url.split("/")[-1].split(".")[0]
+                        with open("/tmp/serieslist.txt", "w") as fp:
+                            fp.write("\n".join(lines))
 
-                                name = ""
-                                channel = []
-                                for channel in build_list:
-                                    if channel["name"] in series_name:
-                                        name = channel["name"]
-                                        name = name.replace(":", "").replace('"', "").strip("-")
-                                        break
+                        with open("/tmp/buildlist.txt", "w") as fp:
+                            for item in build_list:
+                                fp.write("%s\n" % item)
 
-                                if name:
-                                    bouquet_id1 = 0
-                                    calc_remainder = int(series_stream_id) // 65535
-                                    bouquet_id1 = bouquet_id1 + calc_remainder
-                                    bouquet_id2 = int(series_stream_id) - int(calc_remainder * 65535)
+                        for line in lines:
+                            if int(cfg.max_series.value) != 0 and x > int(cfg.max_series.value):
+                                break
+
+                            series_url = line.split(" ")[0]
+                            series_name = line.split(":")[-1].strip().replace(":", "").replace('"', "").strip("-")
+                            series_stream_id = series_url.split("/")[-1].split(".")[0]
+
+                            for channel in build_list:
+                                if channel["name"] in series_name:
+                                    bouquet_id1 = int(series_stream_id) // 65535
+                                    bouquet_id2 = int(series_stream_id) - int(bouquet_id1 * 65535)
 
                                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
-                                    bouquet_string = ""
-                                    bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + quote(series_url) + ":" + str(series_name) + "\n"
-
+                                    bouquet_string = "#SERVICE " + str(stream_type) + str(custom_sid) + quote(series_url) + "\n"
                                     bouquet_string += "#DESCRIPTION " + str(series_name) + "\n"
                                     stream_list.append({"category_id": str(channel["category_id"]), "stream_id": str(series_stream_id), "bouquet_string": bouquet_string, "name": str(channel["name"]), "added": str(channel["last_modified"])})
                                     x += 1
+                                    break
 
-                        except Exception as e:
-                            print(e)
+                    except Exception as e:
+                        print(e)
+                    print("**** finished process buildlist ***")
 
             else:
                 for channel in self.series_streams:
@@ -739,32 +742,22 @@ class BmxBuildBouquets(Screen):
                         continue
 
                     if str(channel["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(channel["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]:
-                        name = channel["name"]
-                        name = name.replace(":", "").replace('"', "").strip("-")
-
-                        bouquet_id1 = 0
-                        calc_remainder = int(stream_id) // 65535
-                        bouquet_id1 = bouquet_id1 + calc_remainder
-                        bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
-
+                        name = channel["name"].replace(":", "").replace('"', "").strip("-")
+                        bouquet_id1 = int(stream_id) // 65535
+                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                         custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
-
-                        bouquet_string = ""
-
-                        source = str(channel["source"])
-                        source = quote(source)
-                        bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(source) + ":" + str(name) + "\n"
+                        bouquet_string = "#SERVICE " + str(stream_type) + str(custom_sid) + quote(channel["source"]) + ":" + str(name) + "\n"
                         bouquet_string += "#DESCRIPTION " + str(name) + "\n"
-
                         stream_list.append({"category_id": str(channel["category_id"]), "bouquet_string": bouquet_string, "name": str(channel["name"]), "added": str(channel["added"])})
 
             self.series_stream_data = stream_list
 
+            print("*** start building bouquets ***")
             if self.series_stream_data:
+                bouquet_tv_string = ""
+
                 if cfg.groups.value is True and self.bouquet_tv is False:
                     self.buildBouquetTvGroupedFile()
-
-                bouquet_tv_string = ""
 
                 if cfg.groups.value is True and self.userbouquet is False:
                     bouquet_tv_string += "#NAME " + str(glob.current_playlist["playlist_info"]["name"]) + "\n"
@@ -775,18 +768,12 @@ class BmxBuildBouquets(Screen):
                     if "category_id" not in category or not category["category_id"]:
                         continue
 
-                    exists = False
-                    for item in stream_list:
-                        if "category_id" not in item or not item["category_id"]:
-                            continue
-                        if category["category_id"] == item["category_id"]:
-                            exists = True
-                            break
+                    exists = any(item["category_id"] == category["category_id"] for item in stream_list)
 
-                    if (str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]) and exists is True:
+                    if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and exists:
                         bouquet_title = self.safe_name + "_" + bmx.safeName(category["category_name"])
                         if cfg.groups.value is True:
-                            filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
+                            filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
                             bouquet = "subbouquet"
                             self.userbouquet = True
                         if cfg.groups.value is False:
@@ -803,16 +790,9 @@ class BmxBuildBouquets(Screen):
                         if "category_id" not in category or not category["category_id"]:
                             continue
 
-                        exists = False
-                        for item in stream_list:
-                            if "category_id" not in item or not item["category_id"]:
-                                continue
+                        exists = any(item["category_id"] == category["category_id"] for item in stream_list)
 
-                            if category["category_id"] == item["category_id"]:
-                                exists = True
-                                break
-
-                        if (str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"]) and exists is True:
+                        if str(category["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and exists:
                             bouquet_title = self.safe_name + "_" + bmx.safeName(category["category_name"])
                             self.total_count += 1
                             output_string = ""
@@ -844,9 +824,10 @@ class BmxBuildBouquets(Screen):
                             with open(filename, "w+") as f:
                                 f.write(output_string)
 
-        if series_categories:
-            self.progress_value += 1
-            self["progress"].setValue(self.progress_value)
+            print("*** finished building bouquets ***")
+
+        self.progress_value += 1
+        self["progress"].setValue(self.progress_value)
 
         self.finished()
 
@@ -894,26 +875,29 @@ class BmxBuildBouquets(Screen):
                 xml_str += "</sources>\n"
                 f.write(xml_str)
 
-        tree = ET.parse(source_file, parser=ET.XMLParser(encoding="utf-8"))
-        root = tree.getroot()
-        sourcecat = root.find("sourcecat")
+        try:
+            tree = ET.parse(source_file, parser=ET.XMLParser(encoding="utf-8"))
+            root = tree.getroot()
+            sourcecat = root.find("sourcecat")
 
-        exists = False
+            exists = False
 
-        for sourceitem in sourcecat:
-            if channel_path in sourceitem.attrib["channels"]:
-                exists = True
-                break
+            for sourceitem in sourcecat:
+                if channel_path in sourceitem.attrib["channels"]:
+                    exists = True
+                    break
 
-        if exists is False:
-            source = ET.SubElement(sourcecat, "source", type="gen_xmltv", nocheck="1", channels=channel_path)
-            description = ET.SubElement(source, "description")
-            description.text = str(self.safe_name)
+            if exists is False:
+                source = ET.SubElement(sourcecat, "source", type="gen_xmltv", nocheck="1", channels=channel_path)
+                description = ET.SubElement(source, "description")
+                description.text = str(self.safe_name)
 
-            url = ET.SubElement(source, "url")
-            url.text = str(self.xmltv_api)
+                url = ET.SubElement(source, "url")
+                url.text = str(self.xmltv_api)
 
-            tree.write(source_file)
+                tree.write(source_file)
+        except Exception as e:
+            print(e)
 
         try:
             with open(source_file, "r+") as f:

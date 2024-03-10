@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-03-01 13:47+0000\n"
-"PO-Revision-Date: 2024-03-01 13:47+0000\n"
+"POT-Creation-Date: 2024-03-09 15:14+0000\n"
+"PO-Revision-Date: 2024-03-09 15:14+0000\n"
 "Last-Translator: Masta2002\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -233,7 +233,7 @@ msgstr ""
 "Es können keine Serien erstellt werden.\n"
 "Eine alternative Methode könnte in Zukunft hinzugefügt werden."
 
-#: buildbouquets.py:956
+#: buildbouquets.py:934
 msgid " IPTV Bouquets Created"
 msgstr " IPTV Bouquets erstellt"
 
@@ -331,12 +331,12 @@ msgstr "Url: "
 
 #: downloadpicons.py:311 downloadpicons.py:420
 msgid "Exists: "
-msgstr "Vorhanden:"
+msgstr "Vorhanden: "
 
 #: downloadpicons.py:311
 #, python-format
 msgid "Success: %s   "
-msgstr "erfolgreich: %s   "
+msgstr "Erfolgreich: %s   "
 
 #: downloadpicons.py:312
 #, python-format
@@ -353,19 +353,19 @@ msgstr ""
 
 #: downloadpicons.py:420
 msgid "Success: "
-msgstr "erfolgreich:"
+msgstr "Erfolgreich:"
 
 #: downloadpicons.py:420
 msgid "Bad size: "
-msgstr "Ungültige größe:"
+msgstr "Ungültige Größe: "
 
 #: downloadpicons.py:420
 msgid "bad type: "
-msgstr "Ungültiger typ:"
+msgstr "Ungültiger typ: "
 
 #: downloadpicons.py:420
 msgid "bad url: "
-msgstr "Ungültige URL:"
+msgstr "Ungültige URL: "
 
 #: downloadpicons.py:421
 msgid "Restart your GUI to refresh picons."
@@ -768,7 +768,7 @@ msgstr "Server-Offset:"
 
 #: serverinfo.py:61
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: settings.py:112
 msgid ""
@@ -876,9 +876,3 @@ msgstr " Providers IPTV aktualisiert"
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "Update Playlist %d von %d"
-
-#~ msgid "No picons selected."
-#~ msgstr "Keine Picons ausgewählt."
-
-#~ msgid "Create Picons"
-#~ msgstr "Picons erstellen"

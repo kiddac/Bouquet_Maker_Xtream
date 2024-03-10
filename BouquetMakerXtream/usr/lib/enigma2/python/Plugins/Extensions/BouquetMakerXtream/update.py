@@ -233,7 +233,6 @@ class BmxUpdate(Screen):
                     self.vod_url_list.append([p_vod_streams_url, 4, "json"])
 
                 if glob.current_playlist["settings"]["show_series"] is True:
-
                     p_series_categories_url = player_api + "&action=get_series_categories"
                     self.series_url_list.append([p_series_categories_url, 2, "json"])
 
@@ -314,8 +313,8 @@ class BmxUpdate(Screen):
 
             try:
                 result = bmx.downloadUrlMulti(url)
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
             if result:
                 category = result[0]
@@ -361,7 +360,8 @@ class BmxUpdate(Screen):
         live_categories = glob.current_playlist["data"]["live_categories"]
 
         if live_categories:
-            # self.live_streams = glob.current_playlist["data"]["live_streams"]
+            if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
+                self.live_streams = glob.current_playlist["data"]["live_streams"]
 
             if glob.current_playlist["settings"]["live_category_order"] == "alphabetical":
                 live_categories = sorted(live_categories, key=lambda k: k["category_name"].lower())
@@ -412,10 +412,8 @@ class BmxUpdate(Screen):
                     if cfg.catchup.value is True and catchup == 1:
                         name = str(cfg.catchup_prefix.value) + str(name)
 
-                    bouquet_id1 = 0
-                    calc_remainder = int(stream_id) // 65535
-                    bouquet_id1 = bouquet_id1 + calc_remainder
-                    bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
 
                     service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
@@ -572,7 +570,8 @@ class BmxUpdate(Screen):
         vod_categories = glob.current_playlist["data"]["vod_categories"]
 
         if vod_categories:
-            # self.vod_streams = glob.current_playlist["data"]["vod_streams"]
+            if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
+                self.vod_streams = glob.current_playlist["data"]["vod_streams"]
 
             if glob.current_playlist["settings"]["vod_category_order"] == "alphabetical":
                 vod_categories = sorted(vod_categories, key=lambda k: k["category_name"].lower())
@@ -612,10 +611,8 @@ class BmxUpdate(Screen):
 
                     extension = channel["container_extension"]
 
-                    bouquet_id1 = 0
-                    calc_remainder = int(stream_id) // 65535
-                    bouquet_id1 = bouquet_id1 + calc_remainder
-                    bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
 
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
@@ -745,7 +742,8 @@ class BmxUpdate(Screen):
         series_categories = glob.current_playlist["data"]["series_categories"]
 
         if series_categories:
-            # self.series_streams = glob.current_playlist["data"]["series_streams"]
+            if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
+                self.series_streams = glob.current_playlist["data"]["series_streams"]
 
             if glob.current_playlist["settings"]["vod_category_order"] == "alphabetical":
                 series_categories = sorted(series_categories, key=lambda k: k["category_name"].lower())
@@ -797,10 +795,8 @@ class BmxUpdate(Screen):
                                         break
 
                                 if name:
-                                    bouquet_id1 = 0
-                                    calc_remainder = int(series_stream_id) // 65535
-                                    bouquet_id1 = bouquet_id1 + calc_remainder
-                                    bouquet_id2 = int(series_stream_id) - int(calc_remainder * 65535)
+                                    bouquet_id1 = int(series_stream_id) // 65535
+                                    bouquet_id2 = int(series_stream_id) - int(bouquet_id1 * 65535)
 
                                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
                                     bouquet_string = ""
@@ -825,10 +821,8 @@ class BmxUpdate(Screen):
                         name = channel["name"]
                         name = name.replace(":", "").replace('"', "").strip("-")
 
-                        bouquet_id1 = 0
-                        calc_remainder = int(stream_id) // 65535
-                        bouquet_id1 = bouquet_id1 + calc_remainder
-                        bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+                        bouquet_id1 = int(stream_id) // 65535
+                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
 
                         custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 

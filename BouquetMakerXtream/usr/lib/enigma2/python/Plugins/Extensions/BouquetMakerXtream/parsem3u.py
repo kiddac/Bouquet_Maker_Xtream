@@ -32,7 +32,7 @@ def parseM3u8Playlist(response):
             except:
                 pass
 
-        if not line.startswith("#EXTINF") and not line.startswith("http"):
+        if not line.startswith("#EXTINF") and not line.startswith("http") and not line.startswith("#EXTGRP"):
             continue
 
         if line.startswith("#EXTINF"):
@@ -72,6 +72,12 @@ def parseM3u8Playlist(response):
                     epg_id = re.search('tvg-id=\"(.*?)\"', line).group(1).strip()
                 except:
                     epg_id = ""
+
+        elif line.startswith("#EXTGRP") and group_title == "":
+            try:
+                group_title = line.split(" ")[-1]
+            except:
+                group_title = ""
 
         elif line.startswith("http"):
             source = line.strip()
