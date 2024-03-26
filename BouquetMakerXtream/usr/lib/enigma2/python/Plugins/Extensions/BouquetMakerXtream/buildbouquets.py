@@ -214,8 +214,8 @@ class BmxBuildBouquets(Screen):
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
                 self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
                 self.nextJob(_("Downloading external playlist..."), self.downloadExternal)
-            else:
-                self.nextJob(_("Loadind local playlist..."), self.loadLocal)
+        else:
+            self.nextJob(_("Loading local playlist..."), self.loadLocal)
 
     def downloadLive(self):
         self.processDownloads("live")
@@ -532,8 +532,6 @@ class BmxBuildBouquets(Screen):
                     else:
                         continue
 
-                    extension = channel["container_extension"]
-
                     # bouquet_id1 = 0
                     # calc_remainder = int(stream_id) // 65535
                     # bouquet_id1 = bouquet_id1 + calc_remainder
@@ -547,6 +545,7 @@ class BmxBuildBouquets(Screen):
                     bouquet_string = ""
 
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                        extension = channel["container_extension"]
                         bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(self.host_encoded) + "/movie/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(extension) + ":" + str(name) + "\n"
                     else:
                         source = str(channel["source"])
@@ -841,6 +840,7 @@ class BmxBuildBouquets(Screen):
 
     def makeM3u8StreamsJson(self):
         parsem3u.makeM3u8StreamsJson(self.live_streams, self.vod_streams, self.series_streams)
+        self.nextJob(_("Processing live data..."), self.loadLive)
 
     def buildBouquetTvGroupedFile(self):
         exists = False
