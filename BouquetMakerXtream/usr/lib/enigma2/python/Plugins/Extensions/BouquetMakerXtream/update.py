@@ -212,7 +212,11 @@ class BmxUpdate(Screen):
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
+
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
+                if glob.current_playlist["settings"]["next_days"] != "0":
+                    self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
                 self.output = glob.current_playlist["playlist_info"]["output"]

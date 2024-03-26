@@ -180,7 +180,10 @@ class BmxBuildBouquets(Screen):
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
+
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
+                if glob.current_playlist["settings"]["next_days"] != "0":
+                    self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
 
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
@@ -880,22 +883,26 @@ class BmxBuildBouquets(Screen):
             root = tree.getroot()
             sourcecat = root.find("sourcecat")
 
-            exists = False
+            for elem in root.iter():
+                for child in list(elem):
+                    description = ""
+                    if child.tag == "source":
+                        try:
+                            description = child.find("description").text
 
-            for sourceitem in sourcecat:
-                if channel_path in sourceitem.attrib["channels"]:
-                    exists = True
-                    break
+                            if str(self.safe_name) == str(description):
+                                elem.remove(child)
+                        except:
+                            pass
 
-            if exists is False:
-                source = ET.SubElement(sourcecat, "source", type="gen_xmltv", nocheck="1", channels=channel_path)
-                description = ET.SubElement(source, "description")
-                description.text = str(self.safe_name)
+            source = ET.SubElement(sourcecat, "source", type="gen_xmltv", nocheck="1", channels=channel_path)
+            description = ET.SubElement(source, "description")
+            description.text = str(self.safe_name)
 
-                url = ET.SubElement(source, "url")
-                url.text = str(self.xmltv_api)
+            url = ET.SubElement(source, "url")
+            url.text = str(self.xmltv_api)
 
-                tree.write(source_file)
+            tree.write(source_file)
         except Exception as e:
             print(e)
 

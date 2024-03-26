@@ -143,6 +143,8 @@ def processFiles():
             epg_alternative = False
             epg_alternative_url = ""
 
+            next_days = 0
+
             directsource = "Standard"
 
             playlist_type = "xtream" if "get.php" in line else "external"
@@ -225,6 +227,9 @@ def processFiles():
                                     if "vod_stream_order" not in playlist["settings"]:
                                         playlist["settings"]["vod_stream_order"] = vod_stream_order
 
+                                    if "next_days" not in playlist["settings"]:
+                                        playlist["settings"]["next_days"] = next_days
+
                                     playlist["playlist_info"]["name"] = name
                                     playlist["playlist_info"]["type"] = playlistformat
                                     playlist["playlist_info"]["output"] = output
@@ -281,7 +286,8 @@ def processFiles():
                                 ("epg_offset", server_offset),
                                 ("epg_alternative", epg_alternative),
                                 ("epg_alternative_url", epg_alternative_url),
-                                ("directsource", directsource)
+                                ("directsource", directsource),
+                                ("next_days", next_days)
                             ]),
                             "data": dict([
                                 ("live_categories", []),

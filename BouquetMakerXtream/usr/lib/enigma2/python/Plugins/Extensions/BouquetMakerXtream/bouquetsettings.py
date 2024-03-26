@@ -230,6 +230,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         live_stream_order = glob.current_playlist["settings"]["live_stream_order"]
         vod_category_order = glob.current_playlist["settings"]["vod_category_order"]
         vod_stream_order = glob.current_playlist["settings"]["vod_stream_order"]
+        next_days = glob.current_playlist["settings"]["next_days"]
 
         self.name_cfg = NoSave(ConfigText(default=self.name, fixed_size=False))
         self.prefix_name_cfg = NoSave(ConfigYesNo(default=prefix_name))
@@ -259,6 +260,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             self.epg_offset_cfg = NoSave(ConfigSelectionNumber(-9, 9, 1, default=epg_offset, wraparound=True))
             self.epg_alternative_cfg = NoSave(ConfigYesNo(default=epg_alternative))
             self.epg_alternative_url_cfg = NoSave(ConfigText(default=epg_alternative_url, fixed_size=False))
+            self.next_days_cfg = NoSave(ConfigSelection(default=next_days, choices=[("0", _("Default")), ("1", "1"),  ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5"), ("6", "6"), ("7", "7")]))
 
         self.createSetup()
 
@@ -294,6 +296,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             self.list.append(getConfigListEntry(_("Output:"), self.output_cfg))
 
             if self.show_live_cfg.value is True and epgimporter is True:
+                self.list.append(getConfigListEntry(_("Max EPG days to download: (Use Default if EPG events is 0)"), self.next_days_cfg))
                 # self.list.append(getConfigListEntry(_("EPG offset:"), self.epg_offset_cfg))
                 self.list.append(getConfigListEntry(_("Use alternative EPG url:"), self.epg_alternative_cfg))
                 if self.epg_alternative_cfg.value is True:
@@ -404,6 +407,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             live_stream_order = self.live_stream_order_cfg.value
             vod_stream_order = self.vod_stream_order_cfg.value
             prefix_name = self.prefix_name_cfg.value
+            next_days = self.next_days_cfg.value
+
             glob.current_playlist["playlist_info"]["name"] = self.name
             glob.current_playlist["settings"]["prefix_name"] = prefix_name
             glob.current_playlist["settings"]["show_live"] = show_live
@@ -431,6 +436,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 glob.current_playlist["settings"]["epg_offset"] = epg_offset
                 glob.current_playlist["settings"]["epg_alternative"] = epg_alternative
                 glob.current_playlist["settings"]["epg_alternative_url"] = epg_alternative_url
+                glob.current_playlist["settings"]["next_days"] = next_days
 
                 playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name,)
                 self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, list_type, output)
