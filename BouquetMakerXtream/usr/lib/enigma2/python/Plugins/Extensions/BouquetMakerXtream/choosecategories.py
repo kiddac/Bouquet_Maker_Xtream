@@ -649,28 +649,28 @@ class BmxChooseCategories(Screen):
     def updateJson(self, answer=None):
         self.playlists_all = bmx.getPlaylistJson()
 
+        # print("*** glob ***", glob.current_playlist["data"]["series_streams"])
+
         if self.playlists_all:
-            x = 0
             for playlists in self.playlists_all:
                 if playlists["playlist_info"]["full_url"] == glob.current_playlist["playlist_info"]["full_url"]:
-                    self.playlists_all[x]["data"]["live_categories"] = glob.current_playlist["data"]["live_categories"]
-                    self.playlists_all[x]["data"]["vod_categories"] = glob.current_playlist["data"]["vod_categories"]
-                    self.playlists_all[x]["data"]["series_categories"] = glob.current_playlist["data"]["series_categories"]
+                    playlists["data"]["live_categories"] = glob.current_playlist["data"]["live_categories"]
+                    playlists["data"]["vod_categories"] = glob.current_playlist["data"]["vod_categories"]
+                    playlists["data"]["series_categories"] = glob.current_playlist["data"]["series_categories"]
 
-                    self.playlists_all[x]["data"]["live_streams"] = []
-                    self.playlists_all[x]["data"]["vod_streams"] = []
-                    self.playlists_all[x]["data"]["series_streams"] = []
+                    playlists["data"]["live_streams"] = []
+                    playlists["data"]["vod_streams"] = []
+                    playlists["data"]["series_streams"] = []
 
-                    self.playlists_all[x]["data"]["live_categories_hidden"] = glob.current_playlist["data"]["live_categories_hidden"]
-                    self.playlists_all[x]["data"]["vod_categories_hidden"] = glob.current_playlist["data"]["vod_categories_hidden"]
-                    self.playlists_all[x]["data"]["series_categories_hidden"] = glob.current_playlist["data"]["series_categories_hidden"]
+                    playlists["data"]["live_categories_hidden"] = glob.current_playlist["data"]["live_categories_hidden"]
+                    playlists["data"]["vod_categories_hidden"] = glob.current_playlist["data"]["vod_categories_hidden"]
+                    playlists["data"]["series_categories_hidden"] = glob.current_playlist["data"]["series_categories_hidden"]
 
-                    self.playlists_all[x]["data"]["live_streams_hidden"] = glob.current_playlist["data"]["live_streams_hidden"]
-                    self.playlists_all[x]["data"]["vod_streams_hidden"] = glob.current_playlist["data"]["vod_streams_hidden"]
-                    self.playlists_all[x]["data"]["series_streams_hidden"] = glob.current_playlist["data"]["series_streams_hidden"]
+                    playlists["data"]["live_streams_hidden"] = glob.current_playlist["data"]["live_streams_hidden"]
+                    playlists["data"]["vod_streams_hidden"] = glob.current_playlist["data"]["vod_streams_hidden"]
+                    playlists["data"]["series_streams_hidden"] = glob.current_playlist["data"]["series_streams_hidden"]
 
                     break
-                x += 1
 
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
