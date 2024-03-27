@@ -23,8 +23,7 @@ def parseM3u8Playlist(response):
         local_file = os.path.join(cfg.local_location.value, glob.current_playlist["playlist_info"]["full_url"])
         with open(local_file, encoding="utf-8") as f:
             response = f.readlines()
-
-    elif playlist_type == "external":
+    else:
         response = response.splitlines()
 
     for line in response:
