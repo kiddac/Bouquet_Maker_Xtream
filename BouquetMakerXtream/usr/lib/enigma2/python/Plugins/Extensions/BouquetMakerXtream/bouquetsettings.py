@@ -230,7 +230,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         live_stream_order = glob.current_playlist["settings"]["live_stream_order"]
         vod_category_order = glob.current_playlist["settings"]["vod_category_order"]
         vod_stream_order = glob.current_playlist["settings"]["vod_stream_order"]
-        next_days = glob.current_playlist["settings"]["next_days"]
 
         self.name_cfg = NoSave(ConfigText(default=self.name, fixed_size=False))
         self.prefix_name_cfg = NoSave(ConfigYesNo(default=prefix_name))
@@ -251,6 +250,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         # self.fix_epg_cfg = NoSave(ConfigYesNo(default=glob.fixepg)
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+            next_days = glob.current_playlist["settings"]["next_days"]
             output = str(glob.current_playlist["playlist_info"]["output"])
             epg_offset = glob.current_playlist["settings"]["epg_offset"]
             epg_alternative = glob.current_playlist["settings"]["epg_alternative"]
@@ -407,7 +407,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             live_stream_order = self.live_stream_order_cfg.value
             vod_stream_order = self.vod_stream_order_cfg.value
             prefix_name = self.prefix_name_cfg.value
-            next_days = self.next_days_cfg.value
 
             glob.current_playlist["playlist_info"]["name"] = self.name
             glob.current_playlist["settings"]["prefix_name"] = prefix_name
@@ -431,6 +430,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 epg_offset = int(self.epg_offset_cfg.value)
                 epg_alternative = self.epg_alternative_cfg.value
                 epg_alternative_url = self.epg_alternative_url_cfg.value
+                next_days = self.next_days_cfg.value
 
                 glob.current_playlist["playlist_info"]["output"] = output
                 glob.current_playlist["settings"]["epg_offset"] = epg_offset
