@@ -253,6 +253,17 @@ class BmxChooseCategories(Screen):
                             glob.current_playlist["data"]["vod_streams"] = response
                         elif category == 5:
                             glob.current_playlist["data"]["series_streams"] = response
+
+        for data in glob.current_playlist["data"]["series_streams"]:
+            try:
+                keys = ('num', 'cover', 'plot', 'cast', 'director', 'genre', 'rating', 'rating_5based', 'backdrop_path', "youtube_trailer", "tmdb", "episode_run_time", "category_ids")
+                keys_to_remove = set(keys).intersection(set(data.keys()))
+                for key in keys_to_remove:
+
+                    del data[key]
+
+            except Exception as e:
+                print(e)
         try:
             self["splash"].hide()
         except:
