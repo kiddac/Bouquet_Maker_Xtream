@@ -214,8 +214,11 @@ class BmxUpdate(Screen):
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
 
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
-                if glob.current_playlist["settings"]["next_days"] != "0":
-                    self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+                try:
+                    if "next_days" in glob.current_playlist["settings"] and glob.current_playlist["settings"]["next_days"] != "0":
+                        self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+                except:
+                    pass
 
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
@@ -1045,8 +1048,6 @@ class BmxUpdate(Screen):
         self.loopPlaylists()
 
     def updateJson(self):
-        self.playlists_all = bmx.getPlaylistJson()
-
         if self.playlists_all:
             x = 0
             for playlists in self.playlists_all:

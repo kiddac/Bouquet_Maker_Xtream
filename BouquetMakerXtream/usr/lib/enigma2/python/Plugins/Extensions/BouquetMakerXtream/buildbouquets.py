@@ -85,7 +85,7 @@ class BmxBuildBouquets(Screen):
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.progress_range += 1
 
-        self.updateJson()
+        self.playlists_all = bmx.getPlaylistJson()
 
         self.starttimer = eTimer()
         try:
@@ -182,8 +182,11 @@ class BmxBuildBouquets(Screen):
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
 
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
-                if glob.current_playlist["settings"]["next_days"] != "0":
-                    self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+                try:
+                    if "next_days" in glob.current_playlist["settings"] and glob.current_playlist["settings"]["next_days"] != "0":
+                        self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+                except:
+                    pass
 
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
@@ -213,7 +216,6 @@ class BmxBuildBouquets(Screen):
 
                 else:
                     self.finished()
-                    return
 
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
                 self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
@@ -309,7 +311,6 @@ class BmxBuildBouquets(Screen):
                         self.nextJob(_("Downloading series data..."), self.downloadSeries)
                     else:
                         self.finished()
-                        return
                 else:
                     if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
                         self.nextJob(_("Process VOD data..."), self.loadVod)
@@ -317,7 +318,6 @@ class BmxBuildBouquets(Screen):
                         self.nextJob(_("Processing series data..."), self.loadSeries)
                     else:
                         self.finished()
-                        return
 
         if live_categories and self.live_streams:
             x = 0
@@ -487,7 +487,6 @@ class BmxBuildBouquets(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
-                return
         else:
             if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
                 self.nextJob(_("Process VOD data..."), self.loadVod)
@@ -495,7 +494,6 @@ class BmxBuildBouquets(Screen):
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
-                return
 
     def loadVod(self):
         self.vod_stream_data = []
@@ -516,13 +514,11 @@ class BmxBuildBouquets(Screen):
                         self.nextJob(_("Downloading series data..."), self.downloadSeries)
                     else:
                         self.finished()
-                        return
                 else:
                     if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                         self.nextJob(_("Processing series data..."), self.loadSeries)
                     else:
                         self.finished()
-                        return
 
         if vod_categories and self.vod_streams:
             x = 0
@@ -659,13 +655,11 @@ class BmxBuildBouquets(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
-                return
         else:
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
-                return
 
     def loadSeries(self):
         stream_list = []
@@ -676,7 +670,6 @@ class BmxBuildBouquets(Screen):
         # Return if there are no series categories or if all categories are hidden
         if not series_categories or len(series_categories) == len(glob.current_playlist["data"]["series_categories_hidden"]):
             self.finished()
-            return
 
         # Sort series categories alphabetically
         if series_categories and glob.current_playlist["settings"]["vod_category_order"] == "alphabetical":
@@ -700,7 +693,6 @@ class BmxBuildBouquets(Screen):
                 if series_simple_result and "#EXTM3U" in str(series_simple_result):
                     self.session.open(MessageBox, _("Your provider does not have the 'simple' API call\nUnable to build series.\nAlternative method might be added in the future."), MessageBox.TYPE_INFO, timeout=10)
                     self.finished()
-                    return
 
                 max_series_count = int(cfg.max_series.value)
                 series_url_name_list = []
@@ -848,7 +840,6 @@ class BmxBuildBouquets(Screen):
         self["progress"].setValue(self.progress_value)
 
         self.finished()
-        return
 
     def parseM3u8Playlist(self, response=None):
         self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
@@ -968,8 +959,6 @@ class BmxBuildBouquets(Screen):
         self.close(True)
 
     def updateJson(self):
-        self.playlists_all = bmx.getPlaylistJson()
-
         if self.playlists_all:
             x = 0
             for playlists in self.playlists_all:

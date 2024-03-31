@@ -474,7 +474,6 @@ class BmxPlaylists(Screen, ProtectedScreen):
         return (index, str(name), str(url), str(expires), str(status), pixmap, str(active), str(activenum), str(maxc), str(maxnum), str(fullurl), str(playlist_type))
 
     def quit(self):
-        self.clearSeries()
         self.close()
 
     def deleteServer(self, answer=None):
@@ -563,17 +562,4 @@ class BmxPlaylists(Screen, ProtectedScreen):
 
     def exit(self, answer=None):
         if glob.finished and cfg.auto_close.getValue() is True:
-            self.clearSeries()
             self.close(True)
-
-    def clearSeries(self):
-        if self.playlists_all:
-            x = 0
-            for playlists in self.playlists_all:
-                self.playlists_all[x]["data"]["live_streams"] = []
-                self.playlists_all[x]["data"]["vod_streams"] = []
-                self.playlists_all[x]["data"]["series_streams"] = []
-                x += 1
-
-        with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f)

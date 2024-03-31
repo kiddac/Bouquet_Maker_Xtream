@@ -143,7 +143,7 @@ def processFiles():
             epg_alternative = False
             epg_alternative_url = ""
 
-            next_days = 0
+            next_days = "0"
 
             directsource = "Standard"
 
@@ -227,7 +227,7 @@ def processFiles():
                                     if "vod_stream_order" not in playlist["settings"]:
                                         playlist["settings"]["vod_stream_order"] = vod_stream_order
 
-                                    if "next_days" not in playlist["settings"]:
+                                    if ("next_days" not in playlist["settings"]) or ("next_days" in playlist["settings"] and playlist["settings"]["next_days"] == 0):
                                         playlist["settings"]["next_days"] = next_days
 
                                     playlist["playlist_info"]["name"] = name
