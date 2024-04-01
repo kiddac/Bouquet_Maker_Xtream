@@ -161,10 +161,6 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_groups = getConfigListEntry(_("Group bouquets into its own folder"), cfg.groups)
         self.cfg_auto_close = getConfigListEntry(_("Exit plugin on bouquet creation"), cfg.auto_close)
 
-        self.cfg_max_live = getConfigListEntry(_("Max Live channels. 0 = unlimited (slow)."), cfg.max_live)
-        self.cfg_max_vod = getConfigListEntry(_("Max VOD channels. 0 = unlimited (slow)"), cfg.max_vod)
-        self.cfg_max_series = getConfigListEntry(_("Max Series channels. 0 = unlimited (slow)"), cfg.max_series)
-
         self.org_main = cfg.main.getValue()
         self.location = cfg.location.getValue()
         self.local_location = cfg.local_location.getValue()
@@ -187,10 +183,6 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
 
         self.list.append(self.cfg_live_type)
         self.list.append(self.cfg_vod_type)
-
-        self.list.append(self.cfg_max_live)
-        self.list.append(self.cfg_max_vod)
-        self.list.append(self.cfg_max_series)
 
         self.list.append(self.cfg_groups)
 

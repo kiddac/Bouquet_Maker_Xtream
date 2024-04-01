@@ -135,10 +135,6 @@ class BmxDownloadPicons(Screen):
                 x = 0
                 self.picon_list = []
                 for channel in self.live_streams:
-
-                    if int(cfg.max_live.value) != 0 and x > int(cfg.max_live.value):
-                        break
-
                     if "stream_id" in channel and channel["stream_id"]:
                         stream_id = str(channel["stream_id"])
                     else:

@@ -16,6 +16,7 @@ from Screens.Screen import Screen
 
 import json
 import os
+import re
 
 
 try:
@@ -258,7 +259,6 @@ class BmxUpdate(Screen):
 
                 else:
                     self.finished()
-                    return
 
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
                 self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
@@ -396,9 +396,6 @@ class BmxUpdate(Screen):
         if live_categories and self.live_streams:
             x = 0
             for channel in self.live_streams:
-                if int(cfg.max_live.value) != 0 and x > int(cfg.max_live.value):
-                    break
-
                 if "stream_id" in channel and channel["stream_id"]:
                     stream_id = str(channel["stream_id"])
                 else:
@@ -561,7 +558,6 @@ class BmxUpdate(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
-                return
         else:
             if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
                 self.nextJob(_("Process VOD data..."), self.loadVod)
@@ -569,7 +565,6 @@ class BmxUpdate(Screen):
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
-                return
 
     def loadVod(self):
         self.vod_stream_data = []
@@ -605,9 +600,6 @@ class BmxUpdate(Screen):
         if vod_categories and self.vod_streams:
             x = 0
             for channel in self.vod_streams:
-                if int(cfg.max_vod.value) != 0 and x > int(cfg.max_vod.value):
-                    break
-
                 if "stream_id" in channel and channel["stream_id"]:
                     stream_id = str(channel["stream_id"])
                 else:
@@ -737,13 +729,11 @@ class BmxUpdate(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
-                return
         else:
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
-                return
 
     def loadSeries(self):
         stream_list = []
@@ -787,17 +777,61 @@ class BmxUpdate(Screen):
                         return stream_list
                     except:
                         pass
-
-                    max_series_count = int(cfg.max_series.value)
+                else:
                     series_url_name_list = []
 
                     lines = series_simple_result.splitlines()
 
+                    digit_pattern = r'^S\d{2}\s'
+                    group_name_pattern = r'Name: (.+?)\sS\d{2}'
+                    group_name_pattern_2 = r'Name: (.+?)\sS\d{2} E\d{2}'
+                    pattern = r"(\/series\/|S\d{2}|E\d{2})(?!.*\/live)(?!.*\/movie)"
+
                     for line in lines:
-                        if "/live" not in line and "/movie" not in line and ("/series/" in line or "S01" in line or "E01" in line):
+                        series_group_name = ""
+                        s_type = 1
+
+                        if re.search(pattern, line):
+
+                            # Extract series group name
+                            match_group_name_2 = re.search(group_name_pattern_2, line)
+                            if match_group_name_2:
+                                s_type = 2
+                                series_group_name = match_group_name_2.group(1).strip()
+                            else:
+                                match_group_name = re.search(group_name_pattern, line)
+                                if match_group_name:
+                                    series_group_name = match_group_name.group(1).strip()
+
                             series_url, series_name = line.split(" #Name: ")
+                            series_name = series_name.strip()
+
+                            # Remove series group name from series name
+                            if series_group_name and s_type == 1:
+                                index = series_name.find(series_group_name)
+                                if index != -1:
+                                    series_name = series_name[:index] + series_name[index + len(series_group_name):]
+
+                                    # Remove "S01", "S02", etc. from series name
+                                    series_name = re.sub(digit_pattern, '',  series_name.strip())
+
+                            # Extract series stream id
                             series_stream_id = series_url.split("/")[-1].split(".")[0]
-                            series_url_name_list.append({"series_url": series_url.strip(), "series_name": series_name.strip(), "series_stream_id": series_stream_id})
+
+                            # Append to series list
+                            series_url_name_list.append({
+                                "series_url": series_url.strip(),
+                                "series_name": series_name.strip(),
+                                "series_stream_id": series_stream_id.strip(),
+                                "series_group_name": series_group_name.strip(),
+                            })
+
+                    result_dict = {}
+
+                    # Iterate through the list of dictionaries
+                    for item in series_url_name_list:
+                        group_name = item['series_group_name']
+                        result_dict.setdefault(group_name, []).append(item)
 
                     build_list = [
                         channel for channel in self.series_streams
@@ -805,12 +839,10 @@ class BmxUpdate(Screen):
                         and str(channel["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]
                     ]
 
-                    for line in series_url_name_list:
-                        if len(stream_list) != 0 and len(stream_list) >= max_series_count:
-                            break
-
-                        for channel in build_list:
-                            if channel["name"] in line['series_name']:
+                    for channel in build_list:
+                        name = channel["name"]
+                        if name in result_dict:
+                            for line in result_dict[name]:
                                 bouquet_id1 = int(line['series_stream_id']) // 65535
                                 bouquet_id2 = int(line['series_stream_id']) - int(bouquet_id1 * 65535)
 
@@ -824,8 +856,6 @@ class BmxUpdate(Screen):
                                     "name": str(channel["name"]),
                                     "added": str(channel["last_modified"])
                                 })
-                                break
-
             else:
                 for channel in self.series_streams:
                     if "series_id" in channel and channel["series_id"]:
@@ -932,7 +962,6 @@ class BmxUpdate(Screen):
         self["progress"].setValue(self.progress_value)
 
         self.finished()
-        return
 
     def parseM3u8Playlist(self, response=None):
         self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
