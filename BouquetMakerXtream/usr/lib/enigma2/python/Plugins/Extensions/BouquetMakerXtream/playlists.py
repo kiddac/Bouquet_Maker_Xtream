@@ -290,7 +290,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
                     self.playlists_all[index]["playlist_info"]["valid"] = True
                 else:
                     if self.playlists_all[index]["playlist_info"]["playlist_type"] == "xtream":
-                        self.playlists_all[index]["user_info"] = []
+                        self.playlists_all[index]["user_info"] = {}
                     self.playlists_all[index]["playlist_info"]["valid"] = False
 
         else:
@@ -304,7 +304,7 @@ class BmxPlaylists(Screen, ProtectedScreen):
                     self.playlists_all[index]["playlist_info"]["valid"] = True
                 else:
                     if self.playlists_all[index]["playlist_info"]["playlist_type"] == "xtream":
-                        self.playlists_all[index]["user_info"] = []
+                        self.playlists_all[index]["user_info"] = {}
                     self.playlists_all[index]["playlist_info"]["valid"] = False
 
         self.buildPlaylistList()

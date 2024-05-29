@@ -270,25 +270,15 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             pass
 
     def openDirectoryBrowser(self, path, cfgitem):
-        if cfgitem == "location":
-            try:
-                self.session.openWithCallback(
-                    self.openDirectoryBrowserCB,
-                    LocationBox,
-                    windowTitle=_("Choose Directory:"),
-                    text=_("Choose directory"),
-                    currDir=str(path),
-                    bookmarks=config.movielist.videodirs,
-                    autoAdd=True,
-                    editDir=True,
-                    inhibitDirs=["/bin", "/boot", "/dev", "/home", "/lib", "/proc", "/run", "/sbin", "/sys", "/usr", "/var"])
-            except Exception as e:
-                print(e)
+        try:
+            callback_map = {
+                "location": self.openDirectoryBrowserCB,
+                "local_location": self.openDirectoryBrowserCB2
+            }
 
-        elif cfgitem == "local_location":
-            try:
+            if cfgitem in callback_map:
                 self.session.openWithCallback(
-                    self.openDirectoryBrowserCB2,
+                    callback_map[cfgitem],
                     LocationBox,
                     windowTitle=_("Choose Directory:"),
                     text=_("Choose directory"),
@@ -296,9 +286,11 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
                     bookmarks=config.movielist.videodirs,
                     autoAdd=True,
                     editDir=True,
-                    inhibitDirs=["/bin", "/boot", "/dev", "/home", "/lib", "/proc", "/run", "/sbin", "/sys", "/usr", "/var"])
-            except Exception as e:
-                print(e)
+                    inhibitDirs=["/bin", "/boot", "/dev", "/home", "/lib", "/proc", "/run", "/sbin", "/sys", "/usr", "/var"]
+                )
+        except Exception as e:
+            print(e)
+
 
     def openDirectoryBrowserCB(self, path):
         if path is not None:

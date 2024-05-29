@@ -154,16 +154,22 @@ common_path = os.path.join(skin_directory, "common/")
 playlists_json = os.path.join(dir_etc, "bmx_playlists.json")
 playlist_file = os.path.join(dir_etc, "playlists.txt")
 
-location = cfg.location.getValue()
+location = cfg.location.value
 if location:
     if os.path.exists(location):
         playlist_file = os.path.join(cfg.location.value, "playlists.txt")
         cfg.location_valid.setValue(True)
         cfg.save()
     else:
-        cfg.location.setValue(dir_etc)
-        cfg.location_valid.setValue(False)
+        os.makedirs(location, exist_ok=True)  # Create directory if it doesn't exist
+        playlist_file = os.path.join(location, "playlists.txt")
+
+        cfg.location_valid.setValue(True)
         cfg.save()
+else:
+    cfg.location.setValue(dir_etc)
+    cfg.location_valid.setValue(False)
+    cfg.save()
 
 font_folder = os.path.join(dir_plugins, "fonts/")
 

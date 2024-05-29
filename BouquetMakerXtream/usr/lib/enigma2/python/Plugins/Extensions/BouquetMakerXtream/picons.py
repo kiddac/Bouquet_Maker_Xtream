@@ -177,10 +177,8 @@ class BmxDownloadPicons(Screen):
                         else:
                             continue
 
-                        bouquet_id1 = 0
-                        calc_remainder = int(stream_id) // 65535
-                        bouquet_id1 = bouquet_id1 + calc_remainder
-                        bouquet_id2 = int(stream_id) - int(calc_remainder * 65535)
+                        bouquet_id1 = int(stream_id) // 65535
+                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
 
                         custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
