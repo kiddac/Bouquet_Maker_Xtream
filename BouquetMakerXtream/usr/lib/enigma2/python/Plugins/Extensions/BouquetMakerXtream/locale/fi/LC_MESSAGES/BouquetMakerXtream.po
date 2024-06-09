@@ -1,0 +1,848 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BouquetMakerXtream\n"
+"POT-Creation-Date: 2024-03-01 13:46+0000\n"
+"PO-Revision-Date: 2024-06-08 20:43+0300\n"
+"Last-Translator: Orlandox\n"
+"Language-Team: Orlandox\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: about.py:24 mainmenu.py:136
+msgid "About"
+msgstr "Tietoja"
+
+#: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:40
+#: piconsettings.py:45 playlists.py:77 server.py:53 settings.py:67
+msgid "Back"
+msgstr "Takaisin"
+
+#: about.py:33 mainmenu.py:41 piconsettings.py:46 playlists.py:78
+msgid "OK"
+msgstr "OK"
+
+#: about.py:44
+msgid ""
+"Support for this plugin and latest versions can be found on https://linuxsat-support.com\n"
+"\n"
+msgstr ""
+"Tämän lisäosan tuki ja uusimmat versiot löytyy osoitteesta https://linuxsat-support.com\n"
+"\n"
+
+#: about.py:45
+msgid ""
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \n"
+"Play your files via your TV bouquets.\n"
+"\n"
+msgstr ""
+"Lisäosa mahdollistaa tavallisten Xtream-koodien/XUI One -suosikkilistojen, ulkoisten ja paikallisten m3u8-soittolistojen yksinkertaisen luomisen. \n"
+"Toista tiedostojasi TV-suosikkilistojen kautta.\n"
+"\n"
+
+#: about.py:46
+msgid "Credits:\n"
+msgstr "Lopputekstit:\n"
+
+#: about.py:47
+msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
+msgstr "AutoBouquetsMaker, EpgImporter, AutoBackup (käytetään koodiviitteenä).\n"
+
+#: about.py:48
+msgid ""
+"And thanks to all the other coders and Linuxsat testers who helped in the development of this project.\n"
+"\n"
+msgstr ""
+"Ja kiitos kaikille muille koodaajille ja Linuxsat-testaajille, jotka auttoivat tämän projektin kehittämisessä.\n"
+"\n"
+
+#: about.py:49
+msgid "If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/kiddac\n"
+msgstr "Jos haluat ostaa minulle oluen tai kahvin: https://paypal.me/kiddac tai https://ko-fi.com/kiddac\n"
+
+#: about.py:50
+msgid "Cheers - all donations are very much appreciated."
+msgstr "Terveisiä - kaikki lahjoitukset ovat erittäin arvostettuja."
+
+#: bouquetsettings.py:44
+msgid "Bouquets Settings"
+msgstr "Suosikkilistojen asetukset"
+
+#: bouquetsettings.py:52
+msgid "Continue"
+msgstr "Jatka"
+
+#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246
+#: bouquetsettings.py:247
+msgid "Original Order"
+msgstr "Alkuperäinen järjestys"
+
+#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246
+#: bouquetsettings.py:247
+msgid "A-Z"
+msgstr "A-Z"
+
+#: bouquetsettings.py:245 bouquetsettings.py:247
+msgid "Newest"
+msgstr "Uusin"
+
+#: bouquetsettings.py:267 server.py:116 server.py:124
+msgid "Short name or provider name:"
+msgstr "Lyhyt nimi tai palveluntarjoajan nimi:"
+
+#: bouquetsettings.py:268
+msgid "Use name as bouquet prefix"
+msgstr "Käytä nimeä suosikkilistan etuliitteenä"
+
+#: bouquetsettings.py:271
+msgid "Show LIVE category if available:"
+msgstr "Näytä LIVE-luokka, jos saatavilla:"
+
+#: bouquetsettings.py:273
+msgid "Stream Type LIVE:"
+msgstr "Striimin tyyppi LIVE:"
+
+#: bouquetsettings.py:276
+msgid "LIVE category bouquet order"
+msgstr "LIVE-luokan suosikkilistan järjestys"
+
+#: bouquetsettings.py:277
+msgid "LIVE stream bouquet order"
+msgstr "LIVE-striimin suosikkilistan järjestys"
+
+#: bouquetsettings.py:280
+msgid "Show VOD category if available:"
+msgstr "Näytä VOD-luokka, jos saatavilla:"
+
+#: bouquetsettings.py:283
+msgid "Show SERIES category if available:"
+msgstr "Näytä SARJAT-luokka, jos saatavilla:"
+
+#: bouquetsettings.py:287
+msgid "Stream Type VOD/SERIES:"
+msgstr "Striimin tyyppi VOD/SARJAT:"
+
+#: bouquetsettings.py:290
+msgid "VOD/SERIES category bouquet order"
+msgstr "VOD/SARJAT-luokan suosikkilistan järjestys"
+
+#: bouquetsettings.py:291
+msgid "VOD/SERIES streams bouquet order"
+msgstr "VOD/SARJAT-striimien suosikkilistan järjestys"
+
+#: bouquetsettings.py:294 server.py:122
+msgid "Output:"
+msgstr "Tuotos:"
+
+#: bouquetsettings.py:298
+msgid "Use alternative EPG url:"
+msgstr "Käytä vaihtoehtoista EPG:n URL-osoitetta:"
+
+#: bouquetsettings.py:300
+msgid "Alternative EPG url:"
+msgstr "Vaihtoehtoinen EPG:n URL-osoite:"
+
+#: bouquetsettings.py:360
+msgid "No bouquets selected."
+msgstr "Suosikkilistaa ei ole valittu."
+
+#: bouquetsettings.py:385
+msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."
+msgstr "Suosikkilistan nimi ei voi olla tyhjä. Anna yksilöllinen suosikkilistan nimi. Vähintään 3 merkkiä."
+
+#: bouquetsettings.py:393 server.py:221
+msgid "Name already used. Please enter a unique name."
+msgstr "Nimi on jo käytössä. Anna yksilöllinen nimi."
+
+#: buildbouquets.py:42 update.py:61
+msgid "Building Bouquets"
+msgstr "Suosikkilistoja rakennetaan"
+
+#: buildbouquets.py:51 update.py:69
+msgid "Building Bouquets..."
+msgstr "Suosikkilistoja rakennetaan..."
+
+#: buildbouquets.py:203 update.py:245
+msgid "Downloading live data..."
+msgstr "Ladataan live-dataa..."
+
+#: buildbouquets.py:206 buildbouquets.py:294 buildbouquets.py:472 update.py:248
+#: update.py:372 update.py:550
+msgid "Downloading VOD data..."
+msgstr "Ladataan VOD-dataa..."
+
+#: buildbouquets.py:209 buildbouquets.py:297 buildbouquets.py:475
+#: buildbouquets.py:502 buildbouquets.py:646 update.py:251 update.py:375
+#: update.py:553 update.py:583 update.py:727
+msgid "Downloading series data..."
+msgstr "Ladataan sarjat-dataa..."
+
+#: buildbouquets.py:216 update.py:258
+msgid "Downloading external playlist..."
+msgstr "Ladataan ulkoista soittolistaa..."
+
+#: buildbouquets.py:218 update.py:260
+msgid "Loadind local playlist..."
+msgstr "Ladataan paikallista soittolistaa..."
+
+#: buildbouquets.py:224 buildbouquets.py:242 update.py:266 update.py:284
+msgid "Processing live data..."
+msgstr "Käsitellään live-dataa..."
+
+#: buildbouquets.py:230 update.py:272
+msgid "Processing VOD data..."
+msgstr "Käsitellään VOD-dataa..."
+
+#: buildbouquets.py:236 buildbouquets.py:304 buildbouquets.py:482
+#: buildbouquets.py:507 buildbouquets.py:651 update.py:278 update.py:382
+#: update.py:560 update.py:588 update.py:732
+msgid "Processing series data..."
+msgstr "Käsitellään sarjat-dataa..."
+
+#: buildbouquets.py:302 buildbouquets.py:480 update.py:380 update.py:558
+msgid "Process VOD data..."
+msgstr "Käsittele VOD-dataa..."
+
+#: buildbouquets.py:679 update.py:763
+msgid ""
+"Your provider does not have the 'simple' API call\n"
+"Unable to build series.\n"
+"Alternative method might be added in the future."
+msgstr ""
+"Palveluntarjoajallasi ei ole 'yksinkertaista' API-kutsua\n"
+"Sarjoja ei voi rakentaa. \n"
+"Vaihtoehtoinen menetelmä voidaan lisätä tulevaisuudessa."
+
+#: buildbouquets.py:956
+msgid " IPTV Bouquets Created"
+msgstr " IPTV-suosikkilistat luotu"
+
+#: catchup.py:133
+#, python-format
+msgid "TV Archive: %s"
+msgstr "TV-arkisto: %s"
+
+#: catchup.py:258
+msgid "Catchup currently not available. Missing EPG data"
+msgstr "Catchup ei tällä hetkellä saatavilla. EPG-tiedot puuttuvat"
+
+#: choosecategories.py:45
+msgid "Category"
+msgstr "Kategoria"
+
+#: choosecategories.py:46
+msgid "Channel"
+msgstr "Kanava"
+
+#: choosecategories.py:50 deletebouquets.py:36
+msgid "Invert"
+msgstr "Invertoi"
+
+#: choosecategories.py:51
+msgid "Reset"
+msgstr "Nollaa"
+
+#: choosecategories.py:53
+msgid "Show Streams"
+msgstr "Näytä striimit"
+
+#: choosecategories.py:266 choosecategories.py:470 choosecategories.py:510
+#: choosecategories.py:607 choosecategories.py:611
+msgid "Choose Live Categories"
+msgstr "Valitse Live-kategoriat"
+
+#: choosecategories.py:274 choosecategories.py:317
+msgid "Next"
+msgstr "Seuraava"
+
+#: choosecategories.py:276 choosecategories.py:319 choosecategories.py:354
+msgid "Create"
+msgstr "Luo"
+
+#: choosecategories.py:309 choosecategories.py:479 choosecategories.py:527
+#: choosecategories.py:601 choosecategories.py:619
+msgid "Choose VOD Categories"
+msgstr "Valitse VOD-kategoriat"
+
+#: choosecategories.py:348 choosecategories.py:488 choosecategories.py:544
+#: choosecategories.py:593 choosecategories.py:625
+msgid "Choose Series Categories"
+msgstr "Valitse Sarjat-kategoriat"
+
+#: deletebouquets.py:27 mainmenu.py:132
+msgid "Delete Bouquets"
+msgstr "Poista suosikkilistat"
+
+#: deletebouquets.py:34 picons.py:38
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: deletebouquets.py:35 playlists.py:79
+msgid "Delete"
+msgstr "Poista"
+
+#: deletebouquets.py:37
+msgid "Clear All"
+msgstr "Tyhjennä kaikki"
+
+#: downloadpicons.py:115
+msgid "Downloadng Picons"
+msgstr "Ladataan piconeja"
+
+#: downloadpicons.py:117
+msgid "Making BouquetMakerXtream Picons"
+msgstr "Tehdään BouquetMakerXtream-piconeja"
+
+#: downloadpicons.py:216
+msgid "No picons found."
+msgstr "Piconeja ei löydy."
+
+#: downloadpicons.py:311
+msgid "Size: "
+msgstr "Koko: "
+
+#: downloadpicons.py:311
+msgid "Type: "
+msgstr "Tyyppi: "
+
+#: downloadpicons.py:311
+msgid "Url: "
+msgstr "Url: "
+
+#: downloadpicons.py:311 downloadpicons.py:420
+msgid "Exists: "
+msgstr "Olemassa: "
+
+#: downloadpicons.py:311
+#, python-format
+msgid "Success: %s   "
+msgstr "Onnistuminen: %s   "
+
+#: downloadpicons.py:312
+#, python-format
+msgid "Picon %d of %d"
+msgstr "Piconi %d %d:sta"
+
+#: downloadpicons.py:419
+msgid ""
+"Finished.\n"
+"\n"
+msgstr ""
+"Valmis.\n"
+"\n"
+
+#: downloadpicons.py:420
+msgid "Success: "
+msgstr "Onnistuminen: "
+
+#: downloadpicons.py:420
+msgid "Bad size: "
+msgstr "Huono koko: "
+
+#: downloadpicons.py:420
+msgid "bad type: "
+msgstr "huono tyyppi: "
+
+#: downloadpicons.py:420
+msgid "bad url: "
+msgstr "huono url: "
+
+#: downloadpicons.py:421
+msgid "Restart your GUI to refresh picons."
+msgstr "Päivitä piconit käynnistämällä Enigma2 uudelleen."
+
+#: downloadpicons.py:421
+msgid "Your created picons can be found in"
+msgstr "Luomasi piconit löytyvät"
+
+#: downloadpicons.py:422
+msgid "Your failed picon list can be found in"
+msgstr "Epäonnistunut piconi-lista löytyy"
+
+#: downloadpicons.py:427
+msgid "Picon Error"
+msgstr "Piconi-virhe"
+
+#: mainmenu.py:39
+msgid "Main Menu"
+msgstr "Päävalikko"
+
+#: mainmenu.py:63
+msgid "Playlists.txt location is invalid and has been reset."
+msgstr "Playlists.txt-tiedoston sijainti on virheellinen ja se on nollattu."
+
+#: mainmenu.py:118
+msgid "Playlists"
+msgstr "Soittolistat"
+
+#: mainmenu.py:120 settings.py:60
+msgid "Main Settings"
+msgstr "Pääasetukset"
+
+#: mainmenu.py:130
+msgid "Update Bouquets"
+msgstr "Päivitä suosikkilistat"
+
+#: mainmenu.py:131 picons.py:31
+msgid "Download Picons"
+msgstr "Lataa piconit"
+
+#: mainmenu.py:133
+msgid "Delete All BMX Bouquets"
+msgstr "Poista kaikki BMX-suosikkilistat"
+
+#: mainmenu.py:135 server.py:46
+msgid "Add Playlist"
+msgstr "Lisää soittolista"
+
+#: mainmenu.py:169
+msgid "Delete all BMX created bouquets?"
+msgstr "Poista kaikki BMX:llä luodut suosikkilistat?"
+
+#: parsem3u.py:68
+msgid "Stream"
+msgstr "Striimi"
+
+#: picons.py:39
+msgid "Download"
+msgstr "Lataa"
+
+#: piconsettings.py:38
+msgid "Picon Settings"
+msgstr "Piconi-asetukset"
+
+#: piconsettings.py:78 server.py:84 settings.py:100
+msgid "Really close without saving settings?"
+msgstr "Suljetaanko tallentamatta asetuksia?"
+
+#: piconsettings.py:106 settings.py:129
+msgid "You need to restart the GUI"
+msgstr "Sinun on käynnistettävä Enigma2 uudelleen"
+
+#: piconsettings.py:106 settings.py:129
+msgid "Do you want to restart now?"
+msgstr "Käynnistetäänkö uudelleen nyt?"
+
+#: piconsettings.py:117
+msgid "Picon download location"
+msgstr "Piconien lataussijainti"
+
+#: piconsettings.py:118
+msgid "Picon size"
+msgstr "Piconin koko"
+
+#: piconsettings.py:119
+msgid "Picon type"
+msgstr "Piconin tyyppi"
+
+#: piconsettings.py:121
+msgid "Overwrite picons with the same name"
+msgstr "Korvaa samannimiset piconit"
+
+#: piconsettings.py:122
+msgid "Custom location. Manual symlink required"
+msgstr "Mukautettu sijainti. Manuaalinen symbolilinkki vaaditaan"
+
+#: piconsettings.py:123
+msgid "Max download threads. Increase for speed. Reduce if downloads are freezing"
+msgstr "Enimmäislatausketjut. Lisää nopeuttaaksesi. Vähennä, jos lataukset jäätyvät"
+
+#: piconsettings.py:124
+msgid "Max size of source picon"
+msgstr "Lähteen piconin enimmäiskoko"
+
+#: piconsettings.py:125
+msgid "Max width of source picon"
+msgstr "Lähteen piconin enimmäisleveys"
+
+#: piconsettings.py:209 settings.py:286 settings.py:301
+msgid "Choose Directory:"
+msgstr "Valitse hakemisto:"
+
+#: piconsettings.py:210 settings.py:287 settings.py:302
+msgid "Choose directory"
+msgstr "Valitse hakemisto"
+
+#: playlists.py:44 settings.py:26
+msgid "Please enter the correct pin code"
+msgstr "Anna oikea pin-koodi"
+
+#: playlists.py:44 settings.py:26
+msgid "Enter pin code"
+msgstr "Anna pin-koodi"
+
+#: playlists.py:53 settings.py:35
+msgid "The pin code you entered is wrong."
+msgstr "Antamasi pin-koodi on väärä."
+
+#: playlists.py:75
+msgid "Select Playlist"
+msgstr "Valitse soittolista"
+
+#: playlists.py:80
+msgid "Info"
+msgstr "Tiedot"
+
+#: playlists.py:383 playlists.py:469
+msgid "Server Not Responding"
+msgstr "Palvelin ei vastaa"
+
+#: playlists.py:405 playlists.py:471
+msgid "Not Authorised"
+msgstr "Ei sallittu"
+
+#: playlists.py:409 playlists.py:417 playlists.py:454
+msgid "Active"
+msgstr "Aktiivinen"
+
+#: playlists.py:411 playlists.py:463
+msgid "Banned"
+msgstr "Kielletty"
+
+#: playlists.py:413 playlists.py:467
+msgid "Disabled"
+msgstr "Ei käytössä"
+
+#: playlists.py:415 playlists.py:465
+msgid "Expired"
+msgstr "Vanhentunut"
+
+#: playlists.py:419 playlists.py:421
+msgid "Expires: "
+msgstr "Vanhenee: "
+
+#: playlists.py:423
+msgid "Active Conn:"
+msgstr "Aktiivinen yhteys:"
+
+#: playlists.py:426
+msgid "Max Conn:"
+msgstr "Maksimi yhteydet:"
+
+#: playlists.py:437 playlists.py:454
+msgid "Url OK"
+msgstr "Url OK"
+
+#: playlists.py:438
+msgid "External playlist"
+msgstr "Ulkoinen soittolista"
+
+#: playlists.py:441
+msgid "Local file"
+msgstr "Paikallinen tiedosto"
+
+#: playlists.py:484
+msgid "Delete selected playlist?"
+msgstr "Poistetaanko valittu soittolista?"
+
+#: playlists.py:510
+msgid "Delete providers EPG data?"
+msgstr "Poistetaanko palveluntarjoajan EPG-data?"
+
+#: playlists.py:537
+msgid "Url is invalid or playlist/user no longer authorised!"
+msgstr "URL-osoite on virheellinen tai soittolista/käyttäjä ei ole enää valtuutettu!"
+
+#: playlists.py:540
+msgid "User Info only available for xtream/XUI One lines"
+msgstr "Käyttäjätiedot saatavilla vain xtream/XUI One -riveille"
+
+#: plugin.py:96
+msgid "XPicons - 220x132 Pixel"
+msgstr "XPicons - 220x132 pikseliä"
+
+#: plugin.py:97
+msgid "ZZZPicons - 400x240 Pixel"
+msgstr "ZZZPicons - 400x240 pikseliä"
+
+#: plugin.py:124
+msgid "Bottom"
+msgstr "Alaosa"
+
+#: plugin.py:124
+msgid "Top"
+msgstr "Yläosa"
+
+#: plugin.py:127
+msgid "24 Bit"
+msgstr "24-bittinen"
+
+#: plugin.py:127
+msgid "8 Bit"
+msgstr "8-bittinen"
+
+#: plugin.py:128
+msgid "Service Reference Picons"
+msgstr "Kanavaviite-piconit (SRP)"
+
+#: plugin.py:128
+msgid "Service Name Picons"
+msgstr "Kanavan nimi -piconit (SNP)"
+
+#: plugin.py:136
+msgid "100KB"
+msgstr "100 kt"
+
+#: plugin.py:136
+msgid "200KB"
+msgstr "200 kt"
+
+#: plugin.py:136
+msgid "300KB"
+msgstr "300 kt"
+
+#: plugin.py:136
+msgid "400KB"
+msgstr "400 kt"
+
+#: plugin.py:136
+msgid "500KB"
+msgstr "500 kt"
+
+#: plugin.py:136 plugin.py:137
+msgid "No limit"
+msgstr "Ei rajoitusta"
+
+#: plugin.py:137
+msgid "480px"
+msgstr "480 pikseliä"
+
+#: plugin.py:137
+msgid "728px"
+msgstr "728 pikseliä"
+
+#: plugin.py:137
+msgid "1000px"
+msgstr "1000 pikseliä"
+
+#: plugin.py:137
+msgid "1280px"
+msgstr "1280 pikseliä"
+
+#: plugin.py:137
+msgid "1920px"
+msgstr "1920 pikseliä"
+
+#: plugin.py:211
+msgid "Bouquet Maker Xtream"
+msgstr "Bouquet Maker Xtream"
+
+#: plugin.py:434
+msgid "IPTV Bouquets Creator by KiddaC"
+msgstr "KiddaC:n IPTV Bouquets Creator"
+
+#: plugin.py:435
+msgid "BouquetMakerXtream"
+msgstr "BouquetMakerXtream"
+
+#: server.py:54 settings.py:68
+msgid "Save"
+msgstr "Tallenna"
+
+#: server.py:55
+msgid "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/playlists.txt file"
+msgstr "Voit lisätä soittolistan URL-osoitteita manuaalisesti /etc/enigma2/bouquetmakerxtream/playlists.txt-tiedostoon"
+
+#: server.py:100
+msgid "Xtream codes / XUI ONE (get.php)"
+msgstr "Xtream-koodit / XUI ONE (get.php)"
+
+#: server.py:100
+msgid "External #EXTM3U playlist"
+msgstr "Ulkoinen #EXTM3U-soittolista"
+
+#: server.py:114
+msgid "Select playlist type:"
+msgstr "Valitse soittolistan tyyppi:"
+
+#: server.py:117 server.py:125
+msgid "Protocol:"
+msgstr "Protokolla:"
+
+#: server.py:118
+msgid "Server URL: i.e. domain.xyz"
+msgstr "Palvelimen URL-osoite: eli domain.xyz"
+
+#: server.py:119
+msgid "Port: (optional) i.e. 8080"
+msgstr "Portti: (valinnainen) eli 8080"
+
+#: server.py:120
+msgid "Username:"
+msgstr "Käyttäjätunnus:"
+
+#: server.py:121
+msgid "Password:"
+msgstr "Salasana:"
+
+#: server.py:126
+msgid "External url: i.e pastebin.com/raw/blahblah"
+msgstr "Ulkoinen URL-osoite: eli pastebin.com/raw/blaablaa"
+
+#: server.py:208
+msgid "Details are not valid or unauthorised"
+msgstr "Tiedot eivät ole kelvollisia tai ovat luvattomia"
+
+#: server.py:213
+msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."
+msgstr "Suosikkilistan nimi ei voi olla tyhjä. Anna yksilöllinen suosikkilistan nimi. Vähintään 2 merkkiä."
+
+#: server.py:232
+msgid "Playlist added successfully."
+msgstr "Soittolista lisätty onnistuneesti."
+
+#: serverinfo.py:31
+msgid "User Information"
+msgstr "Käyttäjän tiedot"
+
+#: serverinfo.py:44
+msgid "Status:"
+msgstr "Tila:"
+
+#: serverinfo.py:45
+msgid "Expiry Date:"
+msgstr "Päättymispäivä:"
+
+#: serverinfo.py:46
+msgid "Created At:"
+msgstr "Luotu:"
+
+#: serverinfo.py:47
+msgid "Is Trial:"
+msgstr "On koekäyttö:"
+
+#: serverinfo.py:48
+msgid "Active Connections:"
+msgstr "Aktiiviset yhteydet:"
+
+#: serverinfo.py:49
+msgid "Max Connections:"
+msgstr "Maksimi yhtrydet:"
+
+#: serverinfo.py:50
+msgid "Allowed Output Formats:"
+msgstr "Sallitut tuotoksen formaatit:"
+
+#: serverinfo.py:51
+msgid "Real URL:"
+msgstr "Todellinen URL-osoite:"
+
+#: serverinfo.py:52
+msgid "Timezone:"
+msgstr "Aikavyöhyke:"
+
+#: serverinfo.py:53
+msgid "Server Offset:"
+msgstr "Palvelinoffset:"
+
+#: serverinfo.py:61
+msgid "Close"
+msgstr "Sulje"
+
+#: settings.py:112
+msgid ""
+"Please change default parental pin.\n"
+"\n"
+"Pin cannot be 0000, 1111 or 1234"
+msgstr "Vaihda oletus lapsilukituksen PIN-koodi. PIN-koodi ei voi olla 0000, 1111 tai 1234"
+
+#: settings.py:139
+msgid "Select skin"
+msgstr "Valitse teema"
+
+#: settings.py:140
+msgid "playlists.txt location"
+msgstr "playlists.txt sijainti"
+
+#: settings.py:140 settings.py:141 settings.py:148 settings.py:155
+msgid " *Restart GUI Required"
+msgstr " *Enigma2:n uudelleenkäynnistys tarvitaan"
+
+#: settings.py:141
+msgid "Local M3U File location"
+msgstr "Paikallisen M3U-tiedoston sijainti"
+
+#: settings.py:144
+msgid "Default LIVE stream type"
+msgstr "LIVE-striimin oletustyyppi"
+
+#: settings.py:145
+msgid "Default VOD/SERIES stream type"
+msgstr "VOD/SARJAT-striimin oletustyyppi"
+
+#: settings.py:146
+msgid "BouquetMakerXtream parental control"
+msgstr "BouquetMakerXtream lapsilukko"
+
+#: settings.py:147
+msgid "BouquetMakerXtream parental pin"
+msgstr "BouquetMakerXtream lapsilukon PIN"
+
+#: settings.py:148
+msgid "Show in main menu"
+msgstr "Näytä päävalikossa"
+
+#: settings.py:150
+msgid "Skip playlist selection screen if only 1 playlist"
+msgstr "Ohita soittolistan valintanäyttö, jos vain yksi soittolista"
+
+#: settings.py:152
+msgid "Automatic live bouquet update"
+msgstr "Automaattinen live-suosikkilistan päivitys"
+
+#: settings.py:153
+msgid "Automatic live bouquet update time"
+msgstr "Automaattinen live-suosikkilistan päivitysaika"
+
+#: settings.py:155
+msgid "Embed Catchup player in channelselect screen"
+msgstr "Upota Catchup-soitin kanavanvalintanäyttöön"
+
+#: settings.py:156
+msgid "Prefix Catchup channels"
+msgstr "Etuliite Catchup-kanaville"
+
+#: settings.py:157
+msgid "Select Catchup prefix symbol"
+msgstr "Valitse Catchup-etuliitesymboli"
+
+#: settings.py:158
+msgid "Margin before Catchup (mins)"
+msgstr "Marginaali ennen Catchupia (minuuttia)"
+
+#: settings.py:159
+msgid "Margin after Catchup (mins)"
+msgstr "Marginaali Catchupin jälkeen (minuuttia)"
+
+#: settings.py:161
+msgid "Group bouquets into its own folder"
+msgstr "Ryhmittele suosikkilistat omaan kansioonsa"
+
+#: settings.py:162
+msgid "Exit plugin on bouquet creation"
+msgstr "Lopeta lisäosa suosikkilistan luomisen yhteydessä"
+
+#: settings.py:164
+msgid "Max Live channels. 0 = unlimited (slow)."
+msgstr "Maksimi live-kanavia. 0 = rajoittamaton (hidas)."
+
+#: settings.py:165
+msgid "Max VOD channels. 0 = unlimited (slow)"
+msgstr "Maksimi VOD-kanavia. 0 = rajoittamaton (hidas)."
+
+#: settings.py:166
+msgid "Max Series channels. 0 = unlimited (slow)"
+msgstr "Maksimi sarjat-kanavia. 0 = rajoittamaton (hidas)."
+
+#: update.py:104
+msgid " Providers IPTV Updated"
+msgstr " Palveluntarjoajan IPTV päivitetty"
+
+#: update.py:159
+#, python-format
+msgid "Updating Playlist %d of %d"
+msgstr "Päivitetään soittolistaa %d / %d"
