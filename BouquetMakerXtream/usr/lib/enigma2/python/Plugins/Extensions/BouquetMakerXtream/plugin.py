@@ -172,6 +172,10 @@ else:
     cfg.save()
 
 font_folder = os.path.join(dir_plugins, "fonts/")
+addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
+addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
+addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
+addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
 
 hdr = {'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin'}
 
@@ -426,11 +430,6 @@ def playOriginalChannel(self, answer=None):
 
 
 def Plugins(**kwargs):
-    addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
-    addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
-    addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
-    addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
-
     iconFile = "icons/plugin-icon_sd.png"
     if screenwidth.width() > 1280:
         iconFile = "icons/plugin-icon.png"
