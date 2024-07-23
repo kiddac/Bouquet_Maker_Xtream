@@ -161,7 +161,7 @@ if location:
         cfg.location_valid.setValue(True)
         cfg.save()
     else:
-        os.makedirs(location, exist_ok=True)  # Create directory if it doesn't exist
+        os.makedirs(location)  # Create directory if it doesn't exist
         playlist_file = os.path.join(location, "playlists.txt")
 
         cfg.location_valid.setValue(True)
