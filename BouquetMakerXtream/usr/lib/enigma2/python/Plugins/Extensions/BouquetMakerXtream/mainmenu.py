@@ -77,18 +77,6 @@ class BmxMainMenu(Screen):
             print(e)
             dependencies = False
 
-        """
-        try:
-            import lzma
-        except ImportError as e:
-            print(e)
-            try:
-                from backports import lzma
-            except ImportError as ex:
-                print(ex)
-                dependencies = False
-                """
-
         if dependencies is False:
             os.chmod("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/dependencies.sh", 0o0755)
             cmd1 = ". /usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/dependencies.sh"

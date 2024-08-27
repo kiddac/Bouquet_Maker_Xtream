@@ -4,7 +4,7 @@
 from . import _
 from . import bouquet_globals as glob
 from .bmxStaticText import StaticText
-from .plugin import cfg, hdr, screenwidth
+from .plugin import cfg, screenwidth
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -27,6 +27,8 @@ except:
     from httplib import HTTPConnection
 
     HTTPConnection.debuglevel = 0
+
+hdr = {'User-Agent': str(cfg.useragent.value)}
 
 
 class BmxCatchup(Screen):

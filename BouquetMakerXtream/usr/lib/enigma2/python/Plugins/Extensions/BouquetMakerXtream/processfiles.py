@@ -15,11 +15,10 @@ except:
 
 
 def processFiles():
-    # check if playlists.txt file exists in specified location
+    # check files exsits
     if not os.path.isfile(playlist_file):
         open(playlist_file, "a").close()
 
-    # check if playlists.json file exists in specified location
     if not os.path.isfile(playlists_json):
         open(playlists_json, "a").close()
 
@@ -40,7 +39,7 @@ def processFiles():
         for line in lines:
             line = re.sub(" +", " ", line)
             line = line.strip(" ")
-            if not line.startswith("http://") and not line.startswith("https://") and not line.startswith("#"):
+            if not line.startswith(("http://", "https://", "#")):
                 line = "# " + line
             if "=mpegts" in line:
                 line = line.replace("=mpegts", "=ts")
@@ -51,8 +50,7 @@ def processFiles():
 
             playlist_type = "xtream" if "get.php" in line else "external"
 
-            if playlist_type == "xtream" and not line.startswith("#") and line.startswith("http"):
-                name = ""
+            if playlist_type == "xtream" and line.startswith("http"):
                 port = ""
                 username = ""
                 password = ""
@@ -61,29 +59,31 @@ def processFiles():
                 epg_offset = 0
 
                 parsed_uri = urlparse(line)
-
                 protocol = parsed_uri.scheme + "://"
+
+                if not (protocol == "http://" or protocol == "https://"):
+                    continue
 
                 domain = parsed_uri.hostname.lower()
                 name = domain
+
                 if line.partition(" #")[-1]:
                     name = line.partition(" #")[-1].strip()
 
                 if parsed_uri.port:
                     port = parsed_uri.port
-
-                    host = "%s%s:%s" % (protocol, domain, port)
+                    host = protocol + domain + ":" + str(port)
                 else:
-                    host = "%s%s" % (protocol, domain)
+                    host = protocol + domain
 
                 if playlist_type == "xtream":
                     query = parse_qs(parsed_uri.query, keep_blank_values=True)
 
-                    if "username" in query:
-                        username = query["username"][0].strip()
+                    if "username" not in query or "password" not in query:
+                        continue
 
-                    if "password" in query:
-                        password = query["password"][0].strip()
+                    username = query["username"][0].strip()
+                    password = query["password"][0].strip()
 
                     if "type" in query:
                         playlistformat = query["type"][0].strip()
@@ -94,7 +94,7 @@ def processFiles():
                     if "timeshift" in query:
                         try:
                             epg_offset = int(query["timeshift"][0].strip())
-                        except:
+                        except ValueError:
                             pass
 
                     if epg_offset != 0:
@@ -107,7 +107,6 @@ def processFiles():
 
         # read entries from playlists.txt
         index = 0
-
         live_type = cfg.live_type.getValue()
         vod_type = cfg.vod_type.getValue()
 
@@ -117,14 +116,6 @@ def processFiles():
             password = ""
             playlistformat = "m3u_plus"
             output = "ts"
-
-            live_categories_hidden = []
-            vod_categories_hidden = []
-            series_categories_hidden = []
-
-            live_streams_hidden = []
-            vod_streams_hidden = []
-            series_streams_hidden = []
 
             show_live = True
             show_vod = False
@@ -145,15 +136,12 @@ def processFiles():
 
             next_days = "0"
 
-            directsource = "Standard"
-
             playlist_type = "xtream" if "get.php" in line else "external"
 
-            if not line.startswith("#") and line.startswith("http"):
+            if line.startswith("http"):
                 line = line.strip()
 
                 parsed_uri = urlparse(line)
-
                 protocol = parsed_uri.scheme + "://"
 
                 if not (protocol == "http://" or protocol == "https://"):
@@ -161,30 +149,24 @@ def processFiles():
 
                 domain = parsed_uri.hostname.lower()
                 name = domain
+
                 if line.partition(" #")[-1]:
                     name = line.partition(" #")[-1].strip()
 
                 if parsed_uri.port:
                     port = parsed_uri.port
-
-                    host = "%s%s:%s" % (protocol, domain, port)
+                    host = protocol + domain + ":" + str(port)
                 else:
-                    host = "%s%s" % (protocol, domain)
+                    host = protocol + domain
 
                 if playlist_type == "xtream":
                     query = parse_qs(parsed_uri.query, keep_blank_values=True)
 
-                    if "username" in query:
-                        username = query["username"][0].strip()
-
-                    else:
+                    if "username" not in query or "password" not in query:
                         continue
 
-                    if "password" in query:
-                        password = query["password"][0].strip()
-
-                    else:
-                        continue
+                    username = query["username"][0].strip()
+                    password = query["password"][0].strip()
 
                     if "type" in query:
                         playlistformat = query["type"][0].strip()
@@ -195,12 +177,12 @@ def processFiles():
                     if "timeshift" in query:
                         try:
                             epg_offset = int(query["timeshift"][0].strip())
-                        except:
+                        except ValueError:
                             pass
 
-                    player_api = "%s/player_api.php?username=%s&password=%s" % (host, username, password)
-                    xmltv_api = "%s/xmltv.php?username=%s&password=%s" % (host, username, password)
-                    full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, playlistformat, output)
+                    player_api = host + "/player_api.php?username=" + username + "&password=" + password
+                    xmltv_api = host + "/xmltv.php?username=" + username + "&password=" + password
+                    full_url = host + "/get.php?username=" + username + "&password=" + password + "&type=" + playlistformat + "&output=" + output
 
                 if playlist_type == "external":
                     full_url = line.partition("#")[0].strip()
@@ -208,48 +190,52 @@ def processFiles():
                 playlist_exists = False
 
                 if playlist_type == "xtream":
-                    if playlists_all:
-                        for playlist in playlists_all:
-                            # extra check in case playlists.txt details have been amended
-                            if "domain" in playlist["playlist_info"] and "username" in playlist["playlist_info"] and "password" in playlist["playlist_info"]:
-                                if playlist["playlist_info"]["domain"] == domain and playlist["playlist_info"]["username"] == username and playlist["playlist_info"]["password"] == password:
-                                    playlist_exists = True
 
-                                    if "live_category_order" not in playlist["settings"]:
-                                        playlist["settings"]["live_category_order"] = live_category_order
+                    for playlist in playlists_all:
+                        # extra check in case playlists.txt details have been amended
+                        if ("domain" in playlist["playlist_info"]
+                                and "username" in playlist["playlist_info"]
+                                and "password" in playlist["playlist_info"]):
+                            if (playlist["playlist_info"]["domain"] == domain
+                                    and playlist["playlist_info"]["username"] == username
+                                    and playlist["playlist_info"]["password"] == password):
 
-                                    if "live_stream_order" not in playlist["settings"]:
-                                        playlist["settings"]["live_stream_order"] = live_stream_order
+                                playlist_exists = True
 
-                                    if "vod_category_order" not in playlist["settings"]:
-                                        playlist["settings"]["vod_category_order"] = vod_category_order
+                                if "live_category_order" not in playlist["settings"]:
+                                    playlist["settings"]["live_category_order"] = live_category_order
 
-                                    if "vod_stream_order" not in playlist["settings"]:
-                                        playlist["settings"]["vod_stream_order"] = vod_stream_order
+                                if "live_stream_order" not in playlist["settings"]:
+                                    playlist["settings"]["live_stream_order"] = live_stream_order
 
-                                    if ("next_days" not in playlist["settings"]) or ("next_days" in playlist["settings"] and playlist["settings"]["next_days"] == 0):
-                                        playlist["settings"]["next_days"] = next_days
+                                if "vod_category_order" not in playlist["settings"]:
+                                    playlist["settings"]["vod_category_order"] = vod_category_order
 
-                                    playlist["playlist_info"]["name"] = name
-                                    playlist["playlist_info"]["type"] = playlistformat
-                                    playlist["playlist_info"]["output"] = output
-                                    playlist["playlist_info"]["full_url"] = full_url  # get.php
-                                    playlist["playlist_info"]["index"] = index
+                                if "vod_stream_order" not in playlist["settings"]:
+                                    playlist["settings"]["vod_stream_order"] = vod_stream_order
 
-                                    playlist["data"]["live_streams"] = []
-                                    playlist["data"]["vod_streams"] = []
-                                    playlist["data"]["series_streams"] = []
+                                if ("next_days" not in playlist["settings"]) or ("next_days" in playlist["settings"] and playlist["settings"]["next_days"] == 0):
+                                    playlist["settings"]["next_days"] = next_days
 
-                                    # playlist["data"]["data_downloaded"] = False
-                                    playlist["settings"]["epg_offset"] = epg_offset
+                                playlist["playlist_info"]["name"] = name
+                                playlist["playlist_info"]["type"] = playlistformat
+                                playlist["playlist_info"]["output"] = output
+                                playlist["playlist_info"]["full_url"] = full_url  # get.php
+                                playlist["playlist_info"]["index"] = index
 
-                                    if playlist["settings"]["epg_alternative"] is True:
-                                        if playlist["settings"]["epg_alternative_url"]:
-                                            playlist["playlist_info"]["xmltv_api"] = playlist["settings"]["epg_alternative_url"]
-                                    else:
-                                        playlist["playlist_info"]["xmltv_api"] = xmltv_api
-                                    index += 1
-                                    break
+                                playlist["data"]["live_streams"] = []
+                                playlist["data"]["vod_streams"] = []
+                                playlist["data"]["series_streams"] = []
+
+                                playlist["settings"]["epg_offset"] = epg_offset
+
+                                if playlist["settings"]["epg_alternative"] is True:
+                                    if playlist["settings"]["epg_alternative_url"]:
+                                        playlist["playlist_info"]["xmltv_api"] = playlist["settings"]["epg_alternative_url"]
+                                else:
+                                    playlist["playlist_info"]["xmltv_api"] = xmltv_api
+                                index += 1
+                                break
 
                     if not playlist_exists:
                         playlists_all.append({
@@ -286,7 +272,6 @@ def processFiles():
                                 ("epg_offset", server_offset),
                                 ("epg_alternative", epg_alternative),
                                 ("epg_alternative_url", epg_alternative_url),
-                                ("directsource", directsource),
                                 ("next_days", next_days)
                             ]),
                             "data": dict([
@@ -296,17 +281,12 @@ def processFiles():
                                 ("live_streams", []),
                                 ("vod_streams", []),
                                 ("series_streams", []),
-                                ("live_categories_hidden", live_categories_hidden),
-                                ("vod_categories_hidden", vod_categories_hidden),
-                                ("series_categories_hidden", series_categories_hidden),
-                                ("live_streams_hidden", live_streams_hidden),
-                                ("vod_streams_hidden", vod_streams_hidden),
-                                ("series_streams_hidden", series_streams_hidden),
-                                ("catchup_checked", False),
-                                ("last_check", ""),
-                                ("epg_date", ""),
-                                ("data_downloaded", False),
-                                ("epg_importer_files", False),
+                                ("live_categories_hidden", []),
+                                ("vod_categories_hidden", []),
+                                ("series_categories_hidden", []),
+                                ("live_streams_hidden", []),
+                                ("vod_streams_hidden", []),
+                                ("series_streams_hidden", []),
                                 ("server_offset", server_offset)
                             ]),
                         })
@@ -374,38 +354,15 @@ def processFiles():
                                 ("live_streams", []),
                                 ("vod_streams", []),
                                 ("series_streams", []),
-                                ("live_categories_hidden", live_categories_hidden),
-                                ("vod_categories_hidden", vod_categories_hidden),
-                                ("series_categories_hidden", series_categories_hidden),
-                                ("live_streams_hidden", live_streams_hidden),
-                                ("vod_streams_hidden", vod_streams_hidden),
-                                ("series_streams_hidden", series_streams_hidden)
+                                ("live_categories_hidden", []),
+                                ("vod_categories_hidden", []),
+                                ("series_categories_hidden", []),
+                                ("live_streams_hidden", []),
+                                ("vod_streams_hidden", []),
+                                ("series_streams_hidden", [])
                             ]),
                         })
                         index += 1
-
-        # remove old playlists from playlists.json
-        newList = []
-
-        for playlist in playlists_all:
-            for line in lines:
-                if not line.startswith("#"):
-                    if playlist["playlist_info"]["playlist_type"] == "xtream":
-                        if "host" in playlist["playlist_info"] and "username" in playlist["playlist_info"] and "password" in playlist["playlist_info"] and str(playlist["playlist_info"]["domain"]) in line and str(playlist["playlist_info"]["username"]) in line and str(playlist["playlist_info"]["password"]) in line:
-                            newList.append(playlist)
-                            break
-
-                    elif playlist["playlist_info"]["playlist_type"] == "external":
-                        if "full_url" in playlist["playlist_info"] and str(playlist["playlist_info"]["full_url"]) in line:
-                            newList.append(playlist)
-                            break
-
-            if playlist["playlist_info"]["playlist_type"] == "local":
-                path = os.path.join(cfg.local_location.value, playlist["playlist_info"]["full_url"])
-                if os.path.isfile(path):
-                    newList.append(playlist)
-
-        playlists_all = newList
 
     # read local files
     filename = ""
@@ -475,16 +432,47 @@ def processFiles():
                         ("live_streams", []),
                         ("vod_streams", []),
                         ("series_streams", []),
-                        ("live_categories_hidden", live_categories_hidden),
-                        ("vod_categories_hidden", vod_categories_hidden),
-                        ("series_categories_hidden", series_categories_hidden),
-                        ("live_streams_hidden", live_streams_hidden),
-                        ("vod_streams_hidden", vod_streams_hidden),
-                        ("series_streams_hidden", series_streams_hidden)
+                        ("live_categories_hidden", []),
+                        ("vod_categories_hidden", []),
+                        ("series_categories_hidden", []),
+                        ("live_streams_hidden", []),
+                        ("vod_streams_hidden", []),
+                        ("series_streams_hidden", [])
                     ]),
                 })
                 index += 1
 
+    # Remove old playlists from x-playlists.json
+    new_list = []
+
+    for playlist in playlists_all:
+        for line in lines:
+            playlist_type = "xtream" if "get.php" in line else "external"
+
+            if not line.startswith("#"):
+
+                if playlist_type == "xtream":
+                    if (str(playlist["playlist_info"]["domain"]) in line
+                            and "username=" + str(playlist["playlist_info"]["username"]) in line
+                            and "password=" + str(playlist["playlist_info"]["password"]) in line):
+                        new_list.append(playlist)
+                        break
+
+                if playlist_type == "external":
+                    full_url = line.partition("#")[0].strip()
+                    if ("full_url" in playlist["playlist_info"]
+                            and playlist["playlist_info"]["full_url"] in line):
+                        new_list.append(playlist)
+                        break
+
+            if playlist["playlist_info"]["playlist_type"] == "local":
+                path = os.path.join(cfg.local_location.value, playlist["playlist_info"]["full_url"])
+                if os.path.isfile(path):
+                    new_list.append(playlist)
+
+    playlists_all = new_list
+
+    # Write new x-playlists.json file
     with open(playlists_json, "w") as f:
         json.dump(playlists_all, f)
 

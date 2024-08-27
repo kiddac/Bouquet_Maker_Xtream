@@ -1,37 +1,39 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import _
-from . import bouquet_globals as glob
-
-from Components.ActionMap import HelpableActionMap
-from Components.config import ConfigClock, ConfigDirectory, ConfigInteger, ConfigPIN, ConfigSelection, ConfigSelectionNumber, ConfigSubsection, ConfigYesNo, config
-from datetime import datetime
-from enigma import addFont, eServiceReference, eTimer, getDesktop
-from Plugins.Plugin import PluginDescriptor
-from requests.adapters import HTTPAdapter, Retry
-from Screens.ChannelSelection import ChannelSelectionBase
-from ServiceReference import ServiceReference
-
-
+# Standard library imports
 import os
 import re
 import requests
-import shutil
 import sys
 import time
 import twisted.python.runtime
+from datetime import datetime
+from requests.adapters import HTTPAdapter, Retry
+
 
 try:
     from urlparse import urljoin
 except:
     from urllib.parse import urljoin
 
+
+# Enigma2 components
+# from Components.ActionMap import HelpableActionMap
+from Components.config import config, ConfigSubsection, ConfigSelection, ConfigDirectory, ConfigYesNo, ConfigSelectionNumber, ConfigClock, ConfigPIN, ConfigInteger
+from enigma import addFont, eServiceReference, eTimer, getDesktop
+from Plugins.Plugin import PluginDescriptor
+# from Screens.ChannelSelection import ChannelSelectionBase
+from ServiceReference import ServiceReference
+
+# Local application/library-specific imports
+from . import _
+from . import bouquet_globals as glob
+
 try:
     from multiprocessing.pool import ThreadPool
-
     hasMultiprocessing = True
-except:
+except ImportError:
     hasMultiprocessing = False
 
 try:
@@ -40,7 +42,7 @@ try:
         hasConcurrent = True
     else:
         hasConcurrent = False
-except:
+except ImportError:
     hasConcurrent = False
 
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
@@ -50,9 +52,7 @@ epgimporter = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
     epgimporter = True
 
-isDreambox = False
-if os.path.exists("/usr/bin/apt-get"):
-    isDreambox = True
+isDreambox = os.path.exists("/usr/bin/apt-get")
 
 with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version.txt", "r") as f:
     version = f.readline()
@@ -70,9 +70,14 @@ elif screenwidth.width() > 1280:
 else:
     skin_directory = os.path.join(dir_plugins, "skin/hd/")
 
-folders = os.listdir(skin_directory)
-if "common" in folders:
-    folders.remove("common")
+folders = [folder for folder in os.listdir(skin_directory) if folder != "common"]
+
+useragents = [
+    ("Enigma2 - BouquetMakerXtream Plugin"),
+    ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Chrome 124"),
+    ("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0", "Firefox 125"),
+    ("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36", "Android")
+]
 
 config.plugins.BouquetMakerXtream = ConfigSubsection()
 cfg = config.plugins.BouquetMakerXtream
@@ -111,7 +116,7 @@ cfg.catchup_prefix = ConfigSelection(default="~", choices=[("~", "~"), ("!", "!"
 cfg.catchup_start = ConfigSelectionNumber(0, 30, 1, default=0, wraparound=True)
 cfg.catchup_end = ConfigSelectionNumber(0, 30, 1, default=0, wraparound=True)
 cfg.skip_playlists_screen = ConfigYesNo(default=False)
-cfg.wakeup = ConfigClock(default=((9 * 60) + 15) * 60)  # 10:15
+cfg.wakeup = ConfigClock(default=((9 * 60) + 0) * 60)  # 10:00
 cfg.adult = ConfigYesNo(default=False)
 cfg.adultpin = ConfigPIN(default=0000)
 cfg.retries = ConfigSubsection()
@@ -145,14 +150,17 @@ cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[
 ]
 )
 
+cfg.useragent = ConfigSelection(default="Enigma2 - BouquetMakerXtream Plugin", choices=useragents)
 
 # vti picon symlink - ln -s /media/hdd/picon /usr/share/enigma2
 # newenigma2 symlink - # ln -s /data/picons /picons
 
+playlist_file = os.path.join(dir_etc, "playlists.txt")
+playlists_json = os.path.join(dir_etc, "bmx_playlists.json")
+
+# Set skin and font paths
 skin_path = os.path.join(skin_directory, cfg.skin.value)
 common_path = os.path.join(skin_directory, "common/")
-playlists_json = os.path.join(dir_etc, "bmx_playlists.json")
-playlist_file = os.path.join(dir_etc, "playlists.txt")
 
 location = cfg.location.value
 if location:
@@ -172,6 +180,10 @@ else:
     cfg.save()
 
 font_folder = os.path.join(dir_plugins, "fonts/")
+addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
+addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
+addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
+addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
 
 hdr = {'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin'}
 
@@ -181,18 +193,13 @@ if not os.path.exists(dir_etc):
 
 # check if playlists.txt file exists in specified location
 if not os.path.isfile(playlist_file):
-    open(playlist_file, "a").close()
+    with open(playlist_file, "a") as f:
+        f.close()
 
 # check if playlists.json file exists in specified location
 if not os.path.isfile(playlists_json):
-    open(playlists_json, "a").close()
-
-# remove dodgy versions of my plugin
-if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/XStreamityPro/"):
-    try:
-        shutil.rmtree("/usr/lib/enigma2/python/Plugins/Extensions/XStreamityPro/")
-    except Exception as e:
-        print(e)
+    with open(playlists_json, "a") as f:
+        f.close()
 
 # try and override epgimport settings
 try:
@@ -216,12 +223,6 @@ def mainmenu(menu_id, **kwargs):
         return []
 
 
-def extensionsmenu(session, **kwargs):
-    from . import mainmenu
-
-    session.open(mainmenu.BmxMainMenu)
-
-
 # Global variables
 autoStartTimer = None
 originalref = None
@@ -234,6 +235,7 @@ class AutoStartTimer:
     def __init__(self, session):
         self.session = session
         self.timer = eTimer()
+
         try:
             self.timer_conn = self.timer.timeout.connect(self.onTimer)
         except:
@@ -245,27 +247,30 @@ class AutoStartTimer:
             clock = cfg.wakeup.value
             nowt = time.time()
             now = time.localtime(nowt)
-            waketime = int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, now.tm_wday, now.tm_yday, now.tm_isdst)))
-            return waketime
+            return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, now.tm_wday, now.tm_yday, now.tm_isdst)))
         else:
             return -1
 
     def update(self, atLeast=0):
         self.timer.stop()
         wake = self.getWakeTime()
-        now_t = time.time()
-        now = int(now_t)
+        nowtime = time.time()
 
         if wake > 0:
-            if wake < now + atLeast:
-                wake += 24 * 3600  # add 24 hours to next wake time
-            next = wake - now
+            if wake < nowtime + atLeast:
+                # Tomorrow.
+                wake += 24 * 3600
+            next = wake - int(nowtime)
+            if next > 3600:
+                next = 3600
+            if next <= 0:
+                next = 60
             self.timer.startLongTimer(next)
         else:
             wake = -1
 
         wdt = datetime.fromtimestamp(wake)
-        ndt = datetime.fromtimestamp(now)
+        ndt = datetime.fromtimestamp(int(nowtime))
 
         print("[BouquetMakerXtream] WakeUpTime now set to", wdt, "(now=%s)" % ndt)
         return wake
@@ -275,7 +280,7 @@ class AutoStartTimer:
         now = int(time.time())
         wake = self.getWakeTime()
         atLeast = 0
-        if wake - now < 60:
+        if abs(wake - now) < 60:
             self.runUpdate()
             atLeast = 60
         self.update(atLeast)
@@ -290,12 +295,14 @@ class AutoStartTimer:
 def autostart(reason, session=None, **kwargs):
     # called with reason=1 to during shutdown, with reason=0 at startup?
 
+    """
     if cfg.catchup_on.getValue() is True and session is not None:
         global BmxChannelSelectionBase__init__
         BmxChannelSelectionBase__init__ = ChannelSelectionBase.__init__
         ChannelSelectionBase.__init__ = MyChannelSelectionBase__init__
         ChannelSelectionBase.showBmxCatchup = showBmxCatchup
         ChannelSelectionBase.playOriginalChannel = playOriginalChannel
+        """
 
     global autoStartTimer
     global _session
@@ -313,11 +320,13 @@ def autostart(reason, session=None, **kwargs):
                 autoStartTimer = AutoStartTimer(session)
 
 
+"""
 def MyChannelSelectionBase__init__(self, session):
     BmxChannelSelectionBase__init__(self, session)
     self["BmxCatchupAction"] = HelpableActionMap(self, "BMXCatchupActions", {
         "catchup": self.showBmxCatchup,
     })
+    """
 
 
 def showBmxCatchup(self):
@@ -426,11 +435,6 @@ def playOriginalChannel(self, answer=None):
 
 
 def Plugins(**kwargs):
-    addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
-    addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
-    addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
-    addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
-
     iconFile = "icons/plugin-icon_sd.png"
     if screenwidth.width() > 1280:
         iconFile = "icons/plugin-icon.png"
@@ -439,7 +443,7 @@ def Plugins(**kwargs):
 
     main_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_MENU, fnc=mainmenu, needsRestart=True)
 
-    extensions_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=extensionsmenu, needsRestart=True)
+    extensions_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=mainmenu, needsRestart=True)
 
     result = [
         PluginDescriptor(
@@ -462,7 +466,7 @@ def Plugins(**kwargs):
 
     result.append(extensions_menu)
 
-    if cfg.main.getValue():
+    if cfg.main.value:
         result.append(main_menu)
 
     return result

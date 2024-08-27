@@ -1,15 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from . import _
-from .bmxStaticText import StaticText
-from .plugin import autoStartTimer, cfg, skin_directory
+# Standard library imports
+import os
 
+# Enigma2 components
 from Components.ActionMap import ActionMap
-from Components.config import ConfigSelection, ConfigText, ConfigYesNo, config, configfile, getConfigListEntry
 from Components.ConfigList import ConfigListScreen
 from Components.Pixmap import Pixmap
-from enigma import ePoint
+from Components.config import (
+    ConfigSelection,
+    ConfigText,
+    ConfigYesNo,
+    config,
+    configfile,
+    getConfigListEntry,
+)
+
 from Screens import Standby
 from Screens.InputBox import PinInput
 from Screens.LocationBox import LocationBox
@@ -17,7 +24,10 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.BoundFunction import boundFunction
 
-import os
+# Local application/library-specific imports
+from . import _
+from .plugin import autoStartTimer, cfg, skin_directory
+from .bmxStaticText import StaticText
 
 
 class ProtectedScreen:
@@ -28,7 +38,7 @@ class ProtectedScreen:
     def isProtected(self):
         return (config.plugins.BouquetMakerXtream.adult.value)
 
-    def pinEntered(self, result):
+    def pinEntered(self, result=None):
         if result is None:
             self.closeProtectedScreen()
         elif not result:
@@ -44,12 +54,12 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
 
-        if cfg.adult.getValue() is True:
+        if cfg.adult.value is True:
             ProtectedScreen.__init__(self)
 
         self.session = session
 
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+        skin_path = os.path.join(skin_directory, cfg.skin.value)
         skin = os.path.join(skin_path, "settings.xml")
         if os.path.exists("/var/lib/dpkg/status"):
             skin = os.path.join(skin_path, "DreamOS/settings.xml")
@@ -83,18 +93,18 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.initConfig()
         self.onLayoutFinish.append(self.__layoutFinished)
 
-    def clearCaches(self):
+    def clear_caches(self):
         try:
-            os.system("echo 1 > /proc/sys/vm/drop_caches")
-            os.system("echo 2 > /proc/sys/vm/drop_caches")
-            os.system("echo 3 > /proc/sys/vm/drop_caches")
-        except:
+            with open("/proc/sys/vm/drop_caches", "w") as drop_caches:
+                drop_caches.write("1\n2\n3\n")
+        except IOError:
             pass
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
 
     def cancel(self, answer=None):
+
         if answer is None:
             if self["config"].isChanged():
                 self.session.openWithCallback(self.cancel, MessageBox, _("Really close without saving settings?"))
@@ -108,22 +118,24 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         return
 
     def save(self):
-        if cfg.adult.value is True and (cfg.adultpin.value == 0 or cfg.adultpin.value == 0000 or cfg.adultpin.value == 1111 or cfg.adultpin.value == 1234):
+        if cfg.adult.value and cfg.adultpin.value in (0, 1111, 1234):
             self.session.open(MessageBox, _("Please change default parental pin.\n\nPin cannot be 0000, 1111 or 1234"), MessageBox.TYPE_WARNING)
             return
-        else:
-            if self["config"].isChanged():
-                for x in self["config"].list:
-                    x[1].save()
-                cfg.save()
-                configfile.save()
 
-                autoStartTimer.update()
+        if self["config"].isChanged():
+            for x in self["config"].list:
+                x[1].save()
+            cfg.save()
+            configfile.save()
 
-                if self.org_main != cfg.main.getValue() or self.location != cfg.location.getValue() or self.local_location != cfg.local_location.getValue() or self.org_catchup_on != cfg.catchup_on.getValue():
-                    self.changedFinished()
-            self.clearCaches()
-            self.close()
+            autoStartTimer.update()
+
+            if self.org_main != cfg.main.value or self.location != cfg.location.value \
+                    or self.local_location != cfg.local_location.value or self.org_catchup_on != cfg.catchup_on.value:
+                self.changedFinished()
+
+        self.clear_caches()
+        self.close()
 
     def changedFinished(self):
         self.session.openWithCallback(self.executeRestart, MessageBox, _("You need to restart the GUI") + "\n" + _("Do you want to restart now?"), MessageBox.TYPE_YESNO)
@@ -137,30 +149,24 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
 
     def initConfig(self):
         self.cfg_skin = getConfigListEntry(_("Select skin"), cfg.skin)
+        self.cfg_useragent = getConfigListEntry(_("Select fake web user-agent"), cfg.useragent)
         self.cfg_location = getConfigListEntry(_("playlists.txt location") + _(" *Restart GUI Required"), cfg.location)
         self.cfg_local_location = getConfigListEntry(_("Local M3U File location") + _(" *Restart GUI Required"), cfg.local_location)
-        # self.cfg_position = getConfigListEntry(_("Bouquet placement"), cfg.position)
-        # self.cfg_timeout = getConfigListEntry(_("Server timeout (seconds)"), cfg.timeout)
         self.cfg_live_type = getConfigListEntry(_("Default LIVE stream type"), cfg.live_type)
         self.cfg_vod_type = getConfigListEntry(_("Default VOD/SERIES stream type"), cfg.vod_type)
         self.cfg_adult = getConfigListEntry(_("BouquetMakerXtream parental control"), cfg.adult)
         self.cfg_adultpin = getConfigListEntry(_("BouquetMakerXtream parental pin"), cfg.adultpin)
         self.cfg_main = getConfigListEntry(_("Show in main menu") + _(" *Restart GUI Required"), cfg.main)
-
         self.cfg_skip_playlists_screen = getConfigListEntry(_("Skip playlist selection screen if only 1 playlist"), cfg.skip_playlists_screen)
-
         self.cfg_autoupdate = getConfigListEntry(_("Automatic live bouquet update"), cfg.autoupdate)
         self.cfg_wakeup = getConfigListEntry(_("Automatic live bouquet update time"), cfg.wakeup)
-
         self.cfg_catchup_on = getConfigListEntry(_("Embed Catchup player in channelselect screen") + _(" *Restart GUI Required"), cfg.catchup_on)
         self.cfg_catchup = getConfigListEntry(_("Prefix Catchup channels"), cfg.catchup)
         self.cfg_catchup_prefix = getConfigListEntry(_("Select Catchup prefix symbol"), cfg.catchup_prefix)
         self.cfg_catchup_start = getConfigListEntry(_("Margin before Catchup (mins)"), cfg.catchup_start)
         self.cfg_catchup_end = getConfigListEntry(_("Margin after Catchup (mins)"), cfg.catchup_end)
-
         self.cfg_groups = getConfigListEntry(_("Group bouquets into its own folder"), cfg.groups)
         self.cfg_auto_close = getConfigListEntry(_("Exit plugin on bouquet creation"), cfg.auto_close)
-
         self.org_main = cfg.main.getValue()
         self.location = cfg.location.getValue()
         self.local_location = cfg.local_location.getValue()
@@ -169,46 +175,36 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.createSetup()
 
     def createSetup(self):
-        self.list = []
-        self.list.append(self.cfg_skin)
-        self.list.append(self.cfg_location)
-        self.list.append(self.cfg_local_location)
-        # self.list.append(self.cfg_timeout)
-        self.list.append(self.cfg_skip_playlists_screen)
-        # self.list.append(self.cfg_position)
-        self.list.append(self.cfg_autoupdate)
+        config_entries = [
+            self.cfg_skin,
+            self.cfg_useragent,
+            self.cfg_location,
+            self.cfg_local_location,
+            self.cfg_skip_playlists_screen,
+            self.cfg_autoupdate,
+            self.cfg_wakeup if cfg.autoupdate.value else None,
+            self.cfg_live_type,
+            self.cfg_vod_type,
+            self.cfg_groups,
+            self.cfg_catchup_on,
+            self.cfg_catchup if cfg.catchup_on.value else None,
+            self.cfg_catchup_prefix if cfg.catchup_on.value and cfg.catchup.value else None,
+            self.cfg_catchup_start if cfg.catchup_on.value else None,
+            self.cfg_catchup_end if cfg.catchup_on.value else None,
+            self.cfg_adult,
+            self.cfg_adultpin if cfg.adult.value else None,
+            self.cfg_auto_close,
+            self.cfg_main,
+        ]
 
-        if cfg.autoupdate.value is True:
-            self.list.append(self.cfg_wakeup)
-
-        self.list.append(self.cfg_live_type)
-        self.list.append(self.cfg_vod_type)
-
-        self.list.append(self.cfg_groups)
-
-        self.list.append(self.cfg_catchup_on)
-        if cfg.catchup_on.value is True:
-            self.list.append(self.cfg_catchup)
-            if cfg.catchup.value is True:
-                self.list.append(self.cfg_catchup_prefix)
-
-            self.list.append(self.cfg_catchup_start)
-            self.list.append(self.cfg_catchup_end)
-
-        self.list.append(self.cfg_adult)
-
-        if cfg.adult.value is True:
-            self.list.append(self.cfg_adultpin)
-
-        self.list.append(self.cfg_auto_close)
-
-        self.list.append(self.cfg_main)
+        self.list = [entry for entry in config_entries if entry is not None]
 
         self["config"].list = self.list
         self["config"].l.setList(self.list)
         self.handleInputHelpers()
 
     def handleInputHelpers(self):
+        from enigma import ePoint
         currConfig = self["config"].getCurrent()
 
         if currConfig is not None:
@@ -290,7 +286,6 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
                 )
         except Exception as e:
             print(e)
-
 
     def openDirectoryBrowserCB(self, path):
         if path is not None:

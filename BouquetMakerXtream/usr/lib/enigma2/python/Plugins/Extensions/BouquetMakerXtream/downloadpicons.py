@@ -98,6 +98,8 @@ except:
     from httplib import HTTPConnection
     HTTPConnection.debuglevel = 0
 
+hdr = {'User-Agent': str(cfg.useragent.value)}
+
 
 class BmxDownloadPicons(Screen):
 
@@ -252,8 +254,7 @@ class BmxDownloadPicons(Screen):
         http.mount("https://", adapter)
 
         response = ""
-        # hdr = {'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin'}
-        hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko', 'Accept': 'image/png,image/jpeg'}
+
         try:
             response = http.get(url[i][1], headers=hdr, stream=True, timeout=5, verify=False, allow_redirects=False)
         except:
@@ -345,7 +346,7 @@ class BmxDownloadPicons(Screen):
             threads = int(cfg.max_threads.value)
 
         if hasConcurrent:
-            print("******* trying concurrent futures ******")
+            # print("******* trying concurrent futures ******")
             try:
                 from concurrent.futures import ThreadPoolExecutor
                 executor = ThreadPoolExecutor(max_workers=threads)
@@ -362,7 +363,7 @@ class BmxDownloadPicons(Screen):
                 print(e)
 
         elif hasMultiprocessing:
-            print("******* trying multiprocessing ******")
+            # print("******* trying multiprocessing ******")
             try:
                 from multiprocessing.pool import ThreadPool
                 pool = ThreadPool(threads)
@@ -380,7 +381,7 @@ class BmxDownloadPicons(Screen):
                 print(e)
 
     def finished(self):
-        print("*** finished ***")
+        # print("*** finished ***")
         if self.complete is False:
 
             with open('/tmp/bmxsuccesslist.txt', 'w+') as f:

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .plugin import hdr, playlists_json
+from .plugin import playlists_json, cfg
 
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
@@ -10,6 +10,8 @@ import json
 import os
 import re
 import requests
+
+hdr = {'User-Agent': str(cfg.useragent.value)}
 
 
 def getPlaylistJson():
