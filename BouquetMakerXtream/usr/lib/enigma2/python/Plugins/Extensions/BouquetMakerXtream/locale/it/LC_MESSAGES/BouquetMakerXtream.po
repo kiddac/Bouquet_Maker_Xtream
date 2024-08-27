@@ -2,16 +2,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: BouquetMakerXtream v1.09\n"
-"POT-Creation-Date: 2024-03-01 13:48+0000\n"
-"PO-Revision-Date: 2024-03-01 13:48+0000\n"
+"Project-Id-Version: BouquetMakerXtream v1.18\n"
+"POT-Creation-Date: 2024-08-17 11:18+0200\n"
+"PO-Revision-Date: 2024-08-17 11:21+0200\n"
 "Last-Translator: Dario Croci <spaeleus@croci.org>\n"
 "Language-Team: Dario Croci <spaeleus@croci.org>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Poedit-Basepath: ../../../../../../../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -119,70 +119,79 @@ msgstr "A-Z"
 msgid "Newest"
 msgstr "Più recente"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:267
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:263
+msgid "Default"
+msgstr "Default"
+
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:269
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/server.py:116
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/server.py:124
 msgid "Short name or provider name:"
 msgstr "Nome breve o nome provider:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:268
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:270
 msgid "Use name as bouquet prefix"
 msgstr "Usare nome come prefisso bouquet"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:271
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:273
 msgid "Show LIVE category if available:"
 msgstr "Mostrare la categoria LIVE se disponibile:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:273
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:275
 msgid "Stream Type LIVE:"
 msgstr "Tipo stream LIVE:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:276
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:278
 msgid "LIVE category bouquet order"
 msgstr "Ordine bouquet categoria LIVE"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:277
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:279
 msgid "LIVE stream bouquet order"
 msgstr "Ordine bouquet stream LIVE"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:280
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:282
 msgid "Show VOD category if available:"
 msgstr "Mostrare categoria VOD se disponibile:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:283
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:285
 msgid "Show SERIES category if available:"
 msgstr "Mostrare categoria SERIE se disponibile:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:287
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:289
 msgid "Stream Type VOD/SERIES:"
 msgstr "Tipo stream VOD/SERIE:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:290
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:292
 msgid "VOD/SERIES category bouquet order"
 msgstr "Ordine bouquet categoria VID/SERIE"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:291
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:293
 msgid "VOD/SERIES streams bouquet order"
 msgstr "Ordine bouquet categoria stream VOD/SERIE"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:294
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:296
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/server.py:122
 msgid "Output:"
 msgstr "Output:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:298
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:299
+msgid "Max EPG days to download: (Use Default if EPG events is 0)"
+msgstr ""
+"Giorni EPG massimi da scaricare: (Usare valore predefinito se eventi EPG = 0)"
+
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:301
 msgid "Use alternative EPG url:"
 msgstr "Utilizzare URL EPG alternativa:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:300
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:303
 msgid "Alternative EPG url:"
 msgstr "URL EPG alternativa:"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:360
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:363
 msgid "No bouquets selected."
 msgstr "Nessun bouquet selezionato."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:385
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:388
 msgid ""
 "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
 "characters."
@@ -190,94 +199,96 @@ msgstr ""
 "Il nome del bouquet non può essere vuoto. Inserire un nome bouquet unico. "
 "Minimo 3 caratteri."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:393
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/bouquetsettings.py:396
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/server.py:221
 msgid "Name already used. Please enter a unique name."
 msgstr ""
 "Nome già presente.\n"
 "Inserire un nome univoco."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:42
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:61
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:43
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:62
 msgid "Building Bouquets"
 msgstr "Creazione bouquet"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:51
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:69
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:52
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:70
 msgid "Building Bouquets..."
 msgstr "Creazione bouquet in corso..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:203
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:245
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:210
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:252
 msgid "Downloading live data..."
 msgstr "Download dati live..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:206
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:294
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:472
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:248
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:372
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:550
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:213
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:309
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:484
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:255
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:380
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:555
 msgid "Downloading VOD data..."
 msgstr "Download dati VOD..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:209
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:297
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:475
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:502
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:646
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:251
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:375
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:553
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:583
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:727
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:216
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:312
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:487
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:514
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:654
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:258
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:383
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:558
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:589
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:729
 msgid "Downloading series data..."
 msgstr "Download dati serie..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:216
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:258
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:223
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:265
 msgid "Downloading external playlist..."
 msgstr "Download playlist esterna..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:218
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:260
-msgid "Loadind local playlist..."
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:225
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:267
+msgid "Loading local playlist..."
 msgstr "Caricamento playlist locale..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:224
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:242
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:266
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:284
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:231
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:249
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:896
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:273
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:291
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:976
 msgid "Processing live data..."
 msgstr "Elaborazione dati live..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:230
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:272
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:237
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:279
 msgid "Processing VOD data..."
 msgstr "Elaborazione dati VOD..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:236
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:304
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:482
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:507
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:651
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:278
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:382
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:560
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:588
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:732
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:243
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:320
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:494
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:520
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:659
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:285
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:391
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:565
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:595
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:734
 msgid "Processing series data..."
 msgstr "Elaborazione dati serie..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:302
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:480
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:380
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:558
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:318
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:492
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:389
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:563
 msgid "Process VOD data..."
 msgstr "Elaborazione dati VOD..."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:679
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:763
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:694
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:776
 msgid ""
 "Your provider does not have the 'simple' API call\n"
 "Unable to build series.\n"
@@ -287,7 +298,7 @@ msgstr ""
 "Impossibile costruire la serie.\n"
 "Metodi alternativi potrebbero essere aggiunti in futuro."
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:956
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/buildbouquets.py:997
 msgid " IPTV Bouquets Created"
 msgstr " Bouquet IPTV creati"
 
@@ -321,38 +332,38 @@ msgstr "Resettare"
 msgid "Show Streams"
 msgstr "Mostrare Stream"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:266
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:470
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:510
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:607
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:611
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:277
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:481
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:521
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:618
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:622
 msgid "Choose Live Categories"
 msgstr "Selezionare categorie live"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:274
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:317
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:285
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:328
 msgid "Next"
 msgstr "Prossimo"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:276
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:319
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:354
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:287
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:330
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:365
 msgid "Create"
 msgstr "Creare"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:309
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:479
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:527
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:601
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:619
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:320
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:490
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:538
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:612
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:630
 msgid "Choose VOD Categories"
 msgstr "Selezionare categorie VOD"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:348
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:488
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:544
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:593
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:625
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:359
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:499
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:555
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:604
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/choosecategories.py:636
 msgid "Choose Series Categories"
 msgstr "Selezionare categorie serie"
 
@@ -491,7 +502,7 @@ msgstr "Aggiungere playlist"
 msgid "Delete all BMX created bouquets?"
 msgstr "Rimuovere tutti i bouquet BMX?"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/parsem3u.py:68
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/parsem3u.py:59
 msgid "Stream"
 msgstr "Stream"
 
@@ -555,14 +566,12 @@ msgid "Max width of source picon"
 msgstr "Larghezza max sorgente picon"
 
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/piconsettings.py:209
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:286
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:301
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:283
 msgid "Choose Directory:"
 msgstr "Selezionare directory:"
 
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/piconsettings.py:210
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:287
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:302
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:284
 msgid "Choose directory"
 msgstr "Selezionare directory"
 
@@ -694,60 +703,60 @@ msgstr "Picon Service Reference"
 msgid "Service Name Picons"
 msgstr "Picon Service Name"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:136
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:133
 msgid "100KB"
 msgstr "100KB"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:136
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:133
 msgid "200KB"
 msgstr "200KB"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:136
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:133
 msgid "300KB"
 msgstr "300KB"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:136
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:133
 msgid "400KB"
 msgstr "400KB"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:136
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:133
 msgid "500KB"
 msgstr "500KB"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:136
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:137
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:133
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:134
 msgid "No limit"
 msgstr "Nessun limite"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:137
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:134
 msgid "480px"
 msgstr "480px"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:137
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:134
 msgid "728px"
 msgstr "728px"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:137
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:134
 msgid "1000px"
 msgstr "1000px"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:137
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:134
 msgid "1280px"
 msgstr "1280px"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:137
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:134
 msgid "1920px"
 msgstr "1920px"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:211
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:214
 msgid "Bouquet Maker Xtream"
 msgstr "Bouquet Maker Xtream"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:434
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:437
 msgid "IPTV Bouquets Creator by KiddaC"
 msgstr "Creatore bouquet IPTV by KiddaC"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:435
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py:438
 msgid "BouquetMakerXtream"
 msgstr "BouquetMakerXtream"
 
@@ -863,7 +872,7 @@ msgstr "Offset server:"
 
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/serverinfo.py:61
 msgid "Close"
-msgstr ""
+msgstr "Chiudere"
 
 #: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:112
 msgid ""
@@ -954,23 +963,11 @@ msgstr "Raggruppare i bouquet nella propria directory"
 msgid "Exit plugin on bouquet creation"
 msgstr "Uscire dal plugin dopo la creazione bouquet"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:164
-msgid "Max Live channels. 0 = unlimited (slow)."
-msgstr "Canali live max. - 0 = illimitati (lento)."
-
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:165
-msgid "Max VOD channels. 0 = unlimited (slow)"
-msgstr "Canali VOD max. - 0 = illimitati (lento)."
-
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/settings.py:166
-msgid "Max Series channels. 0 = unlimited (slow)"
-msgstr "Canali serie max. - 0 = illimitati (lento)."
-
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:104
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:105
 msgid " Providers IPTV Updated"
 msgstr " Provider IPTV aggiornati"
 
-#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:159
+#: lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/update.py:160
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "Aggiornamento playlist %d di %d"
