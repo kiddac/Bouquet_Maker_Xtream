@@ -389,8 +389,11 @@ class BmxPlaylists(Screen):
         if status == (_("Active")) or status == (_("Url OK")) or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_green.png"))
 
-            if int(activenum) >= int(maxnum) and int(maxnum) != 0:
-                pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_yellow.png"))
+            try:
+                if int(activenum) >= int(maxnum) and int(maxnum) != 0:
+                    pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_yellow.png"))
+            except:
+                pass
 
         else:
             if status == _("Banned"):

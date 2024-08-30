@@ -221,30 +221,30 @@ class BmxAddServer(ConfigListScreen, Screen):
 
             valid = self.checkline()
 
-            # check url has response
-            if not valid:
-                self.session.open(MessageBox, _("Details are not valid or unauthorised"), type=MessageBox.TYPE_INFO, timeout=5)
-                return
+        # check url has response
+        if not valid:
+            self.session.open(MessageBox, _("Details are not valid or unauthorised"), type=MessageBox.TYPE_INFO, timeout=5)
+            return
 
-            # check name is not blank
-            if not self.name or len(self.name) < 3:
-                self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
-                self.createSetup()
-                return
+        # check name is not blank
+        if not self.name or len(self.name) < 3:
+            self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."), MessageBox.TYPE_ERROR, timeout=10)
+            self.createSetup()
+            return
 
-            # check if name exists
-            if any(playlists["playlist_info"]["name"] == self.name for playlists in self.playlists_all):
-                self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
-                return
+        # check if name exists
+        if any(playlists["playlist_info"]["name"] == self.name for playlists in self.playlists_all):
+            self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
+            return
 
-            if not os.path.exists(playlist_file):
-                with open(playlist_file, "a") as f:
-                    pass
-
+        if not os.path.exists(playlist_file):
             with open(playlist_file, "a") as f:
-                f.write("\n{}\n".format(playlistline))
-            self.session.open(MessageBox, _("Playlist added successfully."), type=MessageBox.TYPE_INFO, timeout=5)
-            self.close()
+                pass
+
+        with open(playlist_file, "a") as f:
+            f.write("\n{}\n".format(playlistline))
+        self.session.open(MessageBox, _("Playlist added successfully."), type=MessageBox.TYPE_INFO, timeout=5)
+        self.close()
 
     def changedEntry(self):
         self.item = self["config"].getCurrent()
