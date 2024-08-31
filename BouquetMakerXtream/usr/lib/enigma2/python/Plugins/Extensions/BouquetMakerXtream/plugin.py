@@ -19,11 +19,11 @@ except:
 
 
 # Enigma2 components
-# from Components.ActionMap import HelpableActionMap
+from Components.ActionMap import HelpableActionMap
 from Components.config import config, ConfigSubsection, ConfigSelection, ConfigDirectory, ConfigYesNo, ConfigSelectionNumber, ConfigClock, ConfigPIN, ConfigInteger
 from enigma import addFont, eServiceReference, eTimer, getDesktop
 from Plugins.Plugin import PluginDescriptor
-# from Screens.ChannelSelection import ChannelSelectionBase
+from Screens.ChannelSelection import ChannelSelectionBase
 from ServiceReference import ServiceReference
 
 # Local application/library-specific imports
@@ -227,6 +227,8 @@ def mainmenu(menu_id, **kwargs):
 autoStartTimer = None
 originalref = None
 originalrefstring = None
+
+original_ChannelSelectionBase = ChannelSelectionBase.__init__
 BmxChannelSelectionBase__init__ = None
 _session = None
 
@@ -292,17 +294,19 @@ class AutoStartTimer:
         self.session.open(update.BmxUpdate, "auto")
 
 
+def myBase(self, session, forceLegacy=False):
+    original_ChannelSelectionBase(self, session)
+
+    ChannelSelectionBase.showBmxCatchup = showBmxCatchup
+    ChannelSelectionBase.playOriginalChannel = playOriginalChannel
+
+    self["BmxCatchupAction"] = HelpableActionMap(self, "BMXCatchupActions", {
+        "catchup": self.showBmxCatchup,
+    })
+
+
 def autostart(reason, session=None, **kwargs):
     # called with reason=1 to during shutdown, with reason=0 at startup?
-
-    """
-    if cfg.catchup_on.getValue() is True and session is not None:
-        global BmxChannelSelectionBase__init__
-        BmxChannelSelectionBase__init__ = ChannelSelectionBase.__init__
-        ChannelSelectionBase.__init__ = MyChannelSelectionBase__init__
-        ChannelSelectionBase.showBmxCatchup = showBmxCatchup
-        ChannelSelectionBase.playOriginalChannel = playOriginalChannel
-        """
 
     global autoStartTimer
     global _session
@@ -317,16 +321,11 @@ def autostart(reason, session=None, **kwargs):
         if session is not None:
             _session = session
             if autoStartTimer is None:
-                autoStartTimer = AutoStartTimer(session)
+                autoStartTimer = AutoStartTimer(_session)
 
-
-"""
-def MyChannelSelectionBase__init__(self, session):
-    BmxChannelSelectionBase__init__(self, session)
-    self["BmxCatchupAction"] = HelpableActionMap(self, "BMXCatchupActions", {
-        "catchup": self.showBmxCatchup,
-    })
-    """
+            if cfg.catchup_on.value:
+                if ChannelSelectionBase.__init__ != BmxChannelSelectionBase__init__:
+                    ChannelSelectionBase.__init__ = myBase
 
 
 def showBmxCatchup(self):
