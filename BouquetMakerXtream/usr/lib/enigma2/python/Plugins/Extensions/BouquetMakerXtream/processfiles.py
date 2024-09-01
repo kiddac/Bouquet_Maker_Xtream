@@ -193,12 +193,8 @@ def processFiles():
 
                     for playlist in playlists_all:
                         # extra check in case playlists.txt details have been amended
-                        if ("domain" in playlist["playlist_info"]
-                                and "username" in playlist["playlist_info"]
-                                and "password" in playlist["playlist_info"]):
-                            if (playlist["playlist_info"]["domain"] == domain
-                                    and playlist["playlist_info"]["username"] == username
-                                    and playlist["playlist_info"]["password"] == password):
+                        if ("domain" in playlist["playlist_info"] and "username" in playlist["playlist_info"] and "password" in playlist["playlist_info"]):
+                            if (playlist["playlist_info"]["domain"] == domain and playlist["playlist_info"]["username"] == username and playlist["playlist_info"]["password"] == password):
 
                                 playlist_exists = True
 
@@ -364,6 +360,29 @@ def processFiles():
                         })
                         index += 1
 
+        # remove old playlists from playlists.json
+        newList = []
+
+        for playlist in playlists_all:
+            for line in lines:
+                if not line.startswith("#"):
+                    if playlist["playlist_info"]["playlist_type"] == "xtream":
+                        if "host" in playlist["playlist_info"] and "username" in playlist["playlist_info"] and "password" in playlist["playlist_info"] and str(playlist["playlist_info"]["domain"]) in line and str(playlist["playlist_info"]["username"]) in line and str(playlist["playlist_info"]["password"]) in line:
+                            newList.append(playlist)
+                            break
+
+                    elif playlist["playlist_info"]["playlist_type"] == "external":
+                        if "full_url" in playlist["playlist_info"] and str(playlist["playlist_info"]["full_url"]) in line:
+                            newList.append(playlist)
+                            break
+
+            if playlist["playlist_info"]["playlist_type"] == "local":
+                path = os.path.join(cfg.local_location.value, playlist["playlist_info"]["full_url"])
+                if os.path.isfile(path):
+                    newList.append(playlist)
+
+        playlists_all = newList
+
     # read local files
     filename = ""
 
@@ -441,36 +460,6 @@ def processFiles():
                     ]),
                 })
                 index += 1
-
-    # Remove old playlists from x-playlists.json
-    new_list = []
-
-    for playlist in playlists_all:
-        for line in lines:
-            playlist_type = "xtream" if "get.php" in line else "external"
-
-            if not line.startswith("#"):
-
-                if playlist_type == "xtream":
-                    if (str(playlist["playlist_info"]["domain"]) in line
-                            and "username=" + str(playlist["playlist_info"]["username"]) in line
-                            and "password=" + str(playlist["playlist_info"]["password"]) in line):
-                        new_list.append(playlist)
-                        break
-
-                if playlist_type == "external":
-                    full_url = line.partition("#")[0].strip()
-                    if ("full_url" in playlist["playlist_info"]
-                            and playlist["playlist_info"]["full_url"] in line):
-                        new_list.append(playlist)
-                        break
-
-            if playlist["playlist_info"]["playlist_type"] == "local":
-                path = os.path.join(cfg.local_location.value, playlist["playlist_info"]["full_url"])
-                if os.path.isfile(path):
-                    new_list.append(playlist)
-
-    playlists_all = new_list
 
     # Write new x-playlists.json file
     with open(playlists_json, "w") as f:

@@ -127,7 +127,7 @@ class BmxDeleteBouquets(Screen):
             bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(safe_name) + "_")
             bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(safe_name) + "_")
             bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safe_name) + "_")
-            bmx.purge("/etc/enigma2", str(safe_name) + str(".tv"))
+            bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(safe_name))
 
             if epgimporter is True:
                 bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(safe_name) + ".channels.xml")

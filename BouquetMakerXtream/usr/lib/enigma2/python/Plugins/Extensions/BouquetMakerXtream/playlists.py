@@ -130,7 +130,7 @@ class BmxPlaylists(Screen):
                 self.timer.callback.append(self.makeUrlList)
             except:
                 self.makeUrlList()
-        self.timer.start(10, True)
+        self.timer.start(50, True)
 
     def makeUrlList(self):
         self.url_list = []
@@ -284,7 +284,8 @@ class BmxPlaylists(Screen):
                     if output_format not in allowed_formats:
                         playlists["playlist_info"]["output"] = str(allowed_formats[0]) if allowed_formats else "ts"
 
-            playlists.pop("available_channels", None)
+            if "available_channels" in playlists:
+                del playlists["available_channels"]
 
         self.writeJsonFile()
 
@@ -301,12 +302,12 @@ class BmxPlaylists(Screen):
         for playlist in self.playlists_all:
             name = playlist["playlist_info"].get("name", playlist["playlist_info"].get("domain", ""))
             url = playlist["playlist_info"].get("host", "")
-            status = _("Error")
+            status = _("Server Not Responding")
 
-            active = ""
-            activenum = ""
-            maxc = ""
-            maxnum = ""
+            active = 0
+            activenum = 0
+            maxc = 0
+            maxnum = 0
             expires = ""
             fullurl = ""
             playlist_type = ""
@@ -329,22 +330,20 @@ class BmxPlaylists(Screen):
                         status = _("Not Authorised")
 
                         if str(user_info["auth"]) == "1":
-                            user_status = user_info.get("status", "")
-                            status_map = {
-                                "Active": _("Active"),
-                                "Banned": _("Banned"),
-                                "Disabled": _("Disabled"),
-                                "Expired": _("Expired")
-                            }
-                            status = status_map.get(user_status, status)
+                            if playlist["user_info"]["status"] == "Active":
+                                status = _("Active")
+                            elif playlist["user_info"]["status"] == "Banned":
+                                status = _("Banned")
+                            elif playlist["user_info"]["status"] == "Disabled":
+                                status = _("Disabled")
+                            elif playlist["user_info"]["status"] == "Expired":
+                                status = _("Expired")
 
-                            if user_status == "Active":
-                                exp_date = user_info.get("exp_date")
-                                if exp_date:
-                                    try:
-                                        expires = datetime.fromtimestamp(int(exp_date)).strftime("%d-%m-%Y")
-                                    except:
-                                        expires = "Null"
+                            if status == (_("Active")):
+                                try:
+                                    expires = str(_("Expires: ")) + str(datetime.fromtimestamp(int(playlist["user_info"]["exp_date"])).strftime("%d-%m-%Y"))
+                                except:
+                                    expires = str(_("Expires: ")) + str("Null")
 
                                 active = str(_("Active Conn:"))
                                 activenum = playlist["user_info"]["active_cons"]
@@ -386,26 +385,32 @@ class BmxPlaylists(Screen):
             self.openBouquetSettings()
 
     def buildListEntry(self, index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlist_type):
+        pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_yellow.png"))
+
         if status == (_("Active")) or status == (_("Url OK")) or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_green.png"))
 
+            if activenum == "":
+                activenum = 0
+
+            if maxnum == "":
+                maxnum = 0
             try:
                 if int(activenum) >= int(maxnum) and int(maxnum) != 0:
                     pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_yellow.png"))
             except:
                 pass
 
-        else:
-            if status == _("Banned"):
-                pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
-            elif status == _("Expired"):
-                pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_grey.png"))
-            elif status == _("Disabled"):
-                pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_grey.png"))
-            elif status == _("Server Not Responding"):
-                pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
-            elif status == _("Not Authorised"):
-                pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
+        if status == _("Banned"):
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
+        elif status == _("Expired"):
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_grey.png"))
+        elif status == _("Disabled"):
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_grey.png"))
+        elif status == _("Server Not Responding"):
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
+        elif status == _("Not Authorised"):
+            pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_red.png"))
 
         return (index, str(name), str(url), str(expires), str(status), pixmap, str(active), str(activenum), str(maxc), str(maxnum), str(fullurl), str(playlist_type))
 
@@ -452,10 +457,14 @@ class BmxPlaylists(Screen):
         from . import serverinfo
 
         if self.list:
-            current_playlist = glob.current_playlist
-
-            if "user_info" in current_playlist and "auth" in current_playlist["user_info"] and str(current_playlist["user_info"]["auth"]) == "1":
-                self.session.open(serverinfo.BmxUserInfo)
+            if "user_info" in glob.current_playlist:
+                if "auth" in glob.current_playlist["user_info"] and glob.current_playlist["user_info"]["auth"] == 1:
+                    self.session.open(serverinfo.BmxUserInfo)
+                else:
+                    self.session.open(MessageBox, _("Url is invalid or playlist/user no longer authorised!"), MessageBox.TYPE_ERROR, timeout=5)
+            else:
+                if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
+                    self.session.open(MessageBox, _("User Info only available for xtream/XUI One lines"), MessageBox.TYPE_ERROR, timeout=5)
 
     def openBouquetSettings(self):
         from . import bouquetsettings

@@ -142,12 +142,12 @@ class BmxBuildBouquets(Screen):
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.safe_name) + "_")
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.safe_name) + "_")
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.safe_name) + "_")
-        bmx.purge("/etc/enigma2", str(self.safe_name) + str(".tv"))
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(self.safe_name))
 
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.old_name) + "_")
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.old_name) + "_")
         bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.old_name) + "_")
-        bmx.purge("/etc/enigma2", str(self.old_name) + str(".tv"))
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(self.old_name))
 
         if epgimporter is True:
             bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.safe_name))
