@@ -441,8 +441,7 @@ def Plugins(**kwargs):
     pluginname = _("BouquetMakerXtream")
 
     main_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_MENU, fnc=mainmenu, needsRestart=True)
-
-    extensions_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=mainmenu, needsRestart=True)
+    extensions_menu = PluginDescriptor(name=pluginname, description=description, where=PluginDescriptor.WHERE_EXTENSIONSMENU, fnc=main, needsRestart=True)
 
     result = [
         PluginDescriptor(
