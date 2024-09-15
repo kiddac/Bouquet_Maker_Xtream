@@ -419,8 +419,11 @@ class BmxUpdate(Screen):
                     if cfg.catchup.value is True and catchup == 1:
                         name = str(cfg.catchup_prefix.value) + str(name)
 
-                    bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
+                    try:
+                        bouquet_id1 = int(stream_id) // 65535
+                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
+                    except:
+                        continue
 
                     service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
@@ -615,8 +618,11 @@ class BmxUpdate(Screen):
                     else:
                         continue
 
-                    bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
+                    try:
+                        bouquet_id1 = int(stream_id) // 65535
+                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
+                    except:
+                        continue
 
                     custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
@@ -843,8 +849,11 @@ class BmxUpdate(Screen):
                         name = channel["name"]
                         if name in result_dict:
                             for line in result_dict[name]:
-                                bouquet_id1 = int(line['series_stream_id']) // 65535
-                                bouquet_id2 = int(line['series_stream_id']) - int(bouquet_id1 * 65535)
+                                try:
+                                    bouquet_id1 = int(line['series_stream_id']) // 65535
+                                    bouquet_id2 = int(line['series_stream_id']) - int(bouquet_id1 * 65535)
+                                except:
+                                    continue
 
                                 custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
                                 bouquet_string = "#SERVICE " + str(stream_type) + str(custom_sid) + quote(line['series_url']) + "\n"
@@ -868,8 +877,11 @@ class BmxUpdate(Screen):
 
                     if str(channel["category_id"]) not in glob.current_playlist["data"]["series_categories_hidden"] and str(channel["series_id"]) not in glob.current_playlist["data"]["series_streams_hidden"]:
                         name = channel["name"].replace(":", "").replace('"', "").strip("-")
-                        bouquet_id1 = int(stream_id) // 65535
-                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
+                        try:
+                            bouquet_id1 = int(stream_id) // 65535
+                            bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
+                        except:
+                            continue
                         custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
                         bouquet_string = "#SERVICE " + str(stream_type) + str(custom_sid) + quote(channel["source"]) + ":" + str(name) + "\n"
                         bouquet_string += "#DESCRIPTION " + str(name) + "\n"

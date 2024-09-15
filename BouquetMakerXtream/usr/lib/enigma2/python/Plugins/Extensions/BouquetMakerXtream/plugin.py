@@ -20,7 +20,7 @@ except:
 
 # Enigma2 components
 from Components.ActionMap import HelpableActionMap
-from Components.config import config, ConfigSubsection, ConfigSelection, ConfigDirectory, ConfigYesNo, ConfigSelectionNumber, ConfigClock, ConfigPIN, ConfigInteger
+from Components.config import config, ConfigSubsection, ConfigSelection, ConfigDirectory, ConfigYesNo, ConfigSelectionNumber, ConfigClock, ConfigPIN, ConfigInteger, configfile
 from enigma import addFont, eServiceReference, eTimer, getDesktop
 from Plugins.Plugin import PluginDescriptor
 from Screens.ChannelSelection import ChannelSelectionBase
@@ -168,16 +168,19 @@ if location:
         playlist_file = os.path.join(cfg.location.value, "playlists.txt")
         cfg.location_valid.setValue(True)
         cfg.save()
+        configfile.save()
     else:
         os.makedirs(location)  # Create directory if it doesn't exist
         playlist_file = os.path.join(location, "playlists.txt")
 
         cfg.location_valid.setValue(True)
         cfg.save()
+        configfile.save()
 else:
     cfg.location.setValue(dir_etc)
     cfg.location_valid.setValue(False)
     cfg.save()
+    configfile.save()
 
 font_folder = os.path.join(dir_plugins, "fonts/")
 addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
@@ -205,6 +208,7 @@ if not os.path.isfile(playlists_json):
 try:
     config.plugins.epgimport.import_onlybouquet.value = False
     config.plugins.epgimport.import_onlybouquet.save()
+    configfile.save()
 except Exception as e:
     print(e)
 

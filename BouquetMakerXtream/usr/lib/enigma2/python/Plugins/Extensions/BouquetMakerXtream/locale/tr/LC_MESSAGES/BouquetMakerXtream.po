@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BouquetMakerXtream\n"
-"POT-Creation-Date: 2024-03-01 13:49+0000\n"
-"PO-Revision-Date: 2024-03-01 13:49+0000\n"
+"POT-Creation-Date: 2024-09-15 13:09+0100\n"
+"PO-Revision-Date: 2024-09-15 13:09+0100\n"
 "Last-Translator: audi06_19 <info@dreamosat-forum.com>\n"
 "Language-Team: https://www.dreamosat-forum.com/board/\n"
 "Language: tr\n"
@@ -10,20 +10,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: about.py:24 mainmenu.py:136
+#: about.py:24 mainmenu.py:126
 msgid "About"
 msgstr "Hakkında"
 
-#: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:40
-#: piconsettings.py:45 playlists.py:77 server.py:53 settings.py:67
+#: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:41
+#: piconsettings.py:45 playlists.py:57 server.py:56 settings.py:77
 msgid "Back"
 msgstr "Geri"
 
-#: about.py:33 mainmenu.py:41 piconsettings.py:46 playlists.py:78
+#: about.py:33 mainmenu.py:42 piconsettings.py:46 playlists.py:58
 msgid "OK"
 msgstr "Tamam"
 
@@ -101,67 +101,75 @@ msgstr "AZ"
 msgid "Newest"
 msgstr "En yeni"
 
-#: bouquetsettings.py:267 server.py:116 server.py:124
+#: bouquetsettings.py:263
+msgid "Default"
+msgstr ""
+
+#: bouquetsettings.py:269 server.py:119 server.py:127
 msgid "Short name or provider name:"
 msgstr "Kısa ad veya sağlayıcı adı:"
 
-#: bouquetsettings.py:268
+#: bouquetsettings.py:270
 msgid "Use name as bouquet prefix"
 msgstr "Kanal listesi öneki olarak adı kullan"
 
-#: bouquetsettings.py:271
+#: bouquetsettings.py:273
 msgid "Show LIVE category if available:"
 msgstr "Varsa CANLI kategoriyi göster:"
 
-#: bouquetsettings.py:273
+#: bouquetsettings.py:275
 msgid "Stream Type LIVE:"
 msgstr "Akış Türü CANLI:"
 
-#: bouquetsettings.py:276
+#: bouquetsettings.py:278
 msgid "LIVE category bouquet order"
 msgstr "CANLI kategori Kanal Listesi siparişi"
 
-#: bouquetsettings.py:277
+#: bouquetsettings.py:279
 msgid "LIVE stream bouquet order"
 msgstr "CANLI yayın Kanal Listesi siparişi"
 
-#: bouquetsettings.py:280
+#: bouquetsettings.py:282
 msgid "Show VOD category if available:"
 msgstr "Varsa VOD kategorisini göster:"
 
-#: bouquetsettings.py:283
+#: bouquetsettings.py:285
 msgid "Show SERIES category if available:"
 msgstr "Varsa SERIES kategorisini göster:"
 
-#: bouquetsettings.py:287
+#: bouquetsettings.py:289
 msgid "Stream Type VOD/SERIES:"
 msgstr "Akış Türü VOD/SERIES:"
 
-#: bouquetsettings.py:290
+#: bouquetsettings.py:292
 msgid "VOD/SERIES category bouquet order"
 msgstr "VOD/SERIES kategorisi Kanal Listesini sırası"
 
-#: bouquetsettings.py:291
+#: bouquetsettings.py:293
 msgid "VOD/SERIES streams bouquet order"
 msgstr "VOD/SERIES akış Kanal Listesini sırası"
 
-#: bouquetsettings.py:294 server.py:122
+#: bouquetsettings.py:296 server.py:125
 msgid "Output:"
 msgstr "Çıktı:"
 
-#: bouquetsettings.py:298
+#: bouquetsettings.py:299
+msgid "Max EPG days to download: (Use Default if EPG events is 0)"
+msgstr ""
+
+#: bouquetsettings.py:301
 msgid "Use alternative EPG url:"
 msgstr "Alternatif EPG URL'sini kullanın:"
 
-#: bouquetsettings.py:300
+#: bouquetsettings.py:303
 msgid "Alternative EPG url:"
 msgstr "Alternatif EPG URL'si:"
 
-#: bouquetsettings.py:360
+#: bouquetsettings.py:363
 msgid "No bouquets selected."
 msgstr "Kanal Listesi seçilmedi."
 
-#: bouquetsettings.py:385
+#: bouquetsettings.py:388
 msgid ""
 "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
 "characters."
@@ -169,60 +177,61 @@ msgstr ""
 "Kanal Liste adı boş olamaz. Lütfen benzersiz bir Kanal Listesi adı girin. "
 "Minimum 3 karakter."
 
-#: bouquetsettings.py:393 server.py:221
+#: bouquetsettings.py:396 server.py:237
 msgid "Name already used. Please enter a unique name."
 msgstr "Ad zaten kullanıldı. Lütfen benzersiz bir ad girin."
 
-#: buildbouquets.py:42 update.py:61
+#: buildbouquets.py:43 update.py:62
 msgid "Building Bouquets"
 msgstr "Kanal Listeleri Oluşturuluyor"
 
-#: buildbouquets.py:51 update.py:69
+#: buildbouquets.py:52 update.py:70
 msgid "Building Bouquets..."
 msgstr "Kanal Listeleri Oluşturuluyor..."
 
-#: buildbouquets.py:203 update.py:245
+#: buildbouquets.py:210 update.py:252
 msgid "Downloading live data..."
 msgstr "Canlı veriler indiriliyor..."
 
-#: buildbouquets.py:206 buildbouquets.py:294 buildbouquets.py:472 update.py:248
-#: update.py:372 update.py:550
+#: buildbouquets.py:213 buildbouquets.py:309 buildbouquets.py:487 update.py:255
+#: update.py:380 update.py:558
 msgid "Downloading VOD data..."
 msgstr "VOD verileri indiriliyor..."
 
-#: buildbouquets.py:209 buildbouquets.py:297 buildbouquets.py:475
-#: buildbouquets.py:502 buildbouquets.py:646 update.py:251 update.py:375
-#: update.py:553 update.py:583 update.py:727
+#: buildbouquets.py:216 buildbouquets.py:312 buildbouquets.py:490
+#: buildbouquets.py:517 buildbouquets.py:660 update.py:258 update.py:383
+#: update.py:561 update.py:592 update.py:735
 msgid "Downloading series data..."
 msgstr "Seri verileri indiriliyor..."
 
-#: buildbouquets.py:216 update.py:258
+#: buildbouquets.py:223 update.py:265
 msgid "Downloading external playlist..."
 msgstr "Harici oynatma listesi indiriliyor..."
 
-#: buildbouquets.py:218 update.py:260
-msgid "Loadind local playlist..."
-msgstr "Yerel oynatma listesini yükle..."
+#: buildbouquets.py:225 update.py:267
+msgid "Loading local playlist..."
+msgstr ""
 
-#: buildbouquets.py:224 buildbouquets.py:242 update.py:266 update.py:284
+#: buildbouquets.py:231 buildbouquets.py:249 buildbouquets.py:908 update.py:273
+#: update.py:291 update.py:988
 msgid "Processing live data..."
 msgstr "Canlı veriler işleniyor..."
 
-#: buildbouquets.py:230 update.py:272
+#: buildbouquets.py:237 update.py:279
 msgid "Processing VOD data..."
 msgstr "VOD verileri işleniyor..."
 
-#: buildbouquets.py:236 buildbouquets.py:304 buildbouquets.py:482
-#: buildbouquets.py:507 buildbouquets.py:651 update.py:278 update.py:382
-#: update.py:560 update.py:588 update.py:732
+#: buildbouquets.py:243 buildbouquets.py:320 buildbouquets.py:497
+#: buildbouquets.py:523 buildbouquets.py:665 update.py:285 update.py:391
+#: update.py:568 update.py:598 update.py:740
 msgid "Processing series data..."
 msgstr "Seri verileri işleniyor..."
 
-#: buildbouquets.py:302 buildbouquets.py:480 update.py:380 update.py:558
+#: buildbouquets.py:318 buildbouquets.py:495 update.py:389 update.py:566
 msgid "Process VOD data..."
 msgstr "VOD verilerini işle..."
 
-#: buildbouquets.py:679 update.py:763
+#: buildbouquets.py:700 update.py:782
 msgid ""
 "Your provider does not have the 'simple' API call\n"
 "Unable to build series.\n"
@@ -232,16 +241,16 @@ msgstr ""
 "Seri olarak oluşturulamıyor.\n"
 "Alternatif yöntem gelecekte eklenebilir."
 
-#: buildbouquets.py:956
+#: buildbouquets.py:1009
 msgid " IPTV Bouquets Created"
 msgstr " IPTV Kanal Listeleri Oluşturuldu"
 
-#: catchup.py:133
+#: catchup.py:135
 #, python-format
 msgid "TV Archive: %s"
 msgstr "TV Arşivi: %s"
 
-#: catchup.py:258
+#: catchup.py:260
 msgid "Catchup currently not available. Missing EPG data"
 msgstr "Yakalama şu anda kullanılamıyor. EPG verileri eksik"
 
@@ -265,30 +274,30 @@ msgstr "Sıfırla"
 msgid "Show Streams"
 msgstr "Akışları Göster"
 
-#: choosecategories.py:266 choosecategories.py:470 choosecategories.py:510
-#: choosecategories.py:607 choosecategories.py:611
+#: choosecategories.py:277 choosecategories.py:481 choosecategories.py:521
+#: choosecategories.py:618 choosecategories.py:622
 msgid "Choose Live Categories"
 msgstr "Canlı Kategorileri Seçin"
 
-#: choosecategories.py:274 choosecategories.py:317
+#: choosecategories.py:285 choosecategories.py:328
 msgid "Next"
 msgstr "Sonraki"
 
-#: choosecategories.py:276 choosecategories.py:319 choosecategories.py:354
+#: choosecategories.py:287 choosecategories.py:330 choosecategories.py:365
 msgid "Create"
 msgstr "Oluştur"
 
-#: choosecategories.py:309 choosecategories.py:479 choosecategories.py:527
-#: choosecategories.py:601 choosecategories.py:619
+#: choosecategories.py:320 choosecategories.py:490 choosecategories.py:538
+#: choosecategories.py:612 choosecategories.py:630
 msgid "Choose VOD Categories"
 msgstr "VOD Kategorilerini Seçin"
 
-#: choosecategories.py:348 choosecategories.py:488 choosecategories.py:544
-#: choosecategories.py:593 choosecategories.py:625
+#: choosecategories.py:359 choosecategories.py:499 choosecategories.py:555
+#: choosecategories.py:604 choosecategories.py:636
 msgid "Choose Series Categories"
 msgstr "Seri Kategorilerini Seçin"
 
-#: deletebouquets.py:27 mainmenu.py:132
+#: deletebouquets.py:27 mainmenu.py:122
 msgid "Delete Bouquets"
 msgstr "Kanal Listelerini Sil"
 
@@ -296,7 +305,7 @@ msgstr "Kanal Listelerini Sil"
 msgid "Cancel"
 msgstr "İptal"
 
-#: deletebouquets.py:35 playlists.py:79
+#: deletebouquets.py:35 playlists.py:59
 msgid "Delete"
 msgstr "Sil"
 
@@ -304,119 +313,119 @@ msgstr "Sil"
 msgid "Clear All"
 msgstr "Tümünü Temizle"
 
-#: downloadpicons.py:115
+#: downloadpicons.py:117
 msgid "Downloadng Picons"
 msgstr ""
 
-#: downloadpicons.py:117
+#: downloadpicons.py:119
 msgid "Making BouquetMakerXtream Picons"
 msgstr ""
 
-#: downloadpicons.py:216
+#: downloadpicons.py:218
 msgid "No picons found."
 msgstr ""
 
-#: downloadpicons.py:311
+#: downloadpicons.py:312
 msgid "Size: "
 msgstr ""
 
-#: downloadpicons.py:311
+#: downloadpicons.py:312
 msgid "Type: "
 msgstr ""
 
-#: downloadpicons.py:311
+#: downloadpicons.py:312
 msgid "Url: "
 msgstr ""
 
-#: downloadpicons.py:311 downloadpicons.py:420
+#: downloadpicons.py:312 downloadpicons.py:421
 msgid "Exists: "
-msgstr ""
-
-#: downloadpicons.py:311
-#, python-format
-msgid "Success: %s   "
 msgstr ""
 
 #: downloadpicons.py:312
 #, python-format
+msgid "Success: %s   "
+msgstr ""
+
+#: downloadpicons.py:313
+#, python-format
 msgid "Picon %d of %d"
 msgstr ""
 
-#: downloadpicons.py:419
+#: downloadpicons.py:420
 msgid ""
 "Finished.\n"
 "\n"
 msgstr ""
 
-#: downloadpicons.py:420
+#: downloadpicons.py:421
 msgid "Success: "
 msgstr ""
 
-#: downloadpicons.py:420
+#: downloadpicons.py:421
 msgid "Bad size: "
 msgstr ""
 
-#: downloadpicons.py:420
+#: downloadpicons.py:421
 msgid "bad type: "
 msgstr ""
 
-#: downloadpicons.py:420
+#: downloadpicons.py:421
 msgid "bad url: "
 msgstr ""
 
-#: downloadpicons.py:421
+#: downloadpicons.py:422
 msgid "Restart your GUI to refresh picons."
 msgstr ""
 
-#: downloadpicons.py:421
+#: downloadpicons.py:422
 msgid "Your created picons can be found in"
 msgstr ""
 
-#: downloadpicons.py:422
+#: downloadpicons.py:423
 msgid "Your failed picon list can be found in"
 msgstr ""
 
-#: downloadpicons.py:427
+#: downloadpicons.py:428
 msgid "Picon Error"
 msgstr ""
 
-#: mainmenu.py:39
+#: mainmenu.py:40
 msgid "Main Menu"
 msgstr "Ana Menü"
 
-#: mainmenu.py:63
+#: mainmenu.py:64
 msgid "Playlists.txt location is invalid and has been reset."
 msgstr "Playlists.txt konumu geçersiz ve sıfırlandı."
 
-#: mainmenu.py:118
+#: mainmenu.py:108
 msgid "Playlists"
 msgstr "Oynatma listeleri"
 
-#: mainmenu.py:120 settings.py:60
+#: mainmenu.py:110 settings.py:70
 msgid "Main Settings"
 msgstr "Ana Ayarlar"
 
-#: mainmenu.py:130
+#: mainmenu.py:120
 msgid "Update Bouquets"
 msgstr "Kanal Listelerini Güncelle"
 
-#: mainmenu.py:131 picons.py:31
+#: mainmenu.py:121 picons.py:31
 msgid "Download Picons"
 msgstr ""
 
-#: mainmenu.py:133
+#: mainmenu.py:124
 msgid "Delete All BMX Bouquets"
 msgstr "Tüm BMX Kanal Listelerini Sil"
 
-#: mainmenu.py:135 server.py:46
+#: mainmenu.py:125 server.py:48
 msgid "Add Playlist"
 msgstr "Oynatma Listesi Ekle"
 
-#: mainmenu.py:169
+#: mainmenu.py:159
 msgid "Delete all BMX created bouquets?"
 msgstr "BMX tarafından oluşturulan tüm Kanal Listeleri silinsin mi?"
 
-#: parsem3u.py:68
+#: parsem3u.py:59
 msgid "Stream"
 msgstr "Akış"
 
@@ -425,20 +434,18 @@ msgid "Download"
 msgstr ""
 
 #: piconsettings.py:38
-#, fuzzy
-#| msgid "Main Settings"
 msgid "Picon Settings"
-msgstr "Ana Ayarlar"
+msgstr ""
 
-#: piconsettings.py:78 server.py:84 settings.py:100
+#: piconsettings.py:78 server.py:88 settings.py:110
 msgid "Really close without saving settings?"
 msgstr "Ayarlar kaydedilmeden gerçekten kapatılsın mı?"
 
-#: piconsettings.py:106 settings.py:129
+#: piconsettings.py:106 settings.py:141
 msgid "You need to restart the GUI"
 msgstr "GUI'yi yeniden başlatmanız gerekiyor"
 
-#: piconsettings.py:106 settings.py:129
+#: piconsettings.py:106 settings.py:141
 msgid "Do you want to restart now?"
 msgstr "Şimdi yeniden başlatmak istiyor musunuz?"
 
@@ -475,191 +482,179 @@ msgstr ""
 msgid "Max width of source picon"
 msgstr ""
 
-#: piconsettings.py:209 settings.py:286 settings.py:301
+#: piconsettings.py:209 settings.py:279
 msgid "Choose Directory:"
 msgstr "Dizin Seçin:"
 
-#: piconsettings.py:210 settings.py:287 settings.py:302
+#: piconsettings.py:210 settings.py:280
 msgid "Choose directory"
 msgstr "Dizin seçin"
 
-#: playlists.py:44 settings.py:26
-msgid "Please enter the correct pin code"
-msgstr "Lütfen doğru pin kodunu girin"
-
-#: playlists.py:44 settings.py:26
-msgid "Enter pin code"
-msgstr "Pin kodunu girin"
-
-#: playlists.py:53 settings.py:35
-msgid "The pin code you entered is wrong."
-msgstr "Girdiğiniz pin kodu yanlış."
-
-#: playlists.py:75
+#: playlists.py:55
 msgid "Select Playlist"
 msgstr "Oynatma Listesini Seçin"
 
-#: playlists.py:80
+#: playlists.py:60
 msgid "Info"
 msgstr "Bilgi"
 
-#: playlists.py:383 playlists.py:469
+#: playlists.py:100
+msgid "No internet."
+msgstr ""
+
+#: playlists.py:305 playlists.py:410
 msgid "Server Not Responding"
 msgstr "Sunucu Yanıt Vermiyor"
 
-#: playlists.py:405 playlists.py:471
+#: playlists.py:330 playlists.py:412
 msgid "Not Authorised"
 msgstr "Yetkili Değil"
 
-#: playlists.py:409 playlists.py:417 playlists.py:454
+#: playlists.py:334 playlists.py:342 playlists.py:390
 msgid "Active"
 msgstr "Aktif"
 
-#: playlists.py:411 playlists.py:463
+#: playlists.py:336 playlists.py:404
 msgid "Banned"
 msgstr "Yasaklı"
 
-#: playlists.py:413 playlists.py:467
+#: playlists.py:338 playlists.py:408
 msgid "Disabled"
 msgstr "Devre Dışı"
 
-#: playlists.py:415 playlists.py:465
+#: playlists.py:340 playlists.py:406
 msgid "Expired"
 msgstr "Süresi doldu"
 
-#: playlists.py:419 playlists.py:421
+#: playlists.py:344 playlists.py:346
 msgid "Expires: "
 msgstr "Süresi doluyor: "
 
-#: playlists.py:423
+#: playlists.py:348
 msgid "Active Conn:"
 msgstr "Aktif Bağlantı:"
 
-#: playlists.py:426
+#: playlists.py:356
 msgid "Max Conn:"
 msgstr "Maks Bağlantı:"
 
-#: playlists.py:437 playlists.py:454
+#: playlists.py:372 playlists.py:390
 msgid "Url OK"
 msgstr "Url tamam"
 
-#: playlists.py:438
+#: playlists.py:373
 msgid "External playlist"
 msgstr "Harici oynatma listesi"
 
-#: playlists.py:441
+#: playlists.py:376
 msgid "Local file"
 msgstr "Yerel dosya"
 
-#: playlists.py:484
+#: playlists.py:425
 msgid "Delete selected playlist?"
 msgstr "Seçili oynatma listesi silinsin mi?"
 
-#: playlists.py:510
-msgid "Delete providers EPG data?"
-msgstr "Sağlayıcıların EPG verileri silinsin mi?"
-
-#: playlists.py:537
+#: playlists.py:464
 msgid "Url is invalid or playlist/user no longer authorised!"
 msgstr "URL geçersiz veya oynatma listesi/kullanıcı artık yetkili değil!"
 
-#: playlists.py:540
+#: playlists.py:467
 msgid "User Info only available for xtream/XUI One lines"
 msgstr "Kullanıcı Bilgisi yalnızca xtream/XUI One hatları için kullanılabilir"
 
-#: plugin.py:96
+#: plugin.py:101
 msgid "XPicons - 220x132 Pixel"
 msgstr ""
 
-#: plugin.py:97
+#: plugin.py:102
 msgid "ZZZPicons - 400x240 Pixel"
 msgstr ""
 
-#: plugin.py:124
+#: plugin.py:129
 msgid "Bottom"
 msgstr "Alt"
 
-#: plugin.py:124
+#: plugin.py:129
 msgid "Top"
 msgstr "Üst"
 
-#: plugin.py:127
+#: plugin.py:132
 msgid "24 Bit"
 msgstr ""
 
-#: plugin.py:127
+#: plugin.py:132
 msgid "8 Bit"
 msgstr ""
 
-#: plugin.py:128
+#: plugin.py:133
 msgid "Service Reference Picons"
 msgstr ""
 
-#: plugin.py:128
+#: plugin.py:133
 msgid "Service Name Picons"
 msgstr ""
 
-#: plugin.py:136
+#: plugin.py:138
 msgid "100KB"
 msgstr ""
 
-#: plugin.py:136
+#: plugin.py:138
 msgid "200KB"
 msgstr ""
 
-#: plugin.py:136
+#: plugin.py:138
 msgid "300KB"
 msgstr ""
 
-#: plugin.py:136
+#: plugin.py:138
 msgid "400KB"
 msgstr ""
 
-#: plugin.py:136
+#: plugin.py:138
 msgid "500KB"
 msgstr ""
 
-#: plugin.py:136 plugin.py:137
+#: plugin.py:138 plugin.py:139
 msgid "No limit"
 msgstr ""
 
-#: plugin.py:137
+#: plugin.py:139
 msgid "480px"
 msgstr ""
 
-#: plugin.py:137
+#: plugin.py:139
 msgid "728px"
 msgstr ""
 
-#: plugin.py:137
+#: plugin.py:139
 msgid "1000px"
 msgstr ""
 
-#: plugin.py:137
+#: plugin.py:139
 msgid "1280px"
 msgstr ""
 
-#: plugin.py:137
+#: plugin.py:139
 msgid "1920px"
 msgstr ""
 
-#: plugin.py:211
+#: plugin.py:225
 msgid "Bouquet Maker Xtream"
 msgstr "Kanal Listesi Oluşturucu Xtream"
 
-#: plugin.py:434
+#: plugin.py:444
 msgid "IPTV Bouquets Creator by KiddaC"
 msgstr "KiddaC'den IPTV Kanal Listesi Oluşturucu"
 
-#: plugin.py:435
+#: plugin.py:445
 msgid "BouquetMakerXtream"
 msgstr "BouquetMakerXtream"
 
-#: server.py:54 settings.py:68
+#: server.py:57 settings.py:78
 msgid "Save"
 msgstr "Kaydet"
 
-#: server.py:55
+#: server.py:58
 msgid ""
 "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/"
 "playlists.txt file"
@@ -667,47 +662,47 @@ msgstr ""
 "Oynatma listesi URL'lerini /etc/enigma2/bouquetmakerxtream/playlists.txt "
 "dosyasına manuel olarak ekleyebilirsiniz"
 
-#: server.py:100
+#: server.py:103
 msgid "Xtream codes / XUI ONE (get.php)"
 msgstr "Xtream kodları / XUI ONE (get.php)"
 
-#: server.py:100
+#: server.py:103
 msgid "External #EXTM3U playlist"
 msgstr "Harici #EXTM3U oynatma listesi"
 
-#: server.py:114
+#: server.py:117
 msgid "Select playlist type:"
 msgstr "Oynatma listesi türünü seçin:"
 
-#: server.py:117 server.py:125
+#: server.py:120 server.py:128
 msgid "Protocol:"
 msgstr "Protokol:"
 
-#: server.py:118
+#: server.py:121
 msgid "Server URL: i.e. domain.xyz"
 msgstr "Sunucu URL'si: yani domain.xyz"
 
-#: server.py:119
+#: server.py:122
 msgid "Port: (optional) i.e. 8080"
 msgstr "Bağlantı noktası: (isteğe bağlı) yani 8080"
 
-#: server.py:120
+#: server.py:123
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
-#: server.py:121
+#: server.py:124
 msgid "Password:"
 msgstr "Şifre:"
 
-#: server.py:126
+#: server.py:129
 msgid "External url: i.e pastebin.com/raw/blahblah"
 msgstr "Harici URL: örn. Pastebin.com/raw/blahblah"
 
-#: server.py:208
+#: server.py:226
 msgid "Details are not valid or unauthorised"
 msgstr "Ayrıntılar geçerli değil veya yetkisiz"
 
-#: server.py:213
+#: server.py:231
 msgid ""
 "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 "
 "characters."
@@ -715,7 +710,7 @@ msgstr ""
 "Kanal Listesi adı boş olamaz. Lütfen benzersiz bir Kanal Listesi adı girin. "
 "Minimum 2 karakter."
 
-#: server.py:232
+#: server.py:246
 msgid "Playlist added successfully."
 msgstr "Oynatma listesi başarıyla eklendi."
 
@@ -767,7 +762,19 @@ msgstr "Sunucu Dengesi:"
 msgid "Close"
 msgstr ""
 
-#: settings.py:112
+#: settings.py:36
+msgid "Please enter the correct pin code"
+msgstr "Lütfen doğru pin kodunu girin"
+
+#: settings.py:36
+msgid "Enter pin code"
+msgstr "Pin kodunu girin"
+
+#: settings.py:45
+msgid "The pin code you entered is wrong."
+msgstr "Girdiğiniz pin kodu yanlış."
+
+#: settings.py:122
 msgid ""
 "Please change default parental pin.\n"
 "\n"
@@ -776,102 +783,97 @@ msgstr ""
 "Lütfen varsayılan ebeveyn pinini değiştirin.\n"
 "Pin 0000, 1111 veya 1234 olamaz"
 
-#: settings.py:139
+#: settings.py:151
 msgid "Select skin"
 msgstr "Arayüz seçin"
 
-#: settings.py:140
+#: settings.py:152
+msgid "Select fake web user-agent"
+msgstr ""
+
+#: settings.py:153
 msgid "playlists.txt location"
 msgstr "playlists.txt konumu"
 
-#: settings.py:140 settings.py:141 settings.py:148 settings.py:155
+#: settings.py:153 settings.py:154 settings.py:159 settings.py:163
 msgid " *Restart GUI Required"
 msgstr " *GUI'nin Yeniden Başlatılması Gerekli"
 
-#: settings.py:141
+#: settings.py:154
 msgid "Local M3U File location"
 msgstr "Yerel M3U Dosya konumu"
 
-#: settings.py:144
+#: settings.py:155
 msgid "Default LIVE stream type"
 msgstr "Varsayılan CANLI akış türü"
 
-#: settings.py:145
+#: settings.py:156
 msgid "Default VOD/SERIES stream type"
 msgstr "Varsayılan VOD/SERIES akış türü"
 
-#: settings.py:146
+#: settings.py:157
 msgid "BouquetMakerXtream parental control"
 msgstr "BouquetMakerXtream ebeveyn kontrolü"
 
-#: settings.py:147
+#: settings.py:158
 msgid "BouquetMakerXtream parental pin"
 msgstr "BouquetMakerXtream ebeveyn PIN'i"
 
-#: settings.py:148
+#: settings.py:159
 msgid "Show in main menu"
 msgstr "Ana menüde göster"
 
-#: settings.py:150
+#: settings.py:160
 msgid "Skip playlist selection screen if only 1 playlist"
 msgstr "Yalnızca 1 oynatma listesi varsa oynatma listesi seçim ekranını atla"
 
-#: settings.py:152
+#: settings.py:161
 msgid "Automatic live bouquet update"
 msgstr "Otomatik canlı Kanal Listesi güncellemesi"
 
-#: settings.py:153
+#: settings.py:162
 msgid "Automatic live bouquet update time"
 msgstr "Otomatik canlı Kanal Listesi güncelleme zamanı"
 
-#: settings.py:155
+#: settings.py:163
 msgid "Embed Catchup player in channelselect screen"
 msgstr "Catchup oynatıcısını kanal seçme ekranına gömün"
 
-#: settings.py:156
+#: settings.py:164
 msgid "Prefix Catchup channels"
 msgstr "Önek Yakalama kanalları"
 
-#: settings.py:157
+#: settings.py:165
 msgid "Select Catchup prefix symbol"
 msgstr "Yakalama öneki sembolünü seçin"
 
-#: settings.py:158
+#: settings.py:166
 msgid "Margin before Catchup (mins)"
 msgstr "Yakalamadan önceki marj (dakika)"
 
-#: settings.py:159
+#: settings.py:167
 msgid "Margin after Catchup (mins)"
 msgstr "Yakalamadan sonraki marj (dakika)"
 
-#: settings.py:161
+#: settings.py:168
 msgid "Group bouquets into its own folder"
 msgstr "Kanal Listelerini kendi klasöründe gruplandır"
 
-#: settings.py:162
+#: settings.py:169
 msgid "Exit plugin on bouquet creation"
 msgstr "Kanal Listesi oluşturmadan eklentiden çık"
 
-#: settings.py:164
-msgid "Max Live channels. 0 = unlimited (slow)."
-msgstr ""
-
-#: settings.py:165
-msgid "Max VOD channels. 0 = unlimited (slow)"
-msgstr ""
-
-#: settings.py:166
-msgid "Max Series channels. 0 = unlimited (slow)"
-msgstr ""
-
-#: update.py:104
+#: update.py:105
 msgid " Providers IPTV Updated"
 msgstr " Sağlayıcılar IPTV Güncellendi"
 
-#: update.py:159
+#: update.py:160
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "%d / %d Oynatma Listesi güncelleniyor"
+
+#~ msgid "Delete providers EPG data?"
+#~ msgstr "Sağlayıcıların EPG verileri silinsin mi?"
 
 #~ msgid "BouquetMakerXtream "
 #~ msgstr "BouquetMakerXtream "

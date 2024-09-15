@@ -14,6 +14,7 @@ from Screens.Console import Console
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
+from Components.config import configfile
 import json
 import os
 
@@ -63,6 +64,7 @@ class BmxMainMenu(Screen):
                 self.session.open(MessageBox, _("Playlists.txt location is invalid and has been reset."), type=MessageBox.TYPE_INFO, timeout=5)
                 cfg.location_valid.setValue(True)
                 cfg.save()
+                configfile.save()
         except:
             pass
 
@@ -118,8 +120,8 @@ class BmxMainMenu(Screen):
             self.list.append([4, _("Update Bouquets")])
             self.list.append([8, _("Download Picons")])
             self.list.append([5, _("Delete Bouquets")])
-            self.list.append([6, _("Delete All BMX Bouquets")])
 
+        self.list.append([6, _("Delete All BMX Bouquets")])
         self.list.append([2, _("Add Playlist")])
         self.list.append([7, _("About")])
 
