@@ -227,42 +227,26 @@ class BmxUpdate(Screen):
                 self.output = glob.current_playlist["playlist_info"]["output"]
 
                 if glob.current_playlist["settings"]["show_live"] is True:
-
-                    p_live_categories_url = player_api + "&action=get_live_categories"
-                    self.live_url_list.append([p_live_categories_url, 0, "json"])
-
-                    p_live_streams_url = player_api + "&action=get_live_streams"
-                    self.live_url_list.append([p_live_streams_url, 3, "json"])
-
-                if glob.current_playlist["settings"]["show_vod"] is True:
-                    p_vod_categories_url = player_api + "&action=get_vod_categories"
-                    self.vod_url_list.append([p_vod_categories_url, 1, "json"])
-
-                    p_vod_streams_url = player_api + "&action=get_vod_streams"
-                    self.vod_url_list.append([p_vod_streams_url, 4, "json"])
-
-                if glob.current_playlist["settings"]["show_series"] is True:
-                    p_series_categories_url = player_api + "&action=get_series_categories"
-                    self.series_url_list.append([p_series_categories_url, 2, "json"])
-
-                    p_series_streams_url = player_api + "&action=get_series"
-                    self.series_url_list.append([p_series_streams_url, 5, "json"])
-                    self.simple = str(self.host) + "/" + "get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=simple&output=" + str(self.output)
-
-                if glob.current_playlist["settings"]["show_live"] is True:
+                    self.live_url_list.append([player_api + "&action=get_live_categories", 0, "json"])
+                    self.live_url_list.append([player_api + "&action=get_live_streams", 3, "json"])
                     self.nextJob(_("Downloading live data..."), self.downloadLive)
 
                 elif glob.current_playlist["settings"]["show_vod"] is True:
+                    self.vod_url_list.append([player_api + "&action=get_vod_categories", 1, "json"])
+                    self.vod_url_list.append([player_api + "&action=get_vod_streams", 4, "json"])
                     self.nextJob(_("Downloading VOD data..."), self.downloadVod)
 
                 elif glob.current_playlist["settings"]["show_series"] is True:
+                    self.series_url_list.append([player_api + "&action=get_series_categories", 2, "json"])
+                    self.series_url_list.append([player_api + "&action=get_series", 5, "json"])
+                    self.simple = self.host + "/" + "get.php?username=" + self.username + "&password=" + self.password + "&type=simple&output=" + self.output
                     self.nextJob(_("Downloading series data..."), self.downloadSeries)
 
                 else:
                     self.finished()
 
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
-                self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
+                self.external_url_list.append([full_url, 6, "text"])
                 self.nextJob(_("Downloading external playlist..."), self.downloadExternal)
         else:
             self.nextJob(_("Loading local playlist..."), self.loadLocal)
