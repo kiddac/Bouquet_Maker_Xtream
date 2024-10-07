@@ -371,69 +371,66 @@ class BmxUpdate(Screen):
                     return
 
         if live_categories and self.live_streams:
-            x = 0
             for channel in self.live_streams:
-                if "stream_id" in channel and channel["stream_id"]:
-                    stream_id = str(channel["stream_id"])
+                stream_id = str(channel["stream_id"])
+                if not stream_id:
+                    continue
+
+                category_id = channel.get("category_id")
+                if not category_id:
+                    continue
+
+                if str(category_id) in glob.current_playlist["data"].get("live_categories_hidden", []) or \
+                   str(stream_id) in glob.current_playlist["data"].get("live_streams_hidden", []):
+                    continue
+
+                name = channel.get("name", "").replace(":", "").replace('"', "").strip("-")
+                catchup = int(channel.get("tv_archive", 0))
+
+                if cfg.catchup.value and catchup == 1:
+                    name = str(cfg.catchup_prefix.value) + str(name)
+
+                try:
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) % 65535
+                except:
+                    continue
+
+                service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:http%3a//example.m3u8"
+                custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
+
+                if "custom_sid" in channel and channel["custom_sid"]:
+                    if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
+                        if channel["custom_sid"][0].isdigit():
+                            channel["custom_sid"] = channel["custom_sid"][1:]
+
+                        service_ref = str(":".join(channel["custom_sid"].split(":")[:7])) + ":0:0:0:http%3a//example.m3u8"
+                        custom_sid = channel["custom_sid"]
+
+                xml_str = ""
+
+                channel_id = channel.get("epg_channel_id")
+                if channel_id:
+                    channel_id = channel_id.replace("&", "&amp;")
+                    xml_str = '\t<channel id="' + str(channel_id) + '">' + str(service_ref) + "</channel><!-- " + str(name) + " -->\n"
+
+                bouquet_string = ""
+
+                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                    bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(self.host_encoded) + "/live/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(self.output) + ":" + str(name) + "\n"
                 else:
-                    continue
+                    source = quote(channel.get("source", ""))
+                    bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(source) + ":" + str(name) + "\n"
 
-                if "category_id" not in channel or not channel["category_id"]:
-                    continue
+                bouquet_string += "#DESCRIPTION " + str(name) + "\n"
 
-                if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
-                    if "name" in channel and channel["name"]:
-                        name = channel["name"]
-                        name = name.replace(":", "").replace('"', "").strip("-")
-                    else:
-                        continue
-
-                    if "tv_archive" in channel and channel["tv_archive"]:
-                        catchup = int(channel["tv_archive"])
-                    else:
-                        catchup = 0
-
-                    if cfg.catchup.value is True and catchup == 1:
-                        name = str(cfg.catchup_prefix.value) + str(name)
-
-                    try:
-                        bouquet_id1 = int(stream_id) // 65535
-                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
-                    except:
-                        continue
-
-                    service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
-                    custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
-
-                    if "custom_sid" in channel and channel["custom_sid"]:
-                        if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
-                            if channel["custom_sid"][0].isdigit():
-                                channel["custom_sid"] = channel["custom_sid"][1:]
-
-                            service_ref = str(":".join(channel["custom_sid"].split(":")[:7])) + ":0:0:0:" + "http%3a//example.m3u8"
-                            custom_sid = channel["custom_sid"]
-
-                    xml_str = ""
-
-                    if "epg_channel_id" in channel and channel["epg_channel_id"]:
-                        channel_id = str(channel["epg_channel_id"])
-                        if "&" in channel_id:
-                            channel_id = channel_id.replace("&", "&amp;")
-                        xml_str = '\t<channel id="' + str(channel_id) + '">' + str(service_ref) + "</channel><!-- " + str(name) + " -->\n"
-
-                    bouquet_string = ""
-
-                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(self.host_encoded) + "/live/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(self.output) + ":" + str(name) + "\n"
-                    else:
-                        source = str(channel["source"])
-                        source = quote(source)
-                        bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(source) + ":" + str(name) + "\n"
-
-                    bouquet_string += "#DESCRIPTION " + str(name) + "\n"
-
-                    stream_list.append({"category_id": str(channel["category_id"]), "xml_str": str(xml_str), "bouquet_string": bouquet_string, "name": str(channel["name"]), "added": str(channel["added"])})
-                    x += 1
+                stream_list.append({
+                    "category_id": str(category_id),
+                    "xml_str": str(xml_str),
+                    "bouquet_string": bouquet_string,
+                    "name": str(channel.get("name")),
+                    "added": str(channel.get("added"))
+                })
 
         self.live_stream_data = stream_list
 
