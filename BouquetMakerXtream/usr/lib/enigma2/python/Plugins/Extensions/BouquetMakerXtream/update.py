@@ -343,31 +343,32 @@ class BmxUpdate(Screen):
 
         live_categories = glob.current_playlist["data"]["live_categories"]
 
-        if live_categories:
-            if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
-                self.live_streams = glob.current_playlist["data"]["live_streams"]
+        if not live_categories:
+            return
 
-            if glob.current_playlist["settings"]["live_category_order"] == "alphabetical":
-                live_categories = sorted(live_categories, key=lambda k: k["category_name"].lower())
+        if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
+            self.live_streams = glob.current_playlist["data"]["live_streams"]
 
-            if len(glob.current_playlist["data"]["live_categories"]) == len(glob.current_playlist["data"]["live_categories_hidden"]):
-                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                    if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                        self.nextJob(_("Downloading VOD data..."), self.downloadVod)
+        if glob.current_playlist["settings"]["live_category_order"] == "alphabetical":
+            live_categories.sort(key=lambda k: k["category_name"].lower())
 
-                    elif glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                        self.nextJob(_("Downloading series data..."), self.downloadSeries)
-                    else:
-                        self.finished()
-                        return
+        if len(glob.current_playlist["data"]["live_categories"]) == len(glob.current_playlist["data"]["live_categories_hidden"]):
+            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                if glob.current_playlist["settings"]["show_vod"] and glob.current_playlist["data"]["vod_categories"]:
+                    self.nextJob(_("Downloading VOD data..."), self.downloadVod)
+                elif glob.current_playlist["settings"]["show_series"] and glob.current_playlist["data"]["series_categories"]:
+                    self.nextJob(_("Downloading series data..."), self.downloadSeries)
                 else:
-                    if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                        self.nextJob(_("Process VOD data..."), self.loadVod)
-                    elif glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                        self.nextJob(_("Processing series data..."), self.loadSeries)
-                    else:
-                        self.finished()
-                        return
+                    self.finished()
+                    return
+            else:
+                if glob.current_playlist["settings"]["show_vod"] and glob.current_playlist["data"]["vod_categories"]:
+                    self.nextJob(_("Process VOD data..."), self.loadVod)
+                elif glob.current_playlist["settings"]["show_series"] and glob.current_playlist["data"]["series_categories"]:
+                    self.nextJob(_("Processing series data..."), self.loadSeries)
+                else:
+                    self.finished()
+                    return
 
         if live_categories and self.live_streams:
             x = 0
