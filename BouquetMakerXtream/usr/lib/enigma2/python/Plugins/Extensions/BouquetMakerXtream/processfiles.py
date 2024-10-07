@@ -30,6 +30,11 @@ def processFiles():
                 playlists_all = json.load(f)
             except:
                 os.remove(playlists_json)
+                playlists_all = []
+    else:
+        with open(playlists_json, "w") as f:
+            playlists_all = []
+            json.dump(playlists_all, f)
 
     # check playlist.txt entries are valid
     with open(playlist_file, "r+") as f:
@@ -76,36 +81,37 @@ def processFiles():
                 else:
                     host = protocol + domain
 
-                if playlist_type == "xtream":
-                    query = parse_qs(parsed_uri.query, keep_blank_values=True)
+                query = parse_qs(parsed_uri.query, keep_blank_values=True)
 
-                    if "username" not in query or "password" not in query:
-                        continue
+                if "username" not in query or "password" not in query:
+                    continue
 
-                    username = query["username"][0].strip()
-                    password = query["password"][0].strip()
+                username = query["username"][0].strip()
+                password = query["password"][0].strip()
 
-                    if "type" in query:
-                        playlistformat = query["type"][0].strip()
+                """
+                if "type" in query:
+                    playlistformat = query["type"][0].strip()
 
-                    if "output" in query:
-                        output = query["output"][0].strip()
+                if "output" in query:
+                    output = query["output"][0].strip()
+                    """
 
-                    if "timeshift" in query:
-                        try:
-                            epg_offset = int(query["timeshift"][0].strip())
-                        except ValueError:
-                            pass
+                if "timeshift" in query:
+                    try:
+                        epg_offset = int(query["timeshift"][0].strip())
+                    except ValueError:
+                        pass
 
-                    if epg_offset != 0:
-                        line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s\n" % (host, username, password, playlistformat, output, epg_offset, name)
-                    else:
-                        line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s\n" % (host, username, password, playlistformat, output, name)
+                if epg_offset != 0:
+                    line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s\n" % (host, username, password, playlistformat, output, epg_offset, name)
+                else:
+                    line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s\n" % (host, username, password, playlistformat, output, name)
 
             if line != "":
                 f.write(line)
 
-        # read entries from playlists.txt
+        # build json data
         index = 0
         live_type = cfg.live_type.getValue()
         vod_type = cfg.vod_type.getValue()
@@ -168,11 +174,13 @@ def processFiles():
                     username = query["username"][0].strip()
                     password = query["password"][0].strip()
 
+                    """
                     if "type" in query:
                         playlistformat = query["type"][0].strip()
 
                     if "output" in query:
                         output = query["output"][0].strip()
+                        """
 
                     if "timeshift" in query:
                         try:
@@ -184,7 +192,7 @@ def processFiles():
                     xmltv_api = host + "/xmltv.php?username=" + username + "&password=" + password
                     full_url = host + "/get.php?username=" + username + "&password=" + password + "&type=" + playlistformat + "&output=" + output
 
-                if playlist_type == "external":
+                elif playlist_type == "external":
                     full_url = line.partition("#")[0].strip()
 
                 playlist_exists = False
