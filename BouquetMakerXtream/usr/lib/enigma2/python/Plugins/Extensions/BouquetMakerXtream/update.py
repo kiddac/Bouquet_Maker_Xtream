@@ -303,7 +303,6 @@ class BmxUpdate(Screen):
             self.url_list = self.external_url_list
 
         for url in self.url_list:
-
             category = ""
             response = ""
 
@@ -380,8 +379,8 @@ class BmxUpdate(Screen):
                 if not category_id:
                     continue
 
-                if str(category_id) in glob.current_playlist["data"].get("live_categories_hidden", []) or \
-                   str(stream_id) in glob.current_playlist["data"].get("live_streams_hidden", []):
+                if str(category_id) in glob.current_playlist["data"]["live_categories_hidden"] or \
+                   str(stream_id) in glob.current_playlist["data"]["live_streams_hidden"]:
                     continue
 
                 name = channel.get("name", "").replace(":", "").replace('"', "").strip("-")
