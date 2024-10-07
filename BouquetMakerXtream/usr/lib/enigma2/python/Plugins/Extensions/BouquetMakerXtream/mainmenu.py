@@ -79,25 +79,25 @@ class BmxMainMenu(Screen):
             print(e)
             dependencies = False
 
-        if dependencies is False:
+        if not dependencies:
             os.chmod("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/dependencies.sh", 0o0755)
             cmd1 = ". /usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/dependencies.sh"
-            self.session.openWithCallback(self.start, Console, title="Checking Python Dependencies", cmdlist=[cmd1], closeOnSuccess=False)
+            self.session.openWithCallback(self.start, Console, title="Checking Python Dependencies", cmdlist=[cmd1], closeOnSuccess=True)
         else:
             self.start()
 
     def start(self, answer=None):
-        if glob.finished and cfg.auto_close.getValue() is True:
+        if glob.finished and cfg.auto_close.getValue():
             self.close()
 
         self.playlists_all = pfiles.processFiles()
 
         # clear stream data if populated after a crash
-        if self.playlists_all:
-            for playlist in self.playlists_all:
-                playlist["data"]["live_streams"] = []
-                playlist["data"]["vod_streams"] = []
-                playlist["data"]["series_streams"] = []
+
+        for playlist in self.playlists_all:
+            playlist["data"]["live_streams"] = []
+            playlist["data"]["vod_streams"] = []
+            playlist["data"]["series_streams"] = []
 
         self.createSetup()
 
@@ -109,49 +109,42 @@ class BmxMainMenu(Screen):
 
         self.list.append([3, _("Main Settings")])
 
-        self.bouquets_exist = False
-
-        for playlist in self.playlists_all:
-            if playlist["playlist_info"]["bouquet"] is True:
-                self.bouquets_exist = True
-                break
+        self.bouquets_exist = any(playlist["playlist_info"].get("bouquet") for playlist in self.playlists_all)
 
         if self.bouquets_exist:
-            self.list.append([4, _("Update Bouquets")])
-            self.list.append([8, _("Download Picons")])
-            self.list.append([5, _("Delete Bouquets")])
+            self.list.extend([
+                [4, _("Update Bouquets")],
+                [8, _("Download Picons")],
+                [5, _("Delete Bouquets")]
+            ])
 
-        self.list.append([6, _("Delete All BMX Bouquets")])
-        self.list.append([2, _("Add Playlist")])
-        self.list.append([7, _("About")])
+        self.list.extend([
+            [6, _("Delete All BMX Bouquets")],
+            [2, _("Add Playlist")],
+            [7, _("About")]
+        ])
 
-        self.draw_list = []
         self.draw_list = [buildListEntry(x[0], x[1]) for x in self.list]
         self["list"].setList(self.draw_list)
 
     def playlists(self):
         from . import playlists
-
         self.session.openWithCallback(self.start, playlists.BmxPlaylists)
 
     def settings(self):
         from . import settings
-
         self.session.openWithCallback(self.start, settings.BmxSettings)
 
     def addServer(self):
         from . import server
-
         self.session.openWithCallback(self.start, server.BmxAddServer)
 
     def about(self):
         from . import about
-
         self.session.openWithCallback(self.start, about.BmxAbout)
 
     def deleteSet(self):
         from . import deletebouquets
-
         self.session.openWithCallback(self.start, deletebouquets.BmxDeleteBouquets)
 
     def deleteAll(self, answer=None):
@@ -183,10 +176,8 @@ class BmxMainMenu(Screen):
 
             bmx.refreshBouquets()
             self.start()
-        return
 
     def update(self):
-        # return
         from . import update
         self.session.openWithCallback(self.start, update.BmxUpdate, "manual")
 
@@ -221,23 +212,15 @@ class BmxMainMenu(Screen):
 
 
 def buildListEntry(index, title):
-    png = None
-
-    if index == 1:
-        png = LoadPixmap(common_path + "playlists.png")
-    if index == 3:
-        png = LoadPixmap(common_path + "settings.png")
-    if index == 2:
-        png = LoadPixmap(common_path + "addplaylist.png")
-    if index == 4:
-        png = LoadPixmap(common_path + "updateplaylists.png")
-    if index == 5:
-        png = LoadPixmap(common_path + "deleteplaylist.png")
-    if index == 6:
-        png = LoadPixmap(common_path + "deleteplaylist.png")
-    if index == 7:
-        png = LoadPixmap(common_path + "about.png")
-    if index == 8:
-        png = LoadPixmap(common_path + "picons.png")
-
+    icons = {
+        1: "playlists.png",
+        2: "addplaylist.png",
+        3: "settings.png",
+        4: "updateplaylists.png",
+        5: "deleteplaylist.png",
+        6: "deleteplaylist.png",
+        7: "about.png",
+        8: "picons.png"
+    }
+    png = LoadPixmap(common_path + icons.get(index, ""))
     return (index, str(title), png)
