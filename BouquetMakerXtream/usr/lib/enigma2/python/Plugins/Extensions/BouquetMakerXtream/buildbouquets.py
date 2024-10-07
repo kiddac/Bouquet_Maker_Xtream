@@ -1014,12 +1014,10 @@ class BmxBuildBouquets(Screen):
 
     def updateJson(self):
         if self.playlists_all:
-            x = 0
-            for playlists in self.playlists_all:
+            for index, playlists in enumerate(self.playlists_all):
                 if playlists["playlist_info"]["full_url"] == glob.current_playlist["playlist_info"]["full_url"]:
-                    self.playlists_all[x]["playlist_info"]["bouquet"] = True
+                    self.playlists_all[index]["playlist_info"]["bouquet"] = True
                     break
-                x += 1
 
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
