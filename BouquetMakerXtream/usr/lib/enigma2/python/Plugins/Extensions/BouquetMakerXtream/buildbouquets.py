@@ -153,8 +153,8 @@ class BmxBuildBouquets(Screen):
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
             protocol = glob.current_playlist["playlist_info"]["protocol"]
             domain = glob.current_playlist["playlist_info"]["domain"]
-            port = glob.current_playlist["playlist_info"]["port"]
 
+            port = glob.current_playlist["playlist_info"]["port"]
             if port:
                 self.host = protocol + domain + ":" + str(port)
             else:
@@ -168,45 +168,45 @@ class BmxBuildBouquets(Screen):
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
-
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
-                try:
-                    if "next_days" in glob.current_playlist["settings"] and glob.current_playlist["settings"]["next_days"] != "0":
-                        self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
-                except:
-                    pass
+
+                next_days = glob.current_playlist["settings"].get("next_days", "0")
+
+                if next_days != "0":
+                    self.xmltv_api += "&next_days=" + str(next_days)
 
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
                 self.output = glob.current_playlist["playlist_info"]["output"]
 
-                if glob.current_playlist["settings"]["show_live"] is True and glob.current_playlist["data"]["live_categories"]:
-                    p_live_streams_url = player_api + "&action=get_live_streams"
-                    self.live_url_list.append([p_live_streams_url, 3, "json"])
+                if glob.current_playlist["settings"]["show_live"] is True:
+                    self.live_url_list.append([player_api + "&action=get_live_streams", 3, "json"])
 
-                if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                    p_vod_streams_url = player_api + "&action=get_vod_streams"
-                    self.vod_url_list.append([p_vod_streams_url, 4, "json"])
+                if glob.current_playlist["settings"]["show_vod"] is True:
+                    self.vod_url_list.append([player_api + "&action=get_vod_streams", 4, "json"])
 
-                if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                    p_series_streams_url = player_api + "&action=get_series"
-                    self.series_url_list.append([p_series_streams_url, 5, "json"])
-                    self.simple = str(self.host) + "/" + "get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=simple&output=" + str(self.output)
+                if glob.current_playlist["settings"]["show_series"] is True:
+                    self.series_url_list.append([player_api + "&action=get_series", 5, "json"])
+                    self.simple = self.host + "/" + "get.php?username=" + self.username + "&password=" + self.password + "&type=simple&output=" + self.output
 
-                if glob.current_playlist["settings"]["show_live"] is True and glob.current_playlist["data"]["live_categories"]:
+                if glob.current_playlist["settings"]["show_live"] is True:
                     self.nextJob(_("Downloading live data..."), self.downloadLive)
+                    return
 
-                elif glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
+                elif glob.current_playlist["settings"]["show_vod"] is True:
                     self.nextJob(_("Downloading VOD data..."), self.downloadVod)
+                    return
 
-                elif glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
+                elif glob.current_playlist["settings"]["show_series"] is True:
                     self.nextJob(_("Downloading series data..."), self.downloadSeries)
+                    return
 
                 else:
                     self.finished()
+                    return
 
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
-                self.external_url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
+                self.external_url_list.append([full_url, 6, "text"])
                 self.nextJob(_("Downloading external playlist..."), self.downloadExternal)
         else:
             self.nextJob(_("Loading local playlist..."), self.loadLocal)
