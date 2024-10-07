@@ -485,6 +485,7 @@ class BmxBuildBouquets(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
+                return
         else:
             if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
                 self.nextJob(_("Process VOD data..."), self.loadVod)
@@ -492,6 +493,7 @@ class BmxBuildBouquets(Screen):
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
+                return
 
     def loadVod(self):
         self.vod_stream_data = []
@@ -655,11 +657,13 @@ class BmxBuildBouquets(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
+                return
         else:
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
+                return
 
     def loadSeries(self):
         stream_list = []
@@ -1005,6 +1009,7 @@ class BmxBuildBouquets(Screen):
 
     def exit(self, answer=None):
         glob.finished = True
+        glob.current_playlist = []
         self.close(True)
 
     def updateJson(self):
