@@ -284,95 +284,94 @@ class BmxBuildBouquets(Screen):
 
         live_categories = glob.current_playlist["data"]["live_categories"]
 
-        if live_categories:
-            self.live_streams = glob.current_playlist["data"]["live_streams"]
+        if not live_categories:
+            return
 
-            if glob.current_playlist["settings"]["live_category_order"] == "alphabetical":
-                live_categories = sorted(live_categories, key=lambda k: k["category_name"].lower())
+        self.live_streams = glob.current_playlist["data"]["live_streams"]
 
-            if len(glob.current_playlist["data"]["live_categories"]) == len(glob.current_playlist["data"]["live_categories_hidden"]):
-                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                    if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                        self.nextJob(_("Downloading VOD data..."), self.downloadVod)
+        if glob.current_playlist["settings"]["live_category_order"] == "alphabetical":
+            live_categories.sort(key=lambda k: k["category_name"].lower())
 
-                    elif glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                        self.nextJob(_("Downloading series data..."), self.downloadSeries)
-                    else:
-                        self.finished()
-                        return
+        if len(glob.current_playlist["data"]["live_categories"]) == len(glob.current_playlist["data"]["live_categories_hidden"]):
+            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                if glob.current_playlist["settings"]["show_vod"] and glob.current_playlist["data"]["vod_categories"]:
+                    self.nextJob(_("Downloading VOD data..."), self.downloadVod)
+                elif glob.current_playlist["settings"]["show_series"] and glob.current_playlist["data"]["series_categories"]:
+                    self.nextJob(_("Downloading series data..."), self.downloadSeries)
                 else:
-                    if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                        self.nextJob(_("Process VOD data..."), self.loadVod)
-                    elif glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                        self.nextJob(_("Processing series data..."), self.loadSeries)
-                    else:
-                        self.finished()
-                        return
+                    self.finished()
+                    return
+            else:
+                if glob.current_playlist["settings"]["show_vod"] and glob.current_playlist["data"]["vod_categories"]:
+                    self.nextJob(_("Process VOD data..."), self.loadVod)
+                elif glob.current_playlist["settings"]["show_series"] and glob.current_playlist["data"]["series_categories"]:
+                    self.nextJob(_("Processing series data..."), self.loadSeries)
+                else:
+                    self.finished()
+                    return
 
         if live_categories and self.live_streams:
-            x = 0
             for channel in self.live_streams:
-                if "stream_id" in channel and channel["stream_id"]:
-                    stream_id = str(channel["stream_id"])
+                stream_id = str(channel["stream_id"])
+                if not stream_id:
+                    continue
+
+                category_id = channel.get("category_id")
+                if not category_id:
+                    continue
+
+
+                if str(category_id) in glob.current_playlist["data"]["live_categories_hidden"] or \
+                   str(stream_id) in glob.current_playlist["data"]["live_streams_hidden"]:
+                    continue
+                name = channel.get("name", "").replace(":", "").replace('"', "").strip("-")
+                catchup = int(channel.get("tv_archive", 0))
+
+                if cfg.catchup.value and catchup == 1:
+                    name = str(cfg.catchup_prefix.value) + str(name)
+
+                try:
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) % 65535
+                except:
+                    continue
+
+                service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:http%3a//example.m3u8"
+                custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
+
+
+                if "custom_sid" in channel and channel["custom_sid"]:
+                    if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
+                        if channel["custom_sid"][0].isdigit():
+                            channel["custom_sid"] = channel["custom_sid"][1:]
+
+                        service_ref = str(":".join(channel["custom_sid"].split(":")[:7])) + ":0:0:0:http%3a//example.m3u8"
+                        custom_sid = channel["custom_sid"]
+
+                xml_str = ""
+
+                channel_id = channel.get("epg_channel_id")
+                if channel_id:
+                    channel_id = channel_id.replace("&", "&amp;")
+                    xml_str = '\t<channel id="' + str(channel_id) + '">' + str(service_ref) + "</channel><!-- " + str(name) + " -->\n"
+
+                bouquet_string = ""
+
+                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                    bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(self.host_encoded) + "/live/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(self.output) + ":" + str(name) + "\n"
                 else:
-                    continue
+                    source = quote(channel.get("source", ""))
+                    bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(source) + ":" + str(name) + "\n"
 
-                if "category_id" not in channel or not channel["category_id"]:
-                    continue
+                bouquet_string += "#DESCRIPTION " + str(name) + "\n"
 
-                if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
-                    if "name" in channel and channel["name"]:
-                        name = channel["name"]
-                        name = name.replace(":", "").replace('"', "").strip("-")
-                    else:
-                        continue
-
-                    if "tv_archive" in channel and channel["tv_archive"]:
-                        catchup = int(channel["tv_archive"])
-                    else:
-                        catchup = 0
-
-                    if cfg.catchup.value is True and catchup == 1:
-                        name = str(cfg.catchup_prefix.value) + str(name)
-
-                    try:
-                        bouquet_id1 = int(stream_id) // 65535
-                        bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
-                    except:
-                        continue
-
-                    service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:" + "http%3a//example.m3u8"
-                    custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
-
-                    if "custom_sid" in channel and channel["custom_sid"]:
-                        if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
-                            if channel["custom_sid"][0].isdigit():
-                                channel["custom_sid"] = channel["custom_sid"][1:]
-
-                            service_ref = str(":".join(channel["custom_sid"].split(":")[:7])) + ":0:0:0:" + "http%3a//example.m3u8"
-                            custom_sid = channel["custom_sid"]
-
-                    xml_str = ""
-
-                    if "epg_channel_id" in channel and channel["epg_channel_id"]:
-                        channel_id = str(channel["epg_channel_id"])
-                        if "&" in channel_id:
-                            channel_id = channel_id.replace("&", "&amp;")
-                        xml_str = '\t<channel id="' + str(channel_id) + '">' + str(service_ref) + "</channel><!-- " + str(name) + " -->\n"
-
-                    bouquet_string = ""
-
-                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(self.host_encoded) + "/live/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(self.output) + ":" + str(name) + "\n"
-                    else:
-                        source = str(channel["source"])
-                        source = quote(source)
-                        bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(source) + ":" + str(name) + "\n"
-
-                    bouquet_string += "#DESCRIPTION " + str(name) + "\n"
-
-                    stream_list.append({"category_id": str(channel["category_id"]), "xml_str": str(xml_str), "bouquet_string": bouquet_string, "name": str(channel["name"]), "added": str(channel["added"])})
-                    x += 1
+                stream_list.append({
+                    "category_id": str(category_id),
+                    "xml_str": str(xml_str),
+                    "bouquet_string": bouquet_string,
+                    "name": str(channel.get("name")),
+                    "added": str(channel.get("added"))
+                })
 
         self.live_stream_data = stream_list
 
@@ -388,48 +387,36 @@ class BmxBuildBouquets(Screen):
             filename = ""
 
             for category in live_categories:
-                if "category_id" not in category or not category["category_id"]:
+                category_id = category.get("category_id")
+                if not category_id:
                     continue
 
-                exists = False
-                for item in stream_list:
+                exists = any(item for item in stream_list if item.get("category_id") == category_id)
 
-                    if "category_id" not in item or not item["category_id"]:
-                        continue
-
-                    if category["category_id"] == item["category_id"]:
-                        exists = True
-                        break
-
-                if (str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]) and exists is True:
+                if str(category_id) not in glob.current_playlist["data"]["live_categories_hidden"] and exists:
                     if cfg.groups.value is True:
                         filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
                         bouquet = "subbouquet"
                         self.userbouquet = True
-                    if cfg.groups.value is False:
+                    else:
                         filename = "/etc/enigma2/bouquets.tv"
                         bouquet = "userbouquet"
 
-                    bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_live_" + self.safe_name + "_" + bmx.safeName(category["category_name"]) + '.tv" ORDER BY bouquet\n'
+                    bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_live_" + str(self.safe_name) + "_" + bmx.safeName(category["category_name"]) + '.tv" ORDER BY bouquet\n'
 
             if filename:
                 with open(filename, "a+") as f:
                     f.write(str(bouquet_tv_string))
 
                 for category in live_categories:
-                    if "category_id" not in category or not category["category_id"]:
+                    category_id = category.get("category_id")
+
+                    if not category_id:
                         continue
 
-                    exists = False
-                    for item in stream_list:
-                        if "category_id" not in item or not item["category_id"]:
-                            continue
+                    exists = any(item for item in stream_list if item.get("category_id") == category_id)
 
-                        if category["category_id"] == item["category_id"]:
-                            exists = True
-                            break
-
-                    if (str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]) and exists is True:
+                    if str(category_id) not in glob.current_playlist["data"]["live_categories_hidden"] and exists:
                         bouquet_title = self.safe_name + "_" + bmx.safeName(category["category_name"])
                         self.total_count += 1
                         output_string = ""
@@ -441,7 +428,7 @@ class BmxBuildBouquets(Screen):
                             output_string += "#NAME " + category["category_name"] + "\n"
 
                         for stream in self.live_stream_data:
-                            if str(category["category_id"]) == str(stream["category_id"]):
+                            if str(category_id) == str(stream["category_id"]):
                                 string_list.append([str(stream["bouquet_string"]), str(stream["name"]), str(stream["added"])])
 
                         if glob.current_playlist["settings"]["live_stream_order"] == "alphabetical":
@@ -455,7 +442,6 @@ class BmxBuildBouquets(Screen):
 
                         if cfg.groups.value is True:
                             filename = "/etc/enigma2/subbouquet.bouquetmakerxtream_live_" + str(bouquet_title) + ".tv"
-
                         else:
                             filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_live_" + str(bouquet_title) + ".tv"
 
