@@ -40,7 +40,7 @@ class BmxBuildBouquets(Screen):
         with open(skin, "r") as f:
             self.skin = f.read()
 
-        self.setup_title = (_("Building Bouquets"))
+        self.setup_title = _("Building Bouquets")
 
         self.categories = []
 
@@ -62,26 +62,18 @@ class BmxBuildBouquets(Screen):
         self.progress_range = 0
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            if glob.current_playlist["settings"]["show_live"] is True and glob.current_playlist["data"]["live_categories"]:
-                self.progress_range += 2
-
-            if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                self.progress_range += 2
-
-            if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                self.progress_range += 2
-
+            self.progress_range += 2 * sum([
+                glob.current_playlist["settings"]["show_live"] is True,
+                glob.current_playlist["settings"]["show_vod"] is True,
+                glob.current_playlist["settings"]["show_series"] is True
+            ])
         else:
-            self.progress_range += 1
-
-            if glob.current_playlist["settings"]["show_live"] is True and glob.current_playlist["data"]["live_categories"]:
-                self.progress_range += 1
-
-            if glob.current_playlist["settings"]["show_vod"] is True and glob.current_playlist["data"]["vod_categories"]:
-                self.progress_range += 1
-
-            if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
-                self.progress_range += 1
+            self.progress_range += 1  # Base range for non-xtream playlists
+            self.progress_range += sum([
+                glob.current_playlist["settings"]["show_live"] is True,
+                glob.current_playlist["settings"]["show_vod"] is True,
+                glob.current_playlist["settings"]["show_series"] is True
+            ])
 
         self.playlists_all = bmx.getPlaylistJson()
 
