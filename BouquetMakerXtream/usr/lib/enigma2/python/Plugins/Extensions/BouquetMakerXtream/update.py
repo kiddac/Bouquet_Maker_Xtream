@@ -123,26 +123,18 @@ class BmxUpdate(Screen):
             self.progress_range = 0
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                if glob.current_playlist["settings"]["show_live"] is True:
-                    self.progress_range += 2
-
-                if glob.current_playlist["settings"]["show_vod"] is True:
-                    self.progress_range += 2
-
-                if glob.current_playlist["settings"]["show_series"] is True:
-                    self.progress_range += 2
-
+                self.progress_range += 2 * sum([
+                    glob.current_playlist["settings"]["show_live"] is True,
+                    glob.current_playlist["settings"]["show_vod"] is True,
+                    glob.current_playlist["settings"]["show_series"] is True
+                ])
             else:
-                self.progress_range += 1
-
-                if glob.current_playlist["settings"]["show_live"] is True:
-                    self.progress_range += 1
-
-                if glob.current_playlist["settings"]["show_vod"] is True:
-                    self.progress_range += 1
-
-                if glob.current_playlist["settings"]["show_series"] is True:
-                    self.progress_range += 1
+                self.progress_range += 1  # Base range for non-xtream playlists
+                self.progress_range += sum([
+                    glob.current_playlist["settings"]["show_live"] is True,
+                    glob.current_playlist["settings"]["show_vod"] is True,
+                    glob.current_playlist["settings"]["show_series"] is True
+                ])
 
             self.start()
 
