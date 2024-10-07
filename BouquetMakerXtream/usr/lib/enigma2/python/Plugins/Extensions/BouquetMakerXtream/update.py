@@ -436,8 +436,8 @@ class BmxUpdate(Screen):
                     "category_id": str(category_id),
                     "xml_str": str(xml_str),
                     "bouquet_string": bouquet_string,
-                    "name": str(channel.get("name")),
-                    "added": str(channel.get("added"))
+                    "name": str(channel["name"]),
+                    "added": str(channel["added"])
                 })
 
         self.live_stream_data = stream_list
@@ -544,20 +544,19 @@ class BmxUpdate(Screen):
     def loadVod(self):
         self.vod_stream_data = []
         stream_list = []
-        stream_type = glob.current_playlist["settings"].get("vod_type", "")
+        stream_type = glob.current_playlist["settings"]["vod_type"]
 
         if self.vod_categories:
             glob.current_playlist["data"]["vod_categories"] = self.vod_categories
 
-        vod_categories = glob.current_playlist["data"].get("vod_categories", [])
-
+        vod_categories = glob.current_playlist["data"]["vod_categories"]
         if not vod_categories:
             return
 
         if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
-            self.vod_streams = glob.current_playlist["data"].get("vod_streams", [])
+            self.vod_streams = glob.current_playlist["data"]["vod_streams"]
 
-        if glob.current_playlist["settings"].get("vod_category_order") == "alphabetical":
+        if glob.current_playlist["settings"]["vod_category_order"] == "alphabetical":
             vod_categories.sort(key=lambda k: k["category_name"].lower())
 
         if len(glob.current_playlist["data"]["vod_categories"]) == len(glob.current_playlist["data"]["vod_categories_hidden"]):
@@ -576,7 +575,7 @@ class BmxUpdate(Screen):
 
         if vod_categories and self.vod_streams:
             for channel in self.vod_streams:
-                stream_id = channel.get("stream_id")
+                stream_id = str(channel["stream_id"])
                 if not stream_id:
                     continue
 
@@ -584,8 +583,8 @@ class BmxUpdate(Screen):
                 if not category_id:
                     continue
 
-                if str(category_id) in glob.current_playlist["data"].get("vod_categories_hidden", []) or \
-                   str(stream_id) in glob.current_playlist["data"].get("vod_streams_hidden", []):
+                if str(category_id) in glob.current_playlist["data"]["vod_categories_hidden"] or \
+                   str(stream_id) in glob.current_playlist["data"]["vod_streams_hidden"]:
                     continue
 
                 name = channel.get("name", "").replace(":", "").replace('"', "").strip("-")
@@ -601,20 +600,20 @@ class BmxUpdate(Screen):
                 bouquet_string = ""
 
                 if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                    extension = channel.get("container_extension", "")
+                    extension = channel["container_extension"]
                     bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(self.host_encoded) + "/movie/" + str(self.username) + "/" + str(self.password) + "/" + str(stream_id) + "." + str(extension) + ":" + str(name) + "\n"
                 else:
                     source = quote(channel.get("source", ""))
                     bouquet_string += "#SERVICE " + str(stream_type) + str(custom_sid) + str(source) + ":" + str(name) + "\n"
 
-                bouquet_string += "#DESCRIPTION " + str(name) + "\n"
+                    bouquet_string += "#DESCRIPTION " + str(name) + "\n"
 
-                stream_list.append({
-                    "category_id": str(category_id),
-                    "bouquet_string": bouquet_string,
-                    "name": str(channel.get("name")),
-                    "added": str(channel.get("added"))
-                })
+                    stream_list.append({
+                        "category_id": str(category_id),
+                        "bouquet_string": bouquet_string,
+                        "name": str(channel["name"]),
+                        "added": str(channel["added"])
+                    })
 
         self.vod_stream_data = stream_list
 
@@ -636,7 +635,7 @@ class BmxUpdate(Screen):
 
                 exists = any(item for item in stream_list if item.get("category_id") == category_id)
 
-                if str(category_id) not in glob.current_playlist["data"].get("vod_categories_hidden", []) and exists:
+                if str(category_id) not in glob.current_playlist["data"]["vod_categories_hidden"] and exists:
                     if cfg.groups.value is True:
                         filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
                         bouquet = "subbouquet"
@@ -653,12 +652,13 @@ class BmxUpdate(Screen):
 
                 for category in vod_categories:
                     category_id = category.get("category_id")
+
                     if not category_id:
                         continue
 
                     exists = any(item for item in stream_list if item.get("category_id") == category_id)
 
-                    if str(category_id) not in glob.current_playlist["data"].get("vod_categories_hidden", []) and exists:
+                    if str(category_id) not in glob.current_playlist["data"]["vod_categories_hidden"] and exists:
                         bouquet_title = self.safe_name + "_" + bmx.safeName(category["category_name"])
                         self.total_count += 1
                         output_string = ""
@@ -700,11 +700,13 @@ class BmxUpdate(Screen):
                 self.nextJob(_("Downloading series data..."), self.downloadSeries)
             else:
                 self.finished()
+                return
         else:
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
                 self.nextJob(_("Processing series data..."), self.loadSeries)
             else:
                 self.finished()
+                return
 
     def loadSeries(self):
         stream_list = []
