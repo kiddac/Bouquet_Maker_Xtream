@@ -59,39 +59,45 @@ class BmxUpdate(Screen):
                     </screen>"""
 
         self.setup_title = _("Building Bouquets")
-
-        self["actions"] = ActionMap(["BMXActions"], {
-            "red": self.void,
-            "cancel": self.void,
-        }, -2)
-
         self.categories = []
-        self["action"] = Label(_("Building Bouquets..."))
-        self["info"] = Label("")
-        self["status"] = Label("")
-        self["progress"] = ProgressBar()
-
         self.live_categories = ""
         self.vod_categories = ""
         self.series_categories = ""
         self.live_streams = ""
         self.vod_streams = ""
         self.series_streams = ""
-
         self.bouq = 0
+
+        self["actions"] = ActionMap(["BMXActions"], {
+            "red": self.void,
+            "cancel": self.void,
+        }, -2)
+
+        if self.runtype == "manual":
+            self["action"] = Label(_("Building Bouquets..."))
+            self["info"] = Label("")
+            self["progress"] = ProgressBar()
+
+        self["status"] = Label("")
 
         self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:
             self.bouquets = [item for item in self.playlists_all if item["playlist_info"]["bouquet"] is True]
             self.bouquets_len = len(self.bouquets)
+        else:
+            self.bouquets = []
+            self.bouquets_len = 0
 
-        self.looptimer = eTimer()
-        try:
-            self.looptimer_conn = self.looptimer.timeout.connect(self.bouquetLoop)
-        except:
-            self.looptimer.callback.append(self.bouquetLoop)
-        self.looptimer.start(100, True)
+        if self.bouquets and epgimporter is True:
+            self.looptimer = eTimer()
+            try:
+                self.looptimer_conn = self.looptimer.timeout.connect(self.bouquetLoop)
+            except:
+                self.looptimer.callback.append(self.bouquetLoop)
+            self.looptimer.start(100, True)
+        else:
+            self.close()
 
     def void(self):
         pass
