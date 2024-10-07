@@ -166,14 +166,16 @@ class BmxUpdate(Screen):
             f.seek(0)
             f.truncate()
 
+            # Patterns to skip
+            patterns_to_skip = [
+                "bouquetmakerxtream_live_" + self.safe_name + "_",
+                "bouquetmakerxtream_vod_" + self.safe_name + "_",
+                "bouquetmakerxtream_series_" + self.safe_name + "_",
+                "bouquetmakerxtream_" + self.safe_name + ".tv"
+            ]
+
             for line in lines:
-                if "bouquetmakerxtream_live_" + str(self.safe_name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_vod_" + str(self.safe_name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_series_" + str(self.safe_name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_" + str(self.safe_name) + ".tv" in line:
+                if any(pattern in line for pattern in patterns_to_skip):
                     continue
                 f.write(line)
 
