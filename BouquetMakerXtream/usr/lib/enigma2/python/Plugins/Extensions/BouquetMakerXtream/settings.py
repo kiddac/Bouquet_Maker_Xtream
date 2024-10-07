@@ -33,7 +33,17 @@ from .bmxStaticText import StaticText
 class ProtectedScreen:
     def __init__(self):
         if self.isProtected():
-            self.onFirstExecBegin.append(boundFunction(self.session.openWithCallback, self.pinEntered, PinInput, pinList=[cfg.adultpin.value], triesEntry=cfg.retries.adultpin, title=_("Please enter the correct pin code"), windowTitle=_("Enter pin code")))
+            self.onFirstExecBegin.append(
+                boundFunction(
+                    self.session.openWithCallback,
+                    self.pinEntered,
+                    PinInput,
+                    pinList=[cfg.adultpin.value],
+                    triesEntry=cfg.retries.adultpin,
+                    title=_("Please enter the correct pin code"),
+                    windowTitle=_("Enter pin code"),
+                )
+            )
 
     def isProtected(self):
         return (config.plugins.BouquetMakerXtream.adult.value)
@@ -54,7 +64,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
     def __init__(self, session):
         Screen.__init__(self, session)
 
-        if cfg.adult.value is True:
+        if cfg.adult.value:
             ProtectedScreen.__init__(self)
 
         self.session = session
@@ -67,7 +77,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         with open(skin, "r") as f:
             self.skin = f.read()
 
-        self.setup_title = (_("Main Settings"))
+        self.setup_title = _("Main Settings")
 
         self.onChangedEntry = []
 
