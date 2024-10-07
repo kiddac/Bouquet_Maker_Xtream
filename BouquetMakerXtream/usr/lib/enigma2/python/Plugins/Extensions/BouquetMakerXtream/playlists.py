@@ -62,6 +62,8 @@ class BmxPlaylists(Screen):
 
         self.list = []
         self.drawList = []
+        glob.current_playlist = []
+
         self["playlists"] = List(self.drawList, enableWrapAround=True)
         self["playlists"].onSelectionChanged.append(self.getCurrentEntry)
         self["splash"] = Pixmap()
@@ -76,10 +78,6 @@ class BmxPlaylists(Screen):
             "info": self.openUserInfo,
             "yellow": self.deleteServer,
         }, -2)
-
-        # self.timer = eTimer()
-        # self.playlists_all = []
-        # self.url_list = []
 
         self.onFirstExecBegin.append(self.start)
         self.onLayoutFinish.append(self.__layoutFinished)
@@ -136,11 +134,11 @@ class BmxPlaylists(Screen):
         self.url_list = []
         for index, playlists in enumerate(self.playlists_all):
             if playlists["playlist_info"]["playlist_type"] == "xtream":
-                player_api = str(playlists["playlist_info"].get("player_api", ""))
-                full_url = str(playlists["playlist_info"].get("full_url", ""))
-                domain = str(playlists["playlist_info"].get("domain", ""))
-                username = str(playlists["playlist_info"].get("username", ""))
-                password = str(playlists["playlist_info"].get("password", ""))
+                player_api = str(playlists["playlist_info"]["player_api"])
+                full_url = str(playlists["playlist_info"]["full_url"])
+                domain = str(playlists["playlist_info"]["domain"])
+                username = str(playlists["playlist_info"]["username"])
+                password = str(playlists["playlist_info"]["password"])
                 if "get.php" in full_url and domain and username and password:
                     self.url_list.append([player_api, index])
 
@@ -241,12 +239,15 @@ class BmxPlaylists(Screen):
             if "user_info" in playlists:
                 user_info = playlists["user_info"]
 
+                if "server_info" in user_info:
+                    server_info = playlists["server_info"]
+
                 if "message" in user_info:
                     del user_info["message"]
 
-                server_info = playlists.get("server_info", {})
                 if "https_port" in server_info:
                     del server_info["https_port"]
+
                 if "rtmp_port" in server_info:
                     del server_info["rtmp_port"]
 
@@ -272,10 +273,10 @@ class BmxPlaylists(Screen):
                     if user_info["status"] not in valid_statuses:
                         user_info["status"] = "Active"
 
-                if "active_cons" in user_info and not user_info["active_cons"]:
+                if "active_cons" in user_info and (user_info["active_cons"] is None or isinstance(user_info["active_cons"], str)):
                     user_info["active_cons"] = 0
 
-                if "max_connections" in user_info and not user_info["max_connections"]:
+                if "max_connections" in user_info and (user_info["active_cons"] is None or isinstance(user_info["max_connections"], str)):
                     user_info["max_connections"] = 0
 
                 if 'allowed_output_formats' in user_info:
@@ -299,9 +300,9 @@ class BmxPlaylists(Screen):
         self.list = []
         index = 0
 
-        for playlist in self.playlists_all:
-            name = playlist["playlist_info"].get("name", playlist["playlist_info"].get("domain", ""))
-            url = playlist["playlist_info"].get("host", "")
+        for index, playlist in enumerate(self.playlists_all):
+            name = playlist["playlist_info"]["name"]
+            url = playlist["playlist_info"]["host"]
             status = _("Server Not Responding")
 
             active = 0
@@ -326,7 +327,7 @@ class BmxPlaylists(Screen):
 
                 if playlist["playlist_info"]["playlist_type"] == "xtream":
 
-                    if "auth" in user_info:
+                    if user_info and "auth" in user_info:
                         status = _("Not Authorised")
 
                         if str(user_info["auth"]) == "1":
@@ -376,7 +377,6 @@ class BmxPlaylists(Screen):
                             expires = _("Local file")
 
                 self.list.append([index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlist_type])
-                index += 1
 
         self.drawList = [self.buildListEntry(x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7], x[8], x[9], x[10]) for x in self.list]
         self["playlists"].setList(self.drawList)
@@ -418,32 +418,33 @@ class BmxPlaylists(Screen):
         self.close()
 
     def deleteServer(self, answer=None):
-        if self.list != []:
-            self.current_playlist = glob.current_playlist.copy()
+        if not self.list:
+            return
 
-            if answer is None:
-                self.session.openWithCallback(self.deleteServer, MessageBox, _("Delete selected playlist?"))
-            elif answer:
-                if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
-                    with open(playlist_file, "r+") as f:
-                        lines = f.readlines()
-                        f.seek(0)
-                        f.truncate()
-                        for line in lines:
-                            if str(self.current_playlist["playlist_info"]["full_url"]) in line:
-                                line = "#%s" % line
-                            f.write(line)
-                else:
-                    filename = str(self.current_playlist["playlist_info"]["full_url"])
-                    os.rename(os.path.join(cfg.local_location.value, filename), os.path.join(cfg.local_location.value, filename + ".del"))
+        self.current_playlist = glob.current_playlist.copy()
 
-                x = 0
-                for playlist in self.playlists_all:
-                    if playlist == self.current_playlist:
-                        del self.playlists_all[x]
-                        break
-                    x += 1
-                self.writeJsonFile()
+        if answer is None:
+            self.session.openWithCallback(self.deleteServer, MessageBox, _("Delete selected playlist?"))
+            return
+
+        if answer:
+            playlist_type = glob.current_playlist["playlist_info"]["playlist_type"]
+            full_url = str(self.current_playlist["playlist_info"]["full_url"])
+
+            if playlist_type != "local":
+                with open(playlist_file, "r+") as f:
+                    lines = f.readlines()
+                    f.seek(0)
+                    f.truncate()
+                    for line in lines:
+                        f.write(f"#{line}" if full_url in line else line)
+            else:
+                filename = full_url
+                os.rename(os.path.join(cfg.local_location.value, filename),
+                          os.path.join(cfg.local_location.value, filename + ".del"))
+
+            self.playlists_all = [playlist for playlist in self.playlists_all if playlist != self.current_playlist]
+            self.writeJsonFile()
 
     def getCurrentEntry(self):
         if self.list:
@@ -456,15 +457,20 @@ class BmxPlaylists(Screen):
     def openUserInfo(self):
         from . import serverinfo
 
-        if self.list:
-            if "user_info" in glob.current_playlist:
-                if "auth" in glob.current_playlist["user_info"] and glob.current_playlist["user_info"]["auth"] == 1:
-                    self.session.open(serverinfo.BmxUserInfo)
-                else:
-                    self.session.open(MessageBox, _("Url is invalid or playlist/user no longer authorised!"), MessageBox.TYPE_ERROR, timeout=5)
-            else:
-                if glob.current_playlist["playlist_info"]["playlist_type"] != "xtream":
-                    self.session.open(MessageBox, _("User Info only available for xtream/XUI One lines"), MessageBox.TYPE_ERROR, timeout=5)
+        if not self.list:
+            return
+
+        user_info = glob.current_playlist.get("user_info", {})
+        playlist_type = glob.current_playlist["playlist_info"]["playlist_type"]
+
+        if "auth" in user_info:
+            if user_info["auth"] == 1:
+                self.session.open(serverinfo.BmxUserInfo)
+                return
+
+            self.session.open(MessageBox, _("Url is invalid or playlist/user no longer authorised!"), MessageBox.TYPE_ERROR, timeout=5)
+        elif playlist_type != "xtream":
+            self.session.open(MessageBox, _("User Info only available for xtream/XUI One lines"), MessageBox.TYPE_ERROR, timeout=5)
 
     def openBouquetSettings(self):
         from . import bouquetsettings
@@ -484,11 +490,11 @@ class BmxPlaylists(Screen):
                 return
 
     def checkOnePlaylist(self):
-        if len(self.list) == 1 and cfg.skip_playlists_screen.value is True:
+        if self.list and len(self.list) == 1 and cfg.skip_playlists_screen.value:
             self.quit()
 
     def exit(self, answer=None):
-        if glob.finished and cfg.auto_close.getValue() is True:
+        if glob.finished and cfg.auto_close.getValue():
             self.close(True)
 
     def epgimportcleanup(self):
@@ -521,7 +527,7 @@ class BmxPlaylists(Screen):
                 tree = ET.parse(sourcefile, parser=ET.XMLParser(encoding="utf-8"))
                 root = tree.getroot()
                 for elem in root.findall(".//source"):
-                    description = elem.find("description").text
+                    description = elem.find("description").text if elem.find("description") is not None else ""
                     if not any(cfile in description for cfile in channelfilelist):
                         root.remove(elem)
 
