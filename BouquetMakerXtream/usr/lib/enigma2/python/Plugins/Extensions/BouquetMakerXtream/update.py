@@ -445,48 +445,36 @@ class BmxUpdate(Screen):
             filename = ""
 
             for category in live_categories:
-                if "category_id" not in category or not category["category_id"]:
+                category_id = category.get("category_id")
+                if not category_id:
                     continue
 
-                exists = False
-                for item in stream_list:
+                exists = any(item for item in stream_list if item.get("category_id") == category_id)
 
-                    if "category_id" not in item or not item["category_id"]:
-                        continue
-
-                    if category["category_id"] == item["category_id"]:
-                        exists = True
-                        break
-
-                if (str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]) and exists is True:
+                if str(category_id) not in glob.current_playlist["data"]["live_categories_hidden"] and exists:
                     if cfg.groups.value is True:
                         filename = "/etc/enigma2/" + "userbouquet.bouquetmakerxtream_" + str(self.safe_name) + ".tv"
                         bouquet = "subbouquet"
                         self.userbouquet = True
-                    if cfg.groups.value is False:
+                    else:
                         filename = "/etc/enigma2/bouquets.tv"
                         bouquet = "userbouquet"
 
-                    bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_live_" + self.safe_name + "_" + bmx.safeName(category["category_name"]) + '.tv" ORDER BY bouquet\n'
+                    bouquet_tv_string += '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + bouquet + ".bouquetmakerxtream_live_" + str(self.safe_name) + "_" + bmx.safeName(category["category_name"]) + '.tv" ORDER BY bouquet\n'
 
             if filename:
                 with open(filename, "a+") as f:
                     f.write(str(bouquet_tv_string))
 
                 for category in live_categories:
-                    if "category_id" not in category or not category["category_id"]:
+                    category_id = category.get("category_id")
+
+                    if not category_id:
                         continue
 
-                    exists = False
-                    for item in stream_list:
-                        if "category_id" not in item or not item["category_id"]:
-                            continue
+                    exists = any(item for item in stream_list if item.get("category_id") == category_id)
 
-                        if category["category_id"] == item["category_id"]:
-                            exists = True
-                            break
-
-                    if (str(category["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"]) and exists is True:
+                    if str(category_id) not in glob.current_playlist["data"]["live_categories_hidden"] and exists:
                         bouquet_title = self.safe_name + "_" + bmx.safeName(category["category_name"])
                         self.total_count += 1
                         output_string = ""
@@ -498,7 +486,7 @@ class BmxUpdate(Screen):
                             output_string += "#NAME " + category["category_name"] + "\n"
 
                         for stream in self.live_stream_data:
-                            if str(category["category_id"]) == str(stream["category_id"]):
+                            if str(category_id) == str(stream["category_id"]):
                                 string_list.append([str(stream["bouquet_string"]), str(stream["name"]), str(stream["added"])])
 
                         if glob.current_playlist["settings"]["live_stream_order"] == "alphabetical":
@@ -512,7 +500,6 @@ class BmxUpdate(Screen):
 
                         if cfg.groups.value is True:
                             filename = "/etc/enigma2/subbouquet.bouquetmakerxtream_live_" + str(bouquet_title) + ".tv"
-
                         else:
                             filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_live_" + str(bouquet_title) + ".tv"
 
@@ -520,8 +507,9 @@ class BmxUpdate(Screen):
                             f.write(output_string)
 
         if live_categories:
-            self.progress_value += 1
-            self["progress"].setValue(self.progress_value)
+            if self.runtype == "manual":
+                self.progress_value += 1
+                self["progress"].setValue(self.progress_value)
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             if live_categories and epgimporter is True:
