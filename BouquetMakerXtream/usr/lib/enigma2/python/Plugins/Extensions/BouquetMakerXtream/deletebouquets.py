@@ -86,7 +86,7 @@ class BmxDeleteBouquets(Screen):
             self.refresh()
 
     def toggleAllSelection(self):
-        for idx, item in enumerate(self["list"].list):
+        for idx in range(len(self["list"].list)):
             self.start_list[idx][2] = not self.start_list[idx][2]
         self.refresh()
 
@@ -94,7 +94,7 @@ class BmxDeleteBouquets(Screen):
         return [item[0] for item in self.start_list if item[2]]
 
     def clearAllSelection(self):
-        for idx, item in enumerate(self["list"].list):
+        for idx in range(len(self["list"].list)):
             self.start_list[idx][2] = False
         self.refresh()
 
@@ -104,8 +104,7 @@ class BmxDeleteBouquets(Screen):
     def deleteBouquets(self):
         selected_bouquet_list = self.getSelectionsList()
 
-        for x in selected_bouquet_list:
-            bouquet_name = x
+        for bouquet_name in selected_bouquet_list:
             safe_name = bmx.safeName(bouquet_name)
 
             with open("/etc/enigma2/bouquets.tv", "r+") as f:
@@ -144,14 +143,11 @@ class BmxDeleteBouquets(Screen):
 
                         for elem in root.iter():
                             for child in list(elem):
-                                description = ""
                                 if child.tag == "source":
-                                    try:
-                                        description = child.find("description").text
-                                        if safe_name in description:
-                                            elem.remove(child)
-                                    except:
-                                        pass
+
+                                    description = child.find("description").text if child.find("description") is not None else ""
+                                    if safe_name in description:
+                                        elem.remove(child)
 
                         tree.write(source_file)
                     except Exception as e:
