@@ -112,11 +112,8 @@ class BmxUpdate(Screen):
 
             self.bouquet_tv = False
             self.userbouquet = False
-
             self.total_count = 0
-
             self.unique_ref = 0
-
             self.progress_value = 0
             self.progress_range = 0
 
@@ -145,18 +142,24 @@ class BmxUpdate(Screen):
             self.start()
 
     def nextJob(self, actiontext, function):
-        self["action"].setText(actiontext)
+        if self.runtype == "manual":
+            self["action"].setText(actiontext)
+
         self.timer = eTimer()
         try:
             self.timer_conn = self.timer.timeout.connect(function)
         except:
             self.timer.callback.append(function)
+
         self.timer.start(50, True)
 
     def start(self):
-        self["progress"].setRange((0, self.progress_range))
-        self["progress"].setValue(self.progress_value)
+        if self.runtype == "manual":
+            self["progress"].setRange((0, self.progress_range))
+            self["progress"].setValue(self.progress_value)
+
         self.safe_name = bmx.safeName(glob.current_playlist["playlist_info"]["name"])
+
         self["status"].setText(_("Updating Playlist %d of %d") % (self.bouq + 1, self.bouquets_len))
         self.deleteExistingRefs()
 
@@ -270,33 +273,36 @@ class BmxUpdate(Screen):
 
     def downloadLive(self):
         self.processDownloads("live")
-        self.progress_value += 1
-        self["progress"].setValue(self.progress_value)
+        if self.runtype == "manual":
+            self.progress_value += 1
+            self["progress"].setValue(self.progress_value)
         self.nextJob(_("Processing live data..."), self.loadLive)
 
     def downloadVod(self):
         self.processDownloads("vod")
-        self.progress_value += 1
-        self["progress"].setValue(self.progress_value)
+        if self.runtype == "manual":
+            self.progress_value += 1
+            self["progress"].setValue(self.progress_value)
         self.nextJob(_("Processing VOD data..."), self.loadVod)
 
     def downloadSeries(self):
         self.processDownloads("series")
-        self.progress_value += 1
-        self["progress"].setValue(self.progress_value)
+        if self.runtype == "manual":
+            self.progress_value += 1
+            self["progress"].setValue(self.progress_value)
         self.nextJob(_("Processing series data..."), self.loadSeries)
 
     def downloadExternal(self):
         self.processDownloads("external")
-        self.progress_value += 1
-        self["progress"].setValue(self.progress_value)
+        if self.runtype == "manual":
+            self.progress_value += 1
+            self["progress"].setValue(self.progress_value)
         self.nextJob(_("Processing live data..."), self.loadLive)
 
     def loadLocal(self):
         self.parseM3u8Playlist()
 
     def processDownloads(self, stream_type):
-
         self.live_categories = ""
         self.vod_categories = ""
         self.series_categories = ""
@@ -330,30 +336,18 @@ class BmxUpdate(Screen):
                 category = result[0]
                 response = result[1]
 
-            self.live_categories = ""
-            self.vod_categories = ""
-            self.series_categories = ""
-            self.live_streams = ""
-            self.vod_streams = ""
-            self.series_streams = ""
-
             if response:
                 if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                     if category == 0:
                         self.live_categories = response
-
                     elif category == 1:
                         self.vod_categories = response
-
                     elif category == 2:
                         self.series_categories = response
-
                     elif category == 3:
                         self.live_streams = response
-
                     elif category == 4:
                         self.vod_streams = response
-
                     elif category == 5:
                         self.series_streams = response
                 else:
@@ -729,8 +723,9 @@ class BmxUpdate(Screen):
                             f.write(output_string)
 
         if vod_categories:
-            self.progress_value += 1
-            self["progress"].setValue(self.progress_value)
+            if self.runtype == "manual":
+                self.progress_value += 1
+                self["progress"].setValue(self.progress_value)
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             if glob.current_playlist["settings"]["show_series"] is True and glob.current_playlist["data"]["series_categories"]:
@@ -972,8 +967,9 @@ class BmxUpdate(Screen):
                             with open(filename, "w+") as f:
                                 f.write(output_string)
 
-        self.progress_value += 1
-        self["progress"].setValue(self.progress_value)
+        if self.runtype == "manual":
+            self.progress_value += 1
+            self["progress"].setValue(self.progress_value)
 
         self.finished()
 
@@ -1091,7 +1087,6 @@ class BmxUpdate(Screen):
         self.loopPlaylists()
 
     def updateJson(self):
-        print("*** update json ***")
         if self.playlists_all and glob.current_playlist:
             for index, playlists in enumerate(self.playlists_all):
                 if playlists["playlist_info"]["full_url"] == glob.current_playlist["playlist_info"]["full_url"]:
