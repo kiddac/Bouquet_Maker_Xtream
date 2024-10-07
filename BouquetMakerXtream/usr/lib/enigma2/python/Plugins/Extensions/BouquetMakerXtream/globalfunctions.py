@@ -123,8 +123,11 @@ def safeName(name):
 
 
 def purge(my_dir, pattern):
-    for f in os.listdir(my_dir):
-        file_path = os.path.join(my_dir, f)
-        if os.path.isfile(file_path):
-            if re.search(pattern, f):
-                os.remove(file_path)
+    try:
+        for f in os.listdir(my_dir):
+            file_path = os.path.join(my_dir, f)
+            if os.path.isfile(file_path):
+                if re.search(pattern, f):
+                    os.remove(file_path)
+    except Exception as e:
+        print(e)
