@@ -51,16 +51,13 @@ class BmxBuildBouquets(Screen):
 
         self["action"] = Label(_("Building Bouquets..."))
         self["info"] = Label("")
-        self["status"] = Label("")
         self["progress"] = ProgressBar()
+        self["status"] = Label("")
 
         self.bouquet_tv = False
         self.userbouquet = False
-
         self.total_count = 0
-
         self.unique_ref = 0
-
         self.progress_value = 0
         self.progress_range = 0
 
