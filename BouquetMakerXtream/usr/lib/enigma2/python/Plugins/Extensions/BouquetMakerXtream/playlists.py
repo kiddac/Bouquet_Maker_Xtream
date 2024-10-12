@@ -301,8 +301,6 @@ class BmxPlaylists(Screen):
         index = 0
 
         for index, playlist in enumerate(self.playlists_all):
-            name = playlist["playlist_info"]["name"]
-            url = playlist["playlist_info"]["host"]
             status = _("Server Not Responding")
 
             active = 0
@@ -313,9 +311,11 @@ class BmxPlaylists(Screen):
             fullurl = ""
             playlist_type = ""
 
-            user_info = playlist.get("user_info", {})
-
             if playlist:
+                name = playlist["playlist_info"].get("name", playlist["playlist_info"].get("domain", ""))
+                url = playlist["playlist_info"].get("host", "")
+                user_info = playlist.get("user_info", {})
+
                 if "host" in playlist["playlist_info"]:
                     url = playlist["playlist_info"]["host"]
 
@@ -437,7 +437,9 @@ class BmxPlaylists(Screen):
                     f.seek(0)
                     f.truncate()
                     for line in lines:
-                        f.write(f"#{line}" if full_url in line else line)
+                        if str(self.current_playlist["playlist_info"]["full_url"]) in line:
+                            line = "#%s" % line
+                        f.write(line)
             else:
                 filename = full_url
                 os.rename(os.path.join(cfg.local_location.value, filename),
