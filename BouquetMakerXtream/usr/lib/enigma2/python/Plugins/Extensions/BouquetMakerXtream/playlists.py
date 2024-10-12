@@ -239,30 +239,30 @@ class BmxPlaylists(Screen):
             if "user_info" in playlists:
                 user_info = playlists["user_info"]
 
-                if "server_info" in user_info:
+                if "server_info" in playlists:
                     server_info = playlists["server_info"]
+
+                    if "https_port" in server_info:
+                        del server_info["https_port"]
+
+                    if "rtmp_port" in server_info:
+                        del server_info["rtmp_port"]
+
+                    if "time_now" in server_info:
+                        time_formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H-%M-%S", "%Y-%m-%d-%H:%M:%S", "%Y- %m-%d %H:%M:%S"]
+
+                        for time_format in time_formats:
+                            try:
+                                time_now_datestamp = datetime.strptime(str(server_info["time_now"]), time_format)
+                                offset = datetime.now().hour - time_now_datestamp.hour
+                                # print("*** offset ***", offset)
+                                playlists["data"]["server_offset"] = offset
+                                break
+                            except ValueError:
+                                pass
 
                 if "message" in user_info:
                     del user_info["message"]
-
-                if "https_port" in server_info:
-                    del server_info["https_port"]
-
-                if "rtmp_port" in server_info:
-                    del server_info["rtmp_port"]
-
-                if "time_now" in server_info:
-                    time_formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H-%M-%S", "%Y-%m-%d-%H:%M:%S", "%Y- %m-%d %H:%M:%S"]
-
-                    for time_format in time_formats:
-                        try:
-                            time_now_datestamp = datetime.strptime(str(server_info["time_now"]), time_format)
-                            offset = datetime.now().hour - time_now_datestamp.hour
-                            # print("*** offset ***", offset)
-                            playlists["data"]["serveroffset"] = offset
-                            break
-                        except ValueError:
-                            pass
 
                 auth = user_info.get("auth", 1)
                 if not isinstance(auth, int):
@@ -273,10 +273,10 @@ class BmxPlaylists(Screen):
                     if user_info["status"] not in valid_statuses:
                         user_info["status"] = "Active"
 
-                if "active_cons" in user_info and (user_info["active_cons"] is None or isinstance(user_info["active_cons"], str)):
+                if "active_cons" in user_info and not user_info["active_cons"]:
                     user_info["active_cons"] = 0
 
-                if "max_connections" in user_info and (user_info["active_cons"] is None or isinstance(user_info["max_connections"], str)):
+                if "max_connections" in user_info and not user_info["max_connections"]:
                     user_info["max_connections"] = 0
 
                 if 'allowed_output_formats' in user_info:
@@ -446,6 +446,9 @@ class BmxPlaylists(Screen):
             self.playlists_all = [playlist for playlist in self.playlists_all if playlist != self.current_playlist]
             self.writeJsonFile()
 
+            if epgimporter:
+                self.epgimportcleanup()
+
     def getCurrentEntry(self):
         if self.list:
             glob.current_selection = self["playlists"].getIndex()
@@ -474,7 +477,6 @@ class BmxPlaylists(Screen):
 
     def openBouquetSettings(self):
         from . import bouquetsettings
-
         if glob.current_playlist and glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             if "user_info" in glob.current_playlist:
                 if "auth" in glob.current_playlist["user_info"] and glob.current_playlist["user_info"]["auth"] == 1 and glob.current_playlist["user_info"]["status"] == "Active":
@@ -494,7 +496,7 @@ class BmxPlaylists(Screen):
             self.quit()
 
     def exit(self, answer=None):
-        if glob.finished and cfg.auto_close.getValue():
+        if glob.finished:
             self.close(True)
 
     def epgimportcleanup(self):

@@ -176,7 +176,6 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_catchup_start = getConfigListEntry(_("Margin before Catchup (mins)"), cfg.catchup_start)
         self.cfg_catchup_end = getConfigListEntry(_("Margin after Catchup (mins)"), cfg.catchup_end)
         self.cfg_groups = getConfigListEntry(_("Group bouquets into its own folder"), cfg.groups)
-        self.cfg_auto_close = getConfigListEntry(_("Exit plugin on bouquet creation"), cfg.auto_close)
         self.org_main = cfg.main.getValue()
         self.location = cfg.location.getValue()
         self.local_location = cfg.local_location.getValue()
@@ -203,7 +202,6 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             self.cfg_catchup_end if cfg.catchup_on.value else None,
             self.cfg_adult,
             self.cfg_adultpin if cfg.adult.value else None,
-            self.cfg_auto_close,
             self.cfg_main,
         ]
 

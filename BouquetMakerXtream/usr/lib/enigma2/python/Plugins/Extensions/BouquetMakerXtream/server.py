@@ -203,7 +203,7 @@ class BmxAddServer(ConfigListScreen, Screen):
 
             username = self.usernameCfg.value.strip()
             password = self.passwordCfg.value.strip()
-            listtype = "m3u"
+            listtype = "m3u_plus"
             output = self.outputCfg.value
 
             playlistline = "{}/get.php?username={}&password={}&type={}&output={} #{}".format(host, username, password, listtype, output, self.name)

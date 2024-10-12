@@ -92,10 +92,10 @@ def processFiles():
                 """
                 if "type" in query:
                     playlistformat = query["type"][0].strip()
+                    """
 
                 if "output" in query:
                     output = query["output"][0].strip()
-                    """
 
                 if "timeshift" in query:
                     try:
@@ -177,10 +177,10 @@ def processFiles():
                     """
                     if "type" in query:
                         playlistformat = query["type"][0].strip()
+                        """
 
                     if "output" in query:
                         output = query["output"][0].strip()
-                        """
 
                     if "timeshift" in query:
                         try:

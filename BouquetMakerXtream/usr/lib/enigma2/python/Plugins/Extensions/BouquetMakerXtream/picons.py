@@ -113,7 +113,7 @@ class BmxDownloadPicons(Screen):
             self.unique_ref = 0
 
             for playlist in self.playlists_all:
-                if playlist["playlist_info"]["player_api"] == x[3]:
+                if playlist["playlist_info"]["bouquet"] is True and playlist["playlist_info"]["playlist_type"] == "xtream" and playlist["playlist_info"]["player_api"] == x[3]:
                     glob.current_playlist = playlist
                     break
 

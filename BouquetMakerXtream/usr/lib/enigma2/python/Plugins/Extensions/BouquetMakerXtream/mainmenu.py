@@ -87,8 +87,10 @@ class BmxMainMenu(Screen):
             self.start()
 
     def start(self, answer=None):
-        if glob.finished and cfg.auto_close.getValue():
+        """
+        if glob.finished:
             self.close()
+            """
 
         self.playlists_all = pfiles.processFiles()
 

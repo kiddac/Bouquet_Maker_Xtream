@@ -127,7 +127,6 @@ cfg.autoupdate = ConfigYesNo(default=False)
 cfg.groups = ConfigYesNo(default=False)
 cfg.location_valid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
-cfg.auto_close = ConfigYesNo(default=False)
 
 cfg.picon_bitdepth = ConfigSelection(default="24bit", choices=[("24", _("24 Bit")), ("8bit", _("8 Bit"))])
 cfg.picon_type = ConfigSelection(default="SRP", choices=[("SRP", _("Service Reference Picons")), ("SNP", _("Service Name Picons"))])

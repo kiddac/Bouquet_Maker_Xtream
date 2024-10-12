@@ -292,7 +292,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 self.list.append(getConfigListEntry(_("VOD/SERIES category bouquet order"), self.vod_category_order_cfg))
                 self.list.append(getConfigListEntry(_("VOD/SERIES streams bouquet order"), self.vod_stream_order_cfg))
 
-        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and self.show_live_cfg.value is True:
             self.list.append(getConfigListEntry(_("Output:"), self.output_cfg))
 
             if self.show_live_cfg.value is True and epgimporter is True:
@@ -390,8 +390,10 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 return
 
             # check name exists
+
             if self.playlists_all:
                 for playlists in self.playlists_all:
+
                     if playlists["playlist_info"]["name"] == self.name and str(playlists["playlist_info"]["full_url"]) != str(self.full_url):
                         self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
                         # self.createSetup()
@@ -423,7 +425,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 username = glob.current_playlist["playlist_info"]["username"]
                 password = glob.current_playlist["playlist_info"]["password"]
-                list_type = "m3u"
+                list_type = "m3u_plus"
                 output = self.output_cfg.value
                 if output == "m3u8" and live_type == "1":
                     live_type = "4097"
@@ -438,7 +440,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 glob.current_playlist["settings"]["epg_alternative_url"] = epg_alternative_url
                 glob.current_playlist["settings"]["next_days"] = next_days
 
-                playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name,)
+                playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name)
                 self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, list_type, output)
 
                 glob.current_playlist["playlist_info"]["full_url"] = self.full_url
@@ -454,48 +456,51 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 with open(playlist_file, "r+") as f:
                     lines = f.readlines()
                     f.seek(0)
+                    f.truncate()
                     for line in lines:
-                        has_timeshift = False
+                        if line.startswith("http"):
+                            has_timeshift = False
 
-                        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and "get.php" in line:
-                            if domain in line and username in line and password in line:
-                                parsed_uri = urlparse(line)
-                                protocol = parsed_uri.scheme + "://"
-                                domain = parsed_uri.hostname
-                                port = ""
+                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and "get.php" in line:
+                                if domain in line and username in line and password in line:
+                                    parsed_uri = urlparse(line)
+                                    protocol = parsed_uri.scheme + "://"
+                                    domain = parsed_uri.hostname
+                                    port = ""
 
-                                if parsed_uri.port:
-                                    port = parsed_uri.port
-                                    host = "%s%s:%s" % (protocol, domain, port)
-                                else:
-                                    host = "%s%s" % (protocol, domain)
+                                    if parsed_uri.port:
+                                        port = parsed_uri.port
+                                        host = "%s%s:%s" % (protocol, domain, port)
+                                    else:
+                                        host = "%s%s" % (protocol, domain)
 
-                                query = parse_qs(parsed_uri.query, keep_blank_values=True)
+                                    query = parse_qs(parsed_uri.query, keep_blank_values=True)
 
-                                if "username" in query:
-                                    username = query["username"][0].strip()
-                                else:
-                                    continue
+                                    if "username" in query:
+                                        username = query["username"][0].strip()
+                                    else:
+                                        continue
 
-                                if "password" in query:
-                                    password = query["password"][0].strip()
-                                else:
-                                    continue
-                                if "timeshift" in query:
-                                    has_timeshift = True
+                                    if "password" in query:
+                                        password = query["password"][0].strip()
+                                    else:
+                                        continue
+                                    if "timeshift" in query:
+                                        has_timeshift = True
 
-                                if has_timeshift or int(epg_offset) != 0:
-                                    playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name)
-                                else:
-                                    playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, list_type, output, self.name)
+                                    if has_timeshift or int(epg_offset) != 0:
+                                        playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name)
+                                    else:
+                                        playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, list_type, output, self.name)
 
-                                line = str(playlist_line) + "\n"
+                                    line = str(playlist_line) + "\n"
+                            else:
+                                if self.full_url in line:
+                                    playlist_line = "%s #%s" % (self.full_url, self.name)
+                                    line = str(playlist_line) + "\n"
+                            f.write(line)
                         else:
-                            if self.full_url in line:
-                                playlist_line = "%s #%s" % (self.full_url, self.name)
-                                line = str(playlist_line) + "\n"
-
-                        f.write(line)
+                            f.write(line)
 
             self.getPlaylistUserFile()
 
