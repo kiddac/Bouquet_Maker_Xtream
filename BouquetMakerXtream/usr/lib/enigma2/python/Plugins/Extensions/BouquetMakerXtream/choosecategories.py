@@ -294,9 +294,9 @@ class BmxChooseCategories(Screen):
             self.selectionChanged()
         else:
             glob.current_playlist["settings"]["show_live"] = False
-            if glob.current_playlist["settings"]["show_vod"] is True:
+            if glob.current_playlist["settings"]["show_vod"]:
                 self.loadVod()
-            elif glob.current_playlist["settings"]["show_series"] is True:
+            elif glob.current_playlist["settings"]["show_series"]:
                 self.loadSeries()
 
     def loadVod(self):
