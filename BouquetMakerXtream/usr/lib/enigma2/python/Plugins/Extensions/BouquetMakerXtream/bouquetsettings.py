@@ -218,8 +218,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             live_stream_type_choices.append(("8193", "DreamOS GStreamer(8193)"))
             vod_stream_type_choices.append(("8193", "DreamOS GStreamer(8193)"))
 
-        self.name = str(glob.current_playlist["playlist_info"]["name"])
-        glob.old_name = self.name
+        iptvname = str(glob.current_playlist["playlist_info"]["name"])
+        glob.old_name = iptvname
         prefix_name = glob.current_playlist["settings"]["prefix_name"]
         live_type = str(glob.current_playlist["settings"]["live_type"])
         vod_type = str(glob.current_playlist["settings"]["vod_type"])
@@ -231,7 +231,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         vod_category_order = glob.current_playlist["settings"]["vod_category_order"]
         vod_stream_order = glob.current_playlist["settings"]["vod_stream_order"]
 
-        self.name_cfg = NoSave(ConfigText(default=self.name, fixed_size=False))
+        self.iptvname_cfg = NoSave(ConfigText(default=iptvname, fixed_size=False))
         self.prefix_name_cfg = NoSave(ConfigYesNo(default=prefix_name))
 
         self.live_type_cfg = NoSave(ConfigSelection(default=live_type, choices=live_stream_type_choices))
@@ -266,7 +266,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
     def createSetup(self):
         self.list = []
-        self.list.append(getConfigListEntry(_("Short name or provider name:"), self.name_cfg))
+        self.list.append(getConfigListEntry(_("Short name or provider name:"), self.iptvname_cfg))
         self.list.append(getConfigListEntry(_("Use name as bouquet prefix"), self.prefix_name_cfg))
 
         if self.hide_live is False:
@@ -410,7 +410,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             vod_stream_order = self.vod_stream_order_cfg.value
             prefix_name = self.prefix_name_cfg.value
 
-            glob.current_playlist["playlist_info"]["name"] = self.name
+            glob.current_playlist["playlist_info"]["name"] = iptvname
             glob.current_playlist["settings"]["prefix_name"] = prefix_name
             glob.current_playlist["settings"]["show_live"] = show_live
             glob.current_playlist["settings"]["show_vod"] = show_vod
