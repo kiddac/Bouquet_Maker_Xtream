@@ -206,10 +206,9 @@ class BmxChooseCategories(Screen):
                 try:
                     from concurrent.futures import ThreadPoolExecutor
 
-                    executor = ThreadPoolExecutor(max_workers=threads)
-
-                    with executor:
+                    with ThreadPoolExecutor(max_workers=threads) as executor:
                         results = executor.map(bmx.downloadUrlMulti, self.url_list)
+
                 except Exception as e:
                     print(e)
 
