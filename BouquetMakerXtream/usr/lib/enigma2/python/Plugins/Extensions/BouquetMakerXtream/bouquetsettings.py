@@ -519,12 +519,10 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         playlists_all = bmx.getPlaylistJson()
 
         if playlists_all:
-            x = 0
-            for playlists in playlists_all:
-                self.playlists_all[x]["data"]["live_streams"] = []
-                self.playlists_all[x]["data"]["vod_streams"] = []
-                self.playlists_all[x]["data"]["series_streams"] = []
-                x += 1
+            for playlist in playlists_all:
+                playlist["data"]["live_streams"] = []
+                playlist["data"]["vod_streams"] = []
+                playlist["data"]["series_streams"] = []
 
-        with open(playlists_json, "w") as f:
-            json.dump(playlists_all, f)
+            with open(playlists_json, "w") as f:
+                json.dump(playlists_all, f)
