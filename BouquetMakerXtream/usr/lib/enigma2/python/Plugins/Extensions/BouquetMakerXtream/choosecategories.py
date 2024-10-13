@@ -482,39 +482,30 @@ class BmxChooseCategories(Screen):
         return (pixmap, str(name), str(id), hidden)
 
     def refresh(self):
+        def update_hidden_list(selected_list, hidden_list, category_type):
+            for hidden in selected_list:
+                key = hidden[0] if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" else hidden[1]
+                if hidden[2]:
+                    if key not in hidden_list:
+                        hidden_list.append(key)
+                elif key in hidden_list:
+                    hidden_list.remove(key)
+
         if self.selected_list == self["list1"]:
             if self["list1"].getCurrent():
                 self.category_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.categorySelectedList]
                 self["list1"].updateList(self.category_list)
 
-                if self.setup_title == (_("Choose Live Categories")):
-                    for hidden in self.categorySelectedList:
-                        if hidden[2] is True:
-                            if hidden[0] not in glob.current_playlist["data"]["live_categories_hidden"]:
-                                glob.current_playlist["data"]["live_categories_hidden"].append(hidden[0])
-                        else:
-                            if hidden[0] in glob.current_playlist["data"]["live_categories_hidden"]:
-                                glob.current_playlist["data"]["live_categories_hidden"].remove(hidden[0])
+                if self.setup_title == _("Choose Live Categories"):
+                    update_hidden_list(self.categorySelectedList, glob.current_playlist["data"]["live_categories_hidden"], "live")
 
-                elif self.setup_title == (_("Choose VOD Categories")):
-                    for hidden in self.categorySelectedList:
-                        if hidden[2] is True:
-                            if hidden[0] not in glob.current_playlist["data"]["vod_categories_hidden"]:
-                                glob.current_playlist["data"]["vod_categories_hidden"].append(hidden[0])
-                        else:
-                            if hidden[0] in glob.current_playlist["data"]["vod_categories_hidden"]:
-                                glob.current_playlist["data"]["vod_categories_hidden"].remove(hidden[0])
+                elif self.setup_title == _("Choose VOD Categories"):
+                    update_hidden_list(self.categorySelectedList, glob.current_playlist["data"]["vod_categories_hidden"], "vod")
 
-                elif self.setup_title == (_("Choose Series Categories")):
-                    for hidden in self.categorySelectedList:
-                        if hidden[2] is True:
-                            if hidden[0] not in glob.current_playlist["data"]["series_categories_hidden"]:
-                                glob.current_playlist["data"]["series_categories_hidden"].append(hidden[0])
-                        else:
-                            if hidden[0] in glob.current_playlist["data"]["series_categories_hidden"]:
-                                glob.current_playlist["data"]["series_categories_hidden"].remove(hidden[0])
+                elif self.setup_title == _("Choose Series Categories"):
+                    update_hidden_list(self.categorySelectedList, glob.current_playlist["data"]["series_categories_hidden"], "series")
 
-                if self["list1"].getCurrent()[3] is True:
+                if self["list1"].getCurrent()[3]:
                     self["list2"].setList([])
                 else:
                     self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]
@@ -527,56 +518,14 @@ class BmxChooseCategories(Screen):
                 self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]
                 self["list2"].updateList(self.channel_list)
 
-                if self.setup_title == (_("Choose Live Categories")):
-                    for hidden in self.channel_selected_list:
-                        if hidden[2] is True:
-                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                                if hidden[0] not in glob.current_playlist["data"]["live_streams_hidden"]:
-                                    glob.current_playlist["data"]["live_streams_hidden"].append(hidden[0])
-                            else:
-                                if hidden[1] not in glob.current_playlist["data"]["live_streams_hidden"]:
-                                    glob.current_playlist["data"]["live_streams_hidden"].append(hidden[1])
-                        else:
-                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                                if hidden[0] in glob.current_playlist["data"]["live_streams_hidden"]:
-                                    glob.current_playlist["data"]["live_streams_hidden"].remove(hidden[0])
-                            else:
-                                if hidden[1] in glob.current_playlist["data"]["live_streams_hidden"]:
-                                    glob.current_playlist["data"]["live_streams_hidden"].remove(hidden[1])
+                if self.setup_title == _("Choose Live Categories"):
+                    update_hidden_list(self.channel_selected_list, glob.current_playlist["data"]["live_streams_hidden"], "live")
 
-                elif self.setup_title == (_("Choose VOD Categories")):
-                    for hidden in self.channel_selected_list:
-                        if hidden[2] is True:
-                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                                if hidden[0] not in glob.current_playlist["data"]["vod_streams_hidden"]:
-                                    glob.current_playlist["data"]["vod_streams_hidden"].append(hidden[0])
-                            else:
-                                if hidden[1] not in glob.current_playlist["data"]["vod_streams_hidden"]:
-                                    glob.current_playlist["data"]["vod_streams_hidden"].append(hidden[1])
-                        else:
-                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                                if hidden[0] in glob.current_playlist["data"]["vod_streams_hidden"]:
-                                    glob.current_playlist["data"]["vod_streams_hidden"].remove(hidden[0])
-                            else:
-                                if hidden[1] in glob.current_playlist["data"]["vod_streams_hidden"]:
-                                    glob.current_playlist["data"]["vod_streams_hidden"].remove(hidden[1])
+                elif self.setup_title == _("Choose VOD Categories"):
+                    update_hidden_list(self.channel_selected_list, glob.current_playlist["data"]["vod_streams_hidden"], "vod")
 
-                elif self.setup_title == (_("Choose Series Categories")):
-                    for hidden in self.channel_selected_list:
-                        if hidden[2] is True:
-                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                                if hidden[0] not in glob.current_playlist["data"]["series_streams_hidden"]:
-                                    glob.current_playlist["data"]["series_streams_hidden"].append(hidden[0])
-                            else:
-                                if hidden[1] not in glob.current_playlist["data"]["series_streams_hidden"]:
-                                    glob.current_playlist["data"]["series_streams_hidden"].append(hidden[1])
-                        else:
-                            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                                if hidden[0] in glob.current_playlist["data"]["series_streams_hidden"]:
-                                    glob.current_playlist["data"]["series_streams_hidden"].remove(hidden[0])
-                            else:
-                                if hidden[1] in glob.current_playlist["data"]["series_streams_hidden"]:
-                                    glob.current_playlist["data"]["series_streams_hidden"].remove(hidden[1])
+                elif self.setup_title == _("Choose Series Categories"):
+                    update_hidden_list(self.channel_selected_list, glob.current_playlist["data"]["series_streams_hidden"], "series")
 
     def toggleSelection(self):
         if len(self[self.active].list) > 0:
