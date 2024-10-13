@@ -37,7 +37,7 @@ class BmxMainMenu(Screen):
         self.playlists_all = []
         self["list"] = List(self.draw_list, enableWrapAround=True)
 
-        self.setup_title = (_("Main Menu"))
+        self.setup_title = _("Main Menu")
         self["key_red"] = StaticText(_("Back"))
         self["key_green"] = StaticText(_("OK"))
         self["version"] = StaticText("")

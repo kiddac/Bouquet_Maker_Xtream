@@ -340,7 +340,7 @@ class BmxPlaylists(Screen):
                             elif playlist["user_info"]["status"] == "Expired":
                                 status = _("Expired")
 
-                            if status == (_("Active")):
+                            if status == _("Active"):
                                 try:
                                     expires = str(_("Expires: ")) + str(datetime.fromtimestamp(int(playlist["user_info"]["exp_date"])).strftime("%d-%m-%Y"))
                                 except:
@@ -387,7 +387,7 @@ class BmxPlaylists(Screen):
     def buildListEntry(self, index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlist_type):
         pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_yellow.png"))
 
-        if status == (_("Active")) or status == (_("Url OK")) or status == "":
+        if status == _("Active") or status == _("Url OK") or status == "":
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "led_green.png"))
 
             if activenum == "":

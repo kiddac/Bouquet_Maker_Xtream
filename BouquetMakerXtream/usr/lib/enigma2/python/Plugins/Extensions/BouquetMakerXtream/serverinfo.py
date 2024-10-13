@@ -28,7 +28,7 @@ class BmxUserInfo(Screen):
         with open(skin, "r") as f:
             self.skin = f.read()
 
-        self.setup_title = (_("User Information"))
+        self.setup_title = _("User Information")
 
         self["status"] = Label("")
         self["expiry"] = Label("")

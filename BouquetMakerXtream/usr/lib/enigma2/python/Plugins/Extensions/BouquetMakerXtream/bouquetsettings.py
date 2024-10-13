@@ -41,7 +41,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         with open(skin, "r") as f:
             self.skin = f.read()
 
-        self.setup_title = (_("Bouquets Settings"))
+        self.setup_title = _("Bouquets Settings")
 
         self.onChangedEntry = []
 

@@ -601,7 +601,7 @@ class BmxChooseCategories(Screen):
         self.refresh()
 
     def keyCancel(self):
-        if self.setup_title == (_("Choose Series Categories")):
+        if self.setup_title == _("Choose Series Categories"):
             if glob.current_playlist["settings"]["show_vod"] is True:
                 self.loadVod()
             elif glob.current_playlist["settings"]["show_live"] is True:
@@ -609,17 +609,17 @@ class BmxChooseCategories(Screen):
             else:
                 self.close()
 
-        elif self.setup_title == (_("Choose VOD Categories")):
+        elif self.setup_title == _("Choose VOD Categories"):
             if glob.current_playlist["settings"]["show_live"] is True:
                 self.loadLive()
             else:
                 self.close()
 
-        elif self.setup_title == (_("Choose Live Categories")):
+        elif self.setup_title == _("Choose Live Categories"):
             self.close()
 
     def keyGreen(self):
-        if self.setup_title == (_("Choose Live Categories")):
+        if self.setup_title == _("Choose Live Categories"):
             if glob.current_playlist["settings"]["show_vod"] is True:
                 self.loadVod()
             elif glob.current_playlist["settings"]["show_series"] is True:
@@ -627,13 +627,13 @@ class BmxChooseCategories(Screen):
             else:
                 self.save()
 
-        elif self.setup_title == (_("Choose VOD Categories")):
+        elif self.setup_title == _("Choose VOD Categories"):
             if glob.current_playlist["settings"]["show_series"] is True:
                 self.loadSeries()
             else:
                 self.save()
 
-        elif self.setup_title == (_("Choose Series Categories")):
+        elif self.setup_title == _("Choose Series Categories"):
             self.save()
 
     def save(self):
