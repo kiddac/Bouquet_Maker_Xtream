@@ -75,9 +75,9 @@ class BmxChooseCategories(Screen):
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             self.player_api = glob.current_playlist["playlist_info"]["player_api"]
-            self.p_live_streams_url = self.player_api + "&action=get_live_streams"
-            self.p_vod_streams_url = self.player_api + "&action=get_vod_streams"
-            self.p_series_streams_url = self.player_api + "&action=get_series"
+            self.live_streams_api = self.player_api + "&action=get_live_streams"
+            self.vod_streams_api = self.player_api + "&action=get_vod_streams"
+            self.series_streams_api = self.player_api + "&action=get_series"
 
         self.onFirstExecBegin.append(self.start)
 
@@ -163,13 +163,13 @@ class BmxChooseCategories(Screen):
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 if glob.current_playlist["settings"]["show_live"] is True:
-                    self.live_url_list.append([self.p_live_streams_url, 3, "json"])
+                    self.live_url_list.append([self.live_streams_api, 3, "json"])
 
                 if glob.current_playlist["settings"]["show_vod"] is True:
-                    self.vod_url_list.append([self.p_vod_streams_url, 4, "json"])
+                    self.vod_url_list.append([self.vod_streams_api, 4, "json"])
 
                 if glob.current_playlist["settings"]["show_series"] is True:
-                    self.series_url_list.append([self.p_series_streams_url, 5, "json"])
+                    self.series_url_list.append([self.series_streams_api, 5, "json"])
 
         try:
             self["splash"].hide()
