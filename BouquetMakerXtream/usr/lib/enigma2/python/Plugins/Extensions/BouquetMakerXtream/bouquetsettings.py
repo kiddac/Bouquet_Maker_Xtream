@@ -359,16 +359,41 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
     def save(self):
         if self.list:
+
+            self["config"].instance.moveSelectionTo(1)  # hack to hide texthelper
+
             if self.show_live_cfg.value is False and self.show_vod_cfg.value is False and self.show_series_cfg.value is False:
                 self.session.open(MessageBox, _("No bouquets selected."), MessageBox.TYPE_ERROR, timeout=5)
                 self.createSetup()
                 return
 
-            self["config"].instance.moveSelectionTo(1)  # hack to hide texthelper
+            # Check name is not blank
+            iptvname = self.iptvname_cfg.value.strip()
+
+            if iptvname is None or len(iptvname) < 3:
+                self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."), MessageBox.TYPE_ERROR, timeout=10)
+                return
+
+            # Check if the name already exists
+            self.full_url = glob.current_playlist["playlist_info"]["full_url"]
+
+            if self.playlists_all:
+                if any(playlists["playlist_info"]["name"] == iptvname and playlists["playlist_info"]["full_url"] != self.full_url for playlists in self.playlists_all):
+                    self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
+                    return
+
+            # Initialize variables
 
             domain = ""
             protocol = ""
             port = ""
+            username = ""
+            password = ""
+            host = ""
+
+            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                username = glob.current_playlist["playlist_info"]["username"]
+                password = glob.current_playlist["playlist_info"]["password"]
 
             if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
                 protocol = glob.current_playlist["playlist_info"]["protocol"]
@@ -380,25 +405,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 else:
                     host = "%s%s" % (protocol, domain)
 
-            self.full_url = glob.current_playlist["playlist_info"]["full_url"]
-            self.name = self.name_cfg.value.strip()
-
-            # check name is not blank
-            if self.name is None or len(self.name) < 3:
-                self.session.open(MessageBox, _("Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."), MessageBox.TYPE_ERROR, timeout=10)
-                # self.createSetup()
-                return
-
-            # check name exists
-
-            if self.playlists_all:
-                for playlists in self.playlists_all:
-
-                    if playlists["playlist_info"]["name"] == self.name and str(playlists["playlist_info"]["full_url"]) != str(self.full_url):
-                        self.session.open(MessageBox, _("Name already used. Please enter a unique name."), MessageBox.TYPE_ERROR, timeout=10)
-                        # self.createSetup()
-                        return
-
+            # Update playlist settings
             show_live = self.show_live_cfg.value
             show_vod = self.show_vod_cfg.value
             show_series = self.show_series_cfg.value
@@ -423,8 +430,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             glob.current_playlist["settings"]["vod_stream_order"] = vod_stream_order
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                username = glob.current_playlist["playlist_info"]["username"]
-                password = glob.current_playlist["playlist_info"]["password"]
                 list_type = "m3u_plus"
                 output = self.output_cfg.value
                 if output == "m3u8" and live_type == "1":
@@ -440,15 +445,15 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 glob.current_playlist["settings"]["epg_alternative_url"] = epg_alternative_url
                 glob.current_playlist["settings"]["next_days"] = next_days
 
-                playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name)
                 self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, list_type, output)
 
                 glob.current_playlist["playlist_info"]["full_url"] = self.full_url
+
                 if epg_alternative and epg_alternative_url:
                     glob.current_playlist["playlist_info"]["xmltv_api"] = epg_alternative_url
 
             if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
-                # update playlists.txt file
+                # Update playlists.txt file
                 if not os.path.isfile(playlist_file):
                     with open(playlist_file, "w+") as f:
                         f.close()
@@ -463,41 +468,23 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
                             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and "get.php" in line:
                                 if domain in line and username in line and password in line:
-                                    parsed_uri = urlparse(line)
-                                    protocol = parsed_uri.scheme + "://"
-                                    domain = parsed_uri.hostname
-                                    port = ""
 
-                                    if parsed_uri.port:
-                                        port = parsed_uri.port
-                                        host = "%s%s:%s" % (protocol, domain, port)
-                                    else:
-                                        host = "%s%s" % (protocol, domain)
+                                    query = parse_qs(urlparse(line).query, keep_blank_values=True)
 
-                                    query = parse_qs(parsed_uri.query, keep_blank_values=True)
+                                    has_timeshift = "timeshift" in query
 
-                                    if "username" in query:
-                                        username = query["username"][0].strip()
-                                    else:
-                                        continue
-
-                                    if "password" in query:
-                                        password = query["password"][0].strip()
-                                    else:
-                                        continue
-                                    if "timeshift" in query:
-                                        has_timeshift = True
+                                    playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, list_type, output)
 
                                     if has_timeshift or int(epg_offset) != 0:
-                                        playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s" % (host, username, password, list_type, output, epg_offset, self.name)
-                                    else:
-                                        playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s" % (host, username, password, list_type, output, self.name)
+                                        playlist_line += "&timeshift=%s" % epg_offset
+
+                                    playlist_line += " #%s" % iptvname
 
                                     line = str(playlist_line) + "\n"
+
                             else:
                                 if self.full_url in line:
-                                    playlist_line = "%s #%s" % (self.full_url, self.name)
-                                    line = str(playlist_line) + "\n"
+                                    line = "%s #%s\n" % (self.full_url, iptvname)
                             f.write(line)
                         else:
                             f.write(line)
