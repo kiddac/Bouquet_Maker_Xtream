@@ -370,6 +370,7 @@ class BmxChooseCategories(Screen):
             self.save()
 
     def selectionChanged(self):
+        print("*** selection changed ***")
         self["list2"].setList([])
         self.channel_list = []
         self.channel_selected_list = []
@@ -385,18 +386,25 @@ class BmxChooseCategories(Screen):
 
         if self.level == 1:
             for channel in glob.current_playlist["data"]["live_streams"]:
-                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                    if channel["category_id"] == category:
-                        if str(channel["stream_id"]) in glob.current_playlist["data"]["live_streams_hidden"]:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), True, str(channel["added"])])
+
+                name = str(channel.get("name", ""))
+                stream_id = str(channel.get("stream_id", ""))
+                added = str(channel.get("added", "0"))
+
+                if not name or not stream_id:
+                    continue
+
+                if channel["category_id"] == category:
+                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                        if stream_id in glob.current_playlist["data"]["live_streams_hidden"]:
+                            self.channel_selected_list.append([stream_id, name, True, added])
                         else:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), False, str(channel["added"])])
-                else:
-                    if channel["category_id"] == category:
-                        if str(channel["name"]) in glob.current_playlist["data"]["live_streams_hidden"]:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), True, "0"])
+                            self.channel_selected_list.append([stream_id, name, False, added])
+                    else:
+                        if name in glob.current_playlist["data"]["live_streams_hidden"]:
+                            self.channel_selected_list.append([stream_id, name, True, "0"])
                         else:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), False, "0"])
+                            self.channel_selected_list.append([stream_id, name, False, "0"])
 
             if glob.current_playlist["settings"]["live_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
@@ -406,18 +414,25 @@ class BmxChooseCategories(Screen):
 
         elif self.level == 2:
             for channel in glob.current_playlist["data"]["vod_streams"]:
-                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                    if channel["category_id"] == category:
-                        if str(channel["stream_id"]) in glob.current_playlist["data"]["vod_streams_hidden"]:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), True, str(channel["added"])])
+
+                name = str(channel.get("name", ""))
+                stream_id = str(channel.get("stream_id", ""))
+                added = str(channel.get("added", "0"))
+
+                if not name or not stream_id:
+                    continue
+
+                if channel["category_id"] == category:
+                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                        if stream_id in glob.current_playlist["data"]["vod_streams_hidden"]:
+                            self.channel_selected_list.append([stream_id, name, True, added])
                         else:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), False, str(channel["added"])])
-                else:
-                    if channel["category_id"] == category:
-                        if str(channel["name"]) in glob.current_playlist["data"]["vod_streams_hidden"]:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), True, "0"])
+                            self.channel_selected_list.append([stream_id, name, False, added])
+                    else:
+                        if name in glob.current_playlist["data"]["vod_streams_hidden"]:
+                            self.channel_selected_list.append([stream_id, name, True, "0"])
                         else:
-                            self.channel_selected_list.append([str(channel["stream_id"]), str(channel["name"]), False, "0"])
+                            self.channel_selected_list.append([stream_id, name, False, "0"])
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
@@ -427,17 +442,25 @@ class BmxChooseCategories(Screen):
 
         elif self.level == 3:
             for channel in glob.current_playlist["data"]["series_streams"]:
-                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                    if channel["category_id"] == category:
-                        if str(channel["series_id"]) in glob.current_playlist["data"]["series_streams_hidden"]:
-                            self.channel_selected_list.append([str(channel["series_id"]), str(channel["name"]), True, str(channel["last_modified"])])
+
+                name = str(channel.get("name", ""))
+                series_id = str(channel.get("series_id", ""))
+                last_modified = str(channel.get("last_modified", "0"))
+
+                if not name or not series_id:
+                    continue
+
+                if channel["category_id"] == category:
+                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                        if series_id in glob.current_playlist["data"]["series_streams_hidden"]:
+                            self.channel_selected_list.append([series_id, name, True, last_modified])
                         else:
-                            self.channel_selected_list.append([str(channel["series_id"]), str(channel["name"]), False, str(channel["last_modified"])])
-                else:
-                    if str(channel["name"]) in glob.current_playlist["data"]["series_streams_hidden"]:
-                        self.channel_selected_list.append([str(channel["series_id"]), str(channel["name"]), True, "0"])
+                            self.channel_selected_list.append([series_id, name, False, last_modified])
                     else:
-                        self.channel_selected_list.append([str(channel["series_id"]), str(channel["name"]), False, "0"])
+                        if name in glob.current_playlist["data"]["series_streams_hidden"]:
+                            self.channel_selected_list.append([series_id, name, True, "0"])
+                        else:
+                            self.channel_selected_list.append([series_id, name, False, "0"])
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
@@ -447,8 +470,9 @@ class BmxChooseCategories(Screen):
 
         self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]
         self["list2"].setList(self.channel_list)
-        self.current_list = 1
-        self.enableList()
+
+        # self.current_list = 1
+        # self.enableList()
 
     def buildListEntry(self, id, name, hidden):
         if hidden:
