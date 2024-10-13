@@ -91,8 +91,7 @@ class BmxChooseCategories(Screen):
             if self.selected_list == self["list2"]:
                 self.selected_list.setIndex(0)
             return True
-        else:
-            return False
+        return False
 
     def goLeft(self):
         success = False
