@@ -235,9 +235,7 @@ class BmxChooseCategories(Screen):
 
         else:
             for url in self.url_list:
-                result = bmx.downloadUrlMulti(url)
-                category = result[0]
-                response = result[1]
+                category, response = bmx.downloadUrlMulti(url)
                 if response:
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                         # add categories to main json file
