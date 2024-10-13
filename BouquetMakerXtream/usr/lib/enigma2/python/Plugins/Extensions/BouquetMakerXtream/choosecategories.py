@@ -34,7 +34,6 @@ class BmxChooseCategories(Screen):
         self.channel_list = []
 
         self.level = 1
-        self.data = False
 
         self["list1"] = List(self.category_list, enableWrapAround=True)
         self["list2"] = List(self.channel_list, enableWrapAround=True)
@@ -302,7 +301,6 @@ class BmxChooseCategories(Screen):
             self["list1"].setList(self.category_list)
             self["list1"].setIndex(0)
             self.current_list = 1
-            self.data = True
             self.enableList()
             self.selectionChanged()
         else:
@@ -342,7 +340,6 @@ class BmxChooseCategories(Screen):
             self["list1"].setList(self.category_list)
             self["list1"].setIndex(0)
             self.current_list = 1
-            self.data = True
             self.enableList()
             self.selectionChanged()
 
@@ -378,7 +375,6 @@ class BmxChooseCategories(Screen):
             self["list1"].setList(self.category_list)
             self["list1"].setIndex(0)
             self.current_list = 1
-            self.data = True
             self.enableList()
             self.selectionChanged()
         else:
