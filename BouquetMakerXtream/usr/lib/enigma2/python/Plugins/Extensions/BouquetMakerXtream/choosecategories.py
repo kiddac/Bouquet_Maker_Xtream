@@ -198,7 +198,6 @@ class BmxChooseCategories(Screen):
             pass
 
         results = ""
-
         threads = min(len(self.url_list), 10)
 
         if hasConcurrent or hasMultiprocessing:
@@ -277,12 +276,11 @@ class BmxChooseCategories(Screen):
                 self["key_green"].setText(_("Create"))
 
             for category in glob.current_playlist["data"]["live_categories"]:
-                categorycount = len(category)
 
                 if str(category["category_id"]) in glob.current_playlist["data"]["live_categories_hidden"]:
-                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True, categorycount, 0])
+                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True])
                 else:
-                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False, categorycount, 0])
+                    self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
 
             if glob.current_playlist["settings"]["live_category_order"] == "alphabetical":
                 self.categorySelectedList.sort(key=lambda x: x[1].lower())
