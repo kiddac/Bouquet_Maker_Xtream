@@ -183,17 +183,14 @@ class BmxChooseCategories(Screen):
             self.loadSeries()
 
     def processDownloads(self, stream_type):
-        if stream_type == "live":
-            self.url_list = self.live_url_list
-
-        if stream_type == "vod":
-            self.url_list = self.vod_url_list
-
-        if stream_type == "series":
-            self.url_list = self.series_url_list
-
-        if stream_type == "external":
-            self.url_list = self.external_url_list
+        print("*** processDownloads ***", stream_type)
+        stream_map = {
+            "live": self.live_url_list,
+            "vod": self.vod_url_list,
+            "series": self.series_url_list,
+            "external": self.external_url_list
+        }
+        self.url_list = stream_map.get(stream_type, [])
 
         try:
             self["splash"].show()
