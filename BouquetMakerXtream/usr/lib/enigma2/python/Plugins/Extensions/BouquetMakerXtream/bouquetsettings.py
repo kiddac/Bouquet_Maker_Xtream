@@ -493,12 +493,10 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
     def getPlaylistUserFile(self):
         if self.playlists_all:
-            x = 0
-            for playlists in self.playlists_all:
+            for idx, playlists in enumerate(self.playlists_all):
                 if playlists["playlist_info"]["full_url"] == self.full_url:
-                    self.playlists_all[x] = glob.current_playlist
-                    break
-                x += 1
+                    self.playlists_all[idx] = glob.current_playlist
+                    break  # Exit loop after updating
 
         self.writeJsonFile()
 
