@@ -161,13 +161,13 @@ class BmxChooseCategories(Screen):
 
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                if glob.current_playlist["settings"]["show_live"] is True:
+                if glob.current_playlist["settings"]["show_live"]:
                     self.live_url_list.append([self.live_streams_api, 3, "json"])
 
-                if glob.current_playlist["settings"]["show_vod"] is True:
+                if glob.current_playlist["settings"]["show_vod"]:
                     self.vod_url_list.append([self.vod_streams_api, 4, "json"])
 
-                if glob.current_playlist["settings"]["show_series"] is True:
+                if glob.current_playlist["settings"]["show_series"]:
                     self.series_url_list.append([self.series_streams_api, 5, "json"])
 
         try:
@@ -175,11 +175,11 @@ class BmxChooseCategories(Screen):
         except:
             pass
 
-        if glob.current_playlist["settings"]["show_live"] is True:
+        if glob.current_playlist["settings"]["show_live"]:
             self.loadLive()
-        elif glob.current_playlist["settings"]["show_vod"] is True:
+        elif glob.current_playlist["settings"]["show_vod"]:
             self.loadVod()
-        elif glob.current_playlist["settings"]["show_series"] is True:
+        elif glob.current_playlist["settings"]["show_series"]:
             self.loadSeries()
 
     def processDownloads(self, stream_type):
@@ -270,7 +270,7 @@ class BmxChooseCategories(Screen):
             self.category_list = []
             self.categorySelectedList = []
 
-            if glob.current_playlist["settings"]["show_vod"] is True or glob.current_playlist["settings"]["show_series"] is True:
+            if glob.current_playlist["settings"]["show_vod"] or glob.current_playlist["settings"]["show_series"]:
                 self["key_green"].setText(_("Next"))
             else:
                 self["key_green"].setText(_("Create"))
@@ -311,7 +311,7 @@ class BmxChooseCategories(Screen):
             self.category_list = []
             self.categorySelectedList = []
 
-            if glob.current_playlist["settings"]["show_series"] is True:
+            if glob.current_playlist["settings"]["show_series"]:
                 self["key_green"].setText(_("Next"))
             else:
                 self["key_green"].setText(_("Create"))
@@ -334,7 +334,7 @@ class BmxChooseCategories(Screen):
 
         else:
             glob.current_playlist["settings"]["show_vod"] = False
-            if glob.current_playlist["settings"]["show_series"] is True:
+            if glob.current_playlist["settings"]["show_series"]:
                 self.loadSeries()
 
     def loadSeries(self):
@@ -377,7 +377,7 @@ class BmxChooseCategories(Screen):
         if not self["list1"].getCurrent():
             return
 
-        if self["list1"].getCurrent()[3] is True:
+        if self["list1"].getCurrent()[3]:
             self["list2"].setList([])
             return
 
@@ -587,15 +587,15 @@ class BmxChooseCategories(Screen):
 
     def keyCancel(self):
         if self.setup_title == _("Choose Series Categories"):
-            if glob.current_playlist["settings"]["show_vod"] is True:
+            if glob.current_playlist["settings"]["show_vod"]:
                 self.loadVod()
-            elif glob.current_playlist["settings"]["show_live"] is True:
+            elif glob.current_playlist["settings"]["show_live"]:
                 self.loadLive()
             else:
                 self.close()
 
         elif self.setup_title == _("Choose VOD Categories"):
-            if glob.current_playlist["settings"]["show_live"] is True:
+            if glob.current_playlist["settings"]["show_live"]:
                 self.loadLive()
             else:
                 self.close()
@@ -605,15 +605,15 @@ class BmxChooseCategories(Screen):
 
     def keyGreen(self):
         if self.setup_title == _("Choose Live Categories"):
-            if glob.current_playlist["settings"]["show_vod"] is True:
+            if glob.current_playlist["settings"]["show_vod"]:
                 self.loadVod()
-            elif glob.current_playlist["settings"]["show_series"] is True:
+            elif glob.current_playlist["settings"]["show_series"]:
                 self.loadSeries()
             else:
                 self.save()
 
         elif self.setup_title == _("Choose VOD Categories"):
-            if glob.current_playlist["settings"]["show_series"] is True:
+            if glob.current_playlist["settings"]["show_series"]:
                 self.loadSeries()
             else:
                 self.save()
