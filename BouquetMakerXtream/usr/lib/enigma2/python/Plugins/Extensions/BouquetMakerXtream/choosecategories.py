@@ -183,7 +183,6 @@ class BmxChooseCategories(Screen):
             self.loadSeries()
 
     def processDownloads(self, stream_type):
-        print("*** processDownloads ***", stream_type)
         stream_map = {
             "live": self.live_url_list,
             "vod": self.vod_url_list,
@@ -370,7 +369,6 @@ class BmxChooseCategories(Screen):
             self.save()
 
     def selectionChanged(self):
-        print("*** selection changed ***")
         self["list2"].setList([])
         self.channel_list = []
         self.channel_selected_list = []
@@ -468,7 +466,7 @@ class BmxChooseCategories(Screen):
             if glob.current_playlist["settings"]["vod_stream_order"] == "added":
                 self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
 
-        self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]
+        self.channel_list = [self.buildListEntry2(x[0], x[1], x[2]) for x in self.channel_selected_list]
         self["list2"].setList(self.channel_list)
 
         # self.current_list = 1
@@ -481,10 +479,22 @@ class BmxChooseCategories(Screen):
             pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_on.png"))
         return (pixmap, str(name), str(id), hidden)
 
+    def buildListEntry2(self, id, name, hidden):
+        pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_off.png"))
+        return (pixmap, str(name), str(id), hidden)
+
     def refresh(self):
         def update_hidden_list(selected_list, hidden_list, category_type):
             for hidden in selected_list:
                 key = hidden[0] if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" else hidden[1]
+
+                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                    key = hidden[0]
+                else:
+                    key = hidden[1]
+                if self.setup_title == _("Choose Series Categories"):
+                    key = hidden[1]
+
                 if hidden[2]:
                     if key not in hidden_list:
                         hidden_list.append(key)
@@ -528,6 +538,8 @@ class BmxChooseCategories(Screen):
                     update_hidden_list(self.channel_selected_list, glob.current_playlist["data"]["series_streams_hidden"], "series")
 
     def toggleSelection(self):
+        if self.setup_title == _("Choose Series Categories") and self.current_list == 2:
+            return
         if len(self[self.active].list) > 0:
             idx = self[self.active].getIndex()
 
@@ -539,6 +551,8 @@ class BmxChooseCategories(Screen):
         self.refresh()
 
     def toggleAllSelection(self):
+        if self.setup_title == _("Choose Series Categories") and self.current_list == 2:
+            return
         if len(self[self.active].list) > 0:
             for idx, item in enumerate(self[self.active].list):
                 if self.selected_list == self["list1"] and self["list1"].getCurrent():
@@ -549,6 +563,8 @@ class BmxChooseCategories(Screen):
         self.refresh()
 
     def clearAllSelection(self):
+        if self.setup_title == _("Choose Series Categories") and self.current_list == 2:
+            return
         if len(self[self.active].list) > 0:
             for idx, item in enumerate(self[self.active].list):
                 if self.selected_list == self["list1"] and self["list1"].getCurrent():
@@ -606,8 +622,6 @@ class BmxChooseCategories(Screen):
 
     def updateJson(self, answer=None):
         self.playlists_all = bmx.getPlaylistJson()
-
-        # print("*** glob ***", glob.current_playlist["data"]["series_streams"])
 
         if self.playlists_all:
             for playlists in self.playlists_all:
