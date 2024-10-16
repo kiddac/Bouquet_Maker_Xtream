@@ -114,10 +114,12 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 self.url_list.append([self.p_series_categories_url, 2, "json"])
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
                 self.url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
+
+            self.processDownloads()
+
         else:
             self.parseM3u8Playlist()
 
-        self.processDownloads()
         self.checkCategories()
 
     def processDownloads(self):
