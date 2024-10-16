@@ -93,24 +93,33 @@ def downloadUrlMulti(url):
     http.mount("http://", adapter)
     http.mount("https://", adapter)
     response = ""
+
     try:
-        r = http.get(url[0], headers=hdr, timeout=(5, 20), verify=False)
+        r = http.get(url[0], headers=hdr, timeout=(10, 30), verify=False, stream=True)
         r.raise_for_status()
+
         if r.status_code == requests.codes.ok:
             try:
                 if ext == "json":
                     response = category, r.json()
                 else:
-                    response = category, r.text
+                    content = bytearray()
+                    for chunk in r.iter_content(chunk_size=32768):
+                        content.extend(chunk)
+                    response = category, content.decode("utf-8", errors='replace')
                 return response
             except Exception as e:
-                print(e)
+                print("Error during processing response: {}".format(str(e)))
                 return category, ""
 
-    except Exception as e:
-        print(e)
-
-    return category, ""
+    except requests.Timeout as e:
+        print("*** Request timed out ***")
+        print("Error message: {}".format(str(e)))
+        return category, ""
+    except requests.RequestException as e:
+        print("*** Request failed ***")
+        print("Error message: {}".format(str(e)))
+        return category, ""
 
 
 def safeName(name):
