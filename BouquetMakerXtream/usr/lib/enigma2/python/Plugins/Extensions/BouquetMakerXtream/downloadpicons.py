@@ -98,7 +98,11 @@ except:
     from httplib import HTTPConnection
     HTTPConnection.debuglevel = 0
 
-hdr = {'User-Agent': str(cfg.useragent.value)}
+hdr = {
+    'User-Agent': str(cfg.useragent.value),
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate'
+}
 
 
 class BmxDownloadPicons(Screen):
@@ -257,54 +261,58 @@ class BmxDownloadPicons(Screen):
 
         try:
             response = http.get(url[i][1], headers=hdr, stream=True, timeout=5, verify=False, allow_redirects=False)
-        except:
-            print("**** exception ***", url[i][1])
-            self.badurlcount += 1
-            self.badurllist.append(url[i])
-            if url[i][1] not in self.blockinglist:
-                self.blockinglist.append(url[i][1])
-                return
 
-        if response:
-            if "content-length" in response.headers and int(cfg.picon_max_size.value) != 0 and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
-                print("*** Picon source too large ***", url[i])
-                self.sizecount += 1
-                self.sizelist.append(url[i])
-                if url[i][1] not in self.sizeblockinglist:
-                    self.sizeblockinglist.append(url[i][1])
-                return
-
-            if "content-type" in response.headers and response.headers["content-type"] in image_formats:
-                try:
-                    content = response.content
-                    image_file = io.BytesIO(content)
-                    self.makePicon(image_file,  url[i][0], url[i][1])
-                    self.successcount += 1
-                    self.successlist.append(url[i])
+            if response:
+                if "content-length" in response.headers and int(cfg.picon_max_size.value) != 0 and int(response.headers["content-length"]) > int(cfg.picon_max_size.value):
+                    print("*** Picon source too large ***", url[i])
+                    self.sizecount += 1
+                    self.sizelist.append(url[i])
+                    if url[i][1] not in self.sizeblockinglist:
+                        self.sizeblockinglist.append(url[i][1])
                     return
 
-                except Exception as e:
-                    print("**** image builder failed***", e, url[i][1])
+                if "content-type" in response.headers and response.headers["content-type"] in image_formats:
+                    try:
+                        content = response.content
+                        image_file = io.BytesIO(content)
+                        self.makePicon(image_file,  url[i][0], url[i][1])
+                        self.successcount += 1
+                        self.successlist.append(url[i])
+                        return
+
+                    except Exception as e:
+                        print("**** image builder failed***", e, url[i][1])
+                        self.typecount += 1
+                        self.typelist.append(url[i])
+                        if url[i][1] not in self.typeblockinglist:
+                            self.typeblockinglist.append(url[i][1])
+                        return
+
+                else:
+                    print("*** not png or jpeg ***", url[i][1])
                     self.typecount += 1
                     self.typelist.append(url[i])
                     if url[i][1] not in self.typeblockinglist:
                         self.typeblockinglist.append(url[i][1])
+                        return
+            else:
+                print("**** bad response***", url[i][1])
+                self.badurlcount += 1
+                self.badurllist.append(url[i])
+                if url[i][1] not in self.blockinglist:
+                    self.blockinglist.append(url[i][1])
                     return
 
-            else:
-                print("*** not png or jpeg ***", url[i][1])
-                self.typecount += 1
-                self.typelist.append(url[i])
-                if url[i][1] not in self.typeblockinglist:
-                    self.typeblockinglist.append(url[i][1])
-                    return
-        else:
-            print("**** bad response***", url[i][1])
+        except Exception as e:
+            print("**** exception ***", url[i][1], e)
             self.badurlcount += 1
             self.badurllist.append(url[i])
             if url[i][1] not in self.blockinglist:
                 self.blockinglist.append(url[i][1])
                 return
+
+        finally:
+            http.close()  # Ensure the session is closed
 
     def log_result(self, result=None):
         # self.progresscurrent += 1

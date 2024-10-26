@@ -27,7 +27,11 @@ from . import _
 from .plugin import skin_directory, playlist_file, cfg, playlists_json
 from .bmxStaticText import StaticText
 
-hdr = {'User-Agent': str(cfg.useragent.value)}
+hdr = {
+    'User-Agent': str(cfg.useragent.value),
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate'
+}
 
 
 class BmxAddServer(ConfigListScreen, Screen):

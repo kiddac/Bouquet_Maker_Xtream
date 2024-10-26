@@ -37,7 +37,11 @@ from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, playlis
 from .bmxStaticText import StaticText
 from . import checkinternet
 
-hdr = {'User-Agent': str(cfg.useragent.value)}
+hdr = {
+    'User-Agent': str(cfg.useragent.value),
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate'
+}
 
 
 class BmxPlaylists(Screen):

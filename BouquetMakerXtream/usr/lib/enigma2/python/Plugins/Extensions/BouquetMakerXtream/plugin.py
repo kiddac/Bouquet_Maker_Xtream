@@ -198,7 +198,11 @@ addFont(os.path.join(font_folder, "slyk-bold.ttf"), "slykbold", 100, 0)
 addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular", 100, 0)
 addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
 
-hdr = {'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin'}
+hdr = {
+    'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin',
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate'
+}
 
 # create folder for working files
 if not os.path.exists(dir_etc):
@@ -423,6 +427,9 @@ def showBmxCatchup(self):
 
     except Exception as exc:
         print(exc)
+
+    finally:
+        http.close()  # Ensure the session is closed
 
     if response:
         live_streams = response

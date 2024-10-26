@@ -28,7 +28,11 @@ except:
 
     HTTPConnection.debuglevel = 0
 
-hdr = {'User-Agent': str(cfg.useragent.value)}
+hdr = {
+    'User-Agent': str(cfg.useragent.value),
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate'
+}
 
 
 class BmxCatchup(Screen):
@@ -212,6 +216,9 @@ class BmxCatchup(Screen):
         except Exception as e:
             print(e)
 
+        finally:
+            http.close()
+
         self.server_offset = 0
 
         if response:
@@ -219,12 +226,18 @@ class BmxCatchup(Screen):
                 if "server_info" in response:
                     if "time_now" in response["server_info"]:
                         try:
-                            time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d %H:%M:%S")
+                            time_now_datestamp = datetime.strptime(
+                                str(response["server_info"]["time_now"]), "%Y-%m-%d %H:%M:%S"
+                            )
                         except:
                             try:
-                                time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d %H-%M-%S")
+                                time_now_datestamp = datetime.strptime(
+                                    str(response["server_info"]["time_now"]), "%Y-%m-%d %H-%M-%S"
+                                )
                             except:
-                                time_now_datestamp = datetime.strptime(str(response["server_info"]["time_now"]), "%Y-%m-%d-%H:%M:%S")
+                                time_now_datestamp = datetime.strptime(
+                                    str(response["server_info"]["time_now"]), "%Y-%m-%d-%H:%M:%S"
+                                )
 
                         self.server_offset = datetime.now().hour - time_now_datestamp.hour
                         # print("*** server_offset ***", self.server_offset)
@@ -250,6 +263,9 @@ class BmxCatchup(Screen):
 
         except Exception as e:
             print(e)
+
+        finally:
+            http.close()
 
         if response:
             short_epg_json = response

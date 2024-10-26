@@ -41,7 +41,6 @@ def downloadUrl(url, ext):
     http = requests.Session()
     http.mount("http://", adapter)
     http.mount("https://", adapter)
-    r = ""
     try:
         r = http.get(url, headers=hdr, timeout=(20, 60), verify=False)
         r.raise_for_status()
@@ -55,10 +54,10 @@ def downloadUrl(url, ext):
             except Exception as e:
                 print(e)
                 return ""
-
     except Exception as e:
         print(e)
-
+    finally:
+        http.close()
     return ""
 
 
@@ -69,7 +68,6 @@ def downloadApi(url):
     http = requests.Session()
     http.mount("http://", adapter)
     http.mount("https://", adapter)
-    r = ""
     try:
         r = http.get(url, headers=hdr, timeout=5, verify=False)
         r.raise_for_status()
@@ -80,17 +78,16 @@ def downloadApi(url):
             except Exception as e:
                 print(e)
                 return ""
-
     except Exception as e:
         print(e)
-
+    finally:
+        http.close()
     return ""
 
 
 def downloadUrlCategory(url):
     category = url[1]
     ext = url[2]
-    r = ""
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
     http = requests.Session()
@@ -110,8 +107,9 @@ def downloadUrlCategory(url):
 
     except Exception as e:
         print(e)
-
-    return category, ""
+        return category, ""
+    finally:
+        http.close()
 
 
 def downloadUrlMulti(url, output_file=None):
@@ -157,6 +155,8 @@ def downloadUrlMulti(url, output_file=None):
     except requests.RequestException as e:
         print("Error message: {}".format(str(e)))
         return category, ""
+    finally:
+        http.close()
 
 
 def safeName(name):
