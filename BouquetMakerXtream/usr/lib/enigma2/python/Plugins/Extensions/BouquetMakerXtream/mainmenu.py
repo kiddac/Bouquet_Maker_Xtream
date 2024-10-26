@@ -109,25 +109,25 @@ class BmxMainMenu(Screen):
         if self.playlists_all:
             self.list.append([1, _("Playlists")])
 
-        self.list.append([3, _("Main Settings")])
+            self.list.append([3, _("Main Settings")])
 
-        self.bouquets_exist = any(playlist["playlist_info"].get("bouquet") for playlist in self.playlists_all)
+            self.bouquets_exist = any(playlist["playlist_info"].get("bouquet") for playlist in self.playlists_all)
 
-        if self.bouquets_exist:
+            # First add the items that will appear in all cases
             self.list.extend([
-                [4, _("Update Bouquets")],
-                [8, _("Download Picons")],
-                [5, _("Delete Bouquets")]
+                [2, _("Add Playlist")],
+                [7, _("About")]
             ])
 
-        self.list.extend([
-            [6, _("Delete All BMX Bouquets")],
-            [2, _("Add Playlist")],
-            [7, _("About")]
-        ])
+            if self.bouquets_exist:
+                # Insert bouquet-related items in the correct order
+                self.list.insert(2, [4, _("Update Bouquets")])  # Insert at position 2
+                self.list.insert(3, [5, _("Delete Bouquets")])  # Insert at position 2
+                self.list.insert(4, [6, _("Delete All BMX Bouquets")])  # Insert at position 3
+                self.list.insert(5, [8, _("Download Picons")])  # Insert at position 5
 
-        self.draw_list = [buildListEntry(x[0], x[1]) for x in self.list]
-        self["list"].setList(self.draw_list)
+            self.draw_list = [buildListEntry(x[0], x[1]) for x in self.list]
+            self["list"].setList(self.draw_list)
 
     def playlists(self):
         from . import playlists

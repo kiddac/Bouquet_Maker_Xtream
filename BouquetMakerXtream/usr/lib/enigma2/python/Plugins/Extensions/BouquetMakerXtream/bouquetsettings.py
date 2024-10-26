@@ -112,19 +112,23 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 self.url_list.append([self.p_live_categories_url, 0, "json"])
                 self.url_list.append([self.p_vod_categories_url, 1, "json"])
                 self.url_list.append([self.p_series_categories_url, 2, "json"])
+                self.processDownloads("json")
+
             elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
                 self.url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
-
-            self.processDownloads()
-
+                self.processDownloads("text")
         else:
             self.parseM3u8Playlist()
 
         self.checkCategories()
 
-    def processDownloads(self):
+    def processDownloads(self, outputtype=None):
         results = ""
         threads = min(len(self.url_list), 10)
+        if outputtype == "json":
+            output_file = ""
+        else:
+            output_file = '/var/volatile/tmp/bouquetmakerxtream/temp'
 
         if hasConcurrent or hasMultiprocessing:
             if hasConcurrent:
@@ -134,7 +138,12 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     executor = ThreadPoolExecutor(max_workers=threads)
 
                     with executor:
-                        results = executor.map(bmx.downloadUrlMulti, self.url_list)
+                        if outputtype == "json":
+
+                            results = executor.map(bmx.downloadUrlCategory, self.url_list)
+                        else:
+                            results = executor.map(lambda url: bmx.downloadUrlMulti(url, output_file), self.url_list)
+
                 except Exception as e:
                     print(e)
 
@@ -143,13 +152,54 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     from multiprocessing.pool import ThreadPool
 
                     pool = ThreadPool(threads)
-                    results = pool.imap_unordered(bmx.downloadUrlMulti, self.url_list)
+                    if outputtype == "json":
+                        results = pool.imap_unordered(bmx.downloadUrlCategory, self.url_list)
+                    else:
+
+                        results = pool.imap_unordered(lambda url: bmx.downloadUrlMulti(url, output_file), self.url_list)
                     pool.close()
                     pool.join()
                 except Exception as e:
                     print(e)
 
-            for category, response in results:
+            for url, result in zip(self.url_list, results):
+                if result:
+                    category = result[0]
+
+                    if output_file and os.path.exists(output_file):
+                        with open(output_file, 'r') as f:
+                            response = f.read()
+                    else:
+                        response = result[1]
+
+                    if response:
+                        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                            if category == 0:
+                                glob.current_playlist["data"]["live_categories"] = response
+                            elif category == 1:
+                                glob.current_playlist["data"]["vod_categories"] = response
+                            elif category == 2:
+                                glob.current_playlist["data"]["series_categories"] = response
+                        else:
+                            self.parseM3u8Playlist(response)
+
+        else:
+            for url in self.url_list:
+
+                if outputtype == "json":
+                    result = bmx.downloadUrlCategory(url)
+                else:
+                    result = bmx.downloadUrlMulti(url, output_file)
+
+                category = result[0]
+                response = ""
+
+                if output_file and os.path.exists(output_file):
+                    with open(output_file, 'r') as f:
+                        response = f.read()
+                else:
+                    response = result[1]
+
                 if response:
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                         if category == 0:
@@ -161,22 +211,9 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     else:
                         self.parseM3u8Playlist(response)
 
-        else:
-            for url in self.url_list:
-                result = bmx.downloadUrlMulti(url)
-                category = result[0]
-                response = result[1]
-                if response:
-                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        # add categories to main json file
-                        if category == 0:
-                            glob.current_playlist["data"]["live_categories"] = response
-                        elif category == 1:
-                            glob.current_playlist["data"]["vod_categories"] = response
-                        elif category == 2:
-                            glob.current_playlist["data"]["series_categories"] = response
-                    else:
-                        self.parseM3u8Playlist(response)
+                # Delete the file after processing
+                if os.path.exists(output_file):
+                    os.remove(output_file)
 
     def parseM3u8Playlist(self, response=None):
         self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
@@ -273,10 +310,10 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
         if self.hide_live is False:
             self.list.append(getConfigListEntry(_("Show LIVE category if available:"), self.show_live_cfg))
-            if self.show_live_cfg.value is True:
+            if self.show_live_cfg.value:
                 self.list.append(getConfigListEntry(_("Stream Type LIVE:"), self.live_type_cfg))
 
-            if self.show_live_cfg.value is True:
+            if self.show_live_cfg.value:
                 self.list.append(getConfigListEntry(_("LIVE category bouquet order"), self.live_category_order_cfg))
                 self.list.append(getConfigListEntry(_("LIVE stream bouquet order"), self.live_stream_order_cfg))
 
@@ -287,21 +324,21 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             self.list.append(getConfigListEntry(_("Show SERIES category if available:"), self.show_series_cfg))
 
         if self.hide_vod is False or self.hide_series is False:
-            if self.show_vod_cfg.value is True or self.show_series_cfg.value is True:
+            if self.show_vod_cfg.value or self.show_series_cfg.value:
                 self.list.append(getConfigListEntry(_("Stream Type VOD/SERIES:"), self.vod_type_cfg))
 
-            if self.show_vod_cfg.value is True:
+            if self.show_vod_cfg.value:
                 self.list.append(getConfigListEntry(_("VOD/SERIES category bouquet order"), self.vod_category_order_cfg))
                 self.list.append(getConfigListEntry(_("VOD/SERIES streams bouquet order"), self.vod_stream_order_cfg))
 
-        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and self.show_live_cfg.value is True:
+        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and self.show_live_cfg.value:
             self.list.append(getConfigListEntry(_("Output:"), self.output_cfg))
 
-            if self.show_live_cfg.value is True and epgimporter is True:
+            if self.show_live_cfg.value and epgimporter:
                 self.list.append(getConfigListEntry(_("Max EPG days to download: (Use Default if EPG events is 0)"), self.next_days_cfg))
                 # self.list.append(getConfigListEntry(_("EPG offset:"), self.epg_offset_cfg))
                 self.list.append(getConfigListEntry(_("Use alternative EPG url:"), self.epg_alternative_cfg))
-                if self.epg_alternative_cfg.value is True:
+                if self.epg_alternative_cfg.value:
                     self.list.append(getConfigListEntry(_("Alternative EPG url:"), self.epg_alternative_url_cfg))
 
         self["config"].list = self.list
@@ -497,7 +534,27 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         if self.playlists_all:
             for idx, playlists in enumerate(self.playlists_all):
                 if playlists["playlist_info"]["full_url"] == self.full_url:
-                    self.playlists_all[idx] = glob.current_playlist
+
+                    self.playlists_all[idx]["playlist_info"]["name"] = glob.current_playlist["playlist_info"]["name"]
+                    self.playlists_all[idx]["settings"]["prefix_name"] = glob.current_playlist["settings"]["prefix_name"]
+                    self.playlists_all[idx]["settings"]["show_live"] = glob.current_playlist["settings"]["show_live"]
+                    self.playlists_all[idx]["settings"]["show_vod"] = glob.current_playlist["settings"]["show_vod"]
+                    self.playlists_all[idx]["settings"]["show_series"] = glob.current_playlist["settings"]["show_series"]
+                    self.playlists_all[idx]["settings"]["live_type"] = glob.current_playlist["settings"]["live_type"]
+                    self.playlists_all[idx]["settings"]["vod_type"] = glob.current_playlist["settings"]["vod_type"]
+                    self.playlists_all[idx]["settings"]["live_category_order"] = glob.current_playlist["settings"]["live_category_order"]
+                    self.playlists_all[idx]["settings"]["vod_category_order"] = glob.current_playlist["settings"]["vod_category_order"]
+                    self.playlists_all[idx]["settings"]["live_stream_order"] = glob.current_playlist["settings"]["live_stream_order"]
+                    self.playlists_all[idx]["settings"]["vod_stream_order"] = glob.current_playlist["settings"]["vod_stream_order"]
+
+                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                        self.playlists_all[idx]["playlist_info"]["output"] = glob.current_playlist["playlist_info"]["output"]
+                        self.playlists_all[idx]["settings"]["epg_offset"] = glob.current_playlist["settings"]["epg_offset"]
+                        self.playlists_all[idx]["settings"]["epg_alternative"] = glob.current_playlist["settings"]["epg_alternative"]
+                        self.playlists_all[idx]["settings"]["epg_alternative_url"] = glob.current_playlist["settings"]["epg_alternative_url"]
+                        self.playlists_all[idx]["settings"]["next_days"] = glob.current_playlist["settings"]["next_days"]
+                        self.playlists_all[idx]["playlist_info"]["full_url"] = glob.current_playlist["playlist_info"]["full_url"]
+
                     break  # Exit loop after updating
 
         self.writeJsonFile()

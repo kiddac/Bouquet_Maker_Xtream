@@ -74,7 +74,7 @@ class BmxDownloadPicons(Screen):
 
     def getStartList(self):
         for playlist in self.playlists_all:
-            if playlist["playlist_info"]["bouquet"] is True and playlist["playlist_info"]["playlist_type"] == "xtream":
+            if playlist["playlist_info"]["bouquet"] and playlist["playlist_info"]["playlist_type"] == "xtream":
                 self.start_list.append([str(playlist["playlist_info"]["name"]), playlist["playlist_info"]["index"], False,  playlist["playlist_info"]["player_api"]])
 
         self.draw_list = [self.buildListEntry(x[0], x[1], x[2], x[3]) for x in self.start_list]
@@ -113,7 +113,7 @@ class BmxDownloadPicons(Screen):
             self.unique_ref = 0
 
             for playlist in self.playlists_all:
-                if playlist["playlist_info"]["bouquet"] is True and playlist["playlist_info"]["playlist_type"] == "xtream" and playlist["playlist_info"]["player_api"] == x[3]:
+                if playlist["playlist_info"]["bouquet"] and playlist["playlist_info"]["playlist_type"] == "xtream" and playlist["playlist_info"]["player_api"] == x[3]:
                     glob.current_playlist = playlist
                     break
 

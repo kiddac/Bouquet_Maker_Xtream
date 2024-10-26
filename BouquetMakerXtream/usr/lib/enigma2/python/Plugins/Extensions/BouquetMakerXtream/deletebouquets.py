@@ -68,7 +68,7 @@ class BmxDeleteBouquets(Screen):
 
     def getStartList(self):
         for playlist in self.playlists_all:
-            if playlist["playlist_info"]["bouquet"] is True:
+            if playlist["playlist_info"]["bouquet"]:
                 self.start_list.append([str(playlist["playlist_info"]["name"]), playlist["playlist_info"]["index"], False])
 
         self.draw_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.start_list]
@@ -128,7 +128,7 @@ class BmxDeleteBouquets(Screen):
             bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(safe_name) + "_")
             bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(safe_name))
 
-            if epgimporter is True:
+            if epgimporter:
                 bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(safe_name) + ".channels.xml")
 
                 # remove sources from source file

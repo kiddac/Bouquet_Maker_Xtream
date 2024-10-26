@@ -363,7 +363,7 @@ class BmxPlaylists(Screen):
                                     maxnum = 0
 
                 else:
-                    if playlist["playlist_info"]["valid"] is True:
+                    if playlist["playlist_info"]["valid"]:
                         active = ""
                         activenum = ""
                         maxc = ""
@@ -381,7 +381,7 @@ class BmxPlaylists(Screen):
         self.drawList = [self.buildListEntry(x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7], x[8], x[9], x[10]) for x in self.list]
         self["playlists"].setList(self.drawList)
 
-        if len(self.list) == 1 and cfg.skip_playlists_screen.getValue() is True and playlist["playlist_info"]["valid"] is True:
+        if len(self.list) == 1 and cfg.skip_playlists_screen.getValue() and playlist["playlist_info"]["valid"]:
             self.openBouquetSettings()
 
     def buildListEntry(self, index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlist_type):

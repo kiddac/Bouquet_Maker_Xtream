@@ -11,7 +11,11 @@ import os
 import re
 import requests
 
-hdr = {'User-Agent': str(cfg.useragent.value)}
+hdr = {
+    'User-Agent': str(cfg.useragent.value),
+    'Connection': 'keep-alive',
+    'Accept-Encoding': 'gzip, deflate'
+}
 
 
 def getPlaylistJson():
@@ -83,7 +87,7 @@ def downloadApi(url):
     return ""
 
 
-def downloadUrlMulti(url):
+def downloadUrlCategory(url):
     category = url[1]
     ext = url[2]
     r = ""
@@ -92,32 +96,65 @@ def downloadUrlMulti(url):
     http = requests.Session()
     http.mount("http://", adapter)
     http.mount("https://", adapter)
-    response = ""
 
     try:
-        r = http.get(url[0], headers=hdr, timeout=(10, 30), verify=False, stream=True)
+        r = http.get(url[0], headers=hdr, timeout=20, verify=False)
         r.raise_for_status()
 
         if r.status_code == requests.codes.ok:
-            try:
-                if ext == "json":
-                    response = category, r.json()
-                else:
-                    content = bytearray()
-                    for chunk in r.iter_content(chunk_size=32768):
-                        content.extend(chunk)
-                    response = category, content.decode("utf-8", errors='replace')
-                return response
-            except Exception as e:
-                print("Error during processing response: {}".format(str(e)))
-                return category, ""
+            if ext == "json":
+                response = category, r.json()
+            else:
+                response = category, r.text
+            return response
+
+    except Exception as e:
+        print(e)
+
+    return category, ""
+
+
+def downloadUrlMulti(url, output_file=None):
+    category = url[1]
+    ext = url[2]
+    r = ""
+    retries = 0
+    adapter = HTTPAdapter(max_retries=retries)
+    http = requests.Session()
+    http.mount("http://", adapter)
+    http.mount("https://", adapter)
+
+    try:
+        print("\t[DEBUG] Starting download for URL: {}".format(url[0]))
+        r = http.get(url[0], headers=hdr, timeout=(20, 300), verify=False, stream=True)
+        r.raise_for_status()
+
+        if r.status_code == requests.codes.ok:
+            print("\t[DEBUG] Received response. Status code: {}".format(r.status_code))
+
+            if ext == "json":
+                json_content = r.json()
+                return category, json_content
+            else:
+                output_dir = os.path.dirname(output_file)
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+
+                print("\t[DEBUG] Writing file to: {}".format(output_file))
+
+                # Use a larger chunk size (e.g., 128 KB) for faster writing
+                chunk_size = 8192 * 8  # 128 KB
+                with open(output_file, 'wb') as f:
+                    for i, chunk in enumerate(r.iter_content(chunk_size=chunk_size)):
+                        f.write(chunk)
+
+                print("\t[DEBUG] File writing complete.")
+                return category, output_file
 
     except requests.Timeout as e:
-        print("*** Request timed out ***")
         print("Error message: {}".format(str(e)))
         return category, ""
     except requests.RequestException as e:
-        print("*** Request failed ***")
         print("Error message: {}".format(str(e)))
         return category, ""
 

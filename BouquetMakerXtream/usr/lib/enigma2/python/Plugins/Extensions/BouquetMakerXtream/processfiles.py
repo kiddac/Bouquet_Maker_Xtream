@@ -233,7 +233,7 @@ def processFiles():
 
                                 playlist["settings"]["epg_offset"] = epg_offset
 
-                                if playlist["settings"]["epg_alternative"] is True:
+                                if playlist["settings"]["epg_alternative"]:
                                     if playlist["settings"]["epg_alternative_url"]:
                                         playlist["playlist_info"]["xmltv_api"] = playlist["settings"]["epg_alternative_url"]
                                 else:
@@ -423,9 +423,9 @@ def processFiles():
 
                         playlist["playlist_info"]["index"] = index
 
-                        playlist["settings"]["live_streams"] = []
-                        playlist["settings"]["vod_streams"] = []
-                        playlist["settings"]["series_streams"] = []
+                        playlist["data"]["live_streams"] = []
+                        playlist["data"]["vod_streams"] = []
+                        playlist["data"]["series_streams"] = []
 
                         index += 1
                         break

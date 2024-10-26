@@ -5,7 +5,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, playlists_json, skin_directory
+from .plugin import cfg, common_path, playlists_json, skin_directory
 
 from Components.ActionMap import ActionMap
 from Components.Pixmap import Pixmap
@@ -157,7 +157,6 @@ class BmxChooseCategories(Screen):
         self.live_url_list = []
         self.vod_url_list = []
         self.series_url_list = []
-        self.external_url_list = []
 
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
@@ -182,76 +181,50 @@ class BmxChooseCategories(Screen):
         elif glob.current_playlist["settings"]["show_series"]:
             self.loadSeries()
 
-    def processDownloads(self, stream_type):
-        stream_map = {
-            "live": self.live_url_list,
-            "vod": self.vod_url_list,
-            "series": self.series_url_list,
-            "external": self.external_url_list
-        }
-        self.url_list = stream_map.get(stream_type, [])
-
+    def processDownloads(self, stream_type, outputtype=None):
         try:
             self["splash"].show()
         except:
             pass
 
-        results = ""
-        threads = min(len(self.url_list), 10)
+        if stream_type == "live":
+            self.url_list = self.live_url_list
 
-        if hasConcurrent or hasMultiprocessing:
-            if hasConcurrent:
-                try:
-                    from concurrent.futures import ThreadPoolExecutor
+        elif stream_type == "vod":
+            self.url_list = self.vod_url_list
 
-                    with ThreadPoolExecutor(max_workers=threads) as executor:
-                        results = executor.map(bmx.downloadUrlMulti, self.url_list)
+        elif stream_type == "series":
+            self.url_list = self.series_url_list
 
-                except Exception as e:
-                    print(e)
+        for url in self.url_list:
+            result = bmx.downloadUrlCategory(url)
 
-            elif hasMultiprocessing:
-                try:
-                    from multiprocessing.pool import ThreadPool
+            category = result[0]
+            response = result[1]
 
-                    pool = ThreadPool(threads)
-                    results = pool.imap_unordered(bmx.downloadUrlMulti, self.url_list)
-                    pool.close()
-                    pool.join()
-                except Exception as e:
-                    print(e)
+            if response:
+                if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+                    if category == 3:
+                        glob.current_playlist["data"]["live_streams"] = response
+                    elif category == 4:
+                        glob.current_playlist["data"]["vod_streams"] = response
+                    elif category == 5:
+                        glob.current_playlist["data"]["series_streams"] = response
 
-            for category, response in results:
-                if response:
-                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        if category == 3:
-                            glob.current_playlist["data"]["live_streams"] = response
-                        elif category == 4:
-                            glob.current_playlist["data"]["vod_streams"] = response
-                        elif category == 5:
-                            glob.current_playlist["data"]["series_streams"] = response
+                    # Remove unnecessary keys from series_streams
+                    keys_to_remove = set(['num', 'cover', 'plot', 'cast', 'director', 'genre',
+                                          'rating', 'rating_5based', 'backdrop_path',
+                                          "youtube_trailer", "tmdb", "episode_run_time",
+                                          "category_ids"])
+                    for data in glob.current_playlist["data"].get("series_streams", []):
+                        try:
+                            keys_to_delete = [key for key in data.keys() if key in keys_to_remove]
 
-        else:
-            for url in self.url_list:
-                category, response = bmx.downloadUrlMulti(url)
-                if response:
-                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        # add categories to main json file
-                        if category == 3:
-                            glob.current_playlist["data"]["live_streams"] = response
-                        elif category == 4:
-                            glob.current_playlist["data"]["vod_streams"] = response
-                        elif category == 5:
-                            glob.current_playlist["data"]["series_streams"] = response
+                            for key in keys_to_delete:
+                                del data[key]
+                        except Exception as e:
+                            print(e)
 
-        keys_to_remove = set(['num', 'cover', 'plot', 'cast', 'director', 'genre', 'rating', 'rating_5based', 'backdrop_path', "youtube_trailer", "tmdb", "episode_run_time", "category_ids"])
-        for data in glob.current_playlist["data"].get("series_streams", []):
-            try:
-                keys_to_remove.intersection_update(data.keys())
-                for key in keys_to_remove:
-                    del data[key]
-            except Exception as e:
-                print(e)
         try:
             self["splash"].hide()
         except:
@@ -260,7 +233,7 @@ class BmxChooseCategories(Screen):
     def loadLive(self):
         self.level = 1
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            self.processDownloads("live")
+            self.processDownloads("live", "json")
 
         self.setup_title = _("Choose Live Categories")
         self.setTitle(self.setup_title)
@@ -276,7 +249,8 @@ class BmxChooseCategories(Screen):
 
             for category in glob.current_playlist["data"]["live_categories"]:
 
-                if str(category["category_id"]) in glob.current_playlist["data"]["live_categories_hidden"]:
+                if str(category["category_id"]) in glob.current_playlist["data"]["live_categories_hidden"] or \
+                   str(category["category_name"]) in glob.current_playlist["data"]["live_categories_hidden"]:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True])
                 else:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
@@ -301,7 +275,7 @@ class BmxChooseCategories(Screen):
     def loadVod(self):
         self.level = 2
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            self.processDownloads("vod")
+            self.processDownloads("vod", "json")
 
         self.setup_title = _("Choose VOD Categories")
         self.setTitle(self.setup_title)
@@ -316,7 +290,8 @@ class BmxChooseCategories(Screen):
                 self["key_green"].setText(_("Create"))
 
             for category in glob.current_playlist["data"]["vod_categories"]:
-                if str(category["category_id"]) in glob.current_playlist["data"]["vod_categories_hidden"]:
+                if str(category["category_id"]) in glob.current_playlist["data"]["vod_categories_hidden"] or \
+                   str(category["category_name"]) in glob.current_playlist["data"]["vod_categories_hidden"]:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True])
                 else:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
@@ -339,7 +314,7 @@ class BmxChooseCategories(Screen):
     def loadSeries(self):
         self.level = 3
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            self.processDownloads("series")
+            self.processDownloads("series", "json")
 
         self.setup_title = _("Choose Series Categories")
         self.setTitle(self.setup_title)
@@ -351,7 +326,8 @@ class BmxChooseCategories(Screen):
 
         if glob.current_playlist["data"]["series_categories"]:
             for category in glob.current_playlist["data"]["series_categories"]:
-                if str(category["category_id"]) in glob.current_playlist["data"]["series_categories_hidden"]:
+                if str(category["category_id"]) in glob.current_playlist["data"]["series_categories_hidden"] or \
+                        str(category["category_name"]) in glob.current_playlist["data"]["series_categories_hidden"]:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), True])
                 else:
                     self.categorySelectedList.append([str(category["category_id"]), str(category["category_name"]), False])
@@ -393,13 +369,14 @@ class BmxChooseCategories(Screen):
                     continue
 
                 if channel["category_id"] == category:
+
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        if stream_id in glob.current_playlist["data"]["live_streams_hidden"]:
+                        if stream_id in glob.current_playlist["data"]["live_streams_hidden"] or name in glob.current_playlist["data"]["live_streams_hidden"]:
                             self.channel_selected_list.append([stream_id, name, True, added])
                         else:
                             self.channel_selected_list.append([stream_id, name, False, added])
                     else:
-                        if name in glob.current_playlist["data"]["live_streams_hidden"]:
+                        if stream_id in glob.current_playlist["data"]["live_streams_hidden"] or name in glob.current_playlist["data"]["live_streams_hidden"]:
                             self.channel_selected_list.append([stream_id, name, True, "0"])
                         else:
                             self.channel_selected_list.append([stream_id, name, False, "0"])
@@ -422,12 +399,12 @@ class BmxChooseCategories(Screen):
 
                 if channel["category_id"] == category:
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        if stream_id in glob.current_playlist["data"]["vod_streams_hidden"]:
+                        if stream_id in glob.current_playlist["data"]["vod_streams_hidden"] or name in glob.current_playlist["data"]["vod_streams_hidden"]:
                             self.channel_selected_list.append([stream_id, name, True, added])
                         else:
                             self.channel_selected_list.append([stream_id, name, False, added])
                     else:
-                        if name in glob.current_playlist["data"]["vod_streams_hidden"]:
+                        if stream_id in glob.current_playlist["data"]["vod_streams_hidden"] or name in glob.current_playlist["data"]["vod_streams_hidden"]:
                             self.channel_selected_list.append([stream_id, name, True, "0"])
                         else:
                             self.channel_selected_list.append([stream_id, name, False, "0"])
@@ -450,12 +427,12 @@ class BmxChooseCategories(Screen):
 
                 if channel["category_id"] == category:
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        if series_id in glob.current_playlist["data"]["series_streams_hidden"]:
+                        if series_id in glob.current_playlist["data"]["series_streams_hidden"] or name in glob.current_playlist["data"]["series_streams_hidden"]:
                             self.channel_selected_list.append([series_id, name, True, last_modified])
                         else:
                             self.channel_selected_list.append([series_id, name, False, last_modified])
                     else:
-                        if name in glob.current_playlist["data"]["series_streams_hidden"]:
+                        if series_id in glob.current_playlist["data"]["series_streams_hidden"] or name in glob.current_playlist["data"]["series_streams_hidden"]:
                             self.channel_selected_list.append([series_id, name, True, "0"])
                         else:
                             self.channel_selected_list.append([series_id, name, False, "0"])
@@ -466,7 +443,10 @@ class BmxChooseCategories(Screen):
             if glob.current_playlist["settings"]["vod_stream_order"] == "added":
                 self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
 
-        self.channel_list = [self.buildListEntry2(x[0], x[1], x[2]) for x in self.channel_selected_list]
+        if self.setup_title != _("Choose Series Categories"):
+            self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]
+        else:
+            self.channel_list = [self.buildListEntry2(x[0], x[1], x[2]) for x in self.channel_selected_list]
         self["list2"].setList(self.channel_list)
 
         # self.current_list = 1

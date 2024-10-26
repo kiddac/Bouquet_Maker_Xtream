@@ -5,6 +5,7 @@
 import os
 import re
 import requests
+import shutil
 import sys
 import time
 import twisted.python.runtime
@@ -62,6 +63,16 @@ screenwidth = getDesktop(0).size()
 dir_etc = "/etc/enigma2/bouquetmakerxtream/"
 dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
 dir_custom = "/media/hdd/picon/"
+
+dir_tmp = "/tmp/bouquetmakerxtream/"
+
+# delete temporary folder and contents
+if os.path.exists(dir_tmp):
+    shutil.rmtree(dir_tmp)
+
+# create temporary folder for downloaded files
+if not os.path.exists(dir_tmp):
+    os.makedirs(dir_tmp)
 
 if screenwidth.width() == 2560:
     skin_directory = os.path.join(dir_plugins, "skin/uhd/")
