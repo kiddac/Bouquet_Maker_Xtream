@@ -539,7 +539,8 @@ class BmxPlaylists(Screen):
                 for elem in root.findall(".//source"):
                     description = elem.find("description").text if elem.find("description") is not None else ""
                     if not any(cfile in description for cfile in channelfilelist):
-                        root.remove(elem)
+                        if elem in root:
+                            root.remove(elem)
 
                 tree.write(sourcefile)
             except Exception as e:

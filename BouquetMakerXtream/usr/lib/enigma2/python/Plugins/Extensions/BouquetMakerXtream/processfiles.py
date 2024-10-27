@@ -23,6 +23,18 @@ def processFiles():
         open(playlists_json, "a").close()
 
     playlists_all = []
+    prefix_name = True
+    show_live = True
+    show_vod = False
+    show_series = False
+    live_category_order = "original"
+    live_stream_order = "original"
+    vod_category_order = "original"
+    vod_stream_order = "original"
+    server_offset = 0
+    epg_alternative = False
+    epg_alternative_url = ""
+    next_days = "0"
 
     if os.path.isfile(playlists_json):
         with open(playlists_json, "r") as f:
@@ -123,24 +135,10 @@ def processFiles():
             playlistformat = "m3u_plus"
             output = "ts"
 
-            show_live = True
-            show_vod = False
-            show_series = False
-            prefix_name = True
             # live_streams = []
 
-            server_offset = 0
             epg_offset = 0
             playlist_type = ""
-            live_category_order = "original"
-            live_stream_order = "original"
-            vod_category_order = "original"
-            vod_stream_order = "original"
-
-            epg_alternative = False
-            epg_alternative_url = ""
-
-            next_days = "0"
 
             playlist_type = "xtream" if "get.php" in line else "external"
 

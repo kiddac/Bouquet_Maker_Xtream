@@ -112,6 +112,13 @@ class BmxUpdate(Screen):
                 self.done()
 
     def bouquetLoop(self):
+        self.live_categories = []
+        self.vod_categories = []
+        self.series_categories = []
+        self.live_streams = []
+        self.vod_streams = []
+        self.series_streams = []
+
         if self.bouquets:
             glob.current_playlist = self.bouquets[self.bouq]
 
