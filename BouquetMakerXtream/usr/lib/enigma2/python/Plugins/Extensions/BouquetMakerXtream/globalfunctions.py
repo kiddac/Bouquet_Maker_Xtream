@@ -35,53 +35,55 @@ def refreshBouquets():
 
 
 def downloadUrl(url, ext):
-    r = ""
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
-    http = requests.Session()
-    http.mount("http://", adapter)
-    http.mount("https://", adapter)
-    try:
-        r = http.get(url, headers=hdr, timeout=(20, 60), verify=False)
-        r.raise_for_status()
-        if r.status_code == requests.codes.ok:
-            try:
-                if ext == "json":
-                    response = r.json()
-                else:
-                    response = r.content
-                return response
-            except Exception as e:
-                print(e)
-                return ""
-    except Exception as e:
-        print(e)
-    finally:
-        http.close()
+
+    with requests.Session() as http:
+        http.mount("http://", adapter)
+        http.mount("https://", adapter)
+
+        try:
+            with http.get(url, headers=hdr, timeout=(20, 60), verify=False) as r:
+                r.raise_for_status()
+
+                if r.status_code == requests.codes.ok:
+                    try:
+                        if ext == "json":
+                            response = r.json()
+                        else:
+                            response = r.content
+                        return response
+                    except Exception as e:
+                        print("Error processing response:", e)
+                        return ""
+        except Exception as e:
+            print("Request failed:", e)
+
     return ""
 
 
 def downloadApi(url):
-    r = ""
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
-    http = requests.Session()
-    http.mount("http://", adapter)
-    http.mount("https://", adapter)
-    try:
-        r = http.get(url, headers=hdr, timeout=5, verify=False)
-        r.raise_for_status()
-        if r.status_code == requests.codes.ok:
-            try:
-                response = r.json()
-                return response
-            except Exception as e:
-                print(e)
-                return ""
-    except Exception as e:
-        print(e)
-    finally:
-        http.close()
+
+    with requests.Session() as http:
+        http.mount("http://", adapter)
+        http.mount("https://", adapter)
+
+        try:
+            with http.get(url, headers=hdr, timeout=5, verify=False) as r:
+                r.raise_for_status()
+
+                if r.status_code == requests.codes.ok:
+                    try:
+                        response = r.json()
+                        return response
+                    except Exception as e:
+                        print("Error processing JSON response:", e)
+                        return ""
+        except Exception as e:
+            print("Request failed:", e)
+
     return ""
 
 
@@ -90,73 +92,65 @@ def downloadUrlCategory(url):
     ext = url[2]
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
-    http = requests.Session()
-    http.mount("http://", adapter)
-    http.mount("https://", adapter)
 
-    try:
-        r = http.get(url[0], headers=hdr, timeout=20, verify=False)
-        r.raise_for_status()
+    with requests.Session() as http:
+        http.mount("http://", adapter)
+        http.mount("https://", adapter)
 
-        if r.status_code == requests.codes.ok:
-            if ext == "json":
-                response = category, r.json()
-            else:
-                response = category, r.text
-            return response
+        try:
+            with http.get(url[0], headers=hdr, timeout=20, verify=False) as r:
+                r.raise_for_status()
 
-    except Exception as e:
-        print(e)
-        return category, ""
-    finally:
-        http.close()
+                if r.status_code == requests.codes.ok:
+                    if ext == "json":
+                        response = (category, r.json())
+                    else:
+                        response = (category, r.text)
+                    return response
+
+        except Exception as e:
+            print("Request failed:", e)
+            return category, ""
+
+    return category, ""
 
 
 def downloadUrlMulti(url, output_file=None):
     category = url[1]
     ext = url[2]
-    r = ""
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
-    http = requests.Session()
-    http.mount("http://", adapter)
-    http.mount("https://", adapter)
 
-    try:
-        print("\t[DEBUG] Starting download for URL: {}".format(url[0]))
-        r = http.get(url[0], headers=hdr, timeout=(20, 300), verify=False, stream=True)
-        r.raise_for_status()
+    with requests.Session() as http:
+        http.mount("http://", adapter)
+        http.mount("https://", adapter)
 
-        if r.status_code == requests.codes.ok:
-            print("\t[DEBUG] Received response. Status code: {}".format(r.status_code))
+        try:
+            with http.get(url[0], headers=hdr, timeout=(20, 300), verify=False, stream=True) as r:
+                r.raise_for_status()
 
-            if ext == "json":
-                json_content = r.json()
-                return category, json_content
-            else:
-                output_dir = os.path.dirname(output_file)
-                if not os.path.exists(output_dir):
-                    os.makedirs(output_dir)
+                if r.status_code == requests.codes.ok:
+                    if ext == "json":
+                        json_content = r.json()
+                        return category, json_content
+                    else:
+                        output_dir = os.path.dirname(output_file)
+                        if not os.path.exists(output_dir):
+                            os.makedirs(output_dir)
 
-                print("\t[DEBUG] Writing file to: {}".format(output_file))
+                        chunk_size = 8192 * 8  # 128 KB
+                        with open(output_file, 'wb') as f:
+                            for chunk in r.iter_content(chunk_size=chunk_size):
+                                f.write(chunk)
 
-                # Use a larger chunk size (e.g., 128 KB) for faster writing
-                chunk_size = 8192 * 8  # 128 KB
-                with open(output_file, 'wb') as f:
-                    for i, chunk in enumerate(r.iter_content(chunk_size=chunk_size)):
-                        f.write(chunk)
+                        return category, output_file
 
-                print("\t[DEBUG] File writing complete.")
-                return category, output_file
-
-    except requests.Timeout as e:
-        print("Error message: {}".format(str(e)))
-        return category, ""
-    except requests.RequestException as e:
-        print("Error message: {}".format(str(e)))
-        return category, ""
-    finally:
-        http.close()
+        except requests.Timeout as e:
+            print("Error message: {}".format(str(e)))
+            return category, ""
+        except requests.RequestException as e:
+            print("Error message: {}".format(str(e)))
+            return category, ""
 
 
 def safeName(name):

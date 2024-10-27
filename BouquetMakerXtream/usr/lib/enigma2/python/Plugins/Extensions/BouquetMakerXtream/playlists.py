@@ -160,30 +160,32 @@ class BmxPlaylists(Screen):
         response = None
         retries = Retry(total=2, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
+
         with requests.Session() as http:
             http.mount("http://", adapter)
             http.mount("https://", adapter)
 
             try:
                 # Perform the initial request
-                r = http.get(url[0], headers=hdr, timeout=6, verify=False)
-                r.raise_for_status()
-                if r.status_code == requests.codes.ok:
-                    if "player_api.php" in url[0]:
-                        try:
-                            response = r.json()
-                        except Exception as e:
-                            print(e)
-                    else:
-                        try:
-                            response = r.text
-                            if "EXTM3U" not in response:
-                                response = None
-                        except Exception as e:
-                            print(e)
+                with http.get(url[0], headers=hdr, timeout=6, verify=False) as r:
+                    r.raise_for_status()
+
+                    if r.status_code == requests.codes.ok:
+                        if "player_api.php" in url[0]:
+                            try:
+                                response = r.json()
+                            except Exception as e:
+                                print("JSON parsing error:", e)
+                        else:
+                            try:
+                                response = r.text
+                                if "EXTM3U" not in response:
+                                    response = None
+                            except Exception as e:
+                                print("Text response error:", e)
 
             except Exception as e:
-                print(e)
+                print("Request error:", e)
 
         return index, response
 

@@ -199,25 +199,24 @@ class BmxCatchup(Screen):
     def downloadPlayerApi(self):
         retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
-        http = requests.Session()
-        http.mount("http://", adapter)
-        http.mount("https://", adapter)
         response = ""
 
-        try:
-            r = http.get(self.player_api, headers=hdr, timeout=10, verify=False)
-            r.raise_for_status()
-            if r.status_code == requests.codes.ok:
-                try:
-                    response = r.json()
-                except Exception as e:
-                    print(e)
+        with requests.Session() as http:
+            http.mount("http://", adapter)
+            http.mount("https://", adapter)
 
-        except Exception as e:
-            print(e)
+            try:
+                with http.get(self.player_api, headers=hdr, timeout=10, verify=False) as r:  # Use a context manager for the response
+                    r.raise_for_status()
 
-        finally:
-            http.close()
+                    if r.status_code == requests.codes.ok:
+                        try:
+                            response = r.json()
+                        except Exception as e:
+                            print(e)
+
+            except Exception as e:
+                print(e)
 
         self.server_offset = 0
 
@@ -245,81 +244,82 @@ class BmxCatchup(Screen):
         self.downloadSimpleData()
 
     def downloadSimpleData(self):
-        retries = Retry(total=1, backoff_factor=1)
+        retries = Retry(total=3, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
-        http = requests.Session()
-        http.mount("http://", adapter)
-        http.mount("https://", adapter)
-        response = ""
 
-        try:
-            r = http.get(self.simple_url, headers=hdr, timeout=10, verify=False)
-            r.raise_for_status()
-            if r.status_code == requests.codes.ok:
-                try:
-                    response = r.json()
-                except Exception as e:
-                    print(e)
+        with requests.Session() as http:
+            http.mount("http://", adapter)
+            http.mount("https://", adapter)
 
-        except Exception as e:
-            print(e)
+            try:
+                with http.get(self.simple_url, headers=hdr, timeout=(10, 20), verify=False) as response:
+                    response.raise_for_status()
 
-        finally:
-            http.close()
+                    if response.status_code == requests.codes.ok:
+                        short_epg_json = response.json()
 
-        if response:
-            short_epg_json = response
-            index = 0
-            self.epg_short_list = []
+            except Exception as e:
+                print(e)
+                return
 
-            if "epg_listings" not in short_epg_json:
+        if short_epg_json:
+            if "epg_listings" not in short_epg_json or not short_epg_json["epg_listings"]:
                 self.session.open(MessageBox, _("Catchup currently not available. Missing EPG data"), type=MessageBox.TYPE_INFO, timeout=5)
                 return
 
-            else:
-                for listing in short_epg_json["epg_listings"]:
-                    if ("has_archive" in listing and listing["has_archive"] == 1) or ("now_playing" in listing and listing["now_playing"] == 1):
-                        title = ""
-                        description = ""
-                        epg_date_all = ""
-                        epg_time_all = ""
-                        start = ""
-                        end = ""
+            index = 0
+            self.epg_short_list = []
 
-                        catchup_start = int(cfg.catchup_start.getValue())
-                        catchup_end = int(cfg.catchup_end.getValue())
+            shift = self.server_offset
+            catchupstart = int(cfg.catchup_start.value)
+            catchupend = int(cfg.catchup_end.value)
 
-                        if "title" in listing:
-                            title = base64.b64decode(listing["title"]).decode("utf-8")
+            for listing in short_epg_json["epg_listings"]:
+                if "has_archive" in listing and listing["has_archive"] == 1 or "now_playing" in listing and listing["now_playing"] == 1:
 
-                        if "description" in listing:
-                            description = base64.b64decode(listing["description"]).decode("utf-8")
+                    title = base64.b64decode(listing.get("title", "")).decode("utf-8")
+                    description = base64.b64decode(listing.get("description", "")).decode("utf-8")
+                    start = listing.get("start", "")
+                    end = listing.get("end", "")
+                    stop = listing.get("stop", "")
 
-                        if listing["start"] and listing["end"]:
-                            start = listing["start"]
-                            end = listing["end"]
+                    if start:
+                        start_datetime_original = self.parse_datetime(start)
+                        if start_datetime_original:
+                            start_datetime = start_datetime_original + timedelta(hours=shift)
+                        else:
+                            print("Error parsing start datetime")
+                            continue
+                    if end:
+                        end_datetime = self.parse_datetime(end)
+                        if end_datetime:
+                            end_datetime += timedelta(hours=shift)
+                        else:
+                            print("Error parsing end datetime")
+                            continue
+                    elif stop:
+                        stop_datetime = self.parse_datetime(stop)
+                        if stop_datetime:
+                            end_datetime = stop_datetime + timedelta(hours=shift)
+                        else:
+                            print("Error parsing stop datetime")
+                            continue
+                    else:
+                        print("Error: Missing end or stop time")
+                        continue
 
-                            start_datetime_original = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-                            start_datetime_offset = datetime.strptime(start, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset)
-                            start_datetime_margin = datetime.strptime(start, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset) - timedelta(minutes=catchup_start)
+                    if start_datetime and end_datetime:
 
-                            try:
-                                end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset)
-                                end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset) + timedelta(minutes=catchup_end)
-                            except:
-                                try:
-                                    end = listing["stop"]
-                                    end_datetime_offset = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset)
-                                    end_datetime_margin = datetime.strptime(end, "%Y-%m-%d %H:%M:%S") + timedelta(hours=self.server_offset) + timedelta(minutes=catchup_end)
-                                except:
-                                    return
+                        start_datetime_margin = start_datetime - timedelta(minutes=catchupstart)
+                        end_datetime_margin = end_datetime + timedelta(minutes=catchupend)
 
-                            epg_date_all = start_datetime_offset.strftime("%a %d/%m")
-                            epg_time_all = str(start_datetime_offset.strftime("%H:%M")) + " - " + str(end_datetime_offset.strftime("%H:%M"))
+                        epg_date_all = start_datetime.strftime("%a %d/%m")
+
+                        epg_time_all = "{} - {}".format(start_datetime.strftime("%H:%M"), end_datetime.strftime("%H:%M"))
 
                         epg_duration = int((end_datetime_margin - start_datetime_margin).total_seconds() / 60.0)
 
-                        url_datestring = str(start_datetime_original.strftime("%Y-%m-%d:%H-%M"))
+                        url_datestring = start_datetime_margin.strftime("%Y-%m-%d:%H-%M")
 
                         self.epg_short_list.append(buildCatchupEpgListEntry(str(epg_date_all), str(epg_time_all), str(title), str(description), str(url_datestring), str(epg_duration), index, self.ref_stream_num))
 
@@ -329,6 +329,16 @@ class BmxCatchup(Screen):
                 self["epg_short_list"].setList(self.epg_short_list)
 
                 self.displayShortEpg()
+
+    def parse_datetime(self, datetime_str):
+        time_formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H-%M-%S", "%Y-%m-%d-%H:%M:%S", "%Y- %m-%d %H:%M:%S"]
+
+        for time_format in time_formats:
+            try:
+                return datetime.strptime(datetime_str, time_format)
+            except ValueError:
+                pass
+        return ""  # Return None if none of the formats match
 
     def reverse(self):
         self.epg_short_list.reverse()

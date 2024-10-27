@@ -402,34 +402,33 @@ def showBmxCatchup(self):
         username = re.search(r"[^\/]+(?=\/[^\/]+\/\d+\.)", ref_url).group()
         password = re.search(r"[^\/]+(?=\/\d+\.)", ref_url).group()
         domain = re.search(r"(https|http):\/\/[^\/]+", ref_url).group()
-
     elif match2:
         username = re.search(r"[^\/]+(?=\/[^\/]+\/[^\/]+$)", ref_url).group()
         password = re.search(r"[^\/]+(?=\/[^\/]+$)", ref_url).group()
         domain = re.search(r"(https|http):\/\/[^\/]+", ref_url).group()
 
     get_live_streams = "%s/player_api.php?username=%s&password=%s&action=get_live_streams" % (domain, username, password)
+
     retries = Retry(total=1, backoff_factor=1)
     adapter = HTTPAdapter(max_retries=retries)
-    http = requests.Session()
-    http.mount("http://", adapter)
-    http.mount("https://", adapter)
-    response = ""
 
-    try:
-        r = http.get(get_live_streams, headers=hdr, timeout=10, verify=False)
-        r.raise_for_status()
-        if r.status_code == requests.codes.ok:
-            try:
-                response = r.json()
-            except Exception as ex:
-                print(ex)
+    with requests.Session() as http:
+        http.mount("http://", adapter)
+        http.mount("https://", adapter)
+        response = ""
 
-    except Exception as exc:
-        print(exc)
+        try:
+            # Use context manager for the response
+            with http.get(get_live_streams, headers=hdr, timeout=10, verify=False) as r:
+                r.raise_for_status()
+                if r.status_code == requests.codes.ok:
+                    try:
+                        response = r.json()
+                    except Exception as ex:
+                        print("JSON parsing error:", ex)
 
-    finally:
-        http.close()  # Ensure the session is closed
+        except Exception as exc:
+            print("Request error:", exc)
 
     if response:
         live_streams = response

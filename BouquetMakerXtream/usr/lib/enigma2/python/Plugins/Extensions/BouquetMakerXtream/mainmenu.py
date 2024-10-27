@@ -95,7 +95,6 @@ class BmxMainMenu(Screen):
         self.playlists_all = pfiles.processFiles()
 
         # clear stream data if populated after a crash
-
         for playlist in self.playlists_all:
             playlist["data"]["live_streams"] = []
             playlist["data"]["vod_streams"] = []
@@ -121,10 +120,10 @@ class BmxMainMenu(Screen):
 
             if self.bouquets_exist:
                 # Insert bouquet-related items in the correct order
-                self.list.insert(2, [4, _("Update Bouquets")])  # Insert at position 2
-                self.list.insert(3, [5, _("Delete Bouquets")])  # Insert at position 2
-                self.list.insert(4, [6, _("Delete All BMX Bouquets")])  # Insert at position 3
-                self.list.insert(5, [8, _("Download Picons")])  # Insert at position 5
+                self.list.insert(2, [4, _("Update Bouquets")])
+                self.list.insert(3, [5, _("Delete Bouquets")])
+                self.list.insert(4, [6, _("Delete All BMX Bouquets")])
+                self.list.insert(5, [8, _("Download Picons")])
 
             self.draw_list = [buildListEntry(x[0], x[1]) for x in self.list]
             self["list"].setList(self.draw_list)
