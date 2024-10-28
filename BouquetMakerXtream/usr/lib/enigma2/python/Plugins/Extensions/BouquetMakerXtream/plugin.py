@@ -419,13 +419,13 @@ def showBmxCatchup(self):
 
         try:
             # Use context manager for the response
-            with http.get(get_live_streams, headers=hdr, timeout=10, verify=False) as r:
-                r.raise_for_status()
-                if r.status_code == requests.codes.ok:
-                    try:
-                        response = r.json()
-                    except Exception as ex:
-                        print("JSON parsing error:", ex)
+            r = http.get(get_live_streams, headers=hdr, timeout=10, verify=False)
+            r.raise_for_status()
+            if r.status_code == requests.codes.ok:
+                try:
+                    response = r.json()
+                except Exception as ex:
+                    print("JSON parsing error:", ex)
 
         except Exception as exc:
             print("Request error:", exc)

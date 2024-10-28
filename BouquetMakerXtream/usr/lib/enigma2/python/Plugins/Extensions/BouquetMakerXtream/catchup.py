@@ -206,14 +206,14 @@ class BmxCatchup(Screen):
             http.mount("https://", adapter)
 
             try:
-                with http.get(self.player_api, headers=hdr, timeout=10, verify=False) as r:  # Use a context manager for the response
-                    r.raise_for_status()
+                r = http.get(self.player_api, headers=hdr, timeout=10, verify=False)
+                r.raise_for_status()
 
-                    if r.status_code == requests.codes.ok:
-                        try:
-                            response = r.json()
-                        except Exception as e:
-                            print(e)
+                if r.status_code == requests.codes.ok:
+                    try:
+                        response = r.json()
+                    except Exception as e:
+                        print(e)
 
             except Exception as e:
                 print(e)
@@ -252,11 +252,11 @@ class BmxCatchup(Screen):
             http.mount("https://", adapter)
 
             try:
-                with http.get(self.simple_url, headers=hdr, timeout=(10, 20), verify=False) as response:
-                    response.raise_for_status()
+                response = http.get(self.simple_url, headers=hdr, timeout=(10, 20), verify=False)
+                response.raise_for_status()
 
-                    if response.status_code == requests.codes.ok:
-                        short_epg_json = response.json()
+                if response.status_code == requests.codes.ok:
+                    short_epg_json = response.json()
 
             except Exception as e:
                 print(e)
@@ -287,6 +287,7 @@ class BmxCatchup(Screen):
                         start_datetime_original = self.parse_datetime(start)
                         if start_datetime_original:
                             start_datetime = start_datetime_original + timedelta(hours=shift)
+                            start_datetime_original_margin = start_datetime_original - timedelta(minutes=catchupstart)
                         else:
                             print("Error parsing start datetime")
                             continue
@@ -319,7 +320,9 @@ class BmxCatchup(Screen):
 
                         epg_duration = int((end_datetime_margin - start_datetime_margin).total_seconds() / 60.0)
 
-                        url_datestring = start_datetime_margin.strftime("%Y-%m-%d:%H-%M")
+                        url_datestring = start_datetime_original_margin.strftime("%Y-%m-%d:%H-%M")
+
+                        # url_datestring = start_datetime_margin.strftime("%Y-%m-%d:%H-%M")
 
                         self.epg_short_list.append(buildCatchupEpgListEntry(str(epg_date_all), str(epg_time_all), str(title), str(description), str(url_datestring), str(epg_duration), index, self.ref_stream_num))
 

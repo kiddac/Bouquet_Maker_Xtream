@@ -43,19 +43,19 @@ def downloadUrl(url, ext):
         http.mount("https://", adapter)
 
         try:
-            with http.get(url, headers=hdr, timeout=(20, 60), verify=False) as r:
-                r.raise_for_status()
+            r = http.get(url, headers=hdr, timeout=(20, 60), verify=False)
+            r.raise_for_status()
 
-                if r.status_code == requests.codes.ok:
-                    try:
-                        if ext == "json":
-                            response = r.json()
-                        else:
-                            response = r.content
-                        return response
-                    except Exception as e:
-                        print("Error processing response:", e)
-                        return ""
+            if r.status_code == requests.codes.ok:
+                try:
+                    if ext == "json":
+                        response = r.json()
+                    else:
+                        response = r.content
+                    return response
+                except Exception as e:
+                    print("Error processing response:", e)
+                    return ""
         except Exception as e:
             print("Request failed:", e)
 
@@ -71,16 +71,16 @@ def downloadApi(url):
         http.mount("https://", adapter)
 
         try:
-            with http.get(url, headers=hdr, timeout=5, verify=False) as r:
-                r.raise_for_status()
+            r = http.get(url, headers=hdr, timeout=5, verify=False)
+            r.raise_for_status()
 
-                if r.status_code == requests.codes.ok:
-                    try:
-                        response = r.json()
-                        return response
-                    except Exception as e:
-                        print("Error processing JSON response:", e)
-                        return ""
+            if r.status_code == requests.codes.ok:
+                try:
+                    response = r.json()
+                    return response
+                except Exception as e:
+                    print("Error processing JSON response:", e)
+                    return ""
         except Exception as e:
             print("Request failed:", e)
 
@@ -98,15 +98,15 @@ def downloadUrlCategory(url):
         http.mount("https://", adapter)
 
         try:
-            with http.get(url[0], headers=hdr, timeout=20, verify=False) as r:
-                r.raise_for_status()
+            r = http.get(url[0], headers=hdr, timeout=20, verify=False)
+            r.raise_for_status()
 
-                if r.status_code == requests.codes.ok:
-                    if ext == "json":
-                        response = (category, r.json())
-                    else:
-                        response = (category, r.text)
-                    return response
+            if r.status_code == requests.codes.ok:
+                if ext == "json":
+                    response = (category, r.json())
+                else:
+                    response = (category, r.text)
+                return response
 
         except Exception as e:
             print("Request failed:", e)
@@ -126,24 +126,24 @@ def downloadUrlMulti(url, output_file=None):
         http.mount("https://", adapter)
 
         try:
-            with http.get(url[0], headers=hdr, timeout=(20, 300), verify=False, stream=True) as r:
-                r.raise_for_status()
+            r = http.get(url[0], headers=hdr, timeout=(20, 300), verify=False, stream=True)
+            r.raise_for_status()
 
-                if r.status_code == requests.codes.ok:
-                    if ext == "json":
-                        json_content = r.json()
-                        return category, json_content
-                    else:
-                        output_dir = os.path.dirname(output_file)
-                        if not os.path.exists(output_dir):
-                            os.makedirs(output_dir)
+            if r.status_code == requests.codes.ok:
+                if ext == "json":
+                    json_content = r.json()
+                    return category, json_content
+                else:
+                    output_dir = os.path.dirname(output_file)
+                    if not os.path.exists(output_dir):
+                        os.makedirs(output_dir)
 
-                        chunk_size = 8192 * 8  # 128 KB
-                        with open(output_file, 'wb') as f:
-                            for chunk in r.iter_content(chunk_size=chunk_size):
-                                f.write(chunk)
+                    chunk_size = 8192 * 8  # 128 KB
+                    with open(output_file, 'wb') as f:
+                        for chunk in r.iter_content(chunk_size=chunk_size):
+                            f.write(chunk)
 
-                        return category, output_file
+                    return category, output_file
 
         except requests.Timeout as e:
             print("Error message: {}".format(str(e)))
