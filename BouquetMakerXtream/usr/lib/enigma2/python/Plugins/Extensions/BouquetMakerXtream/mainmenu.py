@@ -105,19 +105,13 @@ class BmxMainMenu(Screen):
     def createSetup(self):
         self.list = []
 
+        self.list.append([1, _("Playlists")])
+        self.list.append([3, _("Main Settings")])
+        self.list.append([2, _("Add Playlist")],)
+        self.list.append([7, _("About")])
+
         if self.playlists_all:
-            self.list.append([1, _("Playlists")])
-
-            self.list.append([3, _("Main Settings")])
-
             self.bouquets_exist = any(playlist["playlist_info"].get("bouquet") for playlist in self.playlists_all)
-
-            # First add the items that will appear in all cases
-            self.list.extend([
-                [2, _("Add Playlist")],
-                [7, _("About")]
-            ])
-
             if self.bouquets_exist:
                 # Insert bouquet-related items in the correct order
                 self.list.insert(2, [4, _("Update Bouquets")])
@@ -125,8 +119,8 @@ class BmxMainMenu(Screen):
                 self.list.insert(4, [6, _("Delete All BMX Bouquets")])
                 self.list.insert(5, [8, _("Download Picons")])
 
-            self.draw_list = [buildListEntry(x[0], x[1]) for x in self.list]
-            self["list"].setList(self.draw_list)
+        self.draw_list = [buildListEntry(x[0], x[1]) for x in self.list]
+        self["list"].setList(self.draw_list)
 
     def playlists(self):
         from . import playlists
