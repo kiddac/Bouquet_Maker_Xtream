@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2024-09-15 13:05+0100\n"
-"PO-Revision-Date: 2024-09-15 13:05+0100\n"
+"PO-Revision-Date: 2024-11-10 19:07+0000\n"
 "Last-Translator: Masta2002\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -104,7 +104,7 @@ msgstr "Neuste"
 
 #: bouquetsettings.py:263
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: bouquetsettings.py:269 server.py:119 server.py:127
 msgid "Short name or provider name:"
@@ -157,6 +157,8 @@ msgstr "Ausgabe:"
 #: bouquetsettings.py:299
 msgid "Max EPG days to download: (Use Default if EPG events is 0)"
 msgstr ""
+"Maximale EPG-Tage zum Herunterladen: (Standard verwenden, wenn EPG-"
+"Ereignisse 0 sind)"
 
 #: bouquetsettings.py:301
 msgid "Use alternative EPG url:"
@@ -211,7 +213,7 @@ msgstr "Lade externe Playlist..."
 
 #: buildbouquets.py:225 update.py:267
 msgid "Loading local playlist..."
-msgstr ""
+msgstr "Lokale Wiedergabeliste laden..."
 
 #: buildbouquets.py:231 buildbouquets.py:249 buildbouquets.py:908 update.py:273
 #: update.py:291 update.py:988
@@ -362,7 +364,7 @@ msgstr ""
 
 #: downloadpicons.py:421
 msgid "Success: "
-msgstr "Erfolgreich:"
+msgstr "Erfolgreich: "
 
 #: downloadpicons.py:421
 msgid "Bad size: "
@@ -505,7 +507,7 @@ msgstr "Info"
 
 #: playlists.py:100
 msgid "No internet."
-msgstr ""
+msgstr "Kein Internet."
 
 #: playlists.py:305 playlists.py:410
 msgid "Server Not Responding"
@@ -795,7 +797,7 @@ msgstr "Wähle Skin"
 
 #: settings.py:152
 msgid "Select fake web user-agent"
-msgstr ""
+msgstr "Wähle fake web user-agent"
 
 #: settings.py:153
 msgid "playlists.txt location"
