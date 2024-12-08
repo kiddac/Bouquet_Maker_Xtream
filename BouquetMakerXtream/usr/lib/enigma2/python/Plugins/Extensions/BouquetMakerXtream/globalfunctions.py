@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .plugin import playlists_json, cfg
+from .plugin import playlists_json, cfg, pythonVer
 
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
@@ -154,7 +154,11 @@ def downloadUrlMulti(url, output_file=None):
 
 
 def safeName(name):
-    name = name.encode("ascii", errors="ignore").decode()
+    if pythonVer == 2:
+        name = name.decode("utf-8", "ignore").encode("ascii", "ignore")
+    elif pythonVer == 3:
+        name = name.encode("ascii", "ignore").decode("ascii")
+
     name = re.sub(r"[\<\>\:\"\/\\\|\?\*]", "_", str(name))
     name = re.sub(r" ", "_", name)
     name = re.sub(r"_+", "_", name)

@@ -42,43 +42,39 @@ class BmxUpdate(Screen):
             with open(skin, "r") as f:
                 self.skin = f.read()
         else:
-            current_width = screenwidth.width()
-            if current_width <= 1280:
-                self.skin = """
+            skin = """
+                <screen name="Updater" position="0,0" size="1920,1080" backgroundColor="#ff000000" flags="wfNoBorder">
+                    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon.png" position="30,25" size="150,60" alphatest="blend" zPosition="4"  />
+                    <eLabel position="180,30" size="360,50" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
+                    <widget name="status" position="210,30" size="300,50" font="Regular;24" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
+                </screen>"""
+
+            if screenwidth.width() <= 1280:
+                skin = """
                     <screen name="Updater" position="0,0" size="1280,720" backgroundColor="#ff000000" flags="wfNoBorder">
                         <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon_sd.png" position="20,16" size="100,40" alphatest="blend" zPosition="4" />
                         <eLabel position="120,20" size="240,32" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
                         <widget name="status" position="140,20" size="200,32" font="Regular;16" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
                     </screen>"""
-            else:
-                self.skin = """
-                    <screen name="Updater" position="0,0" size="1920,1080" backgroundColor="#ff000000" flags="wfNoBorder">
-                        <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon.png" position="30,25" size="150,60" alphatest="blend" zPosition="4"  />
-                        <eLabel position="180,30" size="360,50" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
-                        <widget name="status" position="210,30" size="300,50" font="Regular;24" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
-                    </screen>"""
+
+            self.skin = skin
 
         self.setup_title = _("Building Bouquets")
         self.categories = []
-        self.live_categories = ""
-        self.vod_categories = ""
-        self.series_categories = ""
-        self.live_streams = ""
-        self.vod_streams = ""
-        self.series_streams = ""
+        self["action"] = Label("")
+        self["info"] = Label("")
+        self["status"] = Label("")
+        self["progress"] = ProgressBar()
+
         self.bouq = 0
+
+        if self.runtype == "manual":
+            self["action"] = Label(_("Building Bouquets..."))
 
         self["actions"] = ActionMap(["BMXActions"], {
             "red": self.void,
             "cancel": self.void,
         }, -2)
-
-        if self.runtype == "manual":
-            self["action"] = Label(_("Building Bouquets..."))
-            self["info"] = Label("")
-            self["progress"] = ProgressBar()
-
-        self["status"] = Label("")
 
         self.playlists_all = bmx.getPlaylistJson()
 
@@ -89,7 +85,7 @@ class BmxUpdate(Screen):
             self.bouquets = []
             self.bouquets_len = 0
 
-        if self.bouquets and epgimporter:
+        if self.bouquets:
             self.looptimer = eTimer()
             try:
                 self.looptimer_conn = self.looptimer.timeout.connect(self.bouquetLoop)
@@ -112,38 +108,38 @@ class BmxUpdate(Screen):
                 self.done()
 
     def bouquetLoop(self):
-        self.live_categories = []
-        self.vod_categories = []
-        self.series_categories = []
-        self.live_streams = []
-        self.vod_streams = []
-        self.series_streams = []
+        glob.current_playlist = self.bouquets[self.bouq]
 
-        if self.bouquets:
-            glob.current_playlist = self.bouquets[self.bouq]
+        self.bouquet_tv = False
+        self.userbouquet = False
+        self.total_count = 0
+        self.unique_ref = 0
+        self.progress_value = 0
+        self.progress_range = 0
 
-            self.bouquet_tv = False
-            self.userbouquet = False
-            self.total_count = 0
-            self.unique_ref = 0
-            self.progress_value = 0
-            self.progress_range = 0
+        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+            if glob.current_playlist["settings"]["show_live"] is True:
+                self.progress_range += 2
 
-            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                self.progress_range += 2 * sum([
-                    glob.current_playlist["settings"]["show_live"],
-                    glob.current_playlist["settings"]["show_vod"],
-                    glob.current_playlist["settings"]["show_series"]
-                ])
-            else:
-                self.progress_range += 1  # Base range for non-xtream playlists
-                self.progress_range += sum([
-                    glob.current_playlist["settings"]["show_live"],
-                    glob.current_playlist["settings"]["show_vod"],
-                    glob.current_playlist["settings"]["show_series"]
-                ])
+            if glob.current_playlist["settings"]["show_vod"] is True:
+                self.progress_range += 2
 
-            self.start()
+            if glob.current_playlist["settings"]["show_series"] is True:
+                self.progress_range += 2
+
+        else:
+            self.progress_range += 1
+
+            if glob.current_playlist["settings"]["show_live"] is True:
+                self.progress_range += 1
+
+            if glob.current_playlist["settings"]["show_vod"] is True:
+                self.progress_range += 1
+
+            if glob.current_playlist["settings"]["show_series"] is True:
+                self.progress_range += 1
+
+        self.start()
 
     def nextJob(self, actiontext, function):
         if self.runtype == "manual":
@@ -162,7 +158,6 @@ class BmxUpdate(Screen):
             self["progress"].setValue(self.progress_value)
 
         self.safe_name = bmx.safeName(glob.current_playlist["playlist_info"]["name"])
-
         self["status"].setText(_("Updating Playlist %d of %d") % (self.bouq + 1, self.bouquets_len))
         self.deleteExistingRefs()
 
@@ -172,16 +167,14 @@ class BmxUpdate(Screen):
             f.seek(0)
             f.truncate()
 
-            # Patterns to skip
-            patterns_to_skip = [
-                "bouquetmakerxtream_live_" + self.safe_name + "_",
-                "bouquetmakerxtream_vod_" + self.safe_name + "_",
-                "bouquetmakerxtream_series_" + self.safe_name + "_",
-                "bouquetmakerxtream_" + self.safe_name + ".tv"
-            ]
-
             for line in lines:
-                if any(pattern in line for pattern in patterns_to_skip):
+                if "bouquetmakerxtream_live_" + str(self.safe_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_vod_" + str(self.safe_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_series_" + str(self.safe_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_" + str(self.safe_name) + ".tv" in line:
                     continue
                 f.write(line)
 
@@ -222,11 +215,11 @@ class BmxUpdate(Screen):
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
-
-                next_days = glob.current_playlist["settings"].get("next_days", "0")
-
-                if next_days != "0":
-                    self.xmltv_api += "&next_days=" + str(next_days)
+                try:
+                    if "next_days" in glob.current_playlist["settings"] and glob.current_playlist["settings"]["next_days"] != "0":
+                        self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+                except:
+                    pass
 
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
@@ -313,6 +306,14 @@ class BmxUpdate(Screen):
             output_file = '/var/volatile/tmp/bouquetmakerxtream/temp'
 
         for url in self.url_list:
+
+            self.live_categories = []
+            self.vod_categories = []
+            self.series_categories = []
+            self.live_streams = []
+            self.vod_streams = []
+            self.series_streams = []
+
             if outputtype == "json":
                 result = bmx.downloadUrlCategory(url)
             else:

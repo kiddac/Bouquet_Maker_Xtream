@@ -109,20 +109,22 @@ class BmxBuildBouquets(Screen):
             f.seek(0)
             f.truncate()
 
-            # Patterns to skip
-            patterns_to_skip = [
-                "bouquetmakerxtream_live_" + self.safe_name + "_",
-                "bouquetmakerxtream_vod_" + self.safe_name + "_",
-                "bouquetmakerxtream_series_" + self.safe_name + "_",
-                "bouquetmakerxtream_" + self.safe_name + ".tv",
-                "bouquetmakerxtream_live_" + self.old_name + "_",
-                "bouquetmakerxtream_vod_" + self.old_name + "_",
-                "bouquetmakerxtream_series_" + self.old_name + "_",
-                "bouquetmakerxtream_" + self.old_name + ".tv"
-            ]
-
             for line in lines:
-                if any(pattern in line for pattern in patterns_to_skip):
+                if "bouquetmakerxtream_live_" + str(self.safe_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_vod_" + str(self.safe_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_series_" + str(self.safe_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_" + str(self.safe_name) + ".tv" in line:
+                    continue
+                if "bouquetmakerxtream_live_" + str(self.old_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_vod_" + str(self.old_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_series_" + str(self.old_name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_" + str(self.old_name) + ".tv" in line:
                     continue
                 f.write(line)
 
@@ -169,11 +171,11 @@ class BmxBuildBouquets(Screen):
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 player_api = str(glob.current_playlist["playlist_info"]["player_api"])
                 self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"])
-
-                next_days = glob.current_playlist["settings"].get("next_days", "0")
-
-                if next_days != "0":
-                    self.xmltv_api += "&next_days=" + str(next_days)
+                try:
+                    if "next_days" in glob.current_playlist["settings"] and glob.current_playlist["settings"]["next_days"] != "0":
+                        self.xmltv_api = str(glob.current_playlist["playlist_info"]["xmltv_api"]) + "&next_days=" + str(glob.current_playlist["settings"]["next_days"])
+                except:
+                    pass
 
                 self.username = glob.current_playlist["playlist_info"]["username"]
                 self.password = glob.current_playlist["playlist_info"]["password"]
