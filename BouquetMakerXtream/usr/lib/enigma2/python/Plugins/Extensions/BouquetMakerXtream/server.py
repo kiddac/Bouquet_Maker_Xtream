@@ -29,7 +29,6 @@ from .bmxStaticText import StaticText
 
 hdr = {
     'User-Agent': str(cfg.useragent.value),
-    'Connection': 'keep-alive',
     'Accept-Encoding': 'gzip, deflate'
 }
 

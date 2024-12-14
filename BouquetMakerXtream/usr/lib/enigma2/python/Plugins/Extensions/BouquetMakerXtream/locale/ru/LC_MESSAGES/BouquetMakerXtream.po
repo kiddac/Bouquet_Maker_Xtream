@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2024-09-15 13:08+0100\n"
-"PO-Revision-Date: 2024-11-25 20:45+0000\n"
+"PO-Revision-Date: 2024-12-14 17:02+0000\n"
 "Last-Translator: airforce <kosmosspace@gmail.com>\n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -36,8 +36,8 @@ msgstr ""
 
 #: about.py:45
 msgid ""
-"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local "
-"m3u8 playlists. \n"
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 "
+"playlists. \n"
 "Play your files via your TV bouquets.\n"
 "\n"
 msgstr ""
@@ -66,10 +66,8 @@ msgstr ""
 
 #: about.py:49
 msgid ""
-"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/"
-"kiddac\n"
-msgstr ""
-"Если хочете купить мне пива или кофе: https://paypal.me/kiddac или https://ko-fi.com/kiddac\n"
+"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/kiddac\n"
+msgstr "Если хочете купить мне пива или кофе: https://paypal.me/kiddac или https://ko-fi.com/kiddac\n"
 
 #: about.py:50
 msgid "Cheers - all donations are very much appreciated."
@@ -150,8 +148,8 @@ msgstr "Выход:"
 #: bouquetsettings.py:299
 msgid "Max EPG days to download: (Use Default if EPG events is 0)"
 msgstr ""
-"Максимальное количество дней EPG для загрузки: (используйте значение по умолчанию, если событий "
-"EPG равно 0)"
+"Максимальное количество дней EPG для загрузки: (используйте значение по умолчанию, если событий EPG "
+"равно 0)"
 
 #: bouquetsettings.py:301
 msgid "Use alternative EPG url:"
@@ -577,11 +575,11 @@ msgstr "8 бит"
 
 #: plugin.py:133
 msgid "Service Reference Picons"
-msgstr "Сервис референсов пиконом"
+msgstr "Пиконы по референсам"
 
 #: plugin.py:133
 msgid "Service Name Picons"
-msgstr "Сервис имен пиконов"
+msgstr "Пиконы по имени"
 
 #: plugin.py:138
 msgid "100KB"
@@ -645,7 +643,7 @@ msgstr "Сохранить"
 
 #: server.py:58
 msgid "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/playlists.txt file"
-msgstr "Вы можете вручную добавить URL-адрес плейлиста в /etc/enigma2/"
+msgstr "Вы можете вручную добавить адрес плейлиста в /etc/enigma2/bouquetmakerxtream/playlists.txt файл"
 
 #: server.py:103
 msgid "Xtream codes / XUI ONE (get.php)"
@@ -775,11 +773,11 @@ msgstr "Выберите сторонний web user-agent"
 
 #: settings.py:153
 msgid "playlists.txt location"
-msgstr "локальный playlist.txt"
+msgstr "Локальный playlist.txt"
 
 #: settings.py:153 settings.py:154 settings.py:159 settings.py:163
 msgid " *Restart GUI Required"
-msgstr " *Требуется перезапуск графического интерфейса"
+msgstr " *Требуется рестарт GUI"
 
 #: settings.py:154
 msgid "Local M3U File location"

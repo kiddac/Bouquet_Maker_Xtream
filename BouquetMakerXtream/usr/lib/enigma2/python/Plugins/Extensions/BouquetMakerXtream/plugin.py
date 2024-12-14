@@ -200,7 +200,6 @@ addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 10
 
 hdr = {
     'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin',
-    'Connection': 'keep-alive',
     'Accept-Encoding': 'gzip, deflate'
 }
 

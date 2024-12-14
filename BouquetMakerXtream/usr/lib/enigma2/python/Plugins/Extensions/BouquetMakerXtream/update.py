@@ -305,14 +305,14 @@ class BmxUpdate(Screen):
         else:
             output_file = '/var/volatile/tmp/bouquetmakerxtream/temp'
 
-        for url in self.url_list:
+        self.live_categories = []
+        self.vod_categories = []
+        self.series_categories = []
+        self.live_streams = []
+        self.vod_streams = []
+        self.series_streams = []
 
-            self.live_categories = []
-            self.vod_categories = []
-            self.series_categories = []
-            self.live_streams = []
-            self.vod_streams = []
-            self.series_streams = []
+        for url in self.url_list:
 
             if outputtype == "json":
                 result = bmx.downloadUrlCategory(url)
@@ -363,7 +363,7 @@ class BmxUpdate(Screen):
 
         live_categories = glob.current_playlist["data"]["live_categories"]
 
-        if not live_categories or (len(live_categories) == len(glob.current_playlist["data"]["live_categories_hidden"])):
+        if not live_categories:
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
 
@@ -562,7 +562,7 @@ class BmxUpdate(Screen):
 
         vod_categories = glob.current_playlist["data"]["vod_categories"]
 
-        if not vod_categories or (len(vod_categories) == len(glob.current_playlist["data"]["vod_categories_hidden"])):
+        if not vod_categories:
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 if glob.current_playlist["settings"]["show_series"]:
                     self.nextJob(_("Downloading series data..."), self.downloadSeries)
@@ -724,7 +724,7 @@ class BmxUpdate(Screen):
 
         series_categories = glob.current_playlist["data"]["series_categories"]
 
-        if not series_categories or (len(series_categories) == len(glob.current_playlist["data"]["series_categories_hidden"])):
+        if not series_categories:
             self.finished()
             return
 

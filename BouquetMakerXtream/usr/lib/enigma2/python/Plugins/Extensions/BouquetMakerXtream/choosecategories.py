@@ -460,7 +460,7 @@ class BmxChooseCategories(Screen):
         return (pixmap, str(name), str(id), hidden)
 
     def buildListEntry2(self, id, name, hidden):
-        pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_off.png"))
+        pixmap = LoadPixmap(cached=True, path=os.path.join(common_path, "lock_disabled.png"))
         return (pixmap, str(name), str(id), hidden)
 
     def refresh(self):

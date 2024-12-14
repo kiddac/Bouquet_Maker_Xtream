@@ -292,7 +292,7 @@ class BmxBuildBouquets(Screen):
         stream_type = glob.current_playlist["settings"]["live_type"]
         live_categories = glob.current_playlist["data"]["live_categories"]
 
-        if not live_categories or (len(live_categories) == len(glob.current_playlist["data"]["live_categories_hidden"])):
+        if not live_categories:
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
 
@@ -486,7 +486,7 @@ class BmxBuildBouquets(Screen):
         stream_type = glob.current_playlist["settings"]["vod_type"]
         vod_categories = glob.current_playlist["data"]["vod_categories"]
 
-        if not vod_categories or (len(vod_categories) == len(glob.current_playlist["data"]["vod_categories_hidden"])):
+        if not vod_categories:
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
 
@@ -645,7 +645,7 @@ class BmxBuildBouquets(Screen):
         stream_type = glob.current_playlist["settings"]["vod_type"]
         series_categories = glob.current_playlist["data"]["series_categories"]
 
-        if not series_categories or (len(series_categories) == len(glob.current_playlist["data"]["series_categories_hidden"])):
+        if not series_categories:
             self.finished()
             return
 

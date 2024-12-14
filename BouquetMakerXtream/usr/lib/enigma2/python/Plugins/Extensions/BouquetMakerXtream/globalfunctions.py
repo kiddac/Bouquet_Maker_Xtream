@@ -13,7 +13,6 @@ import requests
 
 hdr = {
     'User-Agent': str(cfg.useragent.value),
-    'Connection': 'keep-alive',
     'Accept-Encoding': 'gzip, deflate'
 }
 
@@ -155,14 +154,18 @@ def downloadUrlMulti(url, output_file=None):
 
 def safeName(name):
     if pythonVer == 2:
-        name = name.decode("utf-8", "ignore").encode("ascii", "ignore")
+        if isinstance(name, str):
+            name = name.decode("utf-8", "ignore")
     elif pythonVer == 3:
-        name = name.encode("ascii", "ignore").decode("ascii")
+        if not isinstance(name, str):
+            name = str(name)
 
-    name = re.sub(r"[\<\>\:\"\/\\\|\?\*]", "_", str(name))
+    # Replace unsafe characters with underscores
+    name = re.sub(r"[\<\>\:\"\/\\\|\?\*]", "_", name)
     name = re.sub(r" ", "_", name)
     name = re.sub(r"_+", "_", name)
     name = name.strip("_")
+
     return name
 
 
