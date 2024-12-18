@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .plugin import playlists_json, cfg, pythonVer
+from .plugin import playlists_json, cfg, pythonVer, debugs
 
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
@@ -18,6 +18,8 @@ hdr = {
 
 
 def getPlaylistJson():
+    if debugs:
+        print("*** getPlaylistJson ***")
     playlists_all = []
     if os.path.isfile(playlists_json) and os.stat(playlists_json).st_size > 0:
         with open(playlists_json) as f:
@@ -29,11 +31,15 @@ def getPlaylistJson():
 
 
 def refreshBouquets():
+    if debugs:
+        print("*** refreshBouquets ***")
     eDVBDB.getInstance().reloadServicelist()
     eDVBDB.getInstance().reloadBouquets()
 
 
 def downloadUrl(url, ext):
+    if debugs:
+        print("*** downloadUrl ***", url, ext)
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
 
@@ -62,6 +68,8 @@ def downloadUrl(url, ext):
 
 
 def downloadApi(url):
+    if debugs:
+        print("*** downloadApi ***", url)
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
 
@@ -87,6 +95,8 @@ def downloadApi(url):
 
 
 def downloadUrlCategory(url):
+    if debugs:
+        print("*** downloadUrlCategory ***", url)
     category = url[1]
     ext = url[2]
     retries = 0
@@ -115,6 +125,8 @@ def downloadUrlCategory(url):
 
 
 def downloadUrlMulti(url, output_file=None):
+    if debugs:
+        print("*** downloadUrlMulti ***", url)
     category = url[1]
     ext = url[2]
     retries = 0
@@ -153,6 +165,10 @@ def downloadUrlMulti(url, output_file=None):
 
 
 def safeName(name):
+    """
+    if debugs:
+        print("*** safeName ***", name)
+        """
     if pythonVer == 2:
         if isinstance(name, str):
             name = name.decode("utf-8", "ignore")
@@ -166,10 +182,14 @@ def safeName(name):
     name = re.sub(r"_+", "_", name)
     name = name.strip("_")
 
+    # print("*** newname ***", name)
+
     return name
 
 
 def purge(my_dir, pattern):
+    if debugs:
+        print("*** purge ***")
     try:
         for f in os.listdir(my_dir):
             file_path = os.path.join(my_dir, f)

@@ -46,6 +46,8 @@ try:
 except ImportError:
     hasConcurrent = False
 
+debugs = True
+
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
 
@@ -162,6 +164,11 @@ cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[
 
 cfg.useragent = ConfigSelection(default="Enigma2 - BouquetMakerXtream Plugin", choices=useragents)
 
+cfg.deepstandby = ConfigSelection(default="skip", choices=[
+    ("wakeup", _("import after wake up")),
+    ("skip", _("skip the import"))
+])
+
 # vti picon symlink - ln -s /media/hdd/picon /usr/share/enigma2
 # newenigma2 symlink - # ln -s /data/picons /picons
 
@@ -259,6 +266,7 @@ class AutoStartTimer:
             self.timer_conn = self.timer.timeout.connect(self.onTimer)
         except:
             self.timer.callback.append(self.onTimer)
+
         self.update()
 
     def getWakeTime(self):
@@ -266,30 +274,27 @@ class AutoStartTimer:
             clock = cfg.wakeup.value
             nowt = time.time()
             now = time.localtime(nowt)
-            return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, now.tm_wday, now.tm_yday, now.tm_isdst)))
+            return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, 0, now.tm_yday, now.tm_isdst)))
         else:
             return -1
 
     def update(self, atLeast=0):
         self.timer.stop()
         wake = self.getWakeTime()
-        nowtime = time.time()
+        now_t = time.time()
+        now = int(now_t)
 
         if wake > 0:
-            if wake < nowtime + atLeast:
+            if wake < now + atLeast:
                 # Tomorrow.
                 wake += 24 * 3600
-            next = wake - int(nowtime)
-            if next > 3600:
-                next = 3600
-            if next <= 0:
-                next = 60
+            next = wake - now
             self.timer.startLongTimer(next)
         else:
             wake = -1
 
         wdt = datetime.fromtimestamp(wake)
-        ndt = datetime.fromtimestamp(int(nowtime))
+        ndt = datetime.fromtimestamp(int(now_t))
 
         print("[BouquetMakerXtream] WakeUpTime now set to", wdt, "(now=%s)" % ndt)
         return wake
@@ -297,9 +302,10 @@ class AutoStartTimer:
     def onTimer(self):
         self.timer.stop()
         now = int(time.time())
+        print("[BouquetMakerXtream] onTimer occured at", now)
         wake = self.getWakeTime()
         atLeast = 0
-        if abs(wake - now) < 60:
+        if wake - now < 60:
             self.runUpdate()
             atLeast = 60
         self.update(atLeast)
@@ -307,7 +313,6 @@ class AutoStartTimer:
     def runUpdate(self):
         print("\n *********** BouquetMakerXtream runupdate ************ \n")
         from . import update
-
         self.session.open(update.BmxUpdate, "auto")
 
 
@@ -338,11 +343,13 @@ def autostart(reason, session=None, **kwargs):
         if session is not None:
             _session = session
             if autoStartTimer is None:
-                autoStartTimer = AutoStartTimer(_session)
+                autoStartTimer = AutoStartTimer(session)
 
             if cfg.catchup_on.value:
                 if ChannelSelectionBase.__init__ != BmxChannelSelectionBase__init__:
                     ChannelSelectionBase.__init__ = myBase
+    else:
+        print("[BouquetMakerXtream] Stop")
 
 
 def showBmxCatchup(self):

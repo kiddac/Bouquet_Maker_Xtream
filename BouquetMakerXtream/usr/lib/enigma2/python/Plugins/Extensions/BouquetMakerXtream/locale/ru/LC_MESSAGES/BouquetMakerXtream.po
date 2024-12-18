@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-09-15 13:08+0100\n"
-"PO-Revision-Date: 2024-12-14 17:02+0000\n"
+"POT-Creation-Date: 2024-12-14 17:44+0000\n"
+"PO-Revision-Date: 2024-12-14 17:44+0000\n"
 "Last-Translator: airforce <kosmosspace@gmail.com>\n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -13,36 +13,38 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: about.py:24 mainmenu.py:126
+#: about.py:24 mainmenu.py:112 mainmenu.py:124 mainmenu.py:128
 msgid "About"
 msgstr "О плагине"
 
-#: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:41 piconsettings.py:45
-#: playlists.py:57 server.py:56 settings.py:77
+#: about.py:32 bouquetsettings.py:51 choosecategories.py:47 mainmenu.py:41
+#: piconsettings.py:45 playlists.py:60 server.py:59 settings.py:87
 msgid "Back"
 msgstr "Назад"
 
-#: about.py:33 mainmenu.py:42 piconsettings.py:46 playlists.py:58
+#: about.py:33 mainmenu.py:42 piconsettings.py:46 playlists.py:61
 msgid "OK"
 msgstr "OK"
 
 #: about.py:44
 msgid ""
-"Support for this plugin and latest versions can be found on https://linuxsat-support.com\n"
+"Support for this plugin and latest versions can be found on https://linuxsat-"
+"support.com\n"
 "\n"
 msgstr ""
-"Поддержку этого плагина и последние версии можно найти на https://linuxsat-support.com\n"
+"Поддержку этого плагина и последние версии можно найти на https://linuxsat-"
+"support.com\n"
 "\n"
 
 #: about.py:45
 msgid ""
-"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 "
-"playlists. \n"
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, "
+"external and local m3u8 playlists. \n"
 "Play your files via your TV bouquets.\n"
 "\n"
 msgstr ""
-"Плагин позволяет легко создавать букеты из стандартных кодов Xtream/XUI One, внешних и локальных "
-"плейлистов m3u8. \n"
+"Плагин позволяет легко создавать букеты из стандартных кодов Xtream/XUI One, "
+"внешних и локальных плейлистов m3u8. \n"
 "Воспроизведение файлов через ТВ-букеты.\n"
 "\n"
 
@@ -52,22 +54,27 @@ msgstr "Кредиты:\n"
 
 #: about.py:47
 msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
-msgstr "AutoBouquetsMaker, EpgImporter, AutoBackup (используется как ссылка на код).\n"
+msgstr ""
+"AutoBouquetsMaker, EpgImporter, AutoBackup (используется как ссылка на "
+"код).\n"
 
 #: about.py:48
 msgid ""
-"And thanks to all the other coders and Linuxsat testers who helped in the development of this "
-"project.\n"
+"And thanks to all the other coders and Linuxsat testers who helped in the "
+"development of this project.\n"
 "\n"
 msgstr ""
-"Спасибо всем остальным разработчикам и тестировщикам Linuxsat, которые помогли в развитии этого "
-"проекта.\n"
+"Спасибо всем остальным разработчикам и тестировщикам Linuxsat, которые "
+"помогли в развитии этого проекта.\n"
 "\n"
 
 #: about.py:49
 msgid ""
-"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/kiddac\n"
-msgstr "Если хочете купить мне пива или кофе: https://paypal.me/kiddac или https://ko-fi.com/kiddac\n"
+"If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or "
+"https://ko-fi.com/kiddac\n"
+msgstr ""
+"Если хочете купить мне пива или кофе: https://paypal.me/kiddac или https://"
+"ko-fi.com/kiddac\n"
 
 #: about.py:50
 msgid "Cheers - all donations are very much appreciated."
@@ -81,93 +88,99 @@ msgstr "Настройки букетов"
 msgid "Continue"
 msgstr "Далее"
 
-#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246 bouquetsettings.py:247
+#: bouquetsettings.py:283 bouquetsettings.py:284 bouquetsettings.py:285
+#: bouquetsettings.py:286
 msgid "Original Order"
 msgstr "Исходный порядок"
 
-#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246 bouquetsettings.py:247
+#: bouquetsettings.py:283 bouquetsettings.py:284 bouquetsettings.py:285
+#: bouquetsettings.py:286
 msgid "A-Z"
 msgstr "A-Z"
 
-#: bouquetsettings.py:245 bouquetsettings.py:247
+#: bouquetsettings.py:284 bouquetsettings.py:286
 msgid "Newest"
 msgstr "Последний"
 
-#: bouquetsettings.py:263
+#: bouquetsettings.py:302
 msgid "Default"
 msgstr "По умолчанию"
 
-#: bouquetsettings.py:269 server.py:119 server.py:127
+#: bouquetsettings.py:308 server.py:122 server.py:130
 msgid "Short name or provider name:"
 msgstr "Краткое наименование или имя провайдера:"
 
-#: bouquetsettings.py:270
+#: bouquetsettings.py:309
 msgid "Use name as bouquet prefix"
 msgstr "Использовать имя в качестве префикса букета"
 
-#: bouquetsettings.py:273
+#: bouquetsettings.py:312
 msgid "Show LIVE category if available:"
 msgstr "Показать категорию LIVE, если доступно:"
 
-#: bouquetsettings.py:275
+#: bouquetsettings.py:314
 msgid "Stream Type LIVE:"
 msgstr "Тип потока LIVE:"
 
-#: bouquetsettings.py:278
+#: bouquetsettings.py:317
 msgid "LIVE category bouquet order"
 msgstr "Порядок букета в категории LIVE"
 
-#: bouquetsettings.py:279
+#: bouquetsettings.py:318
 msgid "LIVE stream bouquet order"
 msgstr "Порядок прямой трансляции букета (LIVE)"
 
-#: bouquetsettings.py:282
+#: bouquetsettings.py:321
 msgid "Show VOD category if available:"
 msgstr "Показать категорию VOD, если доступно:"
 
-#: bouquetsettings.py:285
+#: bouquetsettings.py:324
 msgid "Show SERIES category if available:"
 msgstr "Показать категорию SERIES, если доступно:"
 
-#: bouquetsettings.py:289
+#: bouquetsettings.py:328
 msgid "Stream Type VOD/SERIES:"
 msgstr "Тип потока VOD/SERIES:"
 
-#: bouquetsettings.py:292
+#: bouquetsettings.py:331
 msgid "VOD/SERIES category bouquet order"
 msgstr "Порядок букета в категории VOD/SERIES"
 
-#: bouquetsettings.py:293
+#: bouquetsettings.py:332
 msgid "VOD/SERIES streams bouquet order"
 msgstr "Порядок букетов в потоках VOD/SERIES"
 
-#: bouquetsettings.py:296 server.py:125
+#: bouquetsettings.py:335 server.py:128
 msgid "Output:"
 msgstr "Выход:"
 
-#: bouquetsettings.py:299
+#: bouquetsettings.py:338
 msgid "Max EPG days to download: (Use Default if EPG events is 0)"
 msgstr ""
-"Максимальное количество дней EPG для загрузки: (используйте значение по умолчанию, если событий EPG "
-"равно 0)"
+"Максимальное кол-во дней EPG для загрузки: (используйте по умолчанию, если "
+"событий EPG равно 0)"
 
-#: bouquetsettings.py:301
+#: bouquetsettings.py:340
 msgid "Use alternative EPG url:"
 msgstr "Используйте альтернативный URL-адрес EPG:"
 
-#: bouquetsettings.py:303
+#: bouquetsettings.py:342
 msgid "Alternative EPG url:"
 msgstr "Альтернативный URL-адрес EPG:"
 
-#: bouquetsettings.py:363
+#: bouquetsettings.py:405
 msgid "No bouquets selected."
 msgstr "Букеты не выбраны."
 
-#: bouquetsettings.py:388
-msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."
-msgstr "Название букета не может быть пустым. Введите уникальное название букета.Минимум 3 знака."
+#: bouquetsettings.py:413
+msgid ""
+"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 "
+"characters."
+msgstr ""
+"Название букета не может быть пустым. Введите уникальное название букета."
+"Минимум 3 знака."
 
-#: bouquetsettings.py:396 server.py:237
+#: bouquetsettings.py:421 server.py:240
 msgid "Name already used. Please enter a unique name."
 msgstr "Имя уже используется. Введите уникальное имя."
 
@@ -175,116 +188,111 @@ msgstr "Имя уже используется. Введите уникальн�
 msgid "Building Bouquets"
 msgstr "Создание Букетов"
 
-#: buildbouquets.py:52 update.py:70
+#: buildbouquets.py:52 update.py:72
 msgid "Building Bouquets..."
 msgstr "Создание Букетов..."
 
-#: buildbouquets.py:210 update.py:252
+#: buildbouquets.py:195 update.py:242
 msgid "Downloading live data..."
 msgstr "Загрузка данных live..."
 
-#: buildbouquets.py:213 buildbouquets.py:309 buildbouquets.py:487 update.py:255 update.py:380
-#: update.py:558
+#: buildbouquets.py:198 buildbouquets.py:300 buildbouquets.py:470 update.py:245
+#: update.py:371 update.py:542
 msgid "Downloading VOD data..."
 msgstr "Загрузка данных VOD..."
 
-#: buildbouquets.py:216 buildbouquets.py:312 buildbouquets.py:490 buildbouquets.py:517
-#: buildbouquets.py:660 update.py:258 update.py:383 update.py:561 update.py:592 update.py:735
+#: buildbouquets.py:201 buildbouquets.py:303 buildbouquets.py:473
+#: buildbouquets.py:494 buildbouquets.py:634 update.py:248 update.py:374
+#: update.py:545 update.py:568 update.py:709
 msgid "Downloading series data..."
 msgstr "Загрузка данных Сериалы..."
 
-#: buildbouquets.py:223 update.py:265
+#: buildbouquets.py:208 update.py:255
 msgid "Downloading external playlist..."
 msgstr "Загрузка внешнего плейлиста..."
 
-#: buildbouquets.py:225 update.py:267
+#: buildbouquets.py:210 update.py:257
 msgid "Loading local playlist..."
 msgstr "Загрузка локального плейлиста..."
 
-#: buildbouquets.py:231 buildbouquets.py:249 buildbouquets.py:908 update.py:273 update.py:291
-#: update.py:988
+#: buildbouquets.py:216 buildbouquets.py:234 buildbouquets.py:819 update.py:264
+#: update.py:285 update.py:900
 msgid "Processing live data..."
 msgstr "Обработка данных live..."
 
-#: buildbouquets.py:237 update.py:279
+#: buildbouquets.py:222 update.py:271
 msgid "Processing VOD data..."
 msgstr "Обработка данных VOD..."
 
-#: buildbouquets.py:243 buildbouquets.py:320 buildbouquets.py:497 buildbouquets.py:523
-#: buildbouquets.py:665 update.py:285 update.py:391 update.py:568 update.py:598 update.py:740
+#: buildbouquets.py:228 buildbouquets.py:312 buildbouquets.py:480
+#: buildbouquets.py:500 buildbouquets.py:639 update.py:278 update.py:383
+#: update.py:552 update.py:574 update.py:714
 msgid "Processing series data..."
 msgstr "Обработка данных Сериалы..."
 
-#: buildbouquets.py:318 buildbouquets.py:495 update.py:389 update.py:566
+#: buildbouquets.py:310 buildbouquets.py:478 update.py:381 update.py:550
 msgid "Process VOD data..."
 msgstr "Обработка данных VOD..."
 
-#: buildbouquets.py:700 update.py:782
-msgid ""
-"Your provider does not have the 'simple' API call\n"
-"Unable to build series.\n"
-"Alternative method might be added in the future."
-msgstr ""
-"У вашего провайдера нет вызова 'simple' API\\nНевозможно построить сериалы.\n"
-"Альтернативный метод может быть добавлен в будущем."
-
-#: buildbouquets.py:1009
+#: buildbouquets.py:933
 msgid " IPTV Bouquets Created"
 msgstr " IPTV-букеты созданы "
 
-#: catchup.py:135
+#: catchup.py:138
 #, python-format
 msgid "TV Archive: %s"
 msgstr "Архив ТВ: %s"
 
-#: catchup.py:260
+#: catchup.py:266
 msgid "Catchup currently not available. Missing EPG data"
 msgstr "В настоящее время catchup недоступен. Отсутствуют данные EPG"
 
-#: choosecategories.py:45
+#: choosecategories.py:44
 msgid "Category"
 msgstr "Категория"
 
-#: choosecategories.py:46
+#: choosecategories.py:45
 msgid "Channel"
 msgstr "Канал"
 
-#: choosecategories.py:50 deletebouquets.py:36
+#: choosecategories.py:49 deletebouquets.py:36
 msgid "Invert"
 msgstr "Инвертировать"
 
-#: choosecategories.py:51
+#: choosecategories.py:50
 msgid "Reset"
 msgstr "Сбросить"
 
-#: choosecategories.py:53
+#: choosecategories.py:52
 msgid "Show Streams"
 msgstr "Показать Стримы"
 
-#: choosecategories.py:277 choosecategories.py:481 choosecategories.py:521 choosecategories.py:618
-#: choosecategories.py:622
+#: choosecategories.py:238 choosecategories.py:489 choosecategories.py:511
+#: choosecategories.py:572 choosecategories.py:576
 msgid "Choose Live Categories"
 msgstr "Выберите категории Live"
 
-#: choosecategories.py:285 choosecategories.py:328
+#: choosecategories.py:246 choosecategories.py:288
 msgid "Next"
 msgstr "Дальше"
 
-#: choosecategories.py:287 choosecategories.py:330 choosecategories.py:365
+#: choosecategories.py:248 choosecategories.py:290 choosecategories.py:325
 msgid "Create"
 msgstr "Создать"
 
-#: choosecategories.py:320 choosecategories.py:490 choosecategories.py:538 choosecategories.py:612
-#: choosecategories.py:630
+#: choosecategories.py:280 choosecategories.py:492 choosecategories.py:514
+#: choosecategories.py:566 choosecategories.py:584
 msgid "Choose VOD Categories"
 msgstr "Выберите категории VOD"
 
-#: choosecategories.py:359 choosecategories.py:499 choosecategories.py:555 choosecategories.py:604
-#: choosecategories.py:636
+#: choosecategories.py:319 choosecategories.py:446 choosecategories.py:475
+#: choosecategories.py:495 choosecategories.py:517 choosecategories.py:521
+#: choosecategories.py:534 choosecategories.py:546 choosecategories.py:558
+#: choosecategories.py:590
 msgid "Choose Series Categories"
 msgstr "Выберите категории Сериалы"
 
-#: deletebouquets.py:27 mainmenu.py:122
+#: deletebouquets.py:27 mainmenu.py:120
 msgid "Delete Bouquets"
 msgstr "Удалить Букеты"
 
@@ -292,7 +300,7 @@ msgstr "Удалить Букеты"
 msgid "Cancel"
 msgstr "Отмена"
 
-#: deletebouquets.py:35 playlists.py:59
+#: deletebouquets.py:35 playlists.py:62
 msgid "Delete"
 msgstr "Удалить"
 
@@ -300,79 +308,79 @@ msgstr "Удалить"
 msgid "Clear All"
 msgstr "Очистить все"
 
-#: downloadpicons.py:117
+#: downloadpicons.py:120
 msgid "Downloadng Picons"
 msgstr "Загрузка пиконов"
 
-#: downloadpicons.py:119
+#: downloadpicons.py:122
 msgid "Making BouquetMakerXtream Picons"
 msgstr "Создание BouquetMakerXtream пиконов"
 
-#: downloadpicons.py:218
+#: downloadpicons.py:221
 msgid "No picons found."
 msgstr "Пиконы не найдены."
 
-#: downloadpicons.py:312
+#: downloadpicons.py:315
 msgid "Size: "
 msgstr "Размер"
 
-#: downloadpicons.py:312
+#: downloadpicons.py:315
 msgid "Type: "
 msgstr "Тип"
 
-#: downloadpicons.py:312
+#: downloadpicons.py:315
 msgid "Url: "
 msgstr "Url: "
 
-#: downloadpicons.py:312 downloadpicons.py:421
+#: downloadpicons.py:315 downloadpicons.py:424
 msgid "Exists: "
 msgstr "Доступные:"
 
-#: downloadpicons.py:312
+#: downloadpicons.py:315
 #, python-format
 msgid "Success: %s   "
 msgstr "Успешных: %s   "
 
-#: downloadpicons.py:313
+#: downloadpicons.py:316
 #, python-format
 msgid "Picon %d of %d"
 msgstr "Пикон %d of %d"
 
-#: downloadpicons.py:420
+#: downloadpicons.py:423
 msgid ""
 "Finished.\n"
 "\n"
 msgstr "Закончена.\n"
 
-#: downloadpicons.py:421
+#: downloadpicons.py:424
 msgid "Success: "
 msgstr "Успешно: "
 
-#: downloadpicons.py:421
+#: downloadpicons.py:424
 msgid "Bad size: "
 msgstr "Неверный размер: "
 
-#: downloadpicons.py:421
+#: downloadpicons.py:424
 msgid "bad type: "
 msgstr "неверный тип: "
 
-#: downloadpicons.py:421
+#: downloadpicons.py:424
 msgid "bad url: "
 msgstr "неверный url: "
 
-#: downloadpicons.py:422
+#: downloadpicons.py:425
 msgid "Restart your GUI to refresh picons."
 msgstr "Перезапустите графический интерфейс, чтобы обновить пиконы."
 
-#: downloadpicons.py:422
+#: downloadpicons.py:425
 msgid "Your created picons can be found in"
 msgstr "Созданные вами пиконы можно найти в"
 
-#: downloadpicons.py:423
+#: downloadpicons.py:426
 msgid "Your failed picon list can be found in"
 msgstr "Список неудачных пиконов можно найти в"
 
-#: downloadpicons.py:428
+#: downloadpicons.py:431
 msgid "Picon Error"
 msgstr "Ошибка пикона"
 
@@ -384,35 +392,35 @@ msgstr "Главное Меню"
 msgid "Playlists.txt location is invalid and has been reset."
 msgstr "Расположение Playlists.txt недействительно и было сброшено."
 
-#: mainmenu.py:108
-msgid "Playlists"
-msgstr "Плейлисты"
-
-#: mainmenu.py:110 settings.py:70
-msgid "Main Settings"
-msgstr "Основные настройки"
-
-#: mainmenu.py:120
-msgid "Update Bouquets"
-msgstr "Обновление букетов"
-
-#: mainmenu.py:121 picons.py:31
-msgid "Download Picons"
-msgstr "Скачать Пиконы"
-
-#: mainmenu.py:124
-msgid "Delete All BMX Bouquets"
-msgstr "Удалить все BMX букеты"
-
-#: mainmenu.py:125 server.py:48
+#: mainmenu.py:110 mainmenu.py:123 mainmenu.py:127 server.py:51
 msgid "Add Playlist"
 msgstr "Добавить плейлист"
 
-#: mainmenu.py:159
+#: mainmenu.py:111 mainmenu.py:118 mainmenu.py:126 settings.py:80
+msgid "Main Settings"
+msgstr "Основные настройки"
+
+#: mainmenu.py:114
+msgid "Playlists"
+msgstr "Плейлисты"
+
+#: mainmenu.py:119
+msgid "Update Bouquets"
+msgstr "Обновление букетов"
+
+#: mainmenu.py:121
+msgid "Delete All BMX Bouquets"
+msgstr "Удалить все BMX букеты"
+
+#: mainmenu.py:122 picons.py:31
+msgid "Download Picons"
+msgstr "Скачать Пиконы"
+
+#: mainmenu.py:155
 msgid "Delete all BMX created bouquets?"
 msgstr "Удалить все созданные BMX букеты?"
 
-#: parsem3u.py:59
+#: parsem3u.py:82 seriesparsem3u.py:57
 msgid "Stream"
 msgstr "Стрим"
 
@@ -424,15 +432,15 @@ msgstr "Скачать"
 msgid "Picon Settings"
 msgstr "Настройки пиконов"
 
-#: piconsettings.py:78 server.py:88 settings.py:110
+#: piconsettings.py:78 server.py:91 settings.py:120
 msgid "Really close without saving settings?"
 msgstr "Действительно закрыть без сохранения настроек?"
 
-#: piconsettings.py:106 settings.py:141
+#: piconsettings.py:106 settings.py:151
 msgid "You need to restart the GUI"
 msgstr "Вам необходимо перезапустить графический интерфейс"
 
-#: piconsettings.py:106 settings.py:141
+#: piconsettings.py:106 settings.py:151
 msgid "Do you want to restart now?"
 msgstr "Хотите перезапустить сейчас?"
 
@@ -457,9 +465,11 @@ msgid "Custom location. Manual symlink required"
 msgstr "Пользовательское местоположение. Требуется ввод symlink вручную"
 
 #: piconsettings.py:123
-msgid "Max download threads. Increase for speed. Reduce if downloads are freezing"
+msgid ""
+"Max download threads. Increase for speed. Reduce if downloads are freezing"
 msgstr ""
-"Максимальное количество потоков загрузки. Увеличить для скорости. Уменьшить, если загрузки зависают"
+"Максимальное количество потоков загрузки. Увеличить для скорости. Уменьшить, "
+"если загрузки зависают"
 
 #: piconsettings.py:124
 msgid "Max size of source picon"
@@ -469,227 +479,236 @@ msgstr "Максимальный размер исходного пикона"
 msgid "Max width of source picon"
 msgstr "Максимальная ширина исходного пикона"
 
-#: piconsettings.py:209 settings.py:279
+#: piconsettings.py:209 settings.py:287
 msgid "Choose Directory:"
 msgstr "Выберите каталог:"
 
-#: piconsettings.py:210 settings.py:280
+#: piconsettings.py:210 settings.py:288
 msgid "Choose directory"
 msgstr "Выберите каталог"
 
-#: playlists.py:55
+#: playlists.py:58
 msgid "Select Playlist"
 msgstr "Выбрать плейлист"
 
-#: playlists.py:60
+#: playlists.py:63
 msgid "Info"
 msgstr "Инфо"
 
-#: playlists.py:100
+#: playlists.py:101
 msgid "No internet."
 msgstr "Нет интернета."
 
-#: playlists.py:305 playlists.py:410
+#: playlists.py:309 playlists.py:415
 msgid "Server Not Responding"
 msgstr "Сервер не отвечает"
 
-#: playlists.py:330 playlists.py:412
+#: playlists.py:336 playlists.py:417
 msgid "Not Authorised"
 msgstr "Неавторизованный"
 
-#: playlists.py:334 playlists.py:342 playlists.py:390
+#: playlists.py:340 playlists.py:348 playlists.py:395
 msgid "Active"
 msgstr "Активный"
 
-#: playlists.py:336 playlists.py:404
+#: playlists.py:342 playlists.py:409
 msgid "Banned"
 msgstr "Запрещено"
 
-#: playlists.py:338 playlists.py:408
+#: playlists.py:344 playlists.py:413
 msgid "Disabled"
 msgstr "Отключен"
 
-#: playlists.py:340 playlists.py:406
+#: playlists.py:346 playlists.py:411
 msgid "Expired"
 msgstr "Истек"
 
-#: playlists.py:344 playlists.py:346
+#: playlists.py:350 playlists.py:352
 msgid "Expires: "
 msgstr "Истекает: "
 
-#: playlists.py:348
+#: playlists.py:354
 msgid "Active Conn:"
 msgstr "Активное соединение:"
 
-#: playlists.py:356
+#: playlists.py:362
 msgid "Max Conn:"
 msgstr "Макс. подключ:"
 
-#: playlists.py:372 playlists.py:390
+#: playlists.py:378 playlists.py:395
 msgid "Url OK"
 msgstr "Url OK"
 
-#: playlists.py:373
+#: playlists.py:379
 msgid "External playlist"
 msgstr "Внешний плейлист"
 
-#: playlists.py:376
+#: playlists.py:382
 msgid "Local file"
 msgstr "Локальный файл"
 
-#: playlists.py:425
+#: playlists.py:432
 msgid "Delete selected playlist?"
 msgstr "Удалить выбранный плейлист?"
 
-#: playlists.py:464
+#: playlists.py:481
 msgid "Url is invalid or playlist/user no longer authorised!"
-msgstr "URL-адрес недействителен или плейлист/пользователь больше не авторизован!"
+msgstr ""
+"URL-адрес недействителен или плейлист/пользователь больше не авторизован!"
 
-#: playlists.py:467
+#: playlists.py:483
 msgid "User Info only available for xtream/XUI One lines"
 msgstr "Информация о пользователе доступна только для линий xtream/XUI One"
 
-#: plugin.py:101
+#: plugin.py:112
 msgid "XPicons - 220x132 Pixel"
 msgstr "XPicons - 220x132 Pixel"
 
-#: plugin.py:102
+#: plugin.py:113
 msgid "ZZZPicons - 400x240 Pixel"
 msgstr "ZZZPicons - 400x240 Pixel"
 
-#: plugin.py:129
+#: plugin.py:140
 msgid "Bottom"
 msgstr "Низ"
 
-#: plugin.py:129
+#: plugin.py:140
 msgid "Top"
 msgstr "Верх"
 
-#: plugin.py:132
+#: plugin.py:142
 msgid "24 Bit"
 msgstr "24 бит"
 
-#: plugin.py:132
+#: plugin.py:142
 msgid "8 Bit"
 msgstr "8 бит"
 
-#: plugin.py:133
+#: plugin.py:143
 msgid "Service Reference Picons"
 msgstr "Пиконы по референсам"
 
-#: plugin.py:133
+#: plugin.py:143
 msgid "Service Name Picons"
 msgstr "Пиконы по имени"
 
-#: plugin.py:138
+#: plugin.py:148
 msgid "100KB"
 msgstr "100KB"
 
-#: plugin.py:138
+#: plugin.py:148
 msgid "200KB"
 msgstr "200KB"
 
-#: plugin.py:138
+#: plugin.py:148
 msgid "300KB"
 msgstr "300KB"
 
-#: plugin.py:138
+#: plugin.py:148
 msgid "400KB"
 msgstr "400KB"
 
-#: plugin.py:138
+#: plugin.py:148
 msgid "500KB"
 msgstr "500KB"
 
-#: plugin.py:138 plugin.py:139
+#: plugin.py:148 plugin.py:149
 msgid "No limit"
 msgstr "Без ограничений"
 
-#: plugin.py:139
+#: plugin.py:149
 msgid "480px"
 msgstr "480px"
 
-#: plugin.py:139
+#: plugin.py:149
 msgid "728px"
 msgstr "728px"
 
-#: plugin.py:139
+#: plugin.py:149
 msgid "1000px"
 msgstr "1000px"
 
-#: plugin.py:139
+#: plugin.py:149
 msgid "1280px"
 msgstr "1280px"
 
-#: plugin.py:139
+#: plugin.py:149
 msgid "1920px"
 msgstr "1920px"
 
-#: plugin.py:225
+#: plugin.py:238
 msgid "Bouquet Maker Xtream"
 msgstr "Bouquet Maker Xtream"
 
-#: plugin.py:444
+#: plugin.py:459
 msgid "IPTV Bouquets Creator by KiddaC"
 msgstr "Плагин для создания букетов IPTV от KiddaC"
 
-#: plugin.py:445
+#: plugin.py:460
 msgid "BouquetMakerXtream"
 msgstr "BouquetMakerXtream"
 
-#: server.py:57 settings.py:78
+#: server.py:60 settings.py:88
 msgid "Save"
 msgstr "Сохранить"
 
-#: server.py:58
-msgid "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/playlists.txt file"
-msgstr "Вы можете вручную добавить адрес плейлиста в /etc/enigma2/bouquetmakerxtream/playlists.txt файл"
+#: server.py:61
+msgid ""
+"You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/"
+"playlists.txt file"
+msgstr ""
+"Вы можете вручную добавить адрес плейлиста в /etc/enigma2/bouquetmakerxtream/"
+"playlists.txt файл"
 
-#: server.py:103
+#: server.py:106
 msgid "Xtream codes / XUI ONE (get.php)"
 msgstr "Xstream коды / XUI ONE (get.php)"
 
-#: server.py:103
+#: server.py:106
 msgid "External #EXTM3U playlist"
 msgstr "Внешний плейлист #EXTM3U"
 
-#: server.py:117
+#: server.py:120
 msgid "Select playlist type:"
 msgstr "Выберите тип плейлиста:"
 
-#: server.py:120 server.py:128
+#: server.py:123 server.py:131
 msgid "Protocol:"
 msgstr "Протокол:"
 
-#: server.py:121
+#: server.py:124
 msgid "Server URL: i.e. domain.xyz"
 msgstr "URL-адрес сервера: например, domain.xyz"
 
-#: server.py:122
+#: server.py:125
 msgid "Port: (optional) i.e. 8080"
 msgstr "Порт: (необязательно) например, 8080"
 
-#: server.py:123
+#: server.py:126
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: server.py:124
+#: server.py:127
 msgid "Password:"
 msgstr "Пароль:"
 
-#: server.py:129
+#: server.py:132
 msgid "External url: i.e pastebin.com/raw/blahblah"
 msgstr "Внешний URL-адрес, например: pastebin.com/raw/blahblah"
 
-#: server.py:226
+#: server.py:229
 msgid "Details are not valid or unauthorised"
 msgstr "Данные недействительны или неавторизованы"
 
-#: server.py:231
-msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."
-msgstr "Название букета не может быть пустым. Введите уникальное название букета. Минимум 2 знака."
+#: server.py:234
+msgid ""
+"Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 "
+"characters."
+msgstr ""
+"Название букета не может быть пустым. Введите уникальное название букета. "
+"Минимум 2 знака."
 
-#: server.py:246
+#: server.py:249
 msgid "Playlist added successfully."
 msgstr "Плейлист добавлен успешно."
 
@@ -741,19 +760,19 @@ msgstr "Смещение сервера:"
 msgid "Close"
 msgstr "Закрыть"
 
-#: settings.py:36
+#: settings.py:43
 msgid "Please enter the correct pin code"
 msgstr "Пожалуйста, введите правильный пин-код"
 
-#: settings.py:36
+#: settings.py:44
 msgid "Enter pin code"
 msgstr "Введите пин-код"
 
-#: settings.py:45
+#: settings.py:55
 msgid "The pin code you entered is wrong."
 msgstr "Введенный вами пин-код неверен."
 
-#: settings.py:122
+#: settings.py:132
 msgid ""
 "Please change default parental pin.\n"
 "\n"
@@ -763,91 +782,99 @@ msgstr ""
 "\n"
 "PIN-код не может быть 0000, 1111 или 1234"
 
-#: settings.py:151
+#: settings.py:161
 msgid "Select skin"
 msgstr "Выберите скин"
 
-#: settings.py:152
+#: settings.py:162
 msgid "Select fake web user-agent"
 msgstr "Выберите сторонний web user-agent"
 
-#: settings.py:153
+#: settings.py:163
 msgid "playlists.txt location"
 msgstr "Локальный playlist.txt"
 
-#: settings.py:153 settings.py:154 settings.py:159 settings.py:163
+#: settings.py:163 settings.py:164 settings.py:169 settings.py:173
 msgid " *Restart GUI Required"
 msgstr " *Требуется рестарт GUI"
 
-#: settings.py:154
+#: settings.py:164
 msgid "Local M3U File location"
 msgstr "Локальное расположение файла M3U"
 
-#: settings.py:155
+#: settings.py:165
 msgid "Default LIVE stream type"
 msgstr "Тип LIVE потока по умолчанию"
 
-#: settings.py:156
+#: settings.py:166
 msgid "Default VOD/SERIES stream type"
 msgstr "Тип VOD/SERIES потока по умолчанию"
 
-#: settings.py:157
+#: settings.py:167
 msgid "BouquetMakerXtream parental control"
 msgstr "Родительский контроль BouquetMakerXtream"
 
-#: settings.py:158
+#: settings.py:168
 msgid "BouquetMakerXtream parental pin"
 msgstr "Родительский пин-код BouquetMakerXtream"
 
-#: settings.py:159
+#: settings.py:169
 msgid "Show in main menu"
 msgstr "Показать в главном меню"
 
-#: settings.py:160
+#: settings.py:170
 msgid "Skip playlist selection screen if only 1 playlist"
 msgstr "Пропустить экран выбора плейлиста, если только 1 плейлист"
 
-#: settings.py:161
+#: settings.py:171
 msgid "Automatic live bouquet update"
 msgstr "Автоматическое обновление букета в реальном времени"
 
-#: settings.py:162
+#: settings.py:172
 msgid "Automatic live bouquet update time"
 msgstr "Время автоматического обновления букета в реальном времени"
 
-#: settings.py:163
+#: settings.py:173
 msgid "Embed Catchup player in channelselect screen"
 msgstr "Встроить проигрыватель Catchup в экран выбора каналов"
 
-#: settings.py:164
+#: settings.py:174
 msgid "Prefix Catchup channels"
 msgstr "Префикс Catchup каналов"
 
-#: settings.py:165
+#: settings.py:175
 msgid "Select Catchup prefix symbol"
 msgstr "Выберите символ префикса Catchup"
 
-#: settings.py:166
+#: settings.py:176
 msgid "Margin before Catchup (mins)"
 msgstr "Допуск до Catchup (min)"
 
-#: settings.py:167
+#: settings.py:177
 msgid "Margin after Catchup (mins)"
 msgstr "Допуск после Catchup (min)"
 
-#: settings.py:168
+#: settings.py:178
 msgid "Group bouquets into its own folder"
 msgstr "Группировать букеты в отдельную папку"
 
-#: settings.py:169
-msgid "Exit plugin on bouquet creation"
-msgstr "Выход из плагина при создании букета"
-
-#: update.py:105
+#: update.py:106
 msgid " Providers IPTV Updated"
 msgstr " Провайдеры IPTV обновлены"
 
-#: update.py:160
+#: update.py:161
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "Обновление плейлиста %d z %d"
+
+#~ msgid ""
+#~ "Your provider does not have the 'simple' API call\n"
+#~ "Unable to build series.\n"
+#~ "Alternative method might be added in the future."
+#~ msgstr ""
+#~ "У вашего провайдера нет вызова 'simple' API\\nНевозможно построить "
+#~ "сериалы.\n"
+#~ "Альтернативный метод может быть добавлен в будущем."
+
+#~ msgid "Exit plugin on bouquet creation"
+#~ msgstr "Выход из плагина при создании букета"

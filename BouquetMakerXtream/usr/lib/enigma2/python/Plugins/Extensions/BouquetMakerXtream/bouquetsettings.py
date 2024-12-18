@@ -6,7 +6,7 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import parsem3u as parsem3u
 from .bmxStaticText import StaticText
-from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory
+from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory, debugs
 
 import json
 import os
@@ -19,7 +19,6 @@ from enigma import eTimer, ePoint
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
-
 try:
     from urlparse import parse_qs, urlparse
 except:
@@ -28,6 +27,9 @@ except:
 
 class BmxBouquetSettings(ConfigListScreen, Screen):
     def __init__(self, session):
+        if debugs:
+            print("*** init ***")
+
         Screen.__init__(self, session)
 
         self.session = session
@@ -81,6 +83,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def clearCaches(self):
+        if debugs:
+            print("*** clearcaches ***")
         try:
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
@@ -95,6 +99,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.close()
 
     def start(self):
+        if debugs:
+            print("*** start ***")
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:
@@ -105,6 +111,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.timer.start(10, True)
 
     def makeUrlList(self):
+        if debugs:
+            print("*** makeurllist ***")
         self.url_list = []
 
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
@@ -123,6 +131,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.checkCategories()
 
     def processDownloads(self, outputtype=None):
+        if debugs:
+            print("*** processdownloads ***")
         results = ""
         threads = min(len(self.url_list), 10)
         if outputtype == "json":
@@ -216,17 +226,25 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     os.remove(output_file)
 
     def parseM3u8Playlist(self, response=None):
+        if debugs:
+            print("*** parseM3u8Playlist ***")
         self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
         self.makeM3u8CategoriesJson()
 
     def makeM3u8CategoriesJson(self):
+        if debugs:
+            print("*** parseM3u8Playlist ***")
         parsem3u.makeM3u8CategoriesJson(self.live_streams, self.vod_streams, self.series_streams)
         self.makeM3u8StreamsJson()
 
     def makeM3u8StreamsJson(self):
+        if debugs:
+            print("*** makeM3u8StreamsJson ***")
         parsem3u.makeM3u8StreamsJson(self.live_streams, self.vod_streams, self.series_streams)
 
     def checkCategories(self):
+        if debugs:
+            print("*** checkCategories ***")
         if not glob.current_playlist["data"]["live_categories"]:
             self.hide_live = True
             glob.current_playlist["settings"]["show_live"] = False
@@ -242,6 +260,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.initConfig()
 
     def initConfig(self):
+        if debugs:
+            print("*** initConfig ***")
         live_stream_type_choices = [("1", "DVB(1)"), ("4097", "IPTV(4097)")]
         vod_stream_type_choices = [("4097", "IPTV(4097)")]
 
@@ -304,6 +324,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.createSetup()
 
     def createSetup(self):
+        if debugs:
+            print("*** createSetup ***")
         self.list = []
         self.list.append(getConfigListEntry(_("Short name or provider name:"), self.iptvname_cfg))
         self.list.append(getConfigListEntry(_("Use name as bouquet prefix"), self.prefix_name_cfg))
@@ -346,6 +368,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.handleInputHelpers()
 
     def handleInputHelpers(self):
+        if debugs:
+            print("*** handleInputHelpers ***")
         currConfig = self["config"].getCurrent()
 
         if currConfig is not None:
@@ -380,6 +404,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     self["VKeyIcon"].hide()
 
     def changedEntry(self):
+        if debugs:
+            print("*** changedEntry ***")
         self.item = self["config"].getCurrent()
         for x in self.onChangedEntry:
             x()
@@ -391,12 +417,18 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             pass
 
     def getCurrentEntry(self):
+        if debugs:
+            print("*** getCurrentEntry ***")
         return self["config"].getCurrent() and self["config"].getCurrent()[0] or ""
 
     def getCurrentValue(self):
+        if debugs:
+            print("*** getCurrentValue ****")
         return self["config"].getCurrent() and str(self["config"].getCurrent()[1].getText()) or ""
 
     def save(self):
+        if debugs:
+            print("*** save ***")
         if self.list:
 
             self["config"].instance.moveSelectionTo(1)  # hack to hide texthelper
@@ -531,6 +563,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             self.getPlaylistUserFile()
 
     def getPlaylistUserFile(self):
+        if debugs:
+            print("*** getPlaylistUserFile ***")
         if self.playlists_all:
             for idx, playlists in enumerate(self.playlists_all):
                 if playlists["playlist_info"]["full_url"] == self.full_url:
@@ -560,6 +594,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.writeJsonFile()
 
     def writeJsonFile(self):
+        if debugs:
+            print("*** writeJsonFile ***")
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f)
         self.clearCaches()
@@ -569,12 +605,16 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.session.openWithCallback(self.exit, choosecategories.BmxChooseCategories)
 
     def exit(self, answer=None):
+        if debugs:
+            print("*** exit ***")
         if glob.finished:
             self.clearCaches()
             self.clearSeries()
             self.close(True)
 
     def clearSeries(self):
+        if debugs:
+            print("*** clearSeries ***")
         playlists_all = bmx.getPlaylistJson()
 
         if playlists_all:

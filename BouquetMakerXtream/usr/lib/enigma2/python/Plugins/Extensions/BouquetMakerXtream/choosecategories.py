@@ -238,7 +238,7 @@ class BmxChooseCategories(Screen):
         self.setup_title = _("Choose Live Categories")
         self.setTitle(self.setup_title)
 
-        if glob.current_playlist["data"]["live_categories"]:
+        if glob.current_playlist["data"]["live_categories"] and glob.current_playlist["data"]["live_streams"]:
             self.category_list = []
             self.categorySelectedList = []
 
@@ -280,7 +280,7 @@ class BmxChooseCategories(Screen):
         self.setup_title = _("Choose VOD Categories")
         self.setTitle(self.setup_title)
 
-        if glob.current_playlist["data"]["vod_categories"]:
+        if glob.current_playlist["data"]["vod_categories"] and glob.current_playlist["data"]["vod_streams"]:
             self.category_list = []
             self.categorySelectedList = []
 
@@ -324,7 +324,7 @@ class BmxChooseCategories(Screen):
 
         self["key_green"].setText(_("Create"))
 
-        if glob.current_playlist["data"]["series_categories"]:
+        if glob.current_playlist["data"]["series_categories"] and glob.current_playlist["data"]["series_streams"]:
             for category in glob.current_playlist["data"]["series_categories"]:
                 if str(category["category_id"]) in glob.current_playlist["data"]["series_categories_hidden"] or \
                         str(category["category_name"]) in glob.current_playlist["data"]["series_categories_hidden"]:
@@ -342,6 +342,7 @@ class BmxChooseCategories(Screen):
             self.enableList()
             self.selectionChanged()
         else:
+            glob.current_playlist["settings"]["show_series"] = False
             self.save()
 
     def selectionChanged(self):

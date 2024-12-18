@@ -3,9 +3,12 @@
 import re
 from . import _
 from . import bouquet_globals as glob
+from .plugin import debugs
 
 
 def parseM3u8Playlist(response):
+    if debugs:
+        print("*** parseM3u8Playlist ***")
     series_streams = []
     channel_num = 0
     streamid = 0

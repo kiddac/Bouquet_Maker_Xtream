@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .plugin import cfg, playlist_file, playlists_json
+from .plugin import cfg, playlist_file, playlists_json, debugs
 
 import json
 import os
@@ -15,6 +15,8 @@ except:
 
 
 def processFiles():
+    if debugs:
+        print("*** processFiles ***")
     # check files exsits
     if not os.path.isfile(playlist_file):
         open(playlist_file, "a").close()

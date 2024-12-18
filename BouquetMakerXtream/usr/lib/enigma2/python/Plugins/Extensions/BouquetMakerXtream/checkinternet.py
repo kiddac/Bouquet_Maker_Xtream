@@ -1,7 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+debugs = True
+
+
 def check_internet():
+    if debugs:
+        print("*** check_internent ***")
     try:
         with open('/proc/net/route', 'r') as f:
             for line in f:

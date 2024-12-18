@@ -185,12 +185,10 @@ class BmxDownloadPicons(Screen):
 
                         custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
-                        if "custom_sid" in channel and channel["custom_sid"]:
-                            if channel["custom_sid"] != "null" and channel["custom_sid"] != "None" and channel["custom_sid"] is not None and channel["custom_sid"] != "0":
-                                if channel["custom_sid"][0].isdigit():
-                                    channel["custom_sid"] = channel["custom_sid"][1:]
-
-                                custom_sid = channel["custom_sid"]
+                        if "custom_sid" in channel and channel["custom_sid"] and str(channel["custom_sid"]) not in ("null", "None", "0") and len(channel["custom_sid"]) > 16:
+                            custom_sid = str(channel["custom_sid"])
+                            if custom_sid[0].isdigit():
+                                custom_sid = custom_sid[1:]
 
                         custom_sid = str(stream_type) + str(custom_sid).rstrip(":")
                         custom_sid = custom_sid.replace(":", "_")
