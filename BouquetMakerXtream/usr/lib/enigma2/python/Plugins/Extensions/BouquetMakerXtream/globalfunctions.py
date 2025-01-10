@@ -177,7 +177,7 @@ def safeName(name):
             name = str(name)
 
     # Replace unsafe characters with underscores
-    name = re.sub(r"[\<\>\:\"\/\\\|\?\*]", "_", name)
+    name = re.sub(r'[\'\<\>\:\"\/\\\|\?\*\(\)\[\]]', "_", name)
     name = re.sub(r" ", "_", name)
     name = re.sub(r"_+", "_", name)
     name = name.strip("_")

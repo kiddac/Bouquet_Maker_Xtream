@@ -1,0 +1,832 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2024-09-15 13:05+0100\n"
+"PO-Revision-Date: 2025-01-03 00:19+0100\n"
+"Last-Translator: Sólyom Balázs <balazs@solyom.online>\n"
+"Language-Team: \n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: about.py:24 mainmenu.py:126
+msgid "About"
+msgstr "Névjegy"
+
+#: about.py:32 bouquetsettings.py:51 choosecategories.py:48 mainmenu.py:41 piconsettings.py:45 playlists.py:57 server.py:56
+#: settings.py:77
+msgid "Back"
+msgstr "Vissza"
+
+#: about.py:33 mainmenu.py:42 piconsettings.py:46 playlists.py:58
+msgid "OK"
+msgstr "OK"
+
+#: about.py:44
+msgid ""
+"Support for this plugin and latest versions can be found on https://linuxsat-support.com\n"
+"\n"
+msgstr ""
+"A bővítmény támogatása és legújabb verziói elérhetők a https://linuxsat-support.com oldalon.\n"
+"\n"
+
+#: about.py:45
+msgid ""
+"Plugin enables the simple bouquet creation of standard Xtream codes/XUI One, external and local m3u8 playlists. \n"
+"Play your files via your TV bouquets.\n"
+"\n"
+msgstr ""
+"A bővítmény lehetővé teszi a Xtream/XUI One szolgáltatókból, külső és helyi m3u8 lejátszási listákból bouquetek létrehozását, "
+"amelyek segítségével elérheti az IPTV szolgáltatást.\n"
+"\n"
+
+#: about.py:46
+msgid "Credits:\n"
+msgstr "Köszönetnyilvánítás:\n"
+
+#: about.py:47
+msgid "AutoBouquetsMaker, EpgImporter, AutoBackup (used as code reference).\n"
+msgstr "AutoBouquetsMaker, EpgImporter, AutoBackup (kód referenciaként használva).\n"
+
+#: about.py:48
+msgid ""
+"And thanks to all the other coders and Linuxsat testers who helped in the development of this project.\n"
+"\n"
+msgstr ""
+"És köszönet minden más fejlesztőnek és Linuxsat tesztelőnek, akik segítettek a projekt fejlesztésében.\n"
+"\n"
+
+#: about.py:49
+msgid "If you would like to buy me a beer or a coffee: https://paypal.me/kiddac or https://ko-fi.com/kiddac\n"
+msgstr "Ha szeretnél meghívni egy sörre vagy kávéra: https://paypal.me/kiddac vagy https://ko-fi.com/kiddac\n"
+
+#: about.py:50
+msgid "Cheers - all donations are very much appreciated."
+msgstr "Köszönöm - minden adományt nagyra értékelek."
+
+#: bouquetsettings.py:44
+msgid "Bouquets Settings"
+msgstr "Bouquet beállítások"
+
+#: bouquetsettings.py:52
+msgid "Continue"
+msgstr "Folytatás"
+
+#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246 bouquetsettings.py:247
+msgid "Original Order"
+msgstr "Eredeti sorrend"
+
+#: bouquetsettings.py:244 bouquetsettings.py:245 bouquetsettings.py:246 bouquetsettings.py:247
+msgid "A-Z"
+msgstr "A-Z"
+
+#: bouquetsettings.py:245 bouquetsettings.py:247
+msgid "Newest"
+msgstr "Legújabb"
+
+#: bouquetsettings.py:263
+msgid "Default"
+msgstr "Alapértelmezett"
+
+#: bouquetsettings.py:269 server.py:119 server.py:127
+msgid "Short name or provider name:"
+msgstr "Rövid név vagy szolgáltató neve:"
+
+#: bouquetsettings.py:270
+msgid "Use name as bouquet prefix"
+msgstr "Név használata bouquet előtagként"
+
+#: bouquetsettings.py:273
+msgid "Show LIVE category if available:"
+msgstr "TV műsorok kategória megjelenítése, ha elérhető:"
+
+#: bouquetsettings.py:275
+msgid "Stream Type LIVE:"
+msgstr "A TV műsorok stream típusa:"
+
+#: bouquetsettings.py:278
+msgid "LIVE category bouquet order"
+msgstr "TV műsorok kategória bouquet sorrendje"
+
+#: bouquetsettings.py:279
+msgid "LIVE stream bouquet order"
+msgstr "A TV műsorok stream bouquet sorrendje"
+
+#: bouquetsettings.py:282
+msgid "Show VOD category if available:"
+msgstr "Videók (VoD) kategória megjelenítése, ha elérhető:"
+
+#: bouquetsettings.py:285
+msgid "Show SERIES category if available:"
+msgstr "Sorozatok kategória megjelenítése, ha elérhető:"
+
+#: bouquetsettings.py:289
+msgid "Stream Type VOD/SERIES:"
+msgstr "Videók (VoD)/Sorozatok stream típusa:"
+
+#: bouquetsettings.py:292
+msgid "VOD/SERIES category bouquet order"
+msgstr "Videók (VoD)/Sorozatok kategória bouquet sorrendje"
+
+#: bouquetsettings.py:293
+msgid "VOD/SERIES streams bouquet order"
+msgstr "Videók (VoD)/Sorozatok streamek bouquet sorrendje"
+
+#: bouquetsettings.py:296 server.py:125
+msgid "Output:"
+msgstr "Formátum:"
+
+#: bouquetsettings.py:299
+msgid "Max EPG days to download: (Use Default if EPG events is 0)"
+msgstr "Maximális letölthető EPG napok száma: (Alapértelmezés használata, ha az EPG események száma 0)"
+
+#: bouquetsettings.py:301
+msgid "Use alternative EPG url:"
+msgstr "Alternatív EPG URL használata:"
+
+#: bouquetsettings.py:303
+msgid "Alternative EPG url:"
+msgstr "Alternatív EPG URL:"
+
+#: bouquetsettings.py:363
+msgid "No bouquets selected."
+msgstr "Nincs bouquet kiválasztva."
+
+#: bouquetsettings.py:388
+msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."
+msgstr "A bouquet neve nem lehet üres. Adjon meg egy egyedi bouquet nevet, legalább 3 karakter hosszúságban."
+
+#: bouquetsettings.py:396 server.py:237
+msgid "Name already used. Please enter a unique name."
+msgstr "A név már foglalt. Adjon meg egy egyedi nevet."
+
+#: buildbouquets.py:43 update.py:62
+msgid "Building Bouquets"
+msgstr "Bouquetek létrehozása"
+
+#: buildbouquets.py:52 update.py:70
+msgid "Building Bouquets..."
+msgstr "Bouquetek létrehozása..."
+
+#: buildbouquets.py:210 update.py:252
+msgid "Downloading live data..."
+msgstr "TV műsorok adatainak letöltése..."
+
+#: buildbouquets.py:213 buildbouquets.py:309 buildbouquets.py:487 update.py:255 update.py:380 update.py:558
+msgid "Downloading VOD data..."
+msgstr "Videók (VoD) adatainak letöltése..."
+
+#: buildbouquets.py:216 buildbouquets.py:312 buildbouquets.py:490 buildbouquets.py:517 buildbouquets.py:660 update.py:258
+#: update.py:383 update.py:561 update.py:592 update.py:735
+msgid "Downloading series data..."
+msgstr "Sorozatok adatainak letöltése..."
+
+#: buildbouquets.py:223 update.py:265
+msgid "Downloading external playlist..."
+msgstr "Külső lejátszási lista letöltése..."
+
+#: buildbouquets.py:225 update.py:267
+msgid "Loading local playlist..."
+msgstr "Helyi lejátszási lista betöltése..."
+
+#: buildbouquets.py:231 buildbouquets.py:249 buildbouquets.py:908 update.py:273 update.py:291 update.py:988
+msgid "Processing live data..."
+msgstr "TV műsorok adatainak feldolgozása..."
+
+#: buildbouquets.py:237 update.py:279
+msgid "Processing VOD data..."
+msgstr "Videók (VOD) adatainak feldolgozása..."
+
+#: buildbouquets.py:243 buildbouquets.py:320 buildbouquets.py:497 buildbouquets.py:523 buildbouquets.py:665 update.py:285
+#: update.py:391 update.py:568 update.py:598 update.py:740
+msgid "Processing series data..."
+msgstr "Sorozatok adatainak feldolgozása..."
+
+#: buildbouquets.py:318 buildbouquets.py:495 update.py:389 update.py:566
+msgid "Process VOD data..."
+msgstr "Videó (VoD) adatok feldolgozása..."
+
+#: buildbouquets.py:700 update.py:782
+msgid ""
+"Your provider does not have the 'simple' API call\\nUnable to build series.\\nAlternative method might be added in the future."
+msgstr "A szolgáltatónak nincs 'simple' API hívása.\\nNem lehet sorozatokat létrehozni.\\nAlternatív módszer később hozzáadható."
+
+#: buildbouquets.py:1009
+msgid " IPTV Bouquets Created"
+msgstr " bouquet az IPTV szolgáltatás számára létrehozva"
+
+#: catchup.py:135
+#, python-format
+msgid "TV Archive: %s"
+msgstr "TV archívum: %s"
+
+#: catchup.py:260
+msgid "Catchup currently not available. Missing EPG data"
+msgstr "A TV archívum jelenleg nem érhető el. Az EPG adatok hiányoznak."
+
+#: choosecategories.py:45
+msgid "Category"
+msgstr "Kategória"
+
+#: choosecategories.py:46
+msgid "Channel"
+msgstr "Csatorna"
+
+#: choosecategories.py:50 deletebouquets.py:36
+msgid "Invert"
+msgstr "Megfordítás"
+
+#: choosecategories.py:51
+msgid "Reset"
+msgstr "Visszaállítás"
+
+#: choosecategories.py:53
+msgid "Show Streams"
+msgstr "Streamek megjelenítése"
+
+#: choosecategories.py:277 choosecategories.py:481 choosecategories.py:521 choosecategories.py:618 choosecategories.py:622
+msgid "Choose Live Categories"
+msgstr "Válasszon TV műsor kategóriákat"
+
+#: choosecategories.py:285 choosecategories.py:328
+msgid "Next"
+msgstr "Következő"
+
+#: choosecategories.py:287 choosecategories.py:330 choosecategories.py:365
+msgid "Create"
+msgstr "Létrehozás"
+
+#: choosecategories.py:320 choosecategories.py:490 choosecategories.py:538 choosecategories.py:612 choosecategories.py:630
+msgid "Choose VOD Categories"
+msgstr "Válasszon Videó (VoD) kategóriákat"
+
+#: choosecategories.py:359 choosecategories.py:499 choosecategories.py:555 choosecategories.py:604 choosecategories.py:636
+msgid "Choose Series Categories"
+msgstr "Válasszon Sorozat kategóriákat"
+
+#: deletebouquets.py:27 mainmenu.py:122
+msgid "Delete Bouquets"
+msgstr "Bouquetek törlése"
+
+#: deletebouquets.py:34 picons.py:38
+msgid "Cancel"
+msgstr "Mégse"
+
+#: deletebouquets.py:35 playlists.py:59
+msgid "Delete"
+msgstr "Törlés"
+
+#: deletebouquets.py:37
+msgid "Clear All"
+msgstr "Összes törlése"
+
+#: downloadpicons.py:117
+msgid "Downloadng Picons"
+msgstr "Pikonok letöltése"
+
+#: downloadpicons.py:119
+msgid "Making BouquetMakerXtream Picons"
+msgstr "BouquetMakerXtream pikonok készítése"
+
+#: downloadpicons.py:218
+msgid "No picons found."
+msgstr "Nem találhatók pikonok."
+
+#: downloadpicons.py:312
+msgid "Size: "
+msgstr "Méret: "
+
+#: downloadpicons.py:312
+msgid "Type: "
+msgstr "Típus: "
+
+#: downloadpicons.py:312
+msgid "Url: "
+msgstr "URL: "
+
+#: downloadpicons.py:312 downloadpicons.py:421
+msgid "Exists: "
+msgstr "Létrehozva: "
+
+#: downloadpicons.py:312
+#, python-format
+msgid "Success: %s   "
+msgstr "Kész: %s   "
+
+#: downloadpicons.py:313
+#, python-format
+msgid "Picon %d of %d"
+msgstr "Pikon %d a %d közül"
+
+#: downloadpicons.py:420
+msgid ""
+"Finished.\n"
+"\n"
+msgstr ""
+"Kész.\n"
+"\n"
+
+#: downloadpicons.py:421
+msgid "Success: "
+msgstr "Kész: "
+
+#: downloadpicons.py:421
+msgid "Bad size: "
+msgstr "Hibás méret: "
+
+#: downloadpicons.py:421
+msgid "bad type: "
+msgstr "hibás típus: "
+
+#: downloadpicons.py:421
+msgid "bad url: "
+msgstr "hibás URL: "
+
+#: downloadpicons.py:422
+msgid "Restart your GUI to refresh picons."
+msgstr "Indítsa újra a grafikus felhasználói felületet (GUI) a pikonok frissítéséhez."
+
+#: downloadpicons.py:422
+msgid "Your created picons can be found in"
+msgstr "Az elkészített pikonok itt találhatók:"
+
+#: downloadpicons.py:423
+msgid "Your failed picon list can be found in"
+msgstr "A sikertelen pikonok listája itt található:"
+
+#: downloadpicons.py:428
+msgid "Picon Error"
+msgstr "Pikon hiba"
+
+#: mainmenu.py:40
+msgid "Main Menu"
+msgstr "Főmenü"
+
+#: mainmenu.py:64
+msgid "Playlists.txt location is invalid and has been reset."
+msgstr "A playlists.txt helye érvénytelen ezért alaphelyzetbe állítva."
+
+#: mainmenu.py:108
+msgid "Playlists"
+msgstr "IPTV szolgáltatók"
+
+#: mainmenu.py:110 settings.py:70
+msgid "Main Settings"
+msgstr "Alapbeállítások"
+
+#: mainmenu.py:120
+msgid "Update Bouquets"
+msgstr "Bouquetek frissítése"
+
+#: mainmenu.py:121 picons.py:31
+msgid "Download Picons"
+msgstr "Pikonok letöltése"
+
+#: mainmenu.py:124
+msgid "Delete All BMX Bouquets"
+msgstr "Az összes BMX bouquet törlése"
+
+#: mainmenu.py:125 server.py:48
+msgid "Add Playlist"
+msgstr "IPTV szolgáltató hozzáadása"
+
+#: mainmenu.py:159
+msgid "Delete all BMX created bouquets?"
+msgstr "Biztosan törölni szeretné az összes BMX által létrehozott bouquetet?"
+
+#: parsem3u.py:59
+msgid "Stream"
+msgstr "Stream"
+
+#: picons.py:39
+msgid "Download"
+msgstr "Letöltés"
+
+#: piconsettings.py:38
+msgid "Picon Settings"
+msgstr "Pikon beállítások"
+
+#: piconsettings.py:78 server.py:88 settings.py:110
+msgid "Really close without saving settings?"
+msgstr "Biztosan mentés nélkül zárja be a beállításokat?"
+
+#: piconsettings.py:106 settings.py:141
+msgid "You need to restart the GUI"
+msgstr "Újra kell indítani a grafikus felhasználói felületet (GUI-t)"
+
+#: piconsettings.py:106 settings.py:141
+msgid "Do you want to restart now?"
+msgstr "Szeretné most újraindítani?"
+
+#: piconsettings.py:117
+msgid "Picon download location"
+msgstr "Pikon letöltési helye"
+
+#: piconsettings.py:118
+msgid "Picon size"
+msgstr "Pikon méret"
+
+#: piconsettings.py:119
+msgid "Picon type"
+msgstr "Pikon típusa"
+
+#: piconsettings.py:121
+msgid "Overwrite picons with the same name"
+msgstr "Pikonok felülírása azonos névvel"
+
+#: piconsettings.py:122
+msgid "Custom location. Manual symlink required"
+msgstr "Egyedi hely. Kézi symlink szükséges"
+
+#: piconsettings.py:123
+msgid "Max download threads. Increase for speed. Reduce if downloads are freezing"
+msgstr "Maximális letöltési szálak száma. Növelje a sebesség érdekében, csökkentse, ha lefagy a letöltés"
+
+#: piconsettings.py:124
+msgid "Max size of source picon"
+msgstr "Forráspikon maximális mérete"
+
+#: piconsettings.py:125
+msgid "Max width of source picon"
+msgstr "Forráspikon maximális szélessége"
+
+#: piconsettings.py:209 settings.py:279
+msgid "Choose Directory:"
+msgstr "Könyvtár kiválasztása:"
+
+#: piconsettings.py:210 settings.py:280
+msgid "Choose directory"
+msgstr "Könyvtár kiválasztása"
+
+#: playlists.py:55
+msgid "Select Playlist"
+msgstr "IPTV szolgáltató kiválasztása"
+
+#: playlists.py:60
+msgid "Info"
+msgstr "Információ"
+
+#: playlists.py:100
+msgid "No internet."
+msgstr "Nincs internetkapcsolat."
+
+#: playlists.py:305 playlists.py:410
+msgid "Server Not Responding"
+msgstr "A szerver nem válaszol"
+
+#: playlists.py:330 playlists.py:412
+msgid "Not Authorised"
+msgstr "Nincs jogosultsága"
+
+#: playlists.py:334 playlists.py:342 playlists.py:390
+msgid "Active"
+msgstr "Aktív"
+
+#: playlists.py:336 playlists.py:404
+msgid "Banned"
+msgstr "Letiltva"
+
+#: playlists.py:338 playlists.py:408
+msgid "Disabled"
+msgstr "Kikapcsolva"
+
+#: playlists.py:340 playlists.py:406
+msgid "Expired"
+msgstr "Lejárt"
+
+#: playlists.py:344 playlists.py:346
+msgid "Expires: "
+msgstr "Lejár: "
+
+#: playlists.py:348
+msgid "Active Conn:"
+msgstr "Aktív kapcsolatok száma:"
+
+#: playlists.py:356
+msgid "Max Conn:"
+msgstr "Elérhető kapcsolatok száma:"
+
+#: playlists.py:372 playlists.py:390
+msgid "Url OK"
+msgstr "URL rendben"
+
+#: playlists.py:373
+msgid "External playlist"
+msgstr "Külső IPTV szolgáltató"
+
+#: playlists.py:376
+msgid "Local file"
+msgstr "Helyi fájl"
+
+#: playlists.py:425
+msgid "Delete selected playlist?"
+msgstr "Biztosan törli a kiválasztott lejátszási listát?"
+
+#: playlists.py:464
+msgid "Url is invalid or playlist/user no longer authorised!"
+msgstr "Az URL érvénytelen, vagy az IPTV szolgáltató/felhasználó már nem jogosult!"
+
+#: playlists.py:467
+msgid "User Info only available for xtream/XUI One lines"
+msgstr "Felhasználói információ csak az xtream/XUI One sorokhoz érhető el"
+
+#: plugin.py:101
+msgid "XPicons - 220x132 Pixel"
+msgstr "XPiconok - 220x132 képpont"
+
+#: plugin.py:102
+msgid "ZZZPicons - 400x240 Pixel"
+msgstr "ZZZPiconok - 400x240 képpont"
+
+#: plugin.py:129
+msgid "Bottom"
+msgstr "Lent"
+
+#: plugin.py:129
+msgid "Top"
+msgstr "Fent"
+
+#: plugin.py:132
+msgid "24 Bit"
+msgstr "24 bites"
+
+#: plugin.py:132
+msgid "8 Bit"
+msgstr "8 bites"
+
+#: plugin.py:133
+msgid "Service Reference Picons"
+msgstr "Szolgáltatásazonosító piconok"
+
+#: plugin.py:133
+msgid "Service Name Picons"
+msgstr "Szolgáltatásnév piconok"
+
+#: plugin.py:138
+msgid "100KB"
+msgstr "100 kB"
+
+#: plugin.py:138
+msgid "200KB"
+msgstr "200 kB"
+
+#: plugin.py:138
+msgid "300KB"
+msgstr "300 kB"
+
+#: plugin.py:138
+msgid "400KB"
+msgstr "400 kB"
+
+#: plugin.py:138
+msgid "500KB"
+msgstr "500 kB"
+
+#: plugin.py:138 plugin.py:139
+msgid "No limit"
+msgstr "Nincs korlátozás"
+
+#: plugin.py:139
+msgid "480px"
+msgstr "480 px"
+
+#: plugin.py:139
+msgid "728px"
+msgstr "728 px"
+
+#: plugin.py:139
+msgid "1000px"
+msgstr "1000 px"
+
+#: plugin.py:139
+msgid "1280px"
+msgstr "1280 px"
+
+#: plugin.py:139
+msgid "1920px"
+msgstr "1920 px"
+
+#: plugin.py:225
+msgid "Bouquet Maker Xtream"
+msgstr "Bouquet Maker Xtream"
+
+#: plugin.py:444
+msgid "IPTV Bouquets Creator by KiddaC"
+msgstr "IPTV Bouquet készítő KiddaC-től"
+
+#: plugin.py:445
+msgid "BouquetMakerXtream"
+msgstr "BouquetMakerXtream"
+
+#: server.py:57 settings.py:78
+msgid "Save"
+msgstr "Mentés"
+
+#: server.py:58
+msgid "You can manually add playlist urls to /etc/enigma2/bouquetmakerxtream/playlists.txt file"
+msgstr "Manuálisan is hozzáadhat IPTV szolgáltató URL-eket az /etc/enigma2/bouquetmakerxtream/playlists.txt fájlban"
+
+#: server.py:103
+msgid "Xtream codes / XUI ONE (get.php)"
+msgstr "Xtream / XUI ONE (get.php)"
+
+#: server.py:103
+msgid "External #EXTM3U playlist"
+msgstr "Külső #EXTM3U lejátszási lista"
+
+#: server.py:117
+msgid "Select playlist type:"
+msgstr "Lejátszási lista típusának kiválasztása:"
+
+#: server.py:120 server.py:128
+msgid "Protocol:"
+msgstr "Protokoll:"
+
+#: server.py:121
+msgid "Server URL: i.e. domain.xyz"
+msgstr "Szerver címe: pl. domain.xyz"
+
+#: server.py:122
+msgid "Port: (optional) i.e. 8080"
+msgstr "Port: (opcionális) pl. 8080"
+
+#: server.py:123
+msgid "Username:"
+msgstr "Felhasználónév:"
+
+#: server.py:124
+msgid "Password:"
+msgstr "Jelszó:"
+
+#: server.py:129
+msgid "External url: i.e pastebin.com/raw/blahblah"
+msgstr "Külső URL: pl. pastebin.com/raw/blahblah"
+
+#: server.py:226
+msgid "Details are not valid or unauthorised"
+msgstr "A megadott adatok érvénytelenek vagy nincs jogosultsága"
+
+#: server.py:231
+msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 2 characters."
+msgstr "A bouquet neve nem lehet üres. Adjon meg egy egyedi bouquet nevet, minimum 2 karakter hosszúságban."
+
+#: server.py:246
+msgid "Playlist added successfully."
+msgstr "Az IPTV szolgáltatás sikeresen hozzáadva."
+
+#: serverinfo.py:31
+msgid "User Information"
+msgstr "Felhasználói információk"
+
+#: serverinfo.py:44
+msgid "Status:"
+msgstr "Állapot:"
+
+#: serverinfo.py:45
+msgid "Expiry Date:"
+msgstr "Lejárati dátum:"
+
+#: serverinfo.py:46
+msgid "Created At:"
+msgstr "Létrehozva:"
+
+#: serverinfo.py:47
+msgid "Is Trial:"
+msgstr "Próba verzió:"
+
+#: serverinfo.py:48
+msgid "Active Connections:"
+msgstr "Aktív kapcsolatok száma:"
+
+#: serverinfo.py:49
+msgid "Max Connections:"
+msgstr "Elérhető kapcsolatok száma:"
+
+#: serverinfo.py:50
+msgid "Allowed Output Formats:"
+msgstr "Engedélyezett kimeneti formátumok:"
+
+#: serverinfo.py:51
+msgid "Real URL:"
+msgstr "Valódi URL:"
+
+#: serverinfo.py:52
+msgid "Timezone:"
+msgstr "Időzóna:"
+
+#: serverinfo.py:53
+msgid "Server Offset:"
+msgstr "Szerver időeltolódása:"
+
+#: serverinfo.py:61
+msgid "Close"
+msgstr "Bezárás"
+
+#: settings.py:36
+msgid "Please enter the correct pin code"
+msgstr "Kérjük, adja meg a helyes PIN kódot"
+
+#: settings.py:36
+msgid "Enter pin code"
+msgstr "Adja meg a PIN kódot"
+
+#: settings.py:45
+msgid "The pin code you entered is wrong."
+msgstr "A megadott PIN kód helytelen."
+
+#: settings.py:122
+msgid "Please change default parental pin.\\n\\nPin cannot be 0000, 1111 or 1234"
+msgstr "Kérjük, változtassa meg az alapértelmezett szülői felügyelet PIN kódot.\\n\\nA PIN nem lehet 0000, 1111 vagy 1234"
+
+#: settings.py:151
+msgid "Select skin"
+msgstr "Téma kiválasztása"
+
+#: settings.py:152
+msgid "Select fake web user-agent"
+msgstr "Böngészőazonosító módosítása"
+
+#: settings.py:153
+msgid "playlists.txt location"
+msgstr "playlists.txt helye"
+
+#: settings.py:153 settings.py:154 settings.py:159 settings.py:163
+msgid " *Restart GUI Required"
+msgstr " *Grafikus felhasználói felület (GUI) újraindítása szükséges"
+
+#: settings.py:154
+msgid "Local M3U File location"
+msgstr "Helyi M3U fájl helye"
+
+#: settings.py:155
+msgid "Default LIVE stream type"
+msgstr "Alapértelmezett TV műsor stream típus"
+
+#: settings.py:156
+msgid "Default VOD/SERIES stream type"
+msgstr "Alapértelmezett Videó (VoD)/Sorozat stream típus"
+
+#: settings.py:157
+msgid "BouquetMakerXtream parental control"
+msgstr "BouquetMakerXtream szülői felügyelet"
+
+#: settings.py:158
+msgid "BouquetMakerXtream parental pin"
+msgstr "BouquetMakerXtream szülői felügyelet PIN kód"
+
+#: settings.py:159
+msgid "Show in main menu"
+msgstr "Megjelenítés a Főmenüben"
+
+#: settings.py:160
+msgid "Skip playlist selection screen if only 1 playlist"
+msgstr "IPTV szolgáltató kiválasztó képernyő kihagyása, ha csak 1 szolgáltató van"
+
+#: settings.py:161
+msgid "Automatic live bouquet update"
+msgstr "Automatikus TV műsor bouquet frissítés"
+
+#: settings.py:162
+msgid "Automatic live bouquet update time"
+msgstr "Automatikus TV műsor bouquet frissítés időpontja"
+
+#: settings.py:163
+msgid "Embed Catchup player in channelselect screen"
+msgstr "TV archívum lejátszó beágyazása a csatornaválasztó képernyőn"
+
+#: settings.py:164
+msgid "Prefix Catchup channels"
+msgstr "A TV archívum csatornák előtagja"
+
+#: settings.py:165
+msgid "Select Catchup prefix symbol"
+msgstr "TV archívum előtag szimbólum kiválasztása"
+
+#: settings.py:166
+msgid "Margin before Catchup (mins)"
+msgstr "Időtartam a kiválasztott TV archívum visszajátszás előtt (perc)"
+
+#: settings.py:167
+msgid "Margin after Catchup (mins)"
+msgstr "Időtartam a kiválasztott TV archívum tartalom után (perc)"
+
+#: settings.py:168
+msgid "Group bouquets into its own folder"
+msgstr "Bouquetek csoportosítása külön mappába"
+
+#: settings.py:169
+msgid "Exit plugin on bouquet creation"
+msgstr "Kilépés a bővítményf bouquet létrehozás után"
+
+#: update.py:105
+msgid " Providers IPTV Updated"
+msgstr " IPTV szolgáltatók frissítve"
+
+#: update.py:160
+#, python-format
+msgid "Updating Playlist %d of %d"
+msgstr "IPTV frissítés (%d., összesen: %d)"

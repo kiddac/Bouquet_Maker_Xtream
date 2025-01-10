@@ -357,7 +357,15 @@ class BmxCatchup(Screen):
 
     def play(self):
         if self["epg_short_list"].getCurrent():
-            playurl = "%s/streaming/timeshift.php?username=%s&password=%s&stream=%s&start=%s&duration=%s" % (self.domain, self.username, self.password, self.epg_short_list[self.current_selection][7], self.epg_short_list[self.current_selection][4], self.epg_short_list[self.current_selection][5])
+            playurl = "{}/timeshift/{}/{}/{}/{}/{}.ts".format(
+                self.domain,
+                self.username,
+                self.password,
+                self.epg_short_list[self.current_selection][5],
+                self.epg_short_list[self.current_selection][4],
+                self.epg_short_list[self.current_selection][7]
+            )
+
             stream_type = 4097
             sref = eServiceReference(stream_type, 0, playurl)
             sref.setName(self.epg_short_list[self.current_selection][2])

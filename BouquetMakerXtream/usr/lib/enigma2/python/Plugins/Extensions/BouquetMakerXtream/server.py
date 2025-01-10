@@ -277,7 +277,7 @@ class BmxAddServer(ConfigListScreen, Screen):
                         if self.playlist_type_cfg.value == "standard":
                             json_response = response.json()
                             if "user_info" in json_response and "auth" in json_response["user_info"]:
-                                valid = json_response["user_info"]["auth"] == 1
+                                valid = str(json_response["user_info"]["auth"]) == "1"
                         else:
                             valid = True
                     except Exception as e:

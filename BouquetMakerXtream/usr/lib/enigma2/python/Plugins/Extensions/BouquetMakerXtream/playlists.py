@@ -486,7 +486,7 @@ class BmxPlaylists(Screen):
         from . import bouquetsettings
         if glob.current_playlist and glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             if "user_info" in glob.current_playlist:
-                if "auth" in glob.current_playlist["user_info"] and glob.current_playlist["user_info"]["auth"] == 1 and glob.current_playlist["user_info"]["status"] == "Active":
+                if "auth" in glob.current_playlist["user_info"] and str(glob.current_playlist["user_info"]["auth"]) == "1" and glob.current_playlist["user_info"]["status"] == "Active":
                     self.session.openWithCallback(self.exit, bouquetsettings.BmxBouquetSettings)
                     self.checkOnePlaylist()
             else:
@@ -517,7 +517,7 @@ class BmxPlaylists(Screen):
             self.playlists_all = []
 
         for playlist in self.playlists_all:
-            cleanName = re.sub(r'[\<\>\:\"\/\\\|\?\*]', "_", str(playlist["playlist_info"]["name"]))
+            cleanName = re.sub(r'[\'\<\>\:\"\/\\\|\?\*\(\)\[\]]', "_", str(playlist["playlist_info"]["name"]))
             cleanName = re.sub(r" +", "_", cleanName)
             cleanName = re.sub(r"_+", "_", cleanName)
             channelfilelist.append(cleanName)

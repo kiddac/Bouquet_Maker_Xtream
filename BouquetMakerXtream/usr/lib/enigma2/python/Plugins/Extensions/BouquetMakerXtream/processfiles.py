@@ -395,7 +395,7 @@ def processFiles():
     filename = ""
 
     for filename in os.listdir(cfg.local_location.value):
-        safe_name = re.sub(r"[\<\>\:\"\/\\\|\?\*]", "_", str(filename))
+        safe_name = re.sub(r'[\'\<\>\:\"\/\\\|\?\*\(\)\[\]]', "_", str(filename))
         safe_name = re.sub(r" ", "_", safe_name)
         safe_name = re.sub(r"_+", "_", safe_name)
 
