@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-debugs = True
+debugs = False
 
 
 def check_internet():

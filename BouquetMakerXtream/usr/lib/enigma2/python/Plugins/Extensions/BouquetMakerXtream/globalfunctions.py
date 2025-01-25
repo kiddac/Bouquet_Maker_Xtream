@@ -144,17 +144,40 @@ def downloadUrlMulti(url, output_file=None):
                 if ext == "json":
                     json_content = r.json()
                     return category, json_content
-                else:
+
+                chunk_size = 8192 * 8  # 128 KB
+
+                if output_file:
+                    # Save to the specified output file
                     output_dir = os.path.dirname(output_file)
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)
 
-                    chunk_size = 8192 * 8  # 128 KB
                     with open(output_file, 'wb') as f:
                         for chunk in r.iter_content(chunk_size=chunk_size):
-                            f.write(chunk)
+                            if chunk:  # Only write non-empty chunks
+                                f.write(chunk)
 
                     return category, output_file
+
+                else:
+                    # Collect chunks into memory and return as content
+                    if pythonVer == 2:
+                        content = ''
+                    else:
+                        content = b""
+
+                    for chunk in r.iter_content(chunk_size=chunk_size):
+                        if chunk:  # Only append non-empty chunks
+                            if ext == "text":
+                                if pythonVer == 2:
+                                    content += chunk.decode('utf-8', errors='ignore')
+                                else:
+                                    content += chunk.decode('utf-8', errors='ignore').encode('utf-8')
+                            else:
+                                content += chunk
+
+                    return category, content
 
         except requests.Timeout as e:
             print("Error message: {}".format(str(e)))

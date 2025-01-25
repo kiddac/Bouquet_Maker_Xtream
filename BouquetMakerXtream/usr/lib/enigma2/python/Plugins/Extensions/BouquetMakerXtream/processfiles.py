@@ -56,6 +56,7 @@ def processFiles():
 
     with open(playlist_file, "w") as f:
         for line in lines:
+            line = line.strip()
             line = re.sub(" +", " ", line)
             line = line.strip(" ")
             if not line.startswith(("http://", "https://", "#")):

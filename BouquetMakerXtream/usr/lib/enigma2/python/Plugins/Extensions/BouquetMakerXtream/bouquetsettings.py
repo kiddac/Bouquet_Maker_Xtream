@@ -330,7 +330,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.list.append(getConfigListEntry(_("Short name or provider name:"), self.iptvname_cfg))
         self.list.append(getConfigListEntry(_("Use name as bouquet prefix"), self.prefix_name_cfg))
 
-        if self.hide_live is False:
+        if not self.hide_live:
             self.list.append(getConfigListEntry(_("Show LIVE category if available:"), self.show_live_cfg))
             if self.show_live_cfg.value:
                 self.list.append(getConfigListEntry(_("Stream Type LIVE:"), self.live_type_cfg))
@@ -339,17 +339,15 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 self.list.append(getConfigListEntry(_("LIVE category bouquet order"), self.live_category_order_cfg))
                 self.list.append(getConfigListEntry(_("LIVE stream bouquet order"), self.live_stream_order_cfg))
 
-        if self.hide_vod is False:
+        if not self.hide_vod:
             self.list.append(getConfigListEntry(_("Show VOD category if available:"), self.show_vod_cfg))
 
-        if self.hide_series is False:
+        if not self.hide_series:
             self.list.append(getConfigListEntry(_("Show SERIES category if available:"), self.show_series_cfg))
 
-        if self.hide_vod is False or self.hide_series is False:
+        if not self.hide_vod or not self.hide_series:
             if self.show_vod_cfg.value or self.show_series_cfg.value:
                 self.list.append(getConfigListEntry(_("Stream Type VOD/SERIES:"), self.vod_type_cfg))
-
-            if self.show_vod_cfg.value:
                 self.list.append(getConfigListEntry(_("VOD/SERIES category bouquet order"), self.vod_category_order_cfg))
                 self.list.append(getConfigListEntry(_("VOD/SERIES streams bouquet order"), self.vod_stream_order_cfg))
 
@@ -433,7 +431,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
             self["config"].instance.moveSelectionTo(1)  # hack to hide texthelper
 
-            if self.show_live_cfg.value is False and self.show_vod_cfg.value is False and self.show_series_cfg.value is False:
+            if not self.show_live_cfg.value and not self.show_vod_cfg.value and not self.show_series_cfg.value:
                 self.session.open(MessageBox, _("No bouquets selected."), MessageBox.TYPE_ERROR, timeout=5)
                 self.createSetup()
                 return
