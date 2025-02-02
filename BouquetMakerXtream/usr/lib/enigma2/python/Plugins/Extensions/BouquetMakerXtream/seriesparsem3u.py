@@ -14,6 +14,9 @@ def parseM3u8Playlist(response):
     streamid = 0
     url_pattern = re.compile(r'(https?://[^\s]+)')
 
+    if isinstance(response, bytes):  # Ensure it's a string
+        response = response.decode('utf-8', 'ignore')
+
     response_lines = response.splitlines()
     length = len(response_lines)
 

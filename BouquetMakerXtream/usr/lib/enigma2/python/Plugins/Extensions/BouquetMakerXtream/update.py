@@ -361,6 +361,9 @@ class BmxUpdate(Screen):
                 os.remove(output_file)
 
     def loadLive(self):
+
+        self.clearCaches()
+
         self.live_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -425,7 +428,7 @@ class BmxUpdate(Screen):
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) % 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                 except:
                     continue
 
@@ -564,6 +567,9 @@ class BmxUpdate(Screen):
                 self.finished()
 
     def loadVod(self):
+
+        self.clearCaches()
+
         self.vod_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -616,7 +622,7 @@ class BmxUpdate(Screen):
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) % 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                 except:
                     continue
 
@@ -731,6 +737,9 @@ class BmxUpdate(Screen):
                 self.finished()
 
     def loadSeries(self):
+
+        self.clearCaches()
+
         self.series_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -790,7 +799,7 @@ class BmxUpdate(Screen):
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) % 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                 except:
                     continue
 

@@ -323,6 +323,9 @@ class BmxBuildBouquets(Screen):
     def loadLive(self):
         if debugs:
             print("*** loadLive ***")
+
+        self.clearCaches()
+
         self.live_stream_data = []
         settings = glob.current_playlist["settings"]
         playlist_info = glob.current_playlist["playlist_info"]
@@ -382,7 +385,7 @@ class BmxBuildBouquets(Screen):
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) % 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                 except:
                     continue
 
@@ -523,6 +526,9 @@ class BmxBuildBouquets(Screen):
     def loadVod(self):
         if debugs:
             print("*** loadVod ***")
+
+        self.clearCaches()
+
         self.vod_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -573,7 +579,7 @@ class BmxBuildBouquets(Screen):
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) % 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                 except:
                     continue
 
@@ -690,6 +696,8 @@ class BmxBuildBouquets(Screen):
         if debugs:
             print("*** loadSeries ***")
 
+        self.clearCaches()
+
         self.series_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -744,7 +752,7 @@ class BmxBuildBouquets(Screen):
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
-                    bouquet_id2 = int(stream_id) % 65535
+                    bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
                 except:
                     continue
 

@@ -162,18 +162,24 @@ def downloadUrlMulti(url, output_file=None):
 
                 else:
                     # Collect chunks into memory and return as content
+                    content = ''
+                    """
                     if pythonVer == 2:
                         content = ''
                     else:
                         content = b""
+                        """
 
                     for chunk in r.iter_content(chunk_size=chunk_size):
                         if chunk:  # Only append non-empty chunks
                             if ext == "text":
+                                content += chunk.decode('utf-8', errors='ignore')
+                                """
                                 if pythonVer == 2:
                                     content += chunk.decode('utf-8', errors='ignore')
                                 else:
                                     content += chunk.decode('utf-8', errors='ignore').encode('utf-8')
+                                    """
                             else:
                                 content += chunk
 
