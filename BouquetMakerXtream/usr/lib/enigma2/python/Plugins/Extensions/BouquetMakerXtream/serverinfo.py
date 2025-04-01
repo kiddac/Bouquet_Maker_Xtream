@@ -12,7 +12,6 @@ from datetime import datetime
 
 from Screens.Screen import Screen
 
-import json
 import os
 
 
@@ -92,7 +91,8 @@ class BmxUserInfo(Screen):
             self["maxconn"].setText(str(glob.current_playlist["user_info"]["max_connections"]))
 
         if "allowed_output_formats" in glob.current_playlist["user_info"]:
-            self["formats"].setText(str(json.dumps(glob.current_playlist["user_info"]["allowed_output_formats"])).lstrip("[").rstrip("]"))
+            allowed_formats = glob.current_playlist["user_info"]["allowed_output_formats"] or []
+            self["formats"].setText(", ".join(map(str, allowed_formats)) if allowed_formats else "N/A")
 
         if "url" in glob.current_playlist["server_info"]:
             self["realurl"].setText(str(glob.current_playlist["server_info"]["url"]))

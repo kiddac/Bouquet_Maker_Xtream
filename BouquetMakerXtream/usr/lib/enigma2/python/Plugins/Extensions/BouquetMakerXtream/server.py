@@ -206,10 +206,10 @@ class BmxAddServer(ConfigListScreen, Screen):
 
             username = self.usernameCfg.value.strip()
             password = self.passwordCfg.value.strip()
-            listtype = "m3u_plus"
+            media_type = "m3u_plus"
             output = self.outputCfg.value
 
-            playlistline = "{}/get.php?username={}&password={}&type={}&output={} #{}".format(host, username, password, listtype, output, self.name)
+            playlistline = "{}/get.php?username={}&password={}&type={}&output={} #{}".format(host, username, password, media_type, output, self.name)
             self.apiline = "{}/player_api.php?username={}&password={}".format(host, username, password)
 
             valid = self.checkline()

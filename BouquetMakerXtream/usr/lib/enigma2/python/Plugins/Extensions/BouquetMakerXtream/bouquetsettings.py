@@ -499,7 +499,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             glob.current_playlist["settings"]["vod_stream_order"] = vod_stream_order
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                list_type = "m3u_plus"
+                media_type = "m3u_plus"
                 output = self.output_cfg.value
                 if output == "m3u8" and live_type == "1":
                     live_type = "4097"
@@ -514,7 +514,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 glob.current_playlist["settings"]["epg_alternative_url"] = epg_alternative_url
                 glob.current_playlist["settings"]["next_days"] = next_days
 
-                self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, list_type, output)
+                self.full_url = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, media_type, output)
 
                 glob.current_playlist["playlist_info"]["full_url"] = self.full_url
 
@@ -542,7 +542,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
                                     has_timeshift = "timeshift" in query
 
-                                    playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, list_type, output)
+                                    playlist_line = "%s/get.php?username=%s&password=%s&type=%s&output=%s" % (host, username, password, media_type, output)
 
                                     if has_timeshift or int(epg_offset) != 0:
                                         playlist_line += "&timeshift=%s" % epg_offset

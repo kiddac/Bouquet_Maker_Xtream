@@ -1,28 +1,32 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .plugin import cfg, playlist_file, playlists_json, debugs
-
+# Standard library imports
 import json
 import os
 import re
 
-
 try:
-    from urlparse import parse_qs, urlparse
-except:
-    from urllib.parse import parse_qs, urlparse
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    from urlparse import urlparse, parse_qs
+
+# Local application/library-specific imports
+from .plugin import cfg, playlist_file, playlists_json, debugs
 
 
 def processFiles():
     if debugs:
         print("*** processFiles ***")
-    # check files exsits
+    # Check if playlists.txt file exists in specified location
     if not os.path.isfile(playlist_file):
-        open(playlist_file, "a").close()
+        with open(playlist_file, "a"):
+            pass
 
+    # Check if x-playlists.json file exists in specified location
     if not os.path.isfile(playlists_json):
-        open(playlists_json, "a").close()
+        with open(playlists_json, "a"):
+            pass
 
     playlists_all = []
     prefix_name = True
@@ -42,7 +46,7 @@ def processFiles():
         with open(playlists_json, "r") as f:
             try:
                 playlists_all = json.load(f)
-            except:
+            except ValueError:
                 os.remove(playlists_json)
                 playlists_all = []
     else:
@@ -50,7 +54,7 @@ def processFiles():
             playlists_all = []
             json.dump(playlists_all, f)
 
-    # check playlist.txt entries are valid
+    # Check playlist.txt entries are valid
     with open(playlist_file, "r+") as f:
         lines = f.readlines()
 
@@ -73,8 +77,8 @@ def processFiles():
                 port = ""
                 username = ""
                 password = ""
-                playlistformat = "m3u_plus"
-                output = "ts"
+                media_type = "m3u_plus"
+                output = ""
                 epg_offset = 0
 
                 parsed_uri = urlparse(line)
@@ -105,11 +109,22 @@ def processFiles():
 
                 """
                 if "type" in query:
-                    playlistformat = query["type"][0].strip()
+                    media_type = query["type"][0].strip()
                     """
 
                 if "output" in query:
                     output = query["output"][0].strip()
+                else:
+                    output = "ts"
+
+                if output not in ["ts", "m3u8", "mpegts", "hls"]:
+                    output = "ts"
+
+                if output == "mpegts":
+                    output = "ts"
+
+                if output == "hls":
+                    output = "m3u8"
 
                 if "timeshift" in query:
                     try:
@@ -118,9 +133,9 @@ def processFiles():
                         pass
 
                 if epg_offset != 0:
-                    line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s\n" % (host, username, password, playlistformat, output, epg_offset, name)
+                    line = "%s/get.php?username=%s&password=%s&type=%s&output=%s&timeshift=%s #%s\n" % (host, username, password, media_type, output, epg_offset, name)
                 else:
-                    line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s\n" % (host, username, password, playlistformat, output, name)
+                    line = "%s/get.php?username=%s&password=%s&type=%s&output=%s #%s\n" % (host, username, password, media_type, output, name)
 
             if line != "":
                 f.write(line)
@@ -134,8 +149,8 @@ def processFiles():
             port = ""
             username = ""
             password = ""
-            playlistformat = "m3u_plus"
-            output = "ts"
+            media_type = "m3u_plus"
+            output = ""
 
             # live_streams = []
 
@@ -176,11 +191,22 @@ def processFiles():
 
                     """
                     if "type" in query:
-                        playlistformat = query["type"][0].strip()
+                        media_type = query["type"][0].strip()
                         """
 
                     if "output" in query:
                         output = query["output"][0].strip()
+                    else:
+                        output = "ts"
+
+                    if output not in ["ts", "m3u8", "mpegts", "hls"]:
+                        output = "ts"
+
+                    if output == "mpegts":
+                        output = "ts"
+
+                    if output == "hls":
+                        output = "m3u8"
 
                     if "timeshift" in query:
                         try:
@@ -190,7 +216,7 @@ def processFiles():
 
                     player_api = host + "/player_api.php?username=" + username + "&password=" + password
                     xmltv_api = host + "/xmltv.php?username=" + username + "&password=" + password
-                    full_url = host + "/get.php?username=" + username + "&password=" + password + "&type=" + playlistformat + "&output=" + output
+                    full_url = host + "/get.php?username=" + username + "&password=" + password + "&type=" + media_type + "&output=" + output
 
                 elif playlist_type == "external":
                     full_url = line.partition("#")[0].strip()
@@ -222,7 +248,7 @@ def processFiles():
                                     playlist["settings"]["next_days"] = next_days
 
                                 playlist["playlist_info"]["name"] = name
-                                playlist["playlist_info"]["type"] = playlistformat
+                                playlist["playlist_info"]["type"] = media_type
                                 playlist["playlist_info"]["output"] = output
                                 playlist["playlist_info"]["full_url"] = full_url  # get.php
                                 playlist["playlist_info"]["index"] = index
@@ -252,7 +278,7 @@ def processFiles():
                                 ("port", port),
                                 ("username", username),
                                 ("password", password),
-                                ("type", playlistformat),
+                                ("type", media_type),
                                 ("output", output),
                                 ("player_api", player_api),
                                 ("xmltv_api", xmltv_api),
