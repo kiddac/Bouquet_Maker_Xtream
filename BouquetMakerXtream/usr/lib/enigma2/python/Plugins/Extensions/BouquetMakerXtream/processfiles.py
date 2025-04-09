@@ -52,7 +52,7 @@ def processFiles():
     else:
         with open(playlists_json, "w") as f:
             playlists_all = []
-            json.dump(playlists_all, f)
+            json.dump(playlists_all, f, indent=4)
 
     # Check playlist.txt entries are valid
     with open(playlist_file, "r+") as f:
@@ -497,6 +497,6 @@ def processFiles():
 
     # Write new x-playlists.json file
     with open(playlists_json, "w") as f:
-        json.dump(playlists_all, f)
+        json.dump(playlists_all, f, indent=4)
 
     return playlists_all

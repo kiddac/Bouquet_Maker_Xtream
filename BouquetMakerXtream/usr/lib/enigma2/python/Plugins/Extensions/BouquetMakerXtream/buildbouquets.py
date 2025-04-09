@@ -1017,4 +1017,4 @@ class BmxBuildBouquets(Screen):
                     break
 
         with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f)
+            json.dump(self.playlists_all, f, indent=4)
