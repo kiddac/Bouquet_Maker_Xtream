@@ -435,7 +435,7 @@ class BmxUpdate(Screen):
                 service_ref = "1:0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:http%3a//example.m3u8"
                 custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
 
-                if "custom_sid" in channel and channel["custom_sid"] and str(channel["custom_sid"]) not in ("null", "None", "0") and len(channel["custom_sid"]) > 16:
+                if "custom_sid" in channel and channel["custom_sid"] and str(channel["custom_sid"]) not in ("null", "None", "0", ":0:0:0:0:0:0:0:0:0:") and len(channel["custom_sid"]) > 16:
                     custom_sid = str(channel["custom_sid"])
                     if custom_sid[0].isdigit():
                         custom_sid = custom_sid[1:]

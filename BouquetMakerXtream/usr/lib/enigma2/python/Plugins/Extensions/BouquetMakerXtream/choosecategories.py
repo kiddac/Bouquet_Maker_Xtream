@@ -5,7 +5,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, playlists_json, skin_directory
+from .plugin import cfg, common_path, playlists_json, skin_directory, debugs
 
 from Components.ActionMap import ActionMap
 from Components.Pixmap import Pixmap
@@ -144,6 +144,8 @@ class BmxChooseCategories(Screen):
                 self.selectionChanged()
 
     def start(self):
+        if debugs:
+            print("*** start ***")
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:
@@ -154,6 +156,8 @@ class BmxChooseCategories(Screen):
         self.timer.start(10, True)
 
     def makeUrlList(self):
+        if debugs:
+            print("*** makeUrlList ***")
         self.live_url_list = []
         self.vod_url_list = []
         self.series_url_list = []
@@ -182,6 +186,8 @@ class BmxChooseCategories(Screen):
             self.loadSeries()
 
     def processDownloads(self, stream_type, outputtype=None):
+        if debugs:
+            print("*** processDownloads ***")
         try:
             self["splash"].show()
         except:
@@ -231,6 +237,8 @@ class BmxChooseCategories(Screen):
             pass
 
     def loadLive(self):
+        if debugs:
+            print("*** loadlive ***")
         self.level = 1
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             self.processDownloads("live", "json")
@@ -273,6 +281,8 @@ class BmxChooseCategories(Screen):
                 self.loadSeries()
 
     def loadVod(self):
+        if debugs:
+            print("*** loadVod ***")
         self.level = 2
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             self.processDownloads("vod", "json")
@@ -312,6 +322,8 @@ class BmxChooseCategories(Screen):
                 self.loadSeries()
 
     def loadSeries(self):
+        if debugs:
+            print("*** loadSeries ***")
         self.level = 3
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             self.processDownloads("series", "json")
@@ -346,6 +358,8 @@ class BmxChooseCategories(Screen):
             self.save()
 
     def selectionChanged(self):
+        if debugs:
+            print("*** selectionChanged ***")
         self["list2"].setList([])
         self.channel_list = []
         self.channel_selected_list = []
@@ -465,6 +479,9 @@ class BmxChooseCategories(Screen):
         return (pixmap, str(name), str(id), hidden)
 
     def refresh(self):
+        if debugs:
+            print("*** refresh ***")
+
         def update_hidden_list(selected_list, hidden_list, category_type):
             for hidden in selected_list:
                 key = hidden[0] if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" else hidden[1]
@@ -602,6 +619,9 @@ class BmxChooseCategories(Screen):
             self.close(True)
 
     def updateJson(self, answer=None):
+        if debugs:
+            print("*** updateJson ***")
+
         self.playlists_all = bmx.getPlaylistJson()
 
         if self.playlists_all:

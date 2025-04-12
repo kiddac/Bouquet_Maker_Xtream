@@ -233,7 +233,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
     def makeM3u8CategoriesJson(self):
         if debugs:
-            print("*** parseM3u8Playlist ***")
+            print("*** makeM3u8CategoriesJson ***")
         parsem3u.makeM3u8CategoriesJson(self.live_streams, self.vod_streams, self.series_streams)
         self.makeM3u8StreamsJson()
 

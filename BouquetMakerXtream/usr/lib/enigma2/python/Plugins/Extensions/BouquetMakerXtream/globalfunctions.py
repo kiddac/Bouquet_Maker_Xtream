@@ -64,7 +64,7 @@ def downloadUrl(url, ext):
         except Exception as e:
             print("Request failed:", e)
 
-    return ""
+    return []
 
 
 def downloadApi(url):
@@ -91,7 +91,7 @@ def downloadApi(url):
         except Exception as e:
             print("Request failed:", e)
 
-    return ""
+    return []
 
 
 def downloadUrlCategory(url):
