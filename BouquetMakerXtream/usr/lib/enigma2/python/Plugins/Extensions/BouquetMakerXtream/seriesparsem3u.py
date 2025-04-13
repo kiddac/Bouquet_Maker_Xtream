@@ -72,6 +72,8 @@ def parseM3u8Playlist(response):
                 if "---" in name or "***" in name:
                     continue
 
+                stream_type = ""
+
                 if (("S0" in name or "E0" in name) and ("/series/" in source or "/play/" in source or source.endswith(".mp4", ".mkv", ".avi"))):
                     stream_type = "series"
 
