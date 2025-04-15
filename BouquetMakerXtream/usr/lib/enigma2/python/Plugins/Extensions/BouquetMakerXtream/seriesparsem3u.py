@@ -7,8 +7,10 @@ from .plugin import debugs
 
 
 def parseM3u8Playlist(response):
+
     if debugs:
         print("*** parseM3u8Playlist ***")
+
     series_streams = []
     channel_num = 0
     streamid = 0
@@ -23,6 +25,7 @@ def parseM3u8Playlist(response):
     skip_next = False
 
     for index in range(length):
+
         if skip_next:
             skip_next = False
             continue
@@ -62,6 +65,8 @@ def parseM3u8Playlist(response):
             channel_num += 1
             name = _("Stream") + " " + str(channel_num)
 
+        source = None
+
         if index + 1 < length:
             next_line = response_lines[index + 1].strip()
             url_match = url_pattern.search(next_line)
@@ -74,7 +79,7 @@ def parseM3u8Playlist(response):
 
                 stream_type = ""
 
-                if (("S0" in name or "E0" in name) and ("/series/" in source or "/play/" in source or source.endswith(".mp4", ".mkv", ".avi"))):
+                if source and ("S0" in name or "E0" in name) and ("/series/" in source or "/play/" in source or source.endswith((".mp4", ".mkv", ".avi"))):
                     stream_type = "series"
 
                 if name and source and stream_type == "series":
@@ -84,11 +89,13 @@ def parseM3u8Playlist(response):
 
     data = glob.current_playlist["data"]
     data["series_streams"] = [{
+
         "category_id": str(x[0]),
         "name": str(x[1]),
         "source": str(x[2]),
         "series_id": str(x[3]),
         "added": 0
+
     } for x in series_streams]
 
 

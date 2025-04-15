@@ -112,7 +112,7 @@ def parseM3u8Playlist(response):
             # Determine the stream type based on the URL and name
             stream_type = ""
 
-            if (("S0" in name or "E0" in name) and ("/series/" in source or "/play/" in source or source.endswith(".mp4", ".mkv", ".avi"))):
+            if ("S0" in name or "E0" in name) and ("/series/" in source or "/play/" in source or source.endswith((".mp4", ".mkv", ".avi"))):
                 stream_type = "series"
             elif "/movie/" in source or source.endswith((".mp4", ".mkv", ".avi")):
                 stream_type = "vod"
