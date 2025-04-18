@@ -287,6 +287,10 @@ class BmxBuildBouquets(Screen):
         else:
             output_file = '/var/volatile/tmp/bouquetmakerxtream/temp'
 
+        self.live_streams = []
+        self.vod_streams = []
+        self.series_streams = []
+
         for url in self.url_list:
 
             if outputtype == "json":
