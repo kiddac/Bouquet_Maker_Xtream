@@ -964,7 +964,28 @@ class BmxUpdate(Screen):
                         except:
                             pass
 
-            source = ET.SubElement(sourcecat, "source", type="gen_xmltv", nocheck="1", channels=channel_path)
+            epg_offset = 0
+            try:
+                epg_offset = int(glob.current_playlist["settings"].get("epg_offset", 0))
+            except:
+                pass
+
+            if epg_offset > 0:
+                offset_str = "-{0:02d}00".format(epg_offset)
+            elif epg_offset < 0:
+                offset_str = "{0:02d}00".format(abs(epg_offset))
+            else:
+                offset_str = "0000"
+
+            source = ET.SubElement(
+                sourcecat,
+                "source",
+                type="gen_xmltv",
+                nocheck="1",
+                offset=offset_str,
+                channels=channel_path
+            )
+
             description = ET.SubElement(source, "description")
             description.text = str(self.safe_name)
 
@@ -972,6 +993,7 @@ class BmxUpdate(Screen):
             url.text = str(self.xmltv_api)
 
             tree.write(source_file)
+
         except Exception as e:
             print(e)
 

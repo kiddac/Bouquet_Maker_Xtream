@@ -356,7 +356,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
             if self.show_live_cfg.value and epgimporter:
                 self.list.append(getConfigListEntry(_("Max EPG days to download: (Use Default if EPG events is 0)"), self.next_days_cfg))
-                # self.list.append(getConfigListEntry(_("EPG offset:"), self.epg_offset_cfg))
+                self.list.append(getConfigListEntry(_("EPG offset:"), self.epg_offset_cfg))
                 self.list.append(getConfigListEntry(_("Use alternative EPG url:"), self.epg_alternative_cfg))
                 if self.epg_alternative_cfg.value:
                     self.list.append(getConfigListEntry(_("Alternative EPG url:"), self.epg_alternative_url_cfg))
