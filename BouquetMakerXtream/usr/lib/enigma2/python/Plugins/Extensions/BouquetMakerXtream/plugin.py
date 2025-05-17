@@ -248,7 +248,7 @@ def mainmenu(menu_id, **kwargs):
 
 
 # Global variables
-autoStartTimer = None
+bmxAutoStartTimer = None
 originalref = None
 originalrefstring = None
 
@@ -257,7 +257,7 @@ BmxChannelSelectionBase__init__ = None
 _session = None
 
 
-class AutoStartTimer:
+class BMXAutoStartTimer:
     def __init__(self, session):
         self.session = session
         self.timer = eTimer()
@@ -330,7 +330,7 @@ def myBase(self, session, forceLegacy=False):
 def autostart(reason, session=None, **kwargs):
     # called with reason=1 to during shutdown, with reason=0 at startup?
 
-    global autoStartTimer
+    global bmxAutoStartTimer
     global _session
 
     now_t = time.time()
@@ -342,8 +342,8 @@ def autostart(reason, session=None, **kwargs):
     if reason == 0 and _session is None:
         if session is not None:
             _session = session
-            if autoStartTimer is None:
-                autoStartTimer = AutoStartTimer(session)
+            if bmxAutoStartTimer is None:
+                bmxAutoStartTimer = BMXAutoStartTimer(session)
 
             if cfg.catchup_on.value:
                 if ChannelSelectionBase.__init__ != BmxChannelSelectionBase__init__:

@@ -26,7 +26,7 @@ from Tools.BoundFunction import boundFunction
 
 # Local application/library-specific imports
 from . import _
-from .plugin import autoStartTimer, cfg, skin_directory
+from .plugin import bmxAutoStartTimer, cfg, skin_directory
 from .bmxStaticText import StaticText
 
 
@@ -138,7 +138,8 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             cfg.save()
             configfile.save()
 
-            autoStartTimer.update()
+            if bmxAutoStartTimer is not None:
+                bmxAutoStartTimer.update()
 
             if self.org_main != cfg.main.value or self.location != cfg.location.value \
                     or self.local_location != cfg.local_location.value or self.org_catchup_on != cfg.catchup_on.value:

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-from . import picons
 from .bmxStaticText import StaticText
 from .plugin import cfg, skin_directory
 
@@ -98,7 +97,7 @@ class BmxPiconSettings(ConfigListScreen, Screen):
         if cfg.picon_location.value == "custom":
             cfg.picon_location.setValue(cfg.picon_custom.value)
             """
-
+        from . import picons
         self.session.openWithCallback(self.close, picons.BmxDownloadPicons)
         # self.close()
 
