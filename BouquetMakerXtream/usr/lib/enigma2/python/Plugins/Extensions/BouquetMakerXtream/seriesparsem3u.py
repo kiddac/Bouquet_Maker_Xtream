@@ -79,8 +79,26 @@ def parseM3u8Playlist(response):
 
                 stream_type = ""
 
-                if source and ("S0" in name or "E0" in name) and ("/series/" in source or "/play/" in source or source.endswith((".mp4", ".mkv", ".avi"))):
+                if "/series/" in source and "/live/" not in source and "/movie/" not in source:
                     stream_type = "series"
+
+                elif "/play/" in source and source.endswith((".mp4", ".mkv", ".avi")) and re.search(r'(S\d+|E\d+)', name, re.IGNORECASE):
+                    stream_type = "series"
+
+                elif "/movie/" in source or source.endswith((".mp4", ".mkv", ".avi")):
+                    stream_type = "vod"
+
+                elif (
+                    source.endswith((".ts", ".m3u8", ".mpd", "mpegts", ":")) or
+                    "/live" in source or
+                    "/m3u8" in source or
+                    "deviceUser" in source or
+                    "deviceMac" in source or
+                    "/play/" in source or
+                    "pluto.tv" in source or
+                    (source[-1].isdigit())
+                ):
+                    stream_type = "live"
 
                 if name and source and stream_type == "series":
                     group_title = group_title if group_title else "Uncategorised Series"
