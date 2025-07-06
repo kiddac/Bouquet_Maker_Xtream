@@ -169,6 +169,9 @@ class BmxDownloadPicons(Screen):
         os.system("echo 1 > /proc/sys/vm/drop_caches")
         os.system("echo 2 > /proc/sys/vm/drop_caches")
         os.system("echo 3 > /proc/sys/vm/drop_caches")
+        
+        self.timer = eTimer()
+        self.timer3 = eTimer()
 
         """
         self.finishedtimer = eTimer()
@@ -207,7 +210,6 @@ class BmxDownloadPicons(Screen):
             self["progress"].setRange((0, self.progresscount))
             self["progress"].setValue(self.progresscurrent)
 
-            self.timer = eTimer()
             try:
                 self.timer_conn = self.timer.timeout.connect(self.buildPicons)
             except:
@@ -317,7 +319,6 @@ class BmxDownloadPicons(Screen):
 
         if self.progresscurrent == self.job_total:
             self.updatedisplaytimer.stop()
-            self.timer3 = eTimer()
             try:
                 self.timer3_conn = self.timer3.timeout.connect(self.finished)
             except:
@@ -326,20 +327,6 @@ class BmxDownloadPicons(Screen):
                 except:
                     self.finished()
             self.timer3.start(2000, True)
-    """
-    def check_finished(self):
-        if self.progresscurrent == self.job_total:
-            self.finishedtimer.stop()
-            self.timer3 = eTimer()
-            try:
-                self.timer3_conn = self.timer3.timeout.connect(self.finished)
-            except:
-                try:
-                    self.timer3.callback.append(self.finished)
-                except:
-                    self.finished()
-            self.timer3.start(2000, True)
-            """
 
     def buildPicons(self):
         # results = ""

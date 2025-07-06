@@ -88,6 +88,8 @@ class BmxBuildBouquets(Screen):
         except:
             self.starttimer.callback.append(self.start)
         self.starttimer.start(100, True)
+        
+        self.timer = eTimer()
 
     def void(self):
         if debugs:
@@ -98,7 +100,6 @@ class BmxBuildBouquets(Screen):
         if debugs:
             print("*** nextJob ***", actiontext)
         self["action"].setText(actiontext)
-        self.timer = eTimer()
         try:
             self.timer_conn = self.timer.timeout.connect(function)
         except:
