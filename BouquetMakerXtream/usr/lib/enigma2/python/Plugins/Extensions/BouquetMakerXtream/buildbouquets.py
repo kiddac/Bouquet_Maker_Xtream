@@ -88,8 +88,6 @@ class BmxBuildBouquets(Screen):
         except:
             self.starttimer.callback.append(self.start)
         self.starttimer.start(100, True)
-        
-        self.timer = eTimer()
 
     def void(self):
         if debugs:
@@ -99,7 +97,13 @@ class BmxBuildBouquets(Screen):
     def nextJob(self, actiontext, function):
         if debugs:
             print("*** nextJob ***", actiontext)
+
+        self.clearCaches()
+
         self["action"].setText(actiontext)
+
+        self.timer = eTimer()
+
         try:
             self.timer_conn = self.timer.timeout.connect(function)
         except:
@@ -329,8 +333,6 @@ class BmxBuildBouquets(Screen):
         if debugs:
             print("*** loadLive ***")
 
-        self.clearCaches()
-
         self.live_stream_data = []
         settings = glob.current_playlist["settings"]
         playlist_info = glob.current_playlist["playlist_info"]
@@ -532,8 +534,6 @@ class BmxBuildBouquets(Screen):
         if debugs:
             print("*** loadVod ***")
 
-        self.clearCaches()
-
         self.vod_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -700,8 +700,6 @@ class BmxBuildBouquets(Screen):
     def loadSeries(self):
         if debugs:
             print("*** loadSeries ***")
-
-        self.clearCaches()
 
         self.series_stream_data = []
 

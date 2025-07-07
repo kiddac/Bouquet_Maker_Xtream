@@ -67,7 +67,6 @@ class BmxUpdate(Screen):
         self["progress"] = ProgressBar()
 
         self.bouq = 0
-        self.timer = eTimer()
 
         if self.runtype == "manual":
             self["action"] = Label(_("Building Bouquets..."))
@@ -88,6 +87,7 @@ class BmxUpdate(Screen):
 
         if self.bouquets:
             self.looptimer = eTimer()
+
             try:
                 self.looptimer_conn = self.looptimer.timeout.connect(self.bouquetLoop)
             except:
@@ -148,6 +148,8 @@ class BmxUpdate(Screen):
     def nextJob(self, actiontext, function):
         if self.runtype == "manual":
             self["action"].setText(actiontext)
+
+        self.timer = eTimer()
 
         try:
             self.timer_conn = self.timer.timeout.connect(function)

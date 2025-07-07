@@ -54,8 +54,6 @@ class BmxChooseCategories(Screen):
         self["splash"] = Pixmap()
         self["splash"].show()
 
-        self.timer = eTimer()
-
         self["actions"] = ActionMap(["BMXActions"], {
             "ok": self.toggleSelection,
             "red": self.keyCancel,
@@ -146,6 +144,9 @@ class BmxChooseCategories(Screen):
     def start(self):
         if debugs:
             print("*** start ***")
+
+        self.timer = eTimer()
+
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:

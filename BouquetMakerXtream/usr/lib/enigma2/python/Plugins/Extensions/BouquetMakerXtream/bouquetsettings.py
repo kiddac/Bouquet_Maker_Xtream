@@ -69,8 +69,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.hide_vod = False
         self.hide_series = False
 
-        self.timer = eTimer()
-
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             player_api = glob.current_playlist["playlist_info"]["player_api"]
             self.p_live_categories_url = str(player_api) + "&action=get_live_categories"
@@ -101,6 +99,9 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def start(self):
         if debugs:
             print("*** start ***")
+
+        self.timer = eTimer()
+
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:

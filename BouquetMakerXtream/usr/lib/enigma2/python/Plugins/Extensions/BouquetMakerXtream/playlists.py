@@ -82,8 +82,6 @@ class BmxPlaylists(Screen):
             "yellow": self.deleteServer,
         }, -2)
 
-        self.timer = eTimer()
-        
         self.onFirstExecBegin.append(self.start)
         self.onLayoutFinish.append(self.__layoutFinished)
 
@@ -125,6 +123,7 @@ class BmxPlaylists(Screen):
         self.clear_caches()
 
     def delayedDownload(self):
+        self.timer = eTimer()
         try:
             self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
         except:

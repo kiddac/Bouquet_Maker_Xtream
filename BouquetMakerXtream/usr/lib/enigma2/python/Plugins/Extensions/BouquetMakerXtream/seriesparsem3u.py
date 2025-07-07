@@ -1,147 +1,130 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import re
-from . import _
 from . import bouquet_globals as glob
 from .plugin import debugs
 
+# Keep only essential regex patterns
+GROUP_TITLE_RE = re.compile(r'group-title="([^"]*)"')
+TVG_NAME_RE = re.compile(r'tvg-name="([^"]*)"')
+SERIES_PATTERN = re.compile(r'(?i)(S\d+|E\d+|Episode\s\d+)')  # Case-insensitive matching
+
 
 def parseM3u8Playlist(response):
-
     if debugs:
         print("*** parseM3u8Playlist ***")
 
-    series_streams = []
-    channel_num = 0
+    data = glob.current_playlist["data"]
+    data["series_streams"] = []
     streamid = 0
-    url_pattern = re.compile(r'(https?://[^\s]+)')
 
-    if isinstance(response, bytes):  # Ensure it's a string
+    if isinstance(response, bytes):
         response = response.decode('utf-8', 'ignore')
 
-    response_lines = response.splitlines()
-    length = len(response_lines)
+    lines = response.splitlines()
+    i = 0
+    total_lines = len(lines)
 
-    skip_next = False
+    while i < total_lines:
+        line = lines[i].strip()
+        i += 1
 
-    for index in range(length):
-
-        if skip_next:
-            skip_next = False
+        if not line.startswith("#EXTINF"):
             continue
 
-        line = response_lines[index].strip()
-
-        if not line.startswith("#EXTINF") or line == "#EXTINF:0,#EXTM3U":
-            continue
-
+        # Process EXTINF line
         group_title = ""
         name = ""
 
-        start_index = line.find('group-title="')
-        if start_index != -1:
-            start_index += len('group-title="')
-            end_index = line.find('"', start_index)
-            if end_index != -1:
-                group_title = line[start_index:end_index].strip()
+        # Extract group-title (optimized)
+        gt_pos = line.find('group-title="')
+        if gt_pos > -1:
+            end_pos = line.find('"', gt_pos + 13)
+            if end_pos > -1:
+                group_title = line[gt_pos + 13:end_pos].strip()
 
-        if isinstance(glob.current_playlist["data"].get("series_categories_hidden", []), list):
-            if str(group_title) in glob.current_playlist["data"]["series_categories_hidden"]:
-                continue
+        # Skip hidden categories early
+        if group_title and isinstance(data.get("series_categories_hidden", []), list) \
+           and group_title in data["series_categories_hidden"]:
+            continue
 
-        start_index = line.find('tvg-name="')
-        if start_index != -1:
-            start_index += len('tvg-name="')
-            end_index = line.find('"', start_index)
-            if end_index != -1:
-                name = line[start_index:end_index].strip()
+        # Extract name (optimized)
+        name_pos = line.find('tvg-name="')
+        if name_pos > -1:
+            end_pos = line.find('"', name_pos + 10)
+            if end_pos > -1:
+                name = line[name_pos + 10:end_pos].strip()
 
-        if not name and ',' in line:
-            name = line.strip().split(",")[-1].strip()
+        # Fallback to name after last comma (without regex)
+        if not name:
+            last_comma = line.rfind(',')
+            if last_comma > -1:
+                name = line[last_comma + 1:].strip()
 
-        name = remove_duplicate_phrases(name)
+        name = simplify_name(name)
 
         if not name:
-            channel_num += 1
-            name = _("Stream") + " " + str(channel_num)
+            continue
 
-        source = None
+        # Get the URL line
+        if i >= total_lines:
+            break
 
-        if index + 1 < length:
-            next_line = response_lines[index + 1].strip()
-            url_match = url_pattern.search(next_line)
-            if url_match:
-                source = url_match.group(1)
-                skip_next = True
+        url_line = lines[i].strip()
+        i += 1
 
-                if "---" in name or "***" in name:
-                    continue
+        # Fast URL check (replaces URL_PATTERN regex)
+        if not url_line.startswith(('http://', 'https://')):
+            continue
 
-                stream_type = ""
+        source = url_line.split()[0]  # Take first token as URL
 
-                if "/series/" in source and "/live/" not in source and "/movie/" not in source:
-                    stream_type = "series"
+        # Series detection
+        is_series = (
+            "/series/" in source.lower() or
+            SERIES_PATTERN.search(name)
+        )
 
-                elif "/play/" in source and source.endswith((".mp4", ".mkv", ".avi")) and re.search(r'(S\d+|E\d+)', name, re.IGNORECASE):
-                    stream_type = "series"
-
-                elif "/movie/" in source or source.endswith((".mp4", ".mkv", ".avi")):
-                    stream_type = "vod"
-
-                elif (
-                    source.endswith((".ts", ".m3u8", ".mpd", "mpegts", ":")) or
-                    "/live" in source or
-                    "/m3u8" in source or
-                    "deviceUser" in source or
-                    "deviceMac" in source or
-                    "/play/" in source or
-                    "pluto.tv" in source or
-                    (source[-1].isdigit())
-                ):
-                    stream_type = "live"
-
-                if name and source and stream_type == "series":
-                    group_title = group_title if group_title else "Uncategorised Series"
-                    streamid += 1
-                    series_streams.append([group_title, name, source, streamid])
-
-    data = glob.current_playlist["data"]
-    data["series_streams"] = [{
-
-        "category_id": str(x[0]),
-        "name": str(x[1]),
-        "source": str(x[2]),
-        "series_id": str(x[3]),
-        "added": 0
-
-    } for x in series_streams]
+        if is_series:
+            streamid += 1
+            data["series_streams"].append({
+                "category_id": group_title or "Uncategorised Series",
+                "name": name,
+                "source": source,
+                "series_id": str(streamid),
+                "added": 0
+            })
 
 
-def remove_duplicate_phrases(input_string):
-    # Split input string into parts based on spaces and dashes
-    parts = re.split(r'(\s+|-)', input_string)
-    seen = set()
-    result = []
-    phrase = ""
+def simplify_name(input_string):
+    if not input_string:
+        return input_string
 
-    for part in parts:
-        phrase += part
-        trimmed_phrase = phrase.strip()
+    try:
+        # Fast initial cleaning
+        cleaned = input_string.replace(':', '').replace('"', '').strip('- ')
+        cleaned = ' '.join(cleaned.split())  # Faster than re.sub for spaces
 
-        if trimmed_phrase and trimmed_phrase not in seen:
-            seen.add(trimmed_phrase)
-            result.append(part)
-            phrase = ""
-        elif trimmed_phrase == "":
-            result.append(part)
-        else:
-            # If the trimmed phrase is a duplicate, reset the phrase
-            phrase = ""
+        # Fast duplicate detection for common TV title patterns
+        parts = cleaned.split(' - ')
+        if len(parts) > 1 and parts[0] in parts[1]:
+            # Case: "Show Name S01 - Show Name - S01E01 - Episode"
+            return ' - '.join([parts[0]] + parts[2:])
+        elif len(parts) > 2 and parts[0] in parts[2]:
+            # Case: "Show Name (2020) S01 - Show Name - S01E01"
+            return ' - '.join([parts[0], parts[1]] + parts[3:])
 
-    # Join the result and format spaces properly
-    final_result = ''.join(result).strip()
-    return remove_double_spaces(final_result)
+        # Fallback for other patterns
+        words = cleaned.split()
+        unique_words = []
+        seen = set()
+        for word in words:
+            if word not in seen:
+                seen.add(word)
+                unique_words.append(word)
+        return ' '.join(unique_words)
 
-
-def remove_double_spaces(input_string):
-    return re.sub(r'\s{2,}', ' ', input_string)
+    except Exception as e:
+        if debugs:
+            print("Name cleaning error for '%s': %s" % (input_string, str(e)))
+        return input_string
