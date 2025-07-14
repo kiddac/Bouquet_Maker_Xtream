@@ -371,7 +371,7 @@ class BmxBuildBouquets(Screen):
 
         if self.live_streams:
             for channel in self.live_streams:
-                stream_id = str(channel["stream_id"])
+                stream_id = channel.get("series_id")
                 category_id = channel.get("category_id")
 
                 if not stream_id or not category_id:
@@ -567,7 +567,7 @@ class BmxBuildBouquets(Screen):
 
         if self.vod_streams:
             for channel in self.vod_streams:
-                stream_id = str(channel["stream_id"])
+                stream_id = channel.get("series_id")
                 category_id = channel.get("category_id")
 
                 if not stream_id or not category_id:
