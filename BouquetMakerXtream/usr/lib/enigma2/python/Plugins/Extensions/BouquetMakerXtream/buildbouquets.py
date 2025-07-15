@@ -97,13 +97,8 @@ class BmxBuildBouquets(Screen):
     def nextJob(self, actiontext, function):
         if debugs:
             print("*** nextJob ***", actiontext)
-
-        self.clearCaches()
-
         self["action"].setText(actiontext)
-
         self.timer = eTimer()
-
         try:
             self.timer_conn = self.timer.timeout.connect(function)
         except:
@@ -333,6 +328,8 @@ class BmxBuildBouquets(Screen):
         if debugs:
             print("*** loadLive ***")
 
+        self.clearCaches()
+
         self.live_stream_data = []
         settings = glob.current_playlist["settings"]
         playlist_info = glob.current_playlist["playlist_info"]
@@ -371,7 +368,7 @@ class BmxBuildBouquets(Screen):
 
         if self.live_streams:
             for channel in self.live_streams:
-                stream_id = channel.get("series_id")
+                stream_id = channel.get("stream_id")
                 category_id = channel.get("category_id")
 
                 if not stream_id or not category_id:
@@ -534,6 +531,8 @@ class BmxBuildBouquets(Screen):
         if debugs:
             print("*** loadVod ***")
 
+        self.clearCaches()
+
         self.vod_stream_data = []
 
         settings = glob.current_playlist["settings"]
@@ -567,7 +566,7 @@ class BmxBuildBouquets(Screen):
 
         if self.vod_streams:
             for channel in self.vod_streams:
-                stream_id = channel.get("series_id")
+                stream_id = channel.get("stream_id")
                 category_id = channel.get("category_id")
 
                 if not stream_id or not category_id:
@@ -700,6 +699,8 @@ class BmxBuildBouquets(Screen):
     def loadSeries(self):
         if debugs:
             print("*** loadSeries ***")
+
+        self.clearCaches()
 
         self.series_stream_data = []
 

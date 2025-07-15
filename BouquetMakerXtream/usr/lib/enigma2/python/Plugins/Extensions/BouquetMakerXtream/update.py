@@ -87,7 +87,6 @@ class BmxUpdate(Screen):
 
         if self.bouquets:
             self.looptimer = eTimer()
-
             try:
                 self.looptimer_conn = self.looptimer.timeout.connect(self.bouquetLoop)
             except:
@@ -607,7 +606,7 @@ class BmxUpdate(Screen):
 
         if self.vod_streams:
             for channel in self.vod_streams:
-                stream_id = channel.get("series_id")
+                stream_id = channel.get("stream_id")
                 category_id = channel.get("category_id")
 
                 if not stream_id or not category_id:
