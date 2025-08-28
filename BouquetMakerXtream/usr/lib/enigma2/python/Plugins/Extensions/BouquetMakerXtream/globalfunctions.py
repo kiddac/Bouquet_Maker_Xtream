@@ -25,7 +25,7 @@ superscript_to_normal = str.maketrans(
 )
 
 
-def normalize_superscripts(text: str) -> str:
+def normalize_superscripts(text):
     return text.translate(superscript_to_normal)
 
 
