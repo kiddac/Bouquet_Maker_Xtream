@@ -46,7 +46,7 @@ try:
 except ImportError:
     hasConcurrent = False
 
-debugs = False
+debugs = True
 
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major

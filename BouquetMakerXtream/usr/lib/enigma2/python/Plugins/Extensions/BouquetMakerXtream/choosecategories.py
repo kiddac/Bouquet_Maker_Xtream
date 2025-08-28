@@ -5,7 +5,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, playlists_json, skin_directory, debugs
+from .plugin import cfg, common_path, playlists_json, skin_directory, debugs, pythonVer
 
 from Components.ActionMap import ActionMap
 from Components.Pixmap import Pixmap
@@ -165,6 +165,7 @@ class BmxChooseCategories(Screen):
 
         if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
+
                 if glob.current_playlist["settings"]["show_live"]:
                     self.live_url_list.append([self.live_streams_api, 3, "json"])
 
@@ -248,6 +249,10 @@ class BmxChooseCategories(Screen):
         self.setTitle(self.setup_title)
 
         if glob.current_playlist["data"]["live_categories"] and glob.current_playlist["data"]["live_streams"]:
+
+            if pythonVer == 3 and glob.current_playlist["settings"]["show_superscript"]:
+                glob.current_playlist["data"]["live_categories"] = bmx.clean_names(glob.current_playlist["data"]["live_categories"])
+
             self.category_list = []
             self.categorySelectedList = []
 
@@ -292,6 +297,10 @@ class BmxChooseCategories(Screen):
         self.setTitle(self.setup_title)
 
         if glob.current_playlist["data"]["vod_categories"] and glob.current_playlist["data"]["vod_streams"]:
+
+            if pythonVer == 3 and glob.current_playlist["settings"]["show_superscript"]:
+                glob.current_playlist["data"]["vod_categories"] = bmx.clean_names(glob.current_playlist["data"]["vod_categories"])
+
             self.category_list = []
             self.categorySelectedList = []
 
@@ -338,6 +347,10 @@ class BmxChooseCategories(Screen):
         self["key_green"].setText(_("Create"))
 
         if glob.current_playlist["data"]["series_categories"] and glob.current_playlist["data"]["series_streams"]:
+
+            if pythonVer == 3 and glob.current_playlist["settings"]["show_superscript"]:
+                glob.current_playlist["data"]["series_categories"] = bmx.clean_names(glob.current_playlist["data"]["series_categories"])
+
             for category in glob.current_playlist["data"]["series_categories"]:
                 if str(category["category_id"]) in glob.current_playlist["data"]["series_categories_hidden"] or \
                         str(category["category_name"]) in glob.current_playlist["data"]["series_categories_hidden"]:

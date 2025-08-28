@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .plugin import playlists_json, cfg, pythonVer, debugs
+from . import bouquet_globals as glob
 
 from enigma import eDVBDB
 from requests.adapters import HTTPAdapter
@@ -15,6 +16,26 @@ hdr = {
     'User-Agent': str(cfg.useragent.value),
     'Accept-Encoding': 'gzip, deflate'
 }
+
+superscript_to_normal = str.maketrans(
+    '⁰¹²³⁴⁵⁶⁷⁸⁹ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻ'
+    'ᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁⱽᵂ⁺⁻⁼⁽⁾',
+    '0123456789abcdefghijklmnoprstuvwxyz'
+    'ABDEGHIJKLMNOPRTUVW+-=()'
+)
+
+
+def normalize_superscripts(text: str) -> str:
+    return text.translate(superscript_to_normal)
+
+
+def clean_names(streams):
+    """Clean 'name' and 'category_name' fields in each stream entry."""
+    for item in streams:
+        for field in ("name", "category_name"):
+            if field in item and isinstance(item[field], str):
+                item[field] = normalize_superscripts(item[field])
+    return streams
 
 
 def getPlaylistJson():
@@ -37,6 +58,7 @@ def refreshBouquets():
     eDVBDB.getInstance().reloadBouquets()
 
 
+"""
 def downloadUrl(url, ext):
     if debugs:
         print("*** downloadUrl ***", url, ext)
@@ -65,6 +87,7 @@ def downloadUrl(url, ext):
             print("Request failed:", e)
 
     return []
+    """
 
 
 def downloadApi(url):
@@ -112,7 +135,10 @@ def downloadUrlCategory(url):
 
             if r.status_code == requests.codes.ok:
                 if ext == "json":
-                    response = (category, r.json())
+                    if glob.current_playlist["settings"]["show_superscript"] and pythonVer == 3:
+                        response = (category, clean_names(r.json()))
+                    else:
+                        response = (category, r.json())
                 else:
                     response = (category, r.text)
                 return response
@@ -142,7 +168,10 @@ def downloadUrlMulti(url, output_file=None):
 
             if r.status_code == requests.codes.ok:
                 if ext == "json":
-                    json_content = r.json()
+                    if glob.current_playlist["settings"]["show_superscript"] and pythonVer == 3:
+                        json_content = clean_names(r.json())
+                    else:
+                        json_content = r.json()
                     return category, json_content
 
                 chunk_size = 8192 * 8  # 128 KB
