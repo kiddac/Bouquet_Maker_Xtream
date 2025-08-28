@@ -17,12 +17,13 @@ hdr = {
     'Accept-Encoding': 'gzip, deflate'
 }
 
-superscript_to_normal = str.maketrans(
-    '⁰¹²³⁴⁵⁶⁷⁸⁹ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻ'
-    'ᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁⱽᵂ⁺⁻⁼⁽⁾',
-    '0123456789abcdefghijklmnoprstuvwxyz'
-    'ABDEGHIJKLMNOPRTUVW+-=()'
-)
+if pythonVer == 3:
+    superscript_to_normal = str.maketrans(
+        '⁰¹²³⁴⁵⁶⁷⁸⁹ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻ'
+        'ᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁⱽᵂ⁺⁻⁼⁽⁾',
+        '0123456789abcdefghijklmnoprstuvwxyz'
+        'ABDEGHIJKLMNOPRTUVW+-=()'
+    )
 
 
 def normalize_superscripts(text):
