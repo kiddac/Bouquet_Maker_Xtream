@@ -298,7 +298,7 @@ class BmxPlaylists(Screen):
 
     def writeJsonFile(self):
         with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f, indent=4)
+            json.dump(self.playlists_all, f)
         self.createSetup()
 
     def createSetup(self):

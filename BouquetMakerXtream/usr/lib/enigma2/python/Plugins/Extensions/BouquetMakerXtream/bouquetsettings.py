@@ -605,7 +605,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         if debugs:
             print("*** writeJsonFile ***")
         with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f, indent=4)
+            json.dump(self.playlists_all, f)
         self.clearCaches()
 
         from . import choosecategories
@@ -632,4 +632,4 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 playlist["data"]["series_streams"] = []
 
             with open(playlists_json, "w") as f:
-                json.dump(playlists_all, f, indent=4)
+                json.dump(playlists_all, f)
