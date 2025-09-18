@@ -5,7 +5,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, skin_directory, version, pythonVer
+from .plugin import cfg, common_path, skin_directory, version, pythonVer, dir_tmp
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -231,7 +231,8 @@ class BmxDownloadPicons(Screen):
 
                 # self.picon_list.sort(key=lambda x: x[1])
 
-                with open('/tmp/bmxpiconlist.txt', 'w+') as f:
+                path = os.path.join(dir_tmp, 'bmxpiconlist.txt')
+                with open(path, 'w+') as f:
                     for item in self.picon_list:
                         f.write("%s\n" % item)
                     f.truncate()

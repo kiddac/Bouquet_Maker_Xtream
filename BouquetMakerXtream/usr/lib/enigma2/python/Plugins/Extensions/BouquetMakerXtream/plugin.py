@@ -46,16 +46,17 @@ try:
 except ImportError:
     hasConcurrent = False
 
-debugs = False
-
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
+
+isDreambox = os.path.exists("/usr/bin/apt-get")
+
+debugs = False
 
 epgimporter = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
     epgimporter = True
 
-isDreambox = os.path.exists("/usr/bin/apt-get")
 
 with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version.txt", "r") as f:
     version = f.readline()
@@ -63,18 +64,9 @@ with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version
 screenwidth = getDesktop(0).size()
 
 dir_etc = "/etc/enigma2/bouquetmakerxtream/"
+dir_tmp = "/etc/enigma2/bouquetmakerxtream/tmp/"
 dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
 dir_custom = "/media/hdd/picon/"
-
-dir_tmp = "/tmp/bouquetmakerxtream/"
-
-# delete temporary folder and contents
-if os.path.exists(dir_tmp):
-    shutil.rmtree(dir_tmp)
-
-# create temporary folder for downloaded files
-if not os.path.exists(dir_tmp):
-    os.makedirs(dir_tmp)
 
 if screenwidth.width() == 2560:
     skin_directory = os.path.join(dir_plugins, "skin/uhd/")
@@ -86,12 +78,13 @@ else:
 folders = [folder for folder in os.listdir(skin_directory) if folder != "common"]
 
 useragents = [
-    ("Enigma2 - BouquetMakerXtream Plugin"),
+    ("Enigma2 - BouquetMakerXtream Plugin", "BouquetMakerXtream"),
     ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Chrome 124"),
     ("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0", "Firefox 125"),
     ("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36", "Android")
 ]
 
+# Configurations initialization
 config.plugins.BouquetMakerXtream = ConfigSubsection()
 cfg = config.plugins.BouquetMakerXtream
 
@@ -172,6 +165,7 @@ cfg.deepstandby = ConfigSelection(default="skip", choices=[
 # vti picon symlink - ln -s /media/hdd/picon /usr/share/enigma2
 # newenigma2 symlink - # ln -s /data/picons /picons
 
+# Set default file paths
 playlist_file = os.path.join(dir_etc, "playlists.txt")
 playlists_json = os.path.join(dir_etc, "bmx_playlists.json")
 
@@ -184,20 +178,17 @@ if location:
     if os.path.exists(location):
         playlist_file = os.path.join(cfg.location.value, "playlists.txt")
         cfg.location_valid.setValue(True)
-        cfg.save()
-        configfile.save()
     else:
         os.makedirs(location)  # Create directory if it doesn't exist
         playlist_file = os.path.join(location, "playlists.txt")
 
         cfg.location_valid.setValue(True)
-        cfg.save()
-        configfile.save()
 else:
     cfg.location.setValue(dir_etc)
     cfg.location_valid.setValue(False)
-    cfg.save()
-    configfile.save()
+
+cfg.save()
+configfile.save()
 
 font_folder = os.path.join(dir_plugins, "fonts/")
 addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
@@ -214,6 +205,18 @@ hdr = {
 if not os.path.exists(dir_etc):
     os.makedirs(dir_etc)
 
+# delete temporary folder and contents
+if os.path.exists("/tmp/bouquetmakerxtream/"):
+    shutil.rmtree("/tmp/bouquetmakerxtream/")
+
+if os.path.exists(dir_tmp):
+    shutil.rmtree(dir_tmp)
+
+# create temporary folder for downloaded files
+if not os.path.exists(dir_tmp):
+    os.makedirs(dir_tmp)
+
+
 # check if playlists.txt file exists in specified location
 if not os.path.isfile(playlist_file):
     with open(playlist_file, "a") as f:
@@ -225,12 +228,14 @@ if not os.path.isfile(playlists_json):
         f.close()
 
 # try and override epgimport settings
+"""
 try:
     config.plugins.epgimport.import_onlybouquet.value = False
     config.plugins.epgimport.import_onlybouquet.save()
     configfile.save()
 except Exception as e:
     print(e)
+    """
 
 
 def main(session, **kwargs):

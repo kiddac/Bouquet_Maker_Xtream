@@ -6,7 +6,7 @@ from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from . import parsem3u as parsem3u
 from .bmxStaticText import StaticText
-from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory, debugs, pythonVer
+from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory, debugs, pythonVer, dir_tmp
 
 import json
 import os
@@ -139,7 +139,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         if outputtype == "json":
             output_file = ""
         else:
-            output_file = '/var/volatile/tmp/bouquetmakerxtream/temp'
+            output_file = os.path.join(dir_tmp, "temp_playlist.m3u")
 
         if hasConcurrent or hasMultiprocessing:
             if hasConcurrent:
