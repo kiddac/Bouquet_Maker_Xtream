@@ -130,6 +130,7 @@ cfg.retries.adultpin = ConfigSubsection()
 cfg.retries.adultpin.tries = ConfigInteger(default=3)
 cfg.retries.adultpin.time = ConfigInteger(default=3)
 cfg.autoupdate = ConfigYesNo(default=False)
+cfg.missedupdate = ConfigYesNo(default=False)
 cfg.groups = ConfigYesNo(default=False)
 cfg.location_valid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
@@ -266,59 +267,101 @@ class BMXAutoStartTimer:
     def __init__(self, session):
         self.session = session
         self.timer = eTimer()
+        self._running_update = False  # flag to prevent overlapping updates
 
         try:
             self.timer_conn = self.timer.timeout.connect(self.onTimer)
         except:
             self.timer.callback.append(self.onTimer)
 
+        # Run missed update immediately at boot if setting enabled
+        if cfg.autoupdate.value and cfg.missedupdate.value:
+            print("[BMXAutoStartTimer] Running update immediately on boot (missed update)")
+            self.runUpdate()
+
+        # Schedule the next wake
         self.update()
 
     def getWakeTime(self):
+        """Return the next scheduled wake timestamp as a Unix timestamp."""
         if cfg.autoupdate.value:
             clock = cfg.wakeup.value
-            nowt = time.time()
-            now = time.localtime(nowt)
-            return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, 0, now.tm_yday, now.tm_isdst)))
+            now = datetime.now()
+            dt = datetime(now.year, now.month, now.day, clock[0], clock[1], 0)
+
+            # If wake time has already passed today, schedule for tomorrow
+            if dt <= now:
+                dt += datetime.timedelta(days=1)
+
+            return int(time.mktime(dt.timetuple()))
         else:
             return -1
 
     def update(self, atLeast=0):
+        """Schedule the next timer event."""
         self.timer.stop()
         wake = self.getWakeTime()
-        now_t = time.time()
-        now = int(now_t)
+        nowtime = time.time()
 
         if wake > 0:
-            if wake < now + atLeast:
-                # Tomorrow.
-                wake += 24 * 3600
-            next = wake - now
+            next = wake - int(nowtime)
+
+            # If the scheduled time has already passed
+            if next <= 0:
+                if cfg.missedupdate.value:
+                    # Run update immediately
+                    print("[BMXAutoStartTimer] Scheduled time missed, running update now")
+                    self.runUpdate()
+                    wake = self.getWakeTime()  # recompute for next day
+                    next = wake - int(time.time())
+                else:
+                    # Skip missed update, schedule for tomorrow
+                    wake = self.getWakeTime() + 24 * 3600
+                    next = wake - int(time.time())
+
+            # Cap maximum wait to 24 hours
+            if next > 24 * 3600:
+                next = 24 * 3600
+
+            # Debug print
+            wake_dt = datetime.fromtimestamp(wake)
+            print("[BMXAutoStartTimer] Next wake in %d seconds at %s" %
+                  (next, wake_dt.strftime("%Y-%m-%d %H:%M:%S")))
+
             self.timer.startLongTimer(next)
+
         else:
             wake = -1
+            print("[BMXAutoStartTimer] Auto update disabled")
 
-        wdt = datetime.fromtimestamp(wake)
-        ndt = datetime.fromtimestamp(int(now_t))
-
-        print("[BouquetMakerXtream] WakeUpTime now set to", wdt, "(now=%s)" % ndt)
         return wake
 
     def onTimer(self):
+        """Callback when the timer fires."""
         self.timer.stop()
         now = int(time.time())
-        print("[BouquetMakerXtream] onTimer occured at", now)
         wake = self.getWakeTime()
         atLeast = 0
-        if wake - now < 60:
+
+        if abs(wake - now) < 60:
             self.runUpdate()
             atLeast = 60
+
         self.update(atLeast)
 
     def runUpdate(self):
-        print("\n *********** BouquetMakerXtream runupdate ************ \n")
-        from . import update
-        self.session.open(update.BmxUpdate, "auto")
+        """Run the bouquet update process safely without overlapping."""
+        if self._running_update:
+            print("[BMXAutoStartTimer] Update already running, skipping...")
+            return
+
+        try:
+            self._running_update = True
+            print("\n *********** BouquetMakerXtream runupdate ************ \n")
+            from . import update
+            self.session.open(update.BmxUpdate, "auto")
+        finally:
+            self._running_update = False
 
 
 def myBase(self, session, forceLegacy=False):
