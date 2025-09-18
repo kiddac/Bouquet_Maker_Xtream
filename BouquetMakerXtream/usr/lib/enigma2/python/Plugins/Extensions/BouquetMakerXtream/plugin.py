@@ -9,7 +9,7 @@ import shutil
 import sys
 import time
 import twisted.python.runtime
-from datetime import datetime
+from datetime import datetime, timedelta
 from requests.adapters import HTTPAdapter, Retry
 
 
@@ -55,6 +55,7 @@ debugs = False
 
 epgimporter = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
+    epgimporter = True
     epgimporter = True
 
 
@@ -291,7 +292,7 @@ class BMXAutoStartTimer:
 
             # If wake time has already passed today, schedule for tomorrow
             if dt <= now:
-                dt += datetime.timedelta(days=1)
+                dt += timedelta(days=1)
 
             return int(time.mktime(dt.timetuple()))
         else:
