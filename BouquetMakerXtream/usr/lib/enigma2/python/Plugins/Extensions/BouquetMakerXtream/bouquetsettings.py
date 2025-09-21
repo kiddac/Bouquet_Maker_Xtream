@@ -287,9 +287,9 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         show_vod = glob.current_playlist["settings"]["show_vod"]
         show_series = glob.current_playlist["settings"]["show_series"]
         live_category_order = glob.current_playlist["settings"]["live_category_order"]
-        live_stream_order = glob.current_playlist["settings"]["live_stream_order"]
+        # live_stream_order = glob.current_playlist["settings"]["live_stream_order"]
         vod_category_order = glob.current_playlist["settings"]["vod_category_order"]
-        vod_stream_order = glob.current_playlist["settings"]["vod_stream_order"]
+        # vod_stream_order = glob.current_playlist["settings"]["vod_stream_order"]
         show_superscript = glob.current_playlist["settings"]["show_superscript"]
 
         self.iptvname_cfg = NoSave(ConfigText(default=iptvname, fixed_size=False))
@@ -303,9 +303,9 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.show_series_cfg = NoSave(ConfigYesNo(default=show_series))
 
         self.live_category_order_cfg = NoSave(ConfigSelection(default=live_category_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
-        self.live_stream_order_cfg = NoSave(ConfigSelection(default=live_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
+        # self.live_stream_order_cfg = NoSave(ConfigSelection(default=live_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
         self.vod_category_order_cfg = NoSave(ConfigSelection(default=vod_category_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
-        self.vod_stream_order_cfg = NoSave(ConfigSelection(default=vod_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
+        # self.vod_stream_order_cfg = NoSave(ConfigSelection(default=vod_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
 
         self.show_superscript_cfg = NoSave(ConfigYesNo(default=show_superscript))
 
@@ -341,7 +341,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
             if self.show_live_cfg.value:
                 self.list.append(getConfigListEntry(_("LIVE category bouquet order"), self.live_category_order_cfg))
-                self.list.append(getConfigListEntry(_("LIVE stream bouquet order"), self.live_stream_order_cfg))
+                # self.list.append(getConfigListEntry(_("LIVE stream bouquet order"), self.live_stream_order_cfg))
 
         if not self.hide_vod:
             self.list.append(getConfigListEntry(_("Show VOD category if available:"), self.show_vod_cfg))
@@ -353,7 +353,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             if self.show_vod_cfg.value or self.show_series_cfg.value:
                 self.list.append(getConfigListEntry(_("Stream Type VOD/SERIES:"), self.vod_type_cfg))
                 self.list.append(getConfigListEntry(_("VOD/SERIES category bouquet order"), self.vod_category_order_cfg))
-                self.list.append(getConfigListEntry(_("VOD/SERIES streams bouquet order"), self.vod_stream_order_cfg))
+                # self.list.append(getConfigListEntry(_("VOD/SERIES streams bouquet order"), self.vod_stream_order_cfg))
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream" and self.show_live_cfg.value:
             self.list.append(getConfigListEntry(_("Output:"), self.output_cfg))
@@ -489,8 +489,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             vod_type = self.vod_type_cfg.value
             live_category_order = self.live_category_order_cfg.value
             vod_category_order = self.vod_category_order_cfg.value
-            live_stream_order = self.live_stream_order_cfg.value
-            vod_stream_order = self.vod_stream_order_cfg.value
+            # live_stream_order = self.live_stream_order_cfg.value
+            # vod_stream_order = self.vod_stream_order_cfg.value
             prefix_name = self.prefix_name_cfg.value
             show_superscript = self.show_superscript_cfg.value
 
@@ -503,8 +503,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             glob.current_playlist["settings"]["vod_type"] = vod_type
             glob.current_playlist["settings"]["live_category_order"] = live_category_order
             glob.current_playlist["settings"]["vod_category_order"] = vod_category_order
-            glob.current_playlist["settings"]["live_stream_order"] = live_stream_order
-            glob.current_playlist["settings"]["vod_stream_order"] = vod_stream_order
+            # glob.current_playlist["settings"]["live_stream_order"] = live_stream_order
+            # glob.current_playlist["settings"]["vod_stream_order"] = vod_stream_order
             glob.current_playlist["settings"]["show_superscript"] = show_superscript
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
@@ -585,8 +585,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     self.playlists_all[idx]["settings"]["vod_type"] = glob.current_playlist["settings"]["vod_type"]
                     self.playlists_all[idx]["settings"]["live_category_order"] = glob.current_playlist["settings"]["live_category_order"]
                     self.playlists_all[idx]["settings"]["vod_category_order"] = glob.current_playlist["settings"]["vod_category_order"]
-                    self.playlists_all[idx]["settings"]["live_stream_order"] = glob.current_playlist["settings"]["live_stream_order"]
-                    self.playlists_all[idx]["settings"]["vod_stream_order"] = glob.current_playlist["settings"]["vod_stream_order"]
+                    # self.playlists_all[idx]["settings"]["live_stream_order"] = glob.current_playlist["settings"]["live_stream_order"]
+                    # self.playlists_all[idx]["settings"]["vod_stream_order"] = glob.current_playlist["settings"]["vod_stream_order"]
                     self.playlists_all[idx]["settings"]["show_superscript"] = glob.current_playlist["settings"]["show_superscript"]
 
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":

@@ -410,11 +410,14 @@ class BmxChooseCategories(Screen):
                         else:
                             self.channel_selected_list.append([stream_id, name, False, "0"])
 
+            """
             if glob.current_playlist["settings"]["live_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
             if glob.current_playlist["settings"]["live_stream_order"] == "added":
                 self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
+                """
+            self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
         elif self.level == 2:
             for channel in glob.current_playlist["data"]["vod_streams"]:
@@ -438,11 +441,15 @@ class BmxChooseCategories(Screen):
                         else:
                             self.channel_selected_list.append([stream_id, name, False, "0"])
 
+            """
             if glob.current_playlist["settings"]["vod_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "added":
                 self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
+                """
+
+            self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
         elif self.level == 3:
             for channel in glob.current_playlist["data"]["series_streams"]:
@@ -466,11 +473,15 @@ class BmxChooseCategories(Screen):
                         else:
                             self.channel_selected_list.append([series_id, name, False, "0"])
 
+            """
             if glob.current_playlist["settings"]["vod_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "added":
                 self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
+                """
+
+            self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
         if self.setup_title != _("Choose Series Categories"):
             self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]

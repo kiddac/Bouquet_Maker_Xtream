@@ -431,10 +431,14 @@ class BmxBuildBouquets(Screen):
         if self.live_stream_data:
 
             # Sort streams once (cached results)
+            """
             if settings["live_stream_order"] == "alphabetical":
                 self.live_stream_data.sort(key=lambda x: x["name"].lower())
             elif settings["live_stream_order"] == "added":
                 self.live_stream_data.sort(key=lambda x: x["added"], reverse=True)
+                """
+
+            self.live_stream_data.sort(key=lambda x: x["name"].lower())
 
             if cfg.groups.value and not self.bouquet_tv:
                 self.buildBouquetTvGroupedFile()
@@ -608,10 +612,14 @@ class BmxBuildBouquets(Screen):
 
         if self.vod_stream_data:
 
+            """
             if settings["vod_stream_order"] == "alphabetical":
                 self.vod_stream_data.sort(key=lambda x: x["name"].lower())
             elif settings["vod_stream_order"] == "added":
                 self.vod_stream_data.sort(key=lambda x: x["added"], reverse=True)
+                """
+
+            self.vod_stream_data.sort(key=lambda x: x["name"].lower())
 
             if cfg.groups.value and not self.bouquet_tv:
                 self.buildBouquetTvGroupedFile()
@@ -775,10 +783,14 @@ class BmxBuildBouquets(Screen):
 
         if self.series_stream_data:
 
+            """
             if settings["vod_stream_order"] == "alphabetical":
                 self.series_stream_data.sort(key=lambda x: x["name"].lower())
             elif settings["vod_stream_order"] == "added":
                 self.series_stream_data.sort(key=lambda x: x["added"], reverse=True)
+                """
+
+            self.series_stream_data.sort(key=lambda x: x["name"].lower())
 
             if cfg.groups.value and not self.bouquet_tv:
                 self.buildBouquetTvGroupedFile()

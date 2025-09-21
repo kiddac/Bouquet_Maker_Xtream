@@ -34,9 +34,9 @@ def processFiles():
     show_vod = False
     show_series = False
     live_category_order = "original"
-    live_stream_order = "original"
+    # live_stream_order = "original"
     vod_category_order = "original"
-    vod_stream_order = "original"
+    # vod_stream_order = "original"
     server_offset = 0
     epg_alternative = False
     epg_alternative_url = ""
@@ -236,14 +236,18 @@ def processFiles():
                                 if "live_category_order" not in playlist["settings"]:
                                     playlist["settings"]["live_category_order"] = live_category_order
 
+                                """
                                 if "live_stream_order" not in playlist["settings"]:
                                     playlist["settings"]["live_stream_order"] = live_stream_order
+                                    """
 
                                 if "vod_category_order" not in playlist["settings"]:
                                     playlist["settings"]["vod_category_order"] = vod_category_order
 
+                                """
                                 if "vod_stream_order" not in playlist["settings"]:
                                     playlist["settings"]["vod_stream_order"] = vod_stream_order
+                                    """
 
                                 if ("next_days" not in playlist["settings"]) or ("next_days" in playlist["settings"] and playlist["settings"]["next_days"] == 0):
                                     playlist["settings"]["next_days"] = next_days
@@ -300,9 +304,9 @@ def processFiles():
                                 ("live_type", live_type),
                                 ("vod_type", vod_type),
                                 ("live_category_order", live_category_order),
-                                ("live_stream_order", live_stream_order),
+                                # ("live_stream_order", live_stream_order),
                                 ("vod_category_order", vod_category_order),
-                                ("vod_stream_order", vod_stream_order),
+                                # ("vod_stream_order", vod_stream_order),
                                 ("epg_offset", server_offset),
                                 ("epg_alternative", epg_alternative),
                                 ("epg_alternative_url", epg_alternative_url),
@@ -337,14 +341,18 @@ def processFiles():
                                 if "live_category_order" not in playlist["settings"]:
                                     playlist["settings"]["live_category_order"] = live_category_order
 
+                                """
                                 if "live_stream_order" not in playlist["settings"]:
                                     playlist["settings"]["live_stream_order"] = live_stream_order
+                                    """
 
                                 if "vod_category_order" not in playlist["settings"]:
                                     playlist["settings"]["vod_category_order"] = vod_category_order
 
+                                """
                                 if "vod_stream_order" not in playlist["settings"]:
                                     playlist["settings"]["vod_stream_order"] = vod_stream_order
+                                    """
 
                                 if "show_superscript" not in playlist["settings"]:
                                     playlist["settings"]["show_superscript"] = show_superscript
@@ -381,9 +389,9 @@ def processFiles():
                                 ("live_type", live_type),
                                 ("vod_type", vod_type),
                                 ("live_category_order", live_category_order),
-                                ("live_stream_order", live_stream_order),
+                                # ("live_stream_order", live_stream_order),
                                 ("vod_category_order", vod_category_order),
-                                ("vod_stream_order", vod_stream_order),
+                                # ("vod_stream_order", vod_stream_order),
                                 ("show_superscript", show_superscript)
                             ]),
                             "data": dict([
@@ -447,14 +455,18 @@ def processFiles():
                         if "live_category_order" not in playlist["settings"]:
                             playlist["settings"]["live_category_order"] = live_category_order
 
+                        """
                         if "live_stream_order" not in playlist["settings"]:
                             playlist["settings"]["live_stream_order"] = live_stream_order
+                            """
 
                         if "vod_category_order" not in playlist["settings"]:
                             playlist["settings"]["vod_category_order"] = vod_category_order
 
+                        """
                         if "vod_stream_order" not in playlist["settings"]:
                             playlist["settings"]["vod_stream_order"] = vod_stream_order
+                            """
 
                         if "show_superscript" not in playlist["settings"]:
                             playlist["settings"]["show_superscript"] = show_superscript
@@ -486,9 +498,9 @@ def processFiles():
                         ("live_type", live_type),
                         ("vod_type", vod_type),
                         ("live_category_order", live_category_order),
-                        ("live_stream_order", live_stream_order),
+                        # ("live_stream_order", live_stream_order),
                         ("vod_category_order", vod_category_order),
-                        ("vod_stream_order", vod_stream_order),
+                        # ("vod_stream_order", vod_stream_order),
                         ("show_superscript", show_superscript)
                     ]),
                     "data": dict([

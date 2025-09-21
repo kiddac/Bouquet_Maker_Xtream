@@ -470,10 +470,14 @@ class BmxUpdate(Screen):
 
         if self.live_stream_data:
 
+            """
             if settings["live_stream_order"] == "alphabetical":
                 self.live_stream_data.sort(key=lambda x: x["name"].lower())
             elif settings["live_stream_order"] == "added":
                 self.live_stream_data.sort(key=lambda x: x["added"], reverse=True)
+                """
+
+            self.live_stream_data.sort(key=lambda x: x["name"].lower())
 
             if cfg.groups.value and not self.bouquet_tv:
                 self.buildBouquetTvGroupedFile()
