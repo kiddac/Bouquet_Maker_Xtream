@@ -275,10 +275,15 @@ class BMXAutoStartTimer:
         except:
             self.timer.callback.append(self.onTimer)
 
-        # Run missed update immediately at boot if setting enabled
+        # Run missed update shortly after boot if setting enabled
         if cfg.autoupdate.value and cfg.missedupdate.value:
-            print("[BMXAutoStartTimer] Running update immediately on boot (missed update)")
-            self.runUpdate()
+            print("[BMXAutoStartTimer] Scheduling missed update 20s after boot")
+            self.bootTimer = eTimer()
+            try:
+                self.bootTimer_conn = self.bootTimer.timeout.connect(self.runUpdate)
+            except:
+                self.bootTimer.callback.append(self.runUpdate)
+            self.bootTimer.startLongTimer(5)  # 20-second delay
 
         # Schedule the next wake
         self.update()
