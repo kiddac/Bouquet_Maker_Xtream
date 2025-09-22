@@ -175,43 +175,31 @@ def downloadUrlMulti(url, output_file=None):
                         json_content = r.json()
                     return category, json_content
 
-                chunk_size = 8192 * 8  # 128 KB
+                chunk_size = 1024 * 1024  # 1 MB chunks
 
                 if output_file:
-                    # Save to the specified output file
+                    # Stream directly to file
                     output_dir = os.path.dirname(output_file)
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)
 
                     with open(output_file, 'wb') as f:
                         for chunk in r.iter_content(chunk_size=chunk_size):
-                            if chunk:  # Only write non-empty chunks
+                            if chunk:
                                 f.write(chunk)
-
                     return category, output_file
 
                 else:
-                    # Collect chunks into memory and return as content
-                    content = ''
-                    """
-                    if pythonVer == 2:
-                        content = ''
-                    else:
-                        content = b""
-                        """
-
+                    # Collect into a list of chunks (fast O(n))
+                    chunks = []
                     for chunk in r.iter_content(chunk_size=chunk_size):
-                        if chunk:  # Only append non-empty chunks
-                            if ext == "text":
-                                content += chunk.decode('utf-8', errors='ignore')
-                                """
-                                if pythonVer == 2:
-                                    content += chunk.decode('utf-8', errors='ignore')
-                                else:
-                                    content += chunk.decode('utf-8', errors='ignore').encode('utf-8')
-                                    """
-                            else:
-                                content += chunk
+                        if chunk:
+                            chunks.append(chunk)
+
+                    if ext == "text":
+                        content = b"".join(chunks).decode("utf-8", errors="ignore")
+                    else:
+                        content = b"".join(chunks)
 
                     return category, content
 
