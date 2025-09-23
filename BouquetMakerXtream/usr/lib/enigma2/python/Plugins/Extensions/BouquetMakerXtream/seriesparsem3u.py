@@ -4,10 +4,9 @@ import re
 from . import bouquet_globals as glob
 from .plugin import debugs
 
-# Keep only essential regex patterns
 GROUP_TITLE_RE = re.compile(r'group-title="([^"]*)"')
 TVG_NAME_RE = re.compile(r'tvg-name="([^"]*)"')
-SERIES_PATTERN = re.compile(r'(?i)(S\d+|E\d+|Episode\s\d+)')  # Case-insensitive matching
+SERIES_PATTERN = re.compile(r'(S\d+|E\d+|Episode\s\d+)', re.IGNORECASE)
 
 
 def parseM3u8Playlist(response):
@@ -22,78 +21,66 @@ def parseM3u8Playlist(response):
         response = response.decode('utf-8', 'ignore')
 
     lines = response.splitlines()
-    i = 0
     total_lines = len(lines)
+    hidden = set(data.get("series_categories_hidden", []))
 
+    i = 0
     while i < total_lines:
-        line = lines[i].strip()
+        line = lines[i]
         i += 1
 
         if not line.startswith("#EXTINF"):
             continue
 
-        # Process EXTINF line
-        group_title = ""
-        name = ""
+        # Get URL first (next line)
+        if i >= total_lines:
+            break
+        url_line = lines[i].strip()
+        i += 1
 
-        # Extract group-title (optimized)
-        gt_pos = line.find('group-title="')
-        if gt_pos > -1:
-            end_pos = line.find('"', gt_pos + 13)
-            if end_pos > -1:
-                group_title = line[gt_pos + 13:end_pos].strip()
-
-        # Skip hidden categories early
-        if group_title and isinstance(data.get("series_categories_hidden", []), list) \
-           and group_title in data["series_categories_hidden"]:
+        if not url_line.startswith(('http://', 'https://')):
             continue
 
-        # Extract name (optimized)
-        name_pos = line.find('tvg-name="')
-        if name_pos > -1:
-            end_pos = line.find('"', name_pos + 10)
-            if end_pos > -1:
-                name = line[name_pos + 10:end_pos].strip()
+        source = url_line.split()[0]
 
-        # Fallback to name after last comma (without regex)
+        # Early rejection of non-series paths
+        lower_source = source.lower()
+        if "/live/" in lower_source or "/movies/" in lower_source:
+            continue
+
+        # Quick series check: URL contains '/series/'? If not, fallback to name regex
+        is_series_url = "/series/" in lower_source
+
+        # Extract tvg-name
+        m_name = TVG_NAME_RE.search(line)
+        name = m_name.group(1).strip() if m_name else ""
         if not name:
             last_comma = line.rfind(',')
             if last_comma > -1:
                 name = line[last_comma + 1:].strip()
 
-        name = simplify_name(name)
-
         if not name:
             continue
 
-        # Get the URL line
-        if i >= total_lines:
-            break
-
-        url_line = lines[i].strip()
-        i += 1
-
-        # Fast URL check (replaces URL_PATTERN regex)
-        if not url_line.startswith(('http://', 'https://')):
+        # Series check: URL or name pattern
+        if not (is_series_url or SERIES_PATTERN.search(name)):
             continue
 
-        source = url_line.split()[0]  # Take first token as URL
+        # Extract group-title last (skip hidden categories check if possible)
+        m_group = GROUP_TITLE_RE.search(line)
+        group_title = m_group.group(1).strip() if m_group else ""
+        if group_title and group_title in hidden:
+            continue
 
-        # Series detection
-        is_series = (
-            "/series/" in source.lower() or
-            SERIES_PATTERN.search(name)
-        )
-
-        if is_series:
-            streamid += 1
-            data["series_streams"].append({
-                "category_id": group_title or "Uncategorised Series",
-                "name": name,
-                "source": source,
-                "series_id": str(streamid),
-                "added": 0
-            })
+        # Append series
+        streamid += 1
+        data["series_streams"].append({
+            "category_id": group_title or "Uncategorised Series",
+            "name": simplify_name(name),
+            "source": source,
+            "series_id": str(streamid),
+        })
+    return data["series_streams"]
 
 
 def simplify_name(input_string):
