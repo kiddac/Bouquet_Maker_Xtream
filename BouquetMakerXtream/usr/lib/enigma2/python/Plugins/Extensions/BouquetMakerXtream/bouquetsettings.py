@@ -4,9 +4,8 @@
 from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
-from . import parsem3u as parsem3u
 from .bmxStaticText import StaticText
-from .plugin import cfg, epgimporter, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory, debugs, pythonVer, dir_tmp
+from .plugin import cfg, epgimporter, playlist_file, playlists_json, skin_directory, debugs, pythonVer
 
 import json
 import os
@@ -15,7 +14,7 @@ from Components.ActionMap import ActionMap
 from Components.config import ConfigEnableDisable, ConfigSelection, ConfigSelectionNumber, ConfigText, ConfigYesNo, NoSave, getConfigListEntry
 from Components.ConfigList import ConfigListScreen
 from Components.Pixmap import Pixmap
-from enigma import eTimer, ePoint
+from enigma import ePoint
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
@@ -69,15 +68,9 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.hide_vod = False
         self.hide_series = False
 
-        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            player_api = glob.current_playlist["playlist_info"]["player_api"]
-            self.p_live_categories_url = str(player_api) + "&action=get_live_categories"
-            self.p_vod_categories_url = str(player_api) + "&action=get_vod_categories"
-            self.p_series_categories_url = str(player_api) + "&action=get_series_categories"
-
         self.playlists_all = bmx.getPlaylistJson()
 
-        self.onFirstExecBegin.append(self.start)
+        self.onFirstExecBegin.append(self.initConfig)
         self.onLayoutFinish.append(self.__layoutFinished)
 
     def clearCaches(self):
@@ -95,170 +88,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
 
     def cancel(self):
         self.close()
-
-    def start(self):
-        if debugs:
-            print("*** start ***")
-
-        self.timer = eTimer()
-
-        try:
-            self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
-        except:
-            try:
-                self.timer.callback.append(self.makeUrlList)
-            except:
-                self.makeUrlList()
-        self.timer.start(10, True)
-
-    def makeUrlList(self):
-        if debugs:
-            print("*** makeurllist ***")
-        self.url_list = []
-
-        if glob.current_playlist["playlist_info"]["playlist_type"] != "local":
-            if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                self.url_list.append([self.p_live_categories_url, 0, "json"])
-                self.url_list.append([self.p_vod_categories_url, 1, "json"])
-                self.url_list.append([self.p_series_categories_url, 2, "json"])
-                self.processDownloads("json")
-
-            elif glob.current_playlist["playlist_info"]["playlist_type"] == "external":
-                self.url_list.append([glob.current_playlist["playlist_info"]["full_url"], 6, "text"])
-                self.processDownloads("text")
-        else:
-            self.parseM3u8Playlist()
-
-        self.checkCategories()
-
-    def processDownloads(self, outputtype=None):
-        if debugs:
-            print("*** processdownloads ***")
-        results = ""
-        threads = min(len(self.url_list), 10)
-        if outputtype == "json":
-            output_file = ""
-        else:
-            output_file = os.path.join(dir_tmp, "temp_playlist.m3u")
-
-        if hasConcurrent or hasMultiprocessing:
-            if hasConcurrent:
-                try:
-                    from concurrent.futures import ThreadPoolExecutor
-
-                    executor = ThreadPoolExecutor(max_workers=threads)
-
-                    with executor:
-                        if outputtype == "json":
-
-                            results = executor.map(bmx.downloadUrlCategory, self.url_list)
-                        else:
-                            results = executor.map(lambda url: bmx.downloadUrlMulti(url, output_file), self.url_list)
-
-                except Exception as e:
-                    print(e)
-
-            elif hasMultiprocessing:
-                try:
-                    from multiprocessing.pool import ThreadPool
-
-                    pool = ThreadPool(threads)
-                    if outputtype == "json":
-                        results = pool.imap_unordered(bmx.downloadUrlCategory, self.url_list)
-                    else:
-
-                        results = pool.imap_unordered(lambda url: bmx.downloadUrlMulti(url, output_file), self.url_list)
-                    pool.close()
-                    pool.join()
-                except Exception as e:
-                    print(e)
-
-            for url, result in zip(self.url_list, results):
-                if result:
-                    category = result[0]
-
-                    if output_file and os.path.exists(output_file):
-                        with open(output_file, 'r') as f:
-                            response = f.read()
-                    else:
-                        response = result[1]
-
-                    if response:
-                        if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                            if category == 0:
-                                glob.current_playlist["data"]["live_categories"] = response
-                            elif category == 1:
-                                glob.current_playlist["data"]["vod_categories"] = response
-                            elif category == 2:
-                                glob.current_playlist["data"]["series_categories"] = response
-                        else:
-                            self.parseM3u8Playlist(response)
-
-        else:
-            for url in self.url_list:
-
-                if outputtype == "json":
-                    result = bmx.downloadUrlCategory(url)
-                else:
-                    result = bmx.downloadUrlMulti(url, output_file)
-
-                category = result[0]
-                response = ""
-
-                if output_file and os.path.exists(output_file):
-                    with open(output_file, 'r') as f:
-                        response = f.read()
-                else:
-                    response = result[1]
-
-                if response:
-                    if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-                        if category == 0:
-                            glob.current_playlist["data"]["live_categories"] = response
-                        elif category == 1:
-                            glob.current_playlist["data"]["vod_categories"] = response
-                        elif category == 2:
-                            glob.current_playlist["data"]["series_categories"] = response
-                    else:
-                        self.parseM3u8Playlist(response)
-
-                # Delete the file after processing
-                if os.path.exists(output_file):
-                    os.remove(output_file)
-
-    def parseM3u8Playlist(self, response=None):
-        if debugs:
-            print("*** parseM3u8Playlist ***")
-        self.live_streams, self.vod_streams, self.series_streams = parsem3u.parseM3u8Playlist(response)
-        self.makeM3u8CategoriesJson()
-
-    def makeM3u8CategoriesJson(self):
-        if debugs:
-            print("*** makeM3u8CategoriesJson ***")
-        parsem3u.makeM3u8CategoriesJson(self.live_streams, self.vod_streams, self.series_streams)
-        self.makeM3u8StreamsJson()
-
-    def makeM3u8StreamsJson(self):
-        if debugs:
-            print("*** makeM3u8StreamsJson ***")
-        parsem3u.makeM3u8StreamsJson(self.live_streams, self.vod_streams, self.series_streams)
-
-    def checkCategories(self):
-        if debugs:
-            print("*** checkCategories ***")
-        if not glob.current_playlist["data"]["live_categories"]:
-            self.hide_live = True
-            glob.current_playlist["settings"]["show_live"] = False
-
-        if not glob.current_playlist["data"]["vod_categories"]:
-            self.hide_vod = True
-            glob.current_playlist["settings"]["show_vod"] = False
-
-        if not glob.current_playlist["data"]["series_categories"]:
-            self.hide_series = True
-            glob.current_playlist["settings"]["show_series"] = False
-
-        self.initConfig()
 
     def initConfig(self):
         if debugs:
@@ -373,8 +202,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.handleInputHelpers()
 
     def handleInputHelpers(self):
-        if debugs:
-            print("*** handleInputHelpers ***")
         currConfig = self["config"].getCurrent()
 
         if currConfig is not None:
@@ -409,8 +236,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     self["VKeyIcon"].hide()
 
     def changedEntry(self):
-        if debugs:
-            print("*** changedEntry ***")
         self.item = self["config"].getCurrent()
         for x in self.onChangedEntry:
             x()
@@ -422,13 +247,9 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             pass
 
     def getCurrentEntry(self):
-        if debugs:
-            print("*** getCurrentEntry ***")
         return self["config"].getCurrent() and self["config"].getCurrent()[0] or ""
 
     def getCurrentValue(self):
-        if debugs:
-            print("*** getCurrentValue ****")
         return self["config"].getCurrent() and str(self["config"].getCurrent()[1].getText()) or ""
 
     def save(self):
@@ -617,19 +438,4 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             print("*** exit ***")
         if glob.finished:
             self.clearCaches()
-            self.clearSeries()
             self.close(True)
-
-    def clearSeries(self):
-        if debugs:
-            print("*** clearSeries ***")
-        playlists_all = bmx.getPlaylistJson()
-
-        if playlists_all:
-            for playlist in playlists_all:
-                playlist["data"]["live_streams"] = []
-                playlist["data"]["vod_streams"] = []
-                playlist["data"]["series_streams"] = []
-
-            with open(playlists_json, "w") as f:
-                json.dump(playlists_all, f)
