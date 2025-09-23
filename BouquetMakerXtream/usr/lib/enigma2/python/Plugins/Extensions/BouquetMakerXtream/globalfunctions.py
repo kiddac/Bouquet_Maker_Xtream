@@ -31,7 +31,6 @@ def normalize_superscripts(text):
 
 
 def clean_names(streams):
-    """Clean 'name' and 'category_name' fields in each stream entry."""
     for item in streams:
         for field in ("name", "category_name"):
             if field in item and isinstance(item[field], str):
@@ -53,42 +52,8 @@ def getPlaylistJson():
 
 
 def refreshBouquets():
-    if debugs:
-        print("*** refreshBouquets ***")
     eDVBDB.getInstance().reloadServicelist()
     eDVBDB.getInstance().reloadBouquets()
-
-
-"""
-def downloadUrl(url, ext):
-    if debugs:
-        print("*** downloadUrl ***", url, ext)
-    retries = 0
-    adapter = HTTPAdapter(max_retries=retries)
-
-    with requests.Session() as http:
-        http.mount("http://", adapter)
-        http.mount("https://", adapter)
-
-        try:
-            r = http.get(url, headers=hdr, timeout=(20, 60), verify=False)
-            r.raise_for_status()
-
-            if r.status_code == requests.codes.ok:
-                try:
-                    if ext == "json":
-                        response = r.json()
-                    else:
-                        response = r.content
-                    return response
-                except Exception as e:
-                    print("Error processing response:", e)
-                    return ""
-        except Exception as e:
-            print("Request failed:", e)
-
-    return []
-    """
 
 
 def downloadApi(url):
@@ -212,10 +177,6 @@ def downloadUrlMulti(url, output_file=None):
 
 
 def safeName(name):
-    """
-    if debugs:
-        print("*** safeName ***", name)
-        """
     if pythonVer == 2:
         if isinstance(name, str):
             name = name.decode("utf-8", "ignore")
@@ -228,15 +189,10 @@ def safeName(name):
     name = re.sub(r" ", "_", name)
     name = re.sub(r"_+", "_", name)
     name = name.strip("_")
-
-    # print("*** newname ***", name)
-
     return name
 
 
 def purge(my_dir, pattern):
-    if debugs:
-        print("*** purge ***")
     try:
         for f in os.listdir(my_dir):
             file_path = os.path.join(my_dir, f)
