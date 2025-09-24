@@ -175,7 +175,7 @@ class BmxMainMenu(Screen):
             self.playlists_all = [_f for _f in self.playlists_all if _f]
 
             with open(playlists_json, "w") as f:
-                json.dump(self.playlists_all, f, indent=4)
+                json.dump(self.playlists_all, f)
 
             bmx.refreshBouquets()
             self.start()

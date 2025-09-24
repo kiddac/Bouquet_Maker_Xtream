@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, pythonVer, dir_custom
+from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, pythonVer, dir_custom, dir_tmp
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
@@ -366,30 +366,20 @@ class BmxDownloadPicons(Screen):
         # print("*** finished ***")
         if self.complete is False:
 
-            with open('/tmp/bmxsuccesslist.txt', 'w+') as f:
-                for item in self.successlist:
-                    f.write("%s\n" % item)
-                f.truncate()
+            file_map = {
+                'bmxsuccesslist.txt': self.successlist,
+                'bmxbadlist.txt': self.badurllist,
+                'bmxtypelist.txt': self.typelist,
+                'bmxsizelist.txt': self.sizelist,
+                'bmxexistslist.txt': self.existslist,
+            }
 
-            with open('/tmp/bmxbadlist.txt', 'w+') as f:
-                for item in self.badurllist:
-                    f.write("%s\n" % item)
-                f.truncate()
-
-            with open('/tmp/bmxtypelist.txt', 'w+') as f:
-                for item in self.typelist:
-                    f.write("%s\n" % item)
-                f.truncate()
-
-            with open('/tmp/bmxsizelist.txt', 'w+') as f:
-                for item in self.sizelist:
-                    f.write("%s\n" % item)
-                f.truncate()
-
-            with open('/tmp/bmxexistslist.txt', 'w+') as f:
-                for item in self.existslist:
-                    f.write("%s\n" % item)
-                f.truncate()
+            for filename, data_list in file_map.items():
+                path = os.path.join(dir_tmp, filename)
+                with open(path, 'w+') as f:
+                    for item in data_list:
+                        f.write("%s\n" % item)
+                    f.truncate()
 
             self.complete = True
 
@@ -400,9 +390,17 @@ class BmxDownloadPicons(Screen):
             self.session.openWithCallback(
                 self.close, MessageBox,
                 _("Finished.\n\n") +
-                _("Success: ") + str(self.successcount) + "   " + _("Bad size: ") + str(self.sizecount) + "   " + _("bad type: ") + str(self.typecount) + "   " + _("bad url: ") + str(self.badurlcount) + "   " + _("Exists: ") + str(self.existscount) + "\n\n" +
-                _("Restart your GUI to refresh picons.") + "\n\n" + _("Your created picons can be found in") + "\n" + str(self.downloadlocation) + "\n\n" +
-                _("Your failed picon list can be found in") + "\n" + "/tmp/", MessageBox.TYPE_INFO
+                _("Success: ") + str(self.successcount) + "   " +
+                _("Bad size: ") + str(self.sizecount) + "   " +
+                _("Bad type: ") + str(self.typecount) + "   " +
+                _("Bad url: ") + str(self.badurlcount) + "   " +
+                _("Exists: ") + str(self.existscount) + "\n\n" +
+                _("Restart your GUI to refresh picons.") + "\n\n" +
+                _("Your created picons can be found in") + "\n" +
+                str(self.downloadlocation) + "\n\n" +
+                _("Your failed picon list can be found in") + "\n" +
+                str(dir_tmp),
+                MessageBox.TYPE_INFO
             )
 
     def showError(self, message=None):

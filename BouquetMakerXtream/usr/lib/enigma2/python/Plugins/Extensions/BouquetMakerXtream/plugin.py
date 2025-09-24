@@ -9,7 +9,7 @@ import shutil
 import sys
 import time
 import twisted.python.runtime
-from datetime import datetime
+from datetime import datetime, timedelta
 from requests.adapters import HTTPAdapter, Retry
 
 
@@ -46,16 +46,17 @@ try:
 except ImportError:
     hasConcurrent = False
 
-debugs = False
-
 pythonFull = float(str(sys.version_info.major) + "." + str(sys.version_info.minor))
 pythonVer = sys.version_info.major
+
+isDreambox = os.path.exists("/usr/bin/apt-get")
+
+debugs = False
 
 epgimporter = False
 if os.path.isdir("/usr/lib/enigma2/python/Plugins/Extensions/EPGImport"):
     epgimporter = True
 
-isDreambox = os.path.exists("/usr/bin/apt-get")
 
 with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version.txt", "r") as f:
     version = f.readline()
@@ -63,18 +64,9 @@ with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version
 screenwidth = getDesktop(0).size()
 
 dir_etc = "/etc/enigma2/bouquetmakerxtream/"
+dir_tmp = "/etc/enigma2/bouquetmakerxtream/tmp/"
 dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
 dir_custom = "/media/hdd/picon/"
-
-dir_tmp = "/tmp/bouquetmakerxtream/"
-
-# delete temporary folder and contents
-if os.path.exists(dir_tmp):
-    shutil.rmtree(dir_tmp)
-
-# create temporary folder for downloaded files
-if not os.path.exists(dir_tmp):
-    os.makedirs(dir_tmp)
 
 if screenwidth.width() == 2560:
     skin_directory = os.path.join(dir_plugins, "skin/uhd/")
@@ -86,12 +78,13 @@ else:
 folders = [folder for folder in os.listdir(skin_directory) if folder != "common"]
 
 useragents = [
-    ("Enigma2 - BouquetMakerXtream Plugin"),
+    ("Enigma2 - BouquetMakerXtream Plugin", "BouquetMakerXtream"),
     ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Chrome 124"),
     ("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0", "Firefox 125"),
     ("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36", "Android")
 ]
 
+# Configurations initialization
 config.plugins.BouquetMakerXtream = ConfigSubsection()
 cfg = config.plugins.BouquetMakerXtream
 
@@ -137,6 +130,7 @@ cfg.retries.adultpin = ConfigSubsection()
 cfg.retries.adultpin.tries = ConfigInteger(default=3)
 cfg.retries.adultpin.time = ConfigInteger(default=3)
 cfg.autoupdate = ConfigYesNo(default=False)
+cfg.missedupdate = ConfigYesNo(default=False)
 cfg.groups = ConfigYesNo(default=False)
 cfg.location_valid = ConfigYesNo(default=True)
 cfg.position = ConfigSelection(default="bottom", choices=[("bottom", _("Bottom")), ("top", _("Top"))])
@@ -172,6 +166,7 @@ cfg.deepstandby = ConfigSelection(default="skip", choices=[
 # vti picon symlink - ln -s /media/hdd/picon /usr/share/enigma2
 # newenigma2 symlink - # ln -s /data/picons /picons
 
+# Set default file paths
 playlist_file = os.path.join(dir_etc, "playlists.txt")
 playlists_json = os.path.join(dir_etc, "bmx_playlists.json")
 
@@ -184,20 +179,17 @@ if location:
     if os.path.exists(location):
         playlist_file = os.path.join(cfg.location.value, "playlists.txt")
         cfg.location_valid.setValue(True)
-        cfg.save()
-        configfile.save()
     else:
         os.makedirs(location)  # Create directory if it doesn't exist
         playlist_file = os.path.join(location, "playlists.txt")
 
         cfg.location_valid.setValue(True)
-        cfg.save()
-        configfile.save()
 else:
     cfg.location.setValue(dir_etc)
     cfg.location_valid.setValue(False)
-    cfg.save()
-    configfile.save()
+
+cfg.save()
+configfile.save()
 
 font_folder = os.path.join(dir_plugins, "fonts/")
 addFont(os.path.join(font_folder, "slyk-medium.ttf"), "slykregular", 100, 0)
@@ -214,6 +206,18 @@ hdr = {
 if not os.path.exists(dir_etc):
     os.makedirs(dir_etc)
 
+# delete temporary folder and contents
+if os.path.exists("/tmp/bouquetmakerxtream/"):
+    shutil.rmtree("/tmp/bouquetmakerxtream/")
+
+if os.path.exists(dir_tmp):
+    shutil.rmtree(dir_tmp)
+
+# create temporary folder for downloaded files
+if not os.path.exists(dir_tmp):
+    os.makedirs(dir_tmp)
+
+
 # check if playlists.txt file exists in specified location
 if not os.path.isfile(playlist_file):
     with open(playlist_file, "a") as f:
@@ -225,12 +229,14 @@ if not os.path.isfile(playlists_json):
         f.close()
 
 # try and override epgimport settings
+"""
 try:
     config.plugins.epgimport.import_onlybouquet.value = False
     config.plugins.epgimport.import_onlybouquet.save()
     configfile.save()
 except Exception as e:
     print(e)
+    """
 
 
 def main(session, **kwargs):
@@ -261,59 +267,106 @@ class BMXAutoStartTimer:
     def __init__(self, session):
         self.session = session
         self.timer = eTimer()
+        self._running_update = False  # flag to prevent overlapping updates
 
         try:
             self.timer_conn = self.timer.timeout.connect(self.onTimer)
         except:
             self.timer.callback.append(self.onTimer)
 
+        # Run missed update shortly after boot if setting enabled
+        if cfg.autoupdate.value and cfg.missedupdate.value:
+            print("[BMXAutoStartTimer] Scheduling missed update 20s after boot")
+            self.bootTimer = eTimer()
+            try:
+                self.bootTimer_conn = self.bootTimer.timeout.connect(self.runUpdate)
+            except:
+                self.bootTimer.callback.append(self.runUpdate)
+            self.bootTimer.startLongTimer(5)  # 20-second delay
+
+        # Schedule the next wake
         self.update()
 
     def getWakeTime(self):
+        """Return the next scheduled wake timestamp as a Unix timestamp."""
         if cfg.autoupdate.value:
             clock = cfg.wakeup.value
-            nowt = time.time()
-            now = time.localtime(nowt)
-            return int(time.mktime((now.tm_year, now.tm_mon, now.tm_mday, clock[0], clock[1], 0, 0, now.tm_yday, now.tm_isdst)))
+            now = datetime.now()
+            dt = datetime(now.year, now.month, now.day, clock[0], clock[1], 0)
+
+            # If wake time has already passed today, schedule for tomorrow
+            if dt <= now:
+                dt += timedelta(days=1)
+
+            return int(time.mktime(dt.timetuple()))
         else:
             return -1
 
     def update(self, atLeast=0):
+        """Schedule the next timer event."""
         self.timer.stop()
         wake = self.getWakeTime()
-        now_t = time.time()
-        now = int(now_t)
+        nowtime = time.time()
 
         if wake > 0:
-            if wake < now + atLeast:
-                # Tomorrow.
-                wake += 24 * 3600
-            next = wake - now
+            next = wake - int(nowtime)
+
+            # If the scheduled time has already passed
+            if next <= 0:
+                if cfg.missedupdate.value:
+                    # Run update immediately
+                    print("[BMXAutoStartTimer] Scheduled time missed, running update now")
+                    self.runUpdate()
+                    wake = self.getWakeTime()  # recompute for next day
+                    next = wake - int(time.time())
+                else:
+                    # Skip missed update, schedule for tomorrow
+                    wake = self.getWakeTime() + 24 * 3600
+                    next = wake - int(time.time())
+
+            # Cap maximum wait to 24 hours
+            if next > 24 * 3600:
+                next = 24 * 3600
+
+            # Debug print
+            wake_dt = datetime.fromtimestamp(wake)
+            print("[BMXAutoStartTimer] Next wake in %d seconds at %s" %
+                  (next, wake_dt.strftime("%Y-%m-%d %H:%M:%S")))
+
             self.timer.startLongTimer(next)
+
         else:
             wake = -1
+            print("[BMXAutoStartTimer] Auto update disabled")
 
-        wdt = datetime.fromtimestamp(wake)
-        ndt = datetime.fromtimestamp(int(now_t))
-
-        print("[BouquetMakerXtream] WakeUpTime now set to", wdt, "(now=%s)" % ndt)
         return wake
 
     def onTimer(self):
+        """Callback when the timer fires."""
         self.timer.stop()
         now = int(time.time())
-        print("[BouquetMakerXtream] onTimer occured at", now)
         wake = self.getWakeTime()
         atLeast = 0
-        if wake - now < 60:
+
+        if abs(wake - now) < 60:
             self.runUpdate()
             atLeast = 60
+
         self.update(atLeast)
 
     def runUpdate(self):
-        print("\n *********** BouquetMakerXtream runupdate ************ \n")
-        from . import update
-        self.session.open(update.BmxUpdate, "auto")
+        """Run the bouquet update process safely without overlapping."""
+        if self._running_update:
+            print("[BMXAutoStartTimer] Update already running, skipping...")
+            return
+
+        try:
+            self._running_update = True
+            print("\n *********** BouquetMakerXtream runupdate ************ \n")
+            from . import update
+            self.session.open(update.BmxUpdate, "auto")
+        finally:
+            self._running_update = False
 
 
 def myBase(self, session, forceLegacy=False):

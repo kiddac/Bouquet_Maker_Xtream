@@ -6,7 +6,7 @@ from . import parsem3u
 from . import seriesparsem3u
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
-from .plugin import epgimporter, screenwidth, cfg, playlists_json, skin_directory
+from .plugin import epgimporter, screenwidth, cfg, playlists_json, skin_directory, dir_tmp
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
@@ -310,7 +310,7 @@ class BmxUpdate(Screen):
         if outputtype == "json":
             output_file = ""
         else:
-            output_file = '/var/volatile/tmp/bouquetmakerxtream/temp'
+            output_file = os.path.join(dir_tmp, "temp_playlist.m3u")
 
         self.live_categories = []
         self.vod_categories = []
@@ -1061,7 +1061,7 @@ class BmxUpdate(Screen):
                     break
 
         with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f, indent=4)
+            json.dump(self.playlists_all, f)
 
     def done(self, answer=None):
         bmx.refreshBouquets()

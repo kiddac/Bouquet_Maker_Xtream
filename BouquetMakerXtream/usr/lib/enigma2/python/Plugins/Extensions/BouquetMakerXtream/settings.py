@@ -171,6 +171,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.cfg_skip_playlists_screen = getConfigListEntry(_("Skip playlist selection screen if only 1 playlist"), cfg.skip_playlists_screen)
         self.cfg_autoupdate = getConfigListEntry(_("Automatic live bouquet update"), cfg.autoupdate)
         self.cfg_wakeup = getConfigListEntry(_("Automatic live bouquet update time"), cfg.wakeup)
+        self.cfg_missedupdate = getConfigListEntry(_("Run live bouquet update on boot"), cfg.missedupdate)
         self.cfg_catchup_on = getConfigListEntry(_("Embed Catchup player in channelselect screen") + _(" *Restart GUI Required"), cfg.catchup_on)
         self.cfg_catchup = getConfigListEntry(_("Prefix Catchup channels"), cfg.catchup)
         self.cfg_catchup_prefix = getConfigListEntry(_("Select Catchup prefix symbol"), cfg.catchup_prefix)
@@ -193,6 +194,7 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
             self.cfg_skip_playlists_screen,
             self.cfg_autoupdate,
             self.cfg_wakeup if cfg.autoupdate.value else None,
+            self.cfg_missedupdate if cfg.autoupdate.value else None,
             self.cfg_live_type,
             self.cfg_vod_type,
             self.cfg_groups,
