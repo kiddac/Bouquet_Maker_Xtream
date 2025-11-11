@@ -1,6 +1,13 @@
 <screen name="bouquetMakerXtreamProgress" position="0,0" size="1280,720" backgroundColor="#ff000000" flags="wfNoBorder">
+	<eLabel position="0,488" size="1280,1" backgroundColor="#0e6382" transparent="0" zPosition="3"/>
 	<eLabel position="0,678" size="1280,1" backgroundColor="#0e6382" transparent="0" zPosition="3"/>
-	<eLabel position="0,678" size="1280,42" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
-	<widget name="action" position="center,678" size="1280,42" font="bmxregular;23" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
+	<eLabel position="0,488" size="1280,232" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
+	<widget source="global.CurrentTime" render="Label" position="0,686" size="320,28" font="bmxregular;20" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" halign="center" transparent="1">
+		<convert type="ClockToText">Format:%A, %b %d, %H.%M</convert>
+	</widget>
+	<widget name="action" position="center,518" size="1280,30" font="bmxregular;23" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
+	<widget name="info" position="center,562" size="1280,30" font="bmxregular;19" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
+	<widget name="status" position="center,630" size="1280,30" font="bmxregular;23" foregroundColor="#ffffff" backgroundColor="#000000" halign="center" noWrap="1" transparent="1"/>
+	<widget name="progress" position="205,609" size="870,6" borderWidth="1" borderColor="#555555" foregroundColor="#0d84a4" backgroundColor="#000000" zPosition="3"/>
 </screen>
 

@@ -12,7 +12,6 @@ import twisted.python.runtime
 from datetime import datetime, timedelta
 from requests.adapters import HTTPAdapter, Retry
 
-
 try:
     from urlparse import urljoin
 except:
@@ -63,8 +62,52 @@ with open("/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/version
 
 screenwidth = getDesktop(0).size()
 
+
+def choose_tmp_dir(min_free_mb=150):
+    min_free = min_free_mb * 1024 * 1024  # convert MB to bytes
+
+    candidates = [
+        "/media/hdd",
+        "/media/usb",
+        "/etc/enigma2/bouquetmakerxtream/tmp"
+    ]
+
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                stat = os.statvfs(path)
+                free = stat.f_bavail * stat.f_frsize
+                # free_mb = free / (1024 * 1024)
+                # print("[Plugin][choose_tmp_dir] Path exists:", path, "Free MB:", int(free_mb))
+                if free >= min_free:
+                    # ensure directory exists
+                    if not os.path.exists(path):
+                        os.makedirs(path)
+                    # print("[Plugin][choose_tmp_dir] Using path:", path)
+                    return path
+            except Exception as e:
+                print("[Plugin][choose_tmp_dir] Failed to stat {}: {}".format(path, e))
+                continue
+        else:
+            print("[Plugin][choose_tmp_dir] Path does not exist:", path)
+
+    # Fallback to /tmp if nothing else works
+    fallback = "/tmp"
+    print("[Plugin][choose_tmp_dir] No suitable storage found, using fallback:", fallback)
+    return fallback
+
+
+_dir_tmp = None
+
+
+def dir_tmp():
+    global _dir_tmp
+    if _dir_tmp is None:
+        _dir_tmp = choose_tmp_dir()
+    return _dir_tmp
+
+
 dir_etc = "/etc/enigma2/bouquetmakerxtream/"
-dir_tmp = "/etc/enigma2/bouquetmakerxtream/tmp/"
 dir_plugins = "/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/"
 dir_custom = "/media/hdd/picon/"
 
@@ -115,7 +158,6 @@ cfg.local_location = ConfigDirectory(default=dir_etc)
 cfg.main = ConfigYesNo(default=True)
 cfg.skin = ConfigSelection(default="default", choices=folders)
 cfg.parental = ConfigYesNo(default=False)
-# cfg.timeout = ConfigSelectionNumber(1, 20, 1, default=10, wraparound=True)
 cfg.catchup_on = ConfigYesNo(default=False)
 cfg.catchup = ConfigYesNo(default=False)
 cfg.catchup_prefix = ConfigSelection(default="~", choices=[("~", "~"), ("!", "!"), ("#", "#"), ("-", "-"), ("^", "^")])
@@ -210,14 +252,6 @@ if not os.path.exists(dir_etc):
 if os.path.exists("/tmp/bouquetmakerxtream/"):
     shutil.rmtree("/tmp/bouquetmakerxtream/")
 
-if os.path.exists(dir_tmp):
-    shutil.rmtree(dir_tmp)
-
-# create temporary folder for downloaded files
-if not os.path.exists(dir_tmp):
-    os.makedirs(dir_tmp)
-
-
 # check if playlists.txt file exists in specified location
 if not os.path.isfile(playlist_file):
     with open(playlist_file, "a") as f:
@@ -227,16 +261,6 @@ if not os.path.isfile(playlist_file):
 if not os.path.isfile(playlists_json):
     with open(playlists_json, "a") as f:
         f.close()
-
-# try and override epgimport settings
-"""
-try:
-    config.plugins.epgimport.import_onlybouquet.value = False
-    config.plugins.epgimport.import_onlybouquet.save()
-    configfile.save()
-except Exception as e:
-    print(e)
-    """
 
 
 def main(session, **kwargs):
@@ -363,8 +387,8 @@ class BMXAutoStartTimer:
         try:
             self._running_update = True
             print("\n *********** BouquetMakerXtream runupdate ************ \n")
-            from . import update
-            self.session.open(update.BmxUpdate, "auto")
+            from . import update2
+            self.session.open(update2.BmxUpdate, "auto")
         finally:
             self._running_update = False
 

@@ -6,13 +6,15 @@ import os
 import codecs
 from . import _
 from . import bouquet_globals as glob
-
 from .plugin import cfg
+
+# Pre-compile only the complex regex patterns we need
+SERIES_PATTERN = re.compile(r'(S\d+|E\d+)', re.IGNORECASE)
+DOUBLE_SPACES_PATTERN = re.compile(r'\s{2,}')
 
 
 def parseM3u8Playlist(response):
     # Handle response depending on whether it's local or downloaded
-
     playlist_type = glob.current_playlist["playlist_info"]["playlist_type"]
 
     if playlist_type == "local":
@@ -30,14 +32,11 @@ def parseM3u8Playlist(response):
     streamid = 0
     channel_num = 0
 
-    # Patterns for extracting details
-    logo_pattern = re.compile(r'tvg-logo="([^"]+)"')
-    epg_id_pattern = re.compile(r'tvg-id="([^"]+)"')
-    url_pattern = re.compile(r'(https?://[^\s]+)')
-
-    for index in range(length):
+    index = 0
+    while index < length:
         if skip_next:
             skip_next = False
+            index += 1
             continue
 
         line = response_lines[index].strip()
@@ -49,29 +48,39 @@ def parseM3u8Playlist(response):
             logo = ""
             epg_id = ""
 
-            logo_match = logo_pattern.search(line)
-            if logo_match:
-                logo = logo_match.group(1).strip()
-                if logo.startswith("data:image"):
-                    logo = ""
-                    line = logo_pattern.sub('', line)
+            # Extract logo using string methods (faster than regex)
+            logo_pos = line.find('tvg-logo="')
+            if logo_pos > -1:
+                end_pos = line.find('"', logo_pos + 10)
+                if end_pos > -1:
+                    logo = line[logo_pos + 10:end_pos].strip()
+                    if logo.startswith("data:image"):
+                        logo = ""
+                        # Remove the logo attribute from line
+                        line = line[:logo_pos] + line[end_pos + 1:]
 
-            # Extract group-title from #EXTINF line
-            start_index = line.find('group-title="')
-            if start_index != -1:
-                start_index += len('group-title="')
-                end_index = line.find('"', start_index)
-                if end_index != -1:
-                    group_title = line[start_index:end_index].strip()
+            # Extract group-title using string methods
+            gt_pos = line.find('group-title="')
+            if gt_pos > -1:
+                end_pos = line.find('"', gt_pos + 13)
+                if end_pos > -1:
+                    group_title = line[gt_pos + 13:end_pos].strip()
 
-            # Extract tvg-name from #EXTINF line
-            start_index = line.find('tvg-name="')
-            if start_index != -1:
-                start_index += len('tvg-name="')
-                end_index = line.find('"', start_index)
-                if end_index != -1:
-                    name = line[start_index:end_index].strip()
+            # Extract tvg-name using string methods
+            name_pos = line.find('tvg-name="')
+            if name_pos > -1:
+                end_pos = line.find('"', name_pos + 10)
+                if end_pos > -1:
+                    name = line[name_pos + 10:end_pos].strip()
 
+            # Extract tvg-id using string methods
+            epg_pos = line.find('tvg-id="')
+            if epg_pos > -1:
+                end_pos = line.find('"', epg_pos + 8)
+                if end_pos > -1:
+                    epg_id = line[epg_pos + 8:end_pos].strip()
+
+            # Fallback: name after last comma
             if not name and ',' in line:
                 name = line.strip().split(",")[-1].strip()
 
@@ -81,125 +90,82 @@ def parseM3u8Playlist(response):
                 channel_num += 1
                 name = _("Stream") + " " + str(channel_num)
 
-            # Extract tvg-id from #EXTINF line
-            epg_id_match = epg_id_pattern.search(line)
-            if epg_id_match:
-                epg_id = epg_id_match.group(1).strip()
-
             # Check for URL in the next line or two lines after
             source = None
             if index + 1 < length:
                 next_line = response_lines[index + 1].strip()
-                url_match = url_pattern.search(next_line)
-                if url_match:
-                    source = url_match.group(1)
+
+                # Fast URL check without regex
+                if next_line.startswith(('http://', 'https://', 'rtsp://')):
+                    source = next_line.split()[0]  # Take first token
                     skip_next = True
                 elif next_line.startswith("#EXTGRP") and not group_title:
                     group_title = next_line.split(":", 1)[-1].strip()
-
-                # If still no URL, check the next one after #EXTGRP
-                if not source and index + 2 < length:
-                    next_line = response_lines[index + 2].strip()
-                    url_match = url_pattern.search(next_line)
-                    if url_match:
-                        source = url_match.group(1)
-                        skip_next = True
+                    # Check next line for URL
+                    if index + 2 < length:
+                        next_next_line = response_lines[index + 2].strip()
+                        if next_next_line.startswith(('http://', 'https://', 'rtsp://')):
+                            source = next_next_line.split()[0]
+                            skip_next = True
 
             # If a URL wasn't found after expected lines, skip this entry and continue
             if not source:
+                index += 1
                 continue
 
             # Determine the stream type based on the URL and name
             stream_type = ""
+            lower_source = source.lower()
 
-            if "/series/" in source and "/live/" not in source and "/movie/" not in source:
+            # Early stream type detection with optimized checks
+            if "/series/" in lower_source and "/live/" not in lower_source and "/movie/" not in lower_source:
                 stream_type = "series"
-
-            elif "/play/" in source and source.endswith((".mp4", ".mkv", ".avi")) and re.search(r'(S\d+|E\d+)', name, re.IGNORECASE):
-                stream_type = "series"
-
-            elif "/movie/" in source or source.endswith((".mp4", ".mkv", ".avi")):
+            elif "/movie/" in lower_source or lower_source.endswith((".mp4", ".mkv", ".avi")):
                 stream_type = "vod"
-
             elif (
-                source.endswith((".ts", ".m3u8", ".mpd", "mpegts", ":")) or
-                "/live" in source or
-                "/m3u8" in source or
-                "deviceUser" in source or
-                "deviceMac" in source or
-                "/play/" in source or
-                "pluto.tv" in source or
+                lower_source.endswith((".ts", ".m3u8", ".mpd", "mpegts", ":")) or
+                "/live" in lower_source or
+                "/m3u8" in lower_source or
+                "deviceuser" in lower_source or
+                "devicemac" in lower_source or
+                "/play/" in lower_source or
+                "pluto.tv" in lower_source or
                 (source[-1].isdigit())
             ):
                 stream_type = "live"
+            else:
+                # Fallback: check for series pattern in name
+                if SERIES_PATTERN.search(name):
+                    stream_type = "series"
+                else:
+                    stream_type = "live"  # Default to live
 
             # Append the stream to the appropriate list based on stream type
             if name and source:
-                if stream_type == "live":
+                if stream_type == "live" and glob.current_playlist["settings"]["show_live"]:
                     group_title = group_title if group_title else "Uncategorised Live"
                     streamid += 1
                     live_streams.append([epg_id, logo, group_title, name, source, streamid])
 
-                elif stream_type == "vod":
+                elif stream_type == "vod" and glob.current_playlist["settings"]["show_vod"]:
                     group_title = group_title if group_title else "Uncategorised VOD"
                     streamid += 1
                     vod_streams.append([epg_id, logo, group_title, name, source, streamid])
 
-                elif stream_type == "series":
+                elif stream_type == "series" and glob.current_playlist["settings"]["show_series"]:
                     group_title = group_title if group_title else "Uncategorised Series"
                     streamid += 1
                     series_streams.append([epg_id, logo, group_title, name, source, streamid])
 
-                else:
-                    group_title = group_title if group_title else "Uncategorised"
-                    streamid += 1
-                    live_streams.append([epg_id, logo, group_title, name, source, streamid])
+        index += 1
 
     return live_streams, vod_streams, series_streams
 
 
-def makeM3u8CategoriesJson(live_streams, vod_streams, series_streams):
-    data = glob.current_playlist["data"]
-    data["live_categories"] = []
-    data["vod_categories"] = []
-    data["series_categories"] = []
-
-    for x in live_streams:
-        if not data["live_categories"]:
-            data["live_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-        else:
-            exists = any(category["category_name"] == str(x[2]) for category in data["live_categories"])
-            if not exists:
-                data["live_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-
-    for x in vod_streams:
-        if not data["vod_categories"]:
-            data["vod_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-        else:
-            exists = any(category["category_name"] == str(x[2]) for category in data["vod_categories"])
-            if not exists:
-                data["vod_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-
-    for x in series_streams:
-        if not data["series_categories"]:
-            data["series_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-        else:
-            exists = any(category["category_name"] == str(x[2]) for category in data["series_categories"])
-            if not exists:
-                data["series_categories"].append({"category_id": str(x[2]), "category_name": str(x[2])})
-
-
-def makeM3u8StreamsJson(live_streams, vod_streams, series_streams):
-    data = glob.current_playlist["data"]
-
-    data["live_streams"] = [{"epg_channel_id": str(x[0]), "stream_icon": str(x[1]), "category_id": str(x[2]), "name": str(x[3]), "source": str(x[4]), "stream_id": str(x[5]), "added": 0} for x in live_streams]
-
-    data["vod_streams"] = [{"stream_icon": str(x[1]), "category_id": str(x[2]), "name": str(x[3]), "source": str(x[4]), "stream_id": str(x[5]), "added": 0} for x in vod_streams]
-
-    data["series_streams"] = [{"stream_icon": str(x[1]), "category_id": str(x[2]), "name": str(x[3]), "source": str(x[4]), "series_id": str(x[5]), "added": 0} for x in series_streams]
-
-
 def remove_duplicate_phrases(input_string):
+    if not input_string:
+        return input_string
+
     # Split input string into parts based on spaces and dashes
     parts = re.split(r'(\s+|-)', input_string)
     seen = set()
@@ -226,4 +192,4 @@ def remove_duplicate_phrases(input_string):
 
 
 def remove_double_spaces(input_string):
-    return re.sub(r'\s{2,}', ' ', input_string)
+    return DOUBLE_SPACES_PATTERN.sub(' ', input_string)

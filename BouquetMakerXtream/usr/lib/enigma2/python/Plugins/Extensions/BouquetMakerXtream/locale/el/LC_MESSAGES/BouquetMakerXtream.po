@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BouquetMakerXtream\n"
-"POT-Creation-Date: 2025-06-29 10:16+0100\n"
-"PO-Revision-Date: 2025-08-08 00:15+0300\n"
+"POT-Creation-Date: 2025-10-12 19:53+0100\n"
+"PO-Revision-Date: 2025-10-13 00:06+0300\n"
 "Last-Translator: \n"
 "Language-Team: giorbak\n"
 "Language: el\n"
@@ -10,21 +10,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: about.py:24 mainmenu.py:112 mainmenu.py:124 mainmenu.py:128
+#: about.py:24 mainmenu.py:105 mainmenu.py:116 mainmenu.py:120
 msgid "About"
 msgstr "Σχετικά"
 
-#: about.py:32 bouquetsettings.py:53 choosecategories.py:47 mainmenu.py:41 piconsettings.py:44 playlists.py:60 server.py:59
+#: about.py:32 bouquetsettings.py:52 choosecategories.py:51 mainmenu.py:39 piconsettings.py:44 playlists.py:60 server.py:59
 #: settings.py:87
 msgid "Back"
 msgstr "Πίσω"
 
-#: about.py:33 mainmenu.py:42 piconsettings.py:45 playlists.py:61
+#: about.py:33 mainmenu.py:40 piconsettings.py:45 playlists.py:61
 msgid "OK"
 msgstr "Εντάξει"
 
@@ -72,153 +72,180 @@ msgstr "Αν θέλετε να μου κεράσετε μια μπύρα ή έν
 msgid "Cheers - all donations are very much appreciated."
 msgstr "Ευχαριστώ - όλες οι δωρεές εκτιμώνται πολύ."
 
-#: bouquetsettings.py:46
+#: bouquetsettings.py:45
 msgid "Bouquets Settings"
 msgstr "Ρυθμίσεις μπουκέτων"
 
-#: bouquetsettings.py:54
+#: bouquetsettings.py:53
 msgid "Continue"
 msgstr "Συνέχιση"
 
-#: bouquetsettings.py:303 bouquetsettings.py:304 bouquetsettings.py:305 bouquetsettings.py:306
+#: bouquetsettings.py:135 bouquetsettings.py:136 bouquetsettings.py:137 bouquetsettings.py:138
 msgid "Original Order"
 msgstr "Αρχική σειρά"
 
-#: bouquetsettings.py:303 bouquetsettings.py:304 bouquetsettings.py:305 bouquetsettings.py:306
+#: bouquetsettings.py:135 bouquetsettings.py:136 bouquetsettings.py:137 bouquetsettings.py:138
 msgid "A-Z"
 msgstr "A-Z"
 
-#: bouquetsettings.py:304 bouquetsettings.py:306
+#: bouquetsettings.py:136 bouquetsettings.py:138
 msgid "Newest"
 msgstr "Πιο πρόσφατα"
 
-#: bouquetsettings.py:322
+#: bouquetsettings.py:151
 msgid "Default"
 msgstr "Προεπιλογή"
 
-#: bouquetsettings.py:330 server.py:122 server.py:130
+#: bouquetsettings.py:160 server.py:122 server.py:130
 msgid "Short name or provider name:"
 msgstr "Σύντομο όνομα ή όνομα παρόχου:"
 
-#: bouquetsettings.py:331
+#: bouquetsettings.py:161
 msgid "Use name as bouquet prefix"
 msgstr "Χρήση ονόματος ως πρόθεμα στο μπουκέτο"
 
-#: bouquetsettings.py:334
+#: bouquetsettings.py:164
 msgid "Show LIVE category if available:"
 msgstr "Εμφάνιση κατηγορίας TV-Ζωντανά αν υπάρχει:"
 
-#: bouquetsettings.py:336
+#: bouquetsettings.py:166
 msgid "Stream Type LIVE:"
 msgstr "Τύπος ροής για TV-Ζωντανά:"
 
-#: bouquetsettings.py:339
+#: bouquetsettings.py:169
 msgid "LIVE category bouquet order"
 msgstr "Σειρά μπουκέτων κατηγορίας TV-Ζωντανά"
 
-#: bouquetsettings.py:340
+#: bouquetsettings.py:170
 msgid "LIVE stream bouquet order"
 msgstr "Σειρά μπουκέτων ροής TV-Ζωντανά"
 
-#: bouquetsettings.py:343
+#: bouquetsettings.py:173
 msgid "Show VOD category if available:"
 msgstr "Εμφάνιση κατηγορίας Ταινίες αν υπάρχει:"
 
-#: bouquetsettings.py:346
+#: bouquetsettings.py:176
 msgid "Show SERIES category if available:"
 msgstr "Εμφάνιση κατηγορίας Σειρές αν υπάρχει:"
 
-#: bouquetsettings.py:350
+#: bouquetsettings.py:180
 msgid "Stream Type VOD/SERIES:"
 msgstr "Τύπος ροής για Ταινίες/Σειρές:"
 
-#: bouquetsettings.py:351
+#: bouquetsettings.py:181
 msgid "VOD/SERIES category bouquet order"
 msgstr "Σειρά μπουκέτων κατηγοριών Ταινιών/Σειρών"
 
-#: bouquetsettings.py:352
+#: bouquetsettings.py:182
 msgid "VOD/SERIES streams bouquet order"
 msgstr "Σειρά μπουκέτων ροών Ταινιών/Σειρών"
 
-#: bouquetsettings.py:355 server.py:128
+#: bouquetsettings.py:185 server.py:128
 msgid "Output:"
 msgstr "Παραγωγή εξόδου:"
 
-#: bouquetsettings.py:358
+#: bouquetsettings.py:188
 msgid "Max EPG days to download: (Use Default if EPG events is 0)"
 msgstr "Μέγιστες ημέρες EPG προς λήψη: (Χρησιμοποιήστε Προεπιλογή αν τα προγράμματα EPG είναι 0)"
 
-#: bouquetsettings.py:359
+#: bouquetsettings.py:189
 msgid "EPG offset:"
 msgstr "Μετατόπιση EPG:"
 
-#: bouquetsettings.py:360
+#: bouquetsettings.py:190
 msgid "Use alternative EPG url:"
 msgstr "Χρήση εναλλακτικού URL EPG:"
 
-#: bouquetsettings.py:362
+#: bouquetsettings.py:192
 msgid "Alternative EPG url:"
 msgstr "Εναλλακτικό URL EPG:"
 
-#: bouquetsettings.py:435
+#: bouquetsettings.py:257
 msgid "No bouquets selected."
 msgstr "Δεν επιλέχθηκαν μπουκέτα."
 
-#: bouquetsettings.py:443
+#: bouquetsettings.py:265
 msgid "Bouquet name cannot be blank. Please enter a unique bouquet name. Minimum 3 characters."
 msgstr "Το όνομα του μπουκέτου δεν μπορεί να είναι κενό. Παρακαλώ εισάγετε ένα μοναδικό όνομα τουλάχιστον 3 χαρακτήρων."
 
-#: bouquetsettings.py:451 server.py:240
+#: bouquetsettings.py:273 server.py:240
 msgid "Name already used. Please enter a unique name."
 msgstr "Το όνομα χρησιμοποιείται ήδη. Παρακαλώ εισάγετε ένα μοναδικό όνομα."
 
-#: buildbouquets.py:45 update.py:62
+#: buildbouquets.py:50 update2.py:66
 msgid "Building Bouquets"
 msgstr "Δημιουργία μπουκέτων"
 
-#: buildbouquets.py:54 update.py:73
+#: buildbouquets.py:58 update2.py:76
 msgid "Building Bouquets..."
 msgstr "Δημιουργία μπουκέτων..."
 
-#: buildbouquets.py:214 update.py:245
+#: buildbouquets.py:141
+msgid "Starting build..."
+msgstr "Έναρξη δημιουργίας..."
+
+#: buildbouquets.py:273 update2.py:253
 msgid "Downloading live data..."
 msgstr "Λήψη δεδομένων TV-Ζωντανά..."
 
-#: buildbouquets.py:217 buildbouquets.py:347 buildbouquets.py:517 update.py:248 update.py:385 update.py:555
+#: buildbouquets.py:277 buildbouquets.py:697 update2.py:255 update2.py:684
 msgid "Downloading VOD data..."
 msgstr "Λήψη δεδομένων Ταινιών..."
 
-#: buildbouquets.py:220 buildbouquets.py:350 buildbouquets.py:520 buildbouquets.py:551 buildbouquets.py:691 update.py:251
-#: update.py:388 update.py:558 update.py:589 update.py:730
+#: buildbouquets.py:281 buildbouquets.py:699 buildbouquets.py:854 update2.py:257 update2.py:686 update2.py:841
 msgid "Downloading series data..."
 msgstr "Λήψη δεδομένων Σειρών..."
 
-#: buildbouquets.py:227 update.py:258
+#: buildbouquets.py:285 update2.py:261
 msgid "Downloading external playlist..."
 msgstr "Λήψη εξωτερικής λίστας αναπαραγωγής..."
 
-#: buildbouquets.py:229 update.py:260
+#: buildbouquets.py:289 update2.py:265
 msgid "Loading local playlist..."
 msgstr "Φόρτωση τοπικής λίστας αναπαραγωγής..."
 
-#: buildbouquets.py:237 buildbouquets.py:261 buildbouquets.py:875 update.py:267 update.py:288 update.py:911
+#: buildbouquets.py:334 update2.py:321
 msgid "Processing live data..."
 msgstr "Επεξεργασία δεδομένων TV-Ζωντανά..."
 
-#: buildbouquets.py:245 update.py:274
+#: buildbouquets.py:374 update2.py:361
 msgid "Processing VOD data..."
 msgstr "Επεξεργασία δεδομένων Ταινιών..."
 
-#: buildbouquets.py:253 buildbouquets.py:359 buildbouquets.py:527 buildbouquets.py:557 buildbouquets.py:696 update.py:281
-#: update.py:397 update.py:565 update.py:595 update.py:735
-msgid "Processing series data..."
-msgstr "Επεξεργασία δεδομένων Σειρών..."
+#: buildbouquets.py:412 update2.py:399
+msgid "Download series get.php file..."
+msgstr "Λήψη αρχείου σειράς get.php..."
 
-#: buildbouquets.py:357 buildbouquets.py:525 update.py:395 update.py:563
+#: buildbouquets.py:426 update2.py:413
+msgid "Processing external data..."
+msgstr "Επεξεργασία εξωτερικών δεδομένων..."
+
+#: buildbouquets.py:450 update2.py:437
+msgid "Processing local data..."
+msgstr "Επεξεργασία τοπικών δεδομένων..."
+
+#: buildbouquets.py:705 update2.py:692
 msgid "Process VOD data..."
 msgstr "Επεξεργασία δεδομένων Ταινιών..."
 
-#: buildbouquets.py:1023
+#: buildbouquets.py:707 buildbouquets.py:860 buildbouquets.py:911 buildbouquets.py:916 buildbouquets.py:935 update2.py:694
+#: update2.py:847 update2.py:895 update2.py:900 update2.py:919
+msgid "Processing series data..."
+msgstr "Επεξεργασία δεδομένων Σειρών..."
+
+#: buildbouquets.py:902 update2.py:887
+msgid "Parsing series data..."
+msgstr "Ανάλυση δεδομένων σειράς..."
+
+#: buildbouquets.py:1248
+msgid ""
+"Series failed to download get.php file.\n"
+"\n"
+msgstr ""
+"Αποτυχία λήψης του αρχείου get.php της σειράς.\n"
+"\n"
+
+#: buildbouquets.py:1250
 msgid " IPTV Bouquets Created"
 msgstr " μπουκέτα IPTV δημιουργήθηκαν"
 
@@ -227,64 +254,64 @@ msgstr " μπουκέτα IPTV δημιουργήθηκαν"
 msgid "TV Archive: %s"
 msgstr "Αρχείο TV: %s"
 
-#: catchup.py:266
+#: catchup.py:265
 msgid "Catchup currently not available. Missing EPG data"
 msgstr "Το Catchup δεν είναι διαθέσιμο προσωρινά. Λείπουν δεδομένα EPG"
 
-#: choosecategories.py:44
+#: choosecategories.py:48
 msgid "Category"
 msgstr "Κατηγορία"
 
-#: choosecategories.py:45
+#: choosecategories.py:49
 msgid "Channel"
 msgstr "Κανάλι"
 
-#: choosecategories.py:49 deletebouquets.py:36
+#: choosecategories.py:53 deletebouquets.py:35
 msgid "Invert"
 msgstr "Αντιστροφή"
 
-#: choosecategories.py:50
+#: choosecategories.py:54
 msgid "Reset"
 msgstr "Επαναφορά"
 
-#: choosecategories.py:52
+#: choosecategories.py:56
 msgid "Show Streams"
 msgstr "Εμφάνιση ροών"
 
-#: choosecategories.py:246 choosecategories.py:507 choosecategories.py:529 choosecategories.py:590 choosecategories.py:594
+#: choosecategories.py:424 choosecategories.py:721 choosecategories.py:743 choosecategories.py:826 choosecategories.py:831
 msgid "Choose Live Categories"
 msgstr "Επιλέξτε κατηγορίες TV-Ζωντανά"
 
-#: choosecategories.py:254 choosecategories.py:298
+#: choosecategories.py:432 choosecategories.py:494
 msgid "Next"
 msgstr "Επόμενο"
 
-#: choosecategories.py:256 choosecategories.py:300 choosecategories.py:337
+#: choosecategories.py:434 choosecategories.py:496 choosecategories.py:554
 msgid "Create"
 msgstr "Δημιουργία"
 
-#: choosecategories.py:290 choosecategories.py:510 choosecategories.py:532 choosecategories.py:584 choosecategories.py:602
+#: choosecategories.py:486 choosecategories.py:724 choosecategories.py:746 choosecategories.py:810 choosecategories.py:851
 msgid "Choose VOD Categories"
 msgstr "Επιλέξτε κατηγορίες Ταινιών"
 
-#: choosecategories.py:331 choosecategories.py:461 choosecategories.py:493 choosecategories.py:513 choosecategories.py:535
-#: choosecategories.py:539 choosecategories.py:552 choosecategories.py:564 choosecategories.py:576 choosecategories.py:608
+#: choosecategories.py:548 choosecategories.py:678 choosecategories.py:707 choosecategories.py:727 choosecategories.py:749
+#: choosecategories.py:753 choosecategories.py:766 choosecategories.py:778 choosecategories.py:790 choosecategories.py:867
 msgid "Choose Series Categories"
 msgstr "Επιλέξτε κατηγορίες Σειρών"
 
-#: deletebouquets.py:27 mainmenu.py:120
+#: deletebouquets.py:27 mainmenu.py:113
 msgid "Delete Bouquets"
 msgstr "Διαγραφή μπουκέτων"
 
-#: deletebouquets.py:34 picons.py:38
+#: deletebouquets.py:33 picons.py:37
 msgid "Cancel"
 msgstr "Άκυρο"
 
-#: deletebouquets.py:35 playlists.py:62
+#: deletebouquets.py:34 playlists.py:62
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: deletebouquets.py:37
+#: deletebouquets.py:36
 msgid "Clear All"
 msgstr "Καθαρισμός όλων"
 
@@ -296,37 +323,37 @@ msgstr "Λήψη Picons"
 msgid "Making BouquetMakerXtream Picons"
 msgstr "Δημιουργία Picons BouquetMakerXtream"
 
-#: downloadpicons.py:223
+#: downloadpicons.py:209
 msgid "No picons found."
 msgstr "Δε βρέθηκαν picons."
 
-#: downloadpicons.py:317
-msgid "Size: "
-msgstr "Μέγεθος: "
+#: downloadpicons.py:303
+msgid "Invalid size: "
+msgstr "Μη έγκυρο μέγεθος: "
 
-#: downloadpicons.py:317
-msgid "Type: "
-msgstr "Τύπος: "
+#: downloadpicons.py:303
+msgid "Invalid type: "
+msgstr "Μη έγκυρος τύπος: "
 
-#: downloadpicons.py:317
-msgid "Url: "
-msgstr "Url: "
+#: downloadpicons.py:303
+msgid "Invalid source: "
+msgstr "Μη έγκυρη πηγή: "
 
-#: downloadpicons.py:317 downloadpicons.py:411
-msgid "Exists: "
-msgstr "Υπάρχει: "
+#: downloadpicons.py:303
+msgid "Already exists: "
+msgstr "Υπάρχει ήδη: "
 
-#: downloadpicons.py:317
+#: downloadpicons.py:303
 #, python-format
 msgid "Success: %s   "
 msgstr "Επιτυχία: %s   "
 
-#: downloadpicons.py:318
+#: downloadpicons.py:304
 #, python-format
 msgid "Picon %d of %d"
 msgstr "Picon %d από %d"
 
-#: downloadpicons.py:410
+#: downloadpicons.py:389
 msgid ""
 "Finished.\n"
 "\n"
@@ -334,79 +361,75 @@ msgstr ""
 "Ολοκληρώθηκε.\n"
 "\n"
 
-#: downloadpicons.py:411
+#: downloadpicons.py:390
 msgid "Success: "
 msgstr "Επιτυχία: "
 
-#: downloadpicons.py:411
+#: downloadpicons.py:391
 msgid "Bad size: "
 msgstr "Κακό μέγεθος: "
 
-#: downloadpicons.py:411
-msgid "bad type: "
-msgstr "κακός τύπος: "
+#: downloadpicons.py:392
+msgid "Bad type: "
+msgstr "Εσφαλμένος τύπος: "
 
-#: downloadpicons.py:411
-msgid "bad url: "
-msgstr "κακό URL: "
+#: downloadpicons.py:393
+msgid "Bad url: "
+msgstr "Εσφαλμένο URL: "
 
-#: downloadpicons.py:412
+#: downloadpicons.py:394
+msgid "Exists: "
+msgstr "Υπάρχει: "
+
+#: downloadpicons.py:395
 msgid "Restart your GUI to refresh picons."
 msgstr "Κάντε επανεκκίνηση της διεπαφής χρήστη για ανανέωση των picons."
 
-#: downloadpicons.py:412
+#: downloadpicons.py:396
 msgid "Your created picons can be found in"
 msgstr "Τα picons που δημιουργήσατε βρίσκονται στο"
 
-#: downloadpicons.py:413
+#: downloadpicons.py:398
 msgid "Your failed picon list can be found in"
 msgstr "Η λίστα αποτυχημένων picons βρίσκεται στο"
 
-#: downloadpicons.py:418
+#: downloadpicons.py:405
 msgid "Picon Error"
 msgstr "Σφάλμα picon"
 
-#: mainmenu.py:40
+#: mainmenu.py:38
 msgid "Main Menu"
 msgstr "Κύριο μενού"
 
-#: mainmenu.py:64
+#: mainmenu.py:62
 msgid "Playlists.txt location is invalid and has been reset."
 msgstr "Η θέση του playlists.txt είναι μη έγκυρη και έγινε επαναφορά."
 
-#: mainmenu.py:110 mainmenu.py:123 mainmenu.py:127 server.py:51
+#: mainmenu.py:103 mainmenu.py:115 mainmenu.py:119 server.py:51
 msgid "Add Playlist"
 msgstr "Προσθήκη λίστας αναπαραγωγής"
 
-#: mainmenu.py:111 mainmenu.py:118 mainmenu.py:126 settings.py:80
+#: mainmenu.py:104 mainmenu.py:111 mainmenu.py:118 settings.py:80
 msgid "Main Settings"
 msgstr "Βασικές ρυθμίσεις"
 
-#: mainmenu.py:114
+#: mainmenu.py:107
 msgid "Playlists"
 msgstr "Λίστες αναπαραγωγής"
 
-#: mainmenu.py:119
+#: mainmenu.py:112
 msgid "Update Bouquets"
 msgstr "Ενημέρωση μπουκέτων"
 
-#: mainmenu.py:121
-msgid "Delete All BMX Bouquets"
-msgstr "Διαγραφή όλων μπουκέτων BMX"
-
-#: mainmenu.py:122 picons.py:31
+#: mainmenu.py:114 picons.py:31
 msgid "Download Picons"
 msgstr "Λήψη picons"
 
-#: mainmenu.py:155
-msgid "Delete all BMX created bouquets?"
-msgstr "Να γίνει διαγραφή όλων των δημιουργημένων μπουκέτων BMX;"
-
-#: parsem3u.py:82 seriesparsem3u.py:66
+#: parsem3u.py:91
 msgid "Stream"
 msgstr "Ροή"
 
-#: picons.py:39
+#: picons.py:38
 msgid "Download"
 msgstr "Λήψη"
 
@@ -418,51 +441,51 @@ msgstr "Ρυθμίσεις picon"
 msgid "Really close without saving settings?"
 msgstr "Θέλετε πραγματικά να κλείσετε χωρίς αποθήκευση των ρυθμίσεων;"
 
-#: piconsettings.py:105 settings.py:152
+#: piconsettings.py:100 settings.py:152
 msgid "You need to restart the GUI"
 msgstr "Πρέπει να κάνετε επανεκκίνηση της διεπαφής χρήστη"
 
-#: piconsettings.py:105 settings.py:152
+#: piconsettings.py:100 settings.py:152
 msgid "Do you want to restart now?"
 msgstr "Θέλετε να γίνει επανεκκίνηση τώρα;"
 
-#: piconsettings.py:116
+#: piconsettings.py:111
 msgid "Picon download location"
 msgstr "Θέση λήψης picons"
 
-#: piconsettings.py:117
+#: piconsettings.py:112
 msgid "Picon size"
 msgstr "Μέγεθος picon"
 
-#: piconsettings.py:118
+#: piconsettings.py:113
 msgid "Picon type"
 msgstr "Τύπος picon"
 
-#: piconsettings.py:120
+#: piconsettings.py:114
 msgid "Overwrite picons with the same name"
 msgstr "Αντικατάσταση picons με το ίδιο όνομα"
 
-#: piconsettings.py:121
+#: piconsettings.py:115
 msgid "Custom location. Manual symlink required"
 msgstr "Προσαρμοσμένη θέση. Απαιτείται χειροκίνητο symlink"
 
-#: piconsettings.py:122
+#: piconsettings.py:116
 msgid "Max download threads. Increase for speed. Reduce if downloads are freezing"
 msgstr "Μέγιστα νήματα λήψης. Αυξήστε για ταχύτητα. Μειώστε αν παγώνουν οι λήψεις"
 
-#: piconsettings.py:123
+#: piconsettings.py:117
 msgid "Max size of source picon"
 msgstr "Μέγιστο μέγεθος πηγαίου picon"
 
-#: piconsettings.py:124
+#: piconsettings.py:118
 msgid "Max width of source picon"
 msgstr "Μέγιστο πλάτος πηγαίου picon"
 
-#: piconsettings.py:208 settings.py:288
+#: piconsettings.py:201 settings.py:290
 msgid "Choose Directory:"
 msgstr "Επιλογή καταλόγου:"
 
-#: piconsettings.py:209 settings.py:289
+#: piconsettings.py:202 settings.py:291
 msgid "Choose directory"
 msgstr "Επιλέξτε κατάλογο"
 
@@ -474,163 +497,163 @@ msgstr "Επιλέξτε λίστα αναπαραγωγής"
 msgid "Info"
 msgstr "Πληροφορίες"
 
-#: playlists.py:103
+#: playlists.py:101
 msgid "No internet."
 msgstr "Δεν υπάρχει σύνδεση στο διαδίκτυο."
 
-#: playlists.py:311 playlists.py:417
+#: playlists.py:310 playlists.py:416
 msgid "Server Not Responding"
 msgstr "Μη απόκριση διακομιστή"
 
-#: playlists.py:338 playlists.py:419
+#: playlists.py:337 playlists.py:418
 msgid "Not Authorised"
 msgstr "Μη εξουσιοδοτημένη"
 
-#: playlists.py:342 playlists.py:350 playlists.py:397
+#: playlists.py:341 playlists.py:349 playlists.py:396
 msgid "Active"
 msgstr "Ενεργό"
 
-#: playlists.py:344 playlists.py:411
+#: playlists.py:343 playlists.py:410
 msgid "Banned"
 msgstr "Αποκλεισμένο"
 
-#: playlists.py:346 playlists.py:415
+#: playlists.py:345 playlists.py:414
 msgid "Disabled"
 msgstr "Απενεργοποιημένο"
 
-#: playlists.py:348 playlists.py:413
+#: playlists.py:347 playlists.py:412
 msgid "Expired"
 msgstr "Έληξε"
 
-#: playlists.py:352 playlists.py:354
+#: playlists.py:351 playlists.py:353
 msgid "Expires: "
 msgstr "Λήγει: "
 
-#: playlists.py:356
+#: playlists.py:355
 msgid "Active Conn:"
 msgstr "Ενεργές συνδέσεις:"
 
-#: playlists.py:364
+#: playlists.py:363
 msgid "Max Conn:"
 msgstr "Μέγιστες συνδέσεις:"
 
-#: playlists.py:380 playlists.py:397
+#: playlists.py:379 playlists.py:396
 msgid "Url OK"
 msgstr "Url OK"
 
-#: playlists.py:381
+#: playlists.py:380
 msgid "External playlist"
 msgstr "Εξωτερική λίστα αναπαραγωγής"
 
-#: playlists.py:384
+#: playlists.py:383
 msgid "Local file"
 msgstr "Τοπικό αρχείο"
 
-#: playlists.py:434
+#: playlists.py:433
 msgid "Delete selected playlist?"
 msgstr "Να γίνει διαγραφή της επιλεγμένης λίστας αναπαραγωγής;"
 
-#: playlists.py:483
+#: playlists.py:482
 msgid "Url is invalid or playlist/user no longer authorised!"
 msgstr "Το URL δεν είναι έγκυρο ή η λίστα αναπαραγωγής/χρήστης δεν είναι πλέον εξουσιοδοτημένος!"
 
-#: playlists.py:485
+#: playlists.py:484
 msgid "User Info only available for xtream/XUI One lines"
 msgstr "Οι πληροφορίες χρήστη είναι διαθέσιμες μόνο για γραμμές xtream/XUI One"
 
-#: plugin.py:114
+#: plugin.py:150
 msgid "XPicons - 220x132 Pixel"
 msgstr "XPicons - 220x132 Pixel"
 
-#: plugin.py:115
+#: plugin.py:151
 msgid "ZZZPicons - 400x240 Pixel"
 msgstr "ZZZPicons - 400x240 Pixel"
 
-#: plugin.py:142
+#: plugin.py:178
 msgid "Bottom"
 msgstr "Κάτω"
 
-#: plugin.py:142
+#: plugin.py:178
 msgid "Top"
 msgstr "Πάνω"
 
-#: plugin.py:144
+#: plugin.py:180
 msgid "24 Bit"
 msgstr "24 Bit"
 
-#: plugin.py:144
+#: plugin.py:180
 msgid "8 Bit"
 msgstr "8 Bit"
 
-#: plugin.py:145
+#: plugin.py:181
 msgid "Service Reference Picons"
 msgstr "Picons αναφοράς υπηρεσιών"
 
-#: plugin.py:145
+#: plugin.py:181
 msgid "Service Name Picons"
 msgstr "Picons ονομάτων υπηρεσιών"
 
-#: plugin.py:150
+#: plugin.py:186
 msgid "100KB"
 msgstr "100KB"
 
-#: plugin.py:150
+#: plugin.py:186
 msgid "200KB"
 msgstr "200KB"
 
-#: plugin.py:150
+#: plugin.py:186
 msgid "300KB"
 msgstr "300KB"
 
-#: plugin.py:150
+#: plugin.py:186
 msgid "400KB"
 msgstr "400KB"
 
-#: plugin.py:150
+#: plugin.py:186
 msgid "500KB"
 msgstr "500KB"
 
-#: plugin.py:150 plugin.py:151
+#: plugin.py:186 plugin.py:187
 msgid "No limit"
 msgstr "Χωρίς όριο"
 
-#: plugin.py:151
+#: plugin.py:187
 msgid "480px"
 msgstr "480px"
 
-#: plugin.py:151
+#: plugin.py:187
 msgid "728px"
 msgstr "728px"
 
-#: plugin.py:151
+#: plugin.py:187
 msgid "1000px"
 msgstr "1000px"
 
-#: plugin.py:151
+#: plugin.py:187
 msgid "1280px"
 msgstr "1280px"
 
-#: plugin.py:151
+#: plugin.py:187
 msgid "1920px"
 msgstr "1920px"
 
-#: plugin.py:168
+#: plugin.py:204
 msgid "import after wake up"
 msgstr "εισαγωγή μετά την αφύπνιση"
 
-#: plugin.py:169
+#: plugin.py:205
 msgid "skip the import"
 msgstr "παράλειψη της εισαγωγής"
 
-#: plugin.py:245
+#: plugin.py:275
 msgid "Bouquet Maker Xtream"
 msgstr "Bouquet Maker Xtream"
 
-#: plugin.py:466
+#: plugin.py:543
 msgid "IPTV Bouquets Creator by KiddaC"
 msgstr "IPTV Bouquets Creator από τον KiddaC"
 
-#: plugin.py:467
+#: plugin.py:544
 msgid "BouquetMakerXtream"
 msgstr "BouquetMakerXtream"
 
@@ -772,7 +795,7 @@ msgstr "Επιλογή απομίμησης παράγοντα χρήστη ισ
 msgid "playlists.txt location"
 msgstr "Θέση αρχείου playlists.txt"
 
-#: settings.py:164 settings.py:165 settings.py:170 settings.py:174
+#: settings.py:164 settings.py:165 settings.py:170 settings.py:175
 msgid " *Restart GUI Required"
 msgstr " *Απαιτείται επανεκκίνηση της διεπαφής χρήστη"
 
@@ -813,34 +836,38 @@ msgid "Automatic live bouquet update time"
 msgstr "Ώρα αυτόματης ενημέρωσης μπουκέτου TV-Ζωντανά"
 
 #: settings.py:174
+msgid "Run live bouquet update on boot"
+msgstr "Εκτέλεση ενημέρωσης μπουκέτου TV-Ζωντανά κατά την εκκίνηση"
+
+#: settings.py:175
 msgid "Embed Catchup player in channelselect screen"
 msgstr "Ενσωμάτωση αναπαραγωγής Catchup στην οθόνη επιλογής καναλιών"
 
-#: settings.py:175
+#: settings.py:176
 msgid "Prefix Catchup channels"
 msgstr "Πρόθεμα καναλιών Catchup"
 
-#: settings.py:176
+#: settings.py:177
 msgid "Select Catchup prefix symbol"
 msgstr "Επιλογή συμβόλου προθέματος για catchup κανάλια"
 
-#: settings.py:177
+#: settings.py:178
 msgid "Margin before Catchup (mins)"
 msgstr "Περιθώριο πριν από το Catchup (λεπτά)"
 
-#: settings.py:178
+#: settings.py:179
 msgid "Margin after Catchup (mins)"
 msgstr "Περιθώριο μετά το Catchup (λεπτά)"
 
-#: settings.py:179
+#: settings.py:180
 msgid "Group bouquets into its own folder"
 msgstr "Ομαδοποίηση μπουκέτων σε δικό τους φάκελο"
 
-#: update.py:107
+#: update2.py:110
 msgid " Providers IPTV Updated"
 msgstr " πάροχοι IPTV ενημερώθηκαν"
 
-#: update.py:164
+#: update2.py:190
 #, python-format
 msgid "Updating Playlist %d of %d"
 msgstr "Ενημέρωση λίστας αναπαραγωγής %d από %d"

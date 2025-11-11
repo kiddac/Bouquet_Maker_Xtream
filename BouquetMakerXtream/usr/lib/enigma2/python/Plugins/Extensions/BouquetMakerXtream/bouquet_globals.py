@@ -1,8 +1,8 @@
-fixepg = False
 current_playlist = []
 name = ""
-old_name = ""
-firstrun = 0
+original_name = ""
 current_selection = 0
 finished = False
 currentref = ""
+superscripts_found = False
+get_series_failed = False

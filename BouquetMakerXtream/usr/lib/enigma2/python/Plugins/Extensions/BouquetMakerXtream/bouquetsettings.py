@@ -5,7 +5,7 @@ from . import _
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, epgimporter, playlist_file, playlists_json, skin_directory, debugs, pythonVer
+from .plugin import cfg, epgimporter, playlist_file, playlists_json, skin_directory, debugs
 
 import json
 import os
@@ -76,6 +76,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def clearCaches(self):
         if debugs:
             print("*** clearcaches ***")
+
         try:
             os.system("echo 1 > /proc/sys/vm/drop_caches")
             os.system("echo 2 > /proc/sys/vm/drop_caches")
@@ -92,6 +93,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def initConfig(self):
         if debugs:
             print("*** initConfig ***")
+
         live_stream_type_choices = [("1", "DVB(1)"), ("4097", "IPTV(4097)")]
         vod_stream_type_choices = [("4097", "IPTV(4097)")]
 
@@ -108,7 +110,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             vod_stream_type_choices.append(("8193", "DreamOS GStreamer(8193)"))
 
         iptvname = str(glob.current_playlist["playlist_info"]["name"])
-        glob.old_name = iptvname
+        glob.original_name = iptvname
         prefix_name = glob.current_playlist["settings"]["prefix_name"]
         live_type = str(glob.current_playlist["settings"]["live_type"])
         vod_type = str(glob.current_playlist["settings"]["vod_type"])
@@ -119,7 +121,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         live_stream_order = glob.current_playlist["settings"]["live_stream_order"]
         vod_category_order = glob.current_playlist["settings"]["vod_category_order"]
         vod_stream_order = glob.current_playlist["settings"]["vod_stream_order"]
-        show_superscript = glob.current_playlist["settings"]["show_superscript"]
 
         self.iptvname_cfg = NoSave(ConfigText(default=iptvname, fixed_size=False))
         self.prefix_name_cfg = NoSave(ConfigYesNo(default=prefix_name))
@@ -135,11 +136,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
         self.live_stream_order_cfg = NoSave(ConfigSelection(default=live_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
         self.vod_category_order_cfg = NoSave(ConfigSelection(default=vod_category_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z"))]))
         self.vod_stream_order_cfg = NoSave(ConfigSelection(default=vod_stream_order, choices=[("original", _("Original Order")), ("alphabetical", _("A-Z")), ("added", _("Newest"))]))
-
-        self.show_superscript_cfg = NoSave(ConfigYesNo(default=show_superscript))
-
-        # self.catchup_shift_cfg = NoSave(ConfigSelectionNumber(min=-9, max=9, stepwidth=1, default=0, wraparound=True))
-        # self.fix_epg_cfg = NoSave(ConfigYesNo(default=glob.fixepg)
 
         if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
             next_days = glob.current_playlist["settings"]["next_days"]
@@ -159,6 +155,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def createSetup(self):
         if debugs:
             print("*** createSetup ***")
+
         self.list = []
         self.list.append(getConfigListEntry(_("Short name or provider name:"), self.iptvname_cfg))
         self.list.append(getConfigListEntry(_("Use name as bouquet prefix"), self.prefix_name_cfg))
@@ -193,9 +190,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                 self.list.append(getConfigListEntry(_("Use alternative EPG url:"), self.epg_alternative_cfg))
                 if self.epg_alternative_cfg.value:
                     self.list.append(getConfigListEntry(_("Alternative EPG url:"), self.epg_alternative_url_cfg))
-
-        if pythonVer == 3:
-            self.list.append(getConfigListEntry(_("Convert superscript characters to normal text:"), self.show_superscript_cfg))
 
         self["config"].list = self.list
         self["config"].l.setList(self.list)
@@ -255,8 +249,8 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def save(self):
         if debugs:
             print("*** save ***")
-        if self.list:
 
+        if self.list:
             self["config"].instance.moveSelectionTo(1)  # hack to hide texthelper
 
             if not self.show_live_cfg.value and not self.show_vod_cfg.value and not self.show_series_cfg.value:
@@ -313,7 +307,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             live_stream_order = self.live_stream_order_cfg.value
             vod_stream_order = self.vod_stream_order_cfg.value
             prefix_name = self.prefix_name_cfg.value
-            show_superscript = self.show_superscript_cfg.value
 
             glob.current_playlist["playlist_info"]["name"] = iptvname
             glob.current_playlist["settings"]["prefix_name"] = prefix_name
@@ -326,7 +319,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
             glob.current_playlist["settings"]["vod_category_order"] = vod_category_order
             glob.current_playlist["settings"]["live_stream_order"] = live_stream_order
             glob.current_playlist["settings"]["vod_stream_order"] = vod_stream_order
-            glob.current_playlist["settings"]["show_superscript"] = show_superscript
 
             if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                 media_type = "m3u_plus"
@@ -393,6 +385,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def getPlaylistUserFile(self):
         if debugs:
             print("*** getPlaylistUserFile ***")
+
         if self.playlists_all:
             for idx, playlists in enumerate(self.playlists_all):
                 if playlists["playlist_info"]["full_url"] == self.full_url:
@@ -408,7 +401,6 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                     self.playlists_all[idx]["settings"]["vod_category_order"] = glob.current_playlist["settings"]["vod_category_order"]
                     self.playlists_all[idx]["settings"]["live_stream_order"] = glob.current_playlist["settings"]["live_stream_order"]
                     self.playlists_all[idx]["settings"]["vod_stream_order"] = glob.current_playlist["settings"]["vod_stream_order"]
-                    self.playlists_all[idx]["settings"]["show_superscript"] = glob.current_playlist["settings"]["show_superscript"]
 
                     if glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
                         self.playlists_all[idx]["playlist_info"]["output"] = glob.current_playlist["playlist_info"]["output"]
@@ -418,15 +410,16 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
                         self.playlists_all[idx]["settings"]["next_days"] = glob.current_playlist["settings"]["next_days"]
                         self.playlists_all[idx]["playlist_info"]["full_url"] = glob.current_playlist["playlist_info"]["full_url"]
 
-                    break  # Exit loop after updating
+                    break
 
         self.writeJsonFile()
 
     def writeJsonFile(self):
         if debugs:
             print("*** writeJsonFile ***")
+
         with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f)
+            json.dump(self.playlists_all, f, indent=4)
         self.clearCaches()
 
         from . import choosecategories
@@ -436,6 +429,7 @@ class BmxBouquetSettings(ConfigListScreen, Screen):
     def exit(self, answer=None):
         if debugs:
             print("*** exit ***")
+
         if glob.finished:
             self.clearCaches()
             self.close(True)

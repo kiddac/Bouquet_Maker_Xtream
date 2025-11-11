@@ -238,7 +238,6 @@ class BmxCatchup(Screen):
                                 )
 
                         self.server_offset = datetime.now().hour - time_now_datestamp.hour
-                        # print("*** server_offset ***", self.server_offset)
 
         self.downloadSimpleData()
 

@@ -93,13 +93,8 @@ class BmxPiconSettings(ConfigListScreen, Screen):
 
         self.clearCaches()
 
-        """
-        if cfg.picon_location.value == "custom":
-            cfg.picon_location.setValue(cfg.picon_custom.value)
-            """
         from . import picons
         self.session.openWithCallback(self.close, picons.BmxDownloadPicons)
-        # self.close()
 
     def changedFinished(self):
         self.session.openWithCallback(self.executeRestart, MessageBox, _("You need to restart the GUI") + "\n" + _("Do you want to restart now?"), MessageBox.TYPE_YESNO)
@@ -116,7 +111,6 @@ class BmxPiconSettings(ConfigListScreen, Screen):
         self.cfg_picon_location = getConfigListEntry(_("Picon download location"), cfg.picon_location)
         self.cfg_picon_size = getConfigListEntry(_("Picon size"), cfg.picon_size)
         self.cfg_picon_type = getConfigListEntry(_("Picon type"), cfg.picon_type)
-        # self.cfg_picon_bitdepth = getConfigListEntry(_("Picon bit depth. 8bit is 256 colours max."), cfg.picon_bitdepth)
         self.cfg_picon_overwrite = getConfigListEntry(_("Overwrite picons with the same name"), cfg.picon_overwrite)
         self.cfg_picon_custom = getConfigListEntry(_("Custom location. Manual symlink required"), cfg.picon_custom)
         self.cfg_max_threads = getConfigListEntry(_("Max download threads. Increase for speed. Reduce if downloads are freezing"), cfg.max_threads)
@@ -133,7 +127,6 @@ class BmxPiconSettings(ConfigListScreen, Screen):
 
         self.list.append(self.cfg_picon_size)
         self.list.append(self.cfg_picon_type)
-        # self.list.append(self.cfg_picon_bitdepth)
         self.list.append(self.cfg_picon_overwrite)
         self.list.append(self.cfg_max_threads)
         self.list.append(self.cfg_picon_max_size)

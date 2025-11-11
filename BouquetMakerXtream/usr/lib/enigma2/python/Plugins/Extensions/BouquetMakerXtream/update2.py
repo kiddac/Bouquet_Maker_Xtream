@@ -6,7 +6,7 @@ from . import parsem3u
 from . import seriesparsem3u
 from . import bouquet_globals as glob
 from . import globalfunctions as bmx
-from .plugin import epgimporter, cfg, playlists_json, skin_directory, debugs, dir_etc
+from .plugin import epgimporter, screenwidth, cfg, playlists_json, skin_directory, dir_etc, debugs
 
 from Components.ActionMap import ActionMap
 from Components.Label import Label
@@ -17,7 +17,6 @@ from Screens.Screen import Screen
 
 import json
 import os
-
 
 try:
     from urllib import quote
@@ -30,31 +29,86 @@ except:
     pass
 
 
-class BmxBuildBouquets(Screen):
-    def __init__(self, session):
-        if debugs:
-            print("*** init ***")
-
+class BmxUpdate(Screen):
+    def __init__(self, session, runtype):
         Screen.__init__(self, session)
         self.session = session
+        self.runtype = runtype
 
-        skin_path = os.path.join(skin_directory, cfg.skin.getValue())
-        skin = os.path.join(skin_path, "progress.xml")
-        with open(skin, "r") as f:
-            self.skin = f.read()
+        if self.runtype == "manual":
+            skin_path = os.path.join(skin_directory, cfg.skin.getValue())
+            skin = os.path.join(skin_path, "progress.xml")
+            with open(skin, "r") as f:
+                self.skin = f.read()
+        else:
+            skin = """
+                <screen name="Updater" position="0,0" size="1920,1080" backgroundColor="#ff000000" flags="wfNoBorder">
+                    <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon.png" position="30,25" size="150,60" alphatest="blend" zPosition="4"  />
+                    <eLabel position="180,30" size="360,50" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
+                    <widget name="status" position="210,30" size="300,50" font="Regular;24" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
+                </screen>"""
+
+            if screenwidth.width() <= 1280:
+                skin = """
+                    <screen name="Updater" position="0,0" size="1280,720" backgroundColor="#ff000000" flags="wfNoBorder">
+                        <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/icons/plugin-icon_sd.png" position="20,16" size="100,40" alphatest="blend" zPosition="4" />
+                        <eLabel position="120,20" size="240,32" backgroundColor="#10232323" transparent="0" zPosition="-1"/>
+                        <widget name="status" position="140,20" size="200,32" font="Regular;16" foregroundColor="#ffffff" backgroundColor="#000000" valign="center" noWrap="1" transparent="1" zPosition="5" />
+                    </screen>"""
+
+            self.skin = skin
 
         self.setup_title = _("Building Bouquets")
         self.categories = []
+        self["action"] = Label("")
+        self["info"] = Label("")
+        self["status"] = Label("")
+        self["progress"] = ProgressBar()
+
+        self.bouq = 0
+
+        if self.runtype == "manual":
+            self["action"] = Label(_("Building Bouquets..."))
 
         self["actions"] = ActionMap(["BMXActions"], {
             "red": self.void,
             "cancel": self.void,
         }, -2)
 
-        self["action"] = Label(_("Building Bouquets..."))
-        self["info"] = Label("")
-        self["progress"] = ProgressBar()
-        self["status"] = Label("")
+        self.playlists_all = bmx.getPlaylistJson()
+
+        if self.playlists_all:
+            self.bouquets = [item for item in self.playlists_all if item["playlist_info"]["bouquet"] is True]
+            self.bouquets_len = len(self.bouquets)
+        else:
+            self.bouquets = []
+            self.bouquets_len = 0
+
+        if self.bouquets:
+            self.looptimer = eTimer()
+            try:
+                self.looptimer_conn = self.looptimer.timeout.connect(self.bouquetLoop)
+            except:
+                self.looptimer.callback.append(self.bouquetLoop)
+            self.looptimer.start(100, True)
+        else:
+            self.close()
+
+    def void(self):
+        pass
+
+    def loopPlaylists(self):
+        if self.bouq < self.bouquets_len:
+            self.bouquetLoop()
+        else:
+            if self.runtype == "manual":
+                self.session.openWithCallback(self.done, MessageBox, str(len(self.bouquets)) + _(" Providers IPTV Updated"), MessageBox.TYPE_INFO, timeout=5)
+            else:
+                self.done()
+
+    def bouquetLoop(self):
+        glob.current_playlist = self.bouquets[self.bouq]
+        glob.get_series_failed = False
 
         self.bouquet_tv = False
         self.userbouquet = False
@@ -63,7 +117,6 @@ class BmxBuildBouquets(Screen):
         self.progress_value = 0
         self.progress_range = 0
 
-        self.playlists_all = bmx.getPlaylistJson()
         self.playlist_info = glob.current_playlist["playlist_info"]
         self.settings = glob.current_playlist["settings"]
         self.data = glob.current_playlist["data"]
@@ -71,20 +124,72 @@ class BmxBuildBouquets(Screen):
         self.name = bmx.safeName(self.playlist_info["name"])
 
         if self.playlist_info["playlist_type"] == "xtream":
-            # Each content type has its own process multiplier
             self.progress_range += (
                 (2 * self.settings["show_live"]) +
                 (2 * self.settings["show_vod"]) +
                 (4 * self.settings["show_series"])
             )
         else:
-            self.progress_range += 1  # Base range for non-xtream playlists
-            self.progress_range += sum([
-                self.settings["show_live"],
-                self.settings["show_vod"],
-                self.settings["show_series"]
-            ])
+            self.progress_range += 1
+        self.start()
 
+    def nextJob(self, actiontext, function):
+        if debugs:
+            print("*** nextJob ***", actiontext)
+        self["action"].setText(actiontext)
+        self.timer = eTimer()
+        try:
+            self.timer_conn = self.timer.timeout.connect(function)
+        except:
+            self.timer.callback.append(function)
+        self.timer.start(50, True)
+
+    def start(self):
+        if self.runtype == "manual":
+            self["progress"].setRange((0, self.progress_range))
+            self["progress"].setValue(self.progress_value)
+
+        self["status"].setText(_("Updating Playlist %d of %d") % (self.bouq + 1, self.bouquets_len))
+        self.deleteExistingRefs()
+
+        self.timer = eTimer()
+
+        try:
+            self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
+        except:
+            try:
+                self.timer.callback.append(self.makeUrlList)
+            except:
+                self.makeUrlList()
+        self.timer.start(10, True)
+
+    def deleteExistingRefs(self):
+        with open("/etc/enigma2/bouquets.tv", "r+") as f:
+            lines = f.readlines()
+            f.seek(0)
+            f.truncate()
+
+            for line in lines:
+                if "bouquetmakerxtream_live_" + str(self.name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_vod_" + str(self.name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_series_" + str(self.name) + "_" in line:
+                    continue
+                if "bouquetmakerxtream_" + str(self.name) + ".tv" in line:
+                    continue
+
+                f.write(line)
+
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.name) + "_")
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.name) + "_")
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.name) + "_")
+        bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(self.name))
+
+        if epgimporter:
+            bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.name))
+
+    def makeUrlList(self):
         if self.playlist_info["playlist_type"] == "xtream":
             self.player_api = self.playlist_info["player_api"]
             self.xmltv_api = str(self.playlist_info["xmltv_api"])
@@ -106,11 +211,20 @@ class BmxBuildBouquets(Screen):
             self.vod_streams_api = self.player_api + "&action=get_vod_streams"
             self.series_streams_api = self.player_api + "&action=get_series"
 
+            if self.settings["show_live"]:
+                self.nextJob(_("Downloading live data..."), self.downloadXtreamLive)
+            elif self.settings["show_vod"]:
+                self.nextJob(_("Downloading VOD data..."), self.downloadXtreamVod)
+            elif self.settings["show_series"]:
+                self.nextJob(_("Downloading series data..."), self.downloadXtreamSeries)
+
         elif self.playlist_info["playlist_type"] == "external":
             self.external_url = self.playlist_info["full_url"]
+            self.nextJob(_("Downloading external playlist..."), self.downloadExternal)
 
         elif self.playlist_info["playlist_type"] == "local":
             self.local_file = self.playlist_info["full_url"]
+            self.nextJob(_("Loading local playlist..."), self.parseLocal)
 
         if self.playlist_info["playlist_type"] != "local":
             protocol = self.playlist_info["protocol"]
@@ -123,115 +237,6 @@ class BmxBuildBouquets(Screen):
         for j in str(full_url):
             value = ord(j)
             self.unique_ref += value
-
-        self.starttimer = eTimer()
-        try:
-            self.starttimer_conn = self.starttimer.timeout.connect(self.start)
-        except:
-            self.starttimer.callback.append(self.start)
-        self.starttimer.start(100, True)
-
-    def void(self):
-        if debugs:
-            print("*** void ***")
-        pass
-
-    def nextJob(self, actiontext, function):
-        if debugs:
-            print("*** nextJob ***", actiontext)
-        self["action"].setText(actiontext)
-        self.timer = eTimer()
-        try:
-            self.timer_conn = self.timer.timeout.connect(function)
-        except:
-            self.timer.callback.append(function)
-        self.timer.start(50, True)
-
-    def start(self):
-        if debugs:
-            print("*** start ***")
-
-        glob.get_series_failed = False
-        self["progress"].setRange((0, self.progress_range))
-        self["progress"].setValue(self.progress_value)
-        self.deleteExistingRefs()
-
-        self.timer = eTimer()
-
-        try:
-            self.timer_conn = self.timer.timeout.connect(self.makeUrlList)
-        except:
-            try:
-                self.timer.callback.append(self.makeUrlList)
-            except:
-                self.makeUrlList()
-        self.timer.start(10, True)
-
-    def deleteExistingRefs(self):
-        if debugs:
-            print("*** deleteExistingRefs ***")
-        with open("/etc/enigma2/bouquets.tv", "r+") as f:
-            lines = f.readlines()
-            f.seek(0)
-            f.truncate()
-
-            for line in lines:
-                if "bouquetmakerxtream_live_" + str(self.name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_vod_" + str(self.name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_series_" + str(self.name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_" + str(self.name) + ".tv" in line:
-                    continue
-                if "bouquetmakerxtream_live_" + str(self.original_name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_vod_" + str(self.original_name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_series_" + str(self.original_name) + "_" in line:
-                    continue
-                if "bouquetmakerxtream_" + str(self.original_name) + ".tv" in line:
-                    continue
-                f.write(line)
-
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.name) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.name) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.name) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(self.name))
-
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_live_" + str(self.original_name) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_vod_" + str(self.original_name) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_series_" + str(self.original_name) + "_")
-        bmx.purge("/etc/enigma2", "bouquetmakerxtream_" + str(self.original_name))
-
-        if epgimporter:
-            bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.name))
-            bmx.purge("/etc/epgimport", "bouquetmakerxtream." + str(self.original_name))
-
-    def makeUrlList(self):
-        if debugs:
-            print("*** makeUrlList ***")
-
-        if self.playlist_info["playlist_type"] == "xtream":
-            if self.settings["show_live"]:
-                self.nextJob(_("Downloading live data..."), self.downloadXtreamLive)
-                # self.downloadXtreamLive()
-
-            elif self.settings["show_vod"]:
-                self.nextJob(_("Downloading VOD data..."), self.downloadXtreamVod)
-                # self.downloadXtreamVod()
-
-            elif self.settings["show_series"]:
-                self.nextJob(_("Downloading series data..."), self.downloadXtreamSeries)
-                # self.downloadXtreamSeries()
-
-        elif self.playlist_info["playlist_type"] == "external":
-            self.nextJob(_("Downloading external playlist..."), self.downloadExternal)
-            # self.downloadExternal()
-
-        elif self.playlist_info["playlist_type"] == "local":
-            self.nextJob(_("Loading local playlist..."), self.parseLocal)
-            # self.parseLocal()
 
     def downloadXtreamLive(self):
         if debugs:
@@ -510,7 +515,7 @@ class BmxBuildBouquets(Screen):
                 except:
                     continue
 
-                name = channel["name"].replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
+                name = channel["name"].replace(":", "").replace('"', "").strip("-")
                 catchup = int(channel.get("tv_archive", 0))
 
                 if cfg.catchup.value and catchup == 1:
@@ -622,6 +627,7 @@ class BmxBuildBouquets(Screen):
                             f.write(output_string)
 
                 # Free up memory once finished
+
                 cat_map.clear()
 
             self.progress_value += 1
@@ -673,7 +679,6 @@ class BmxBuildBouquets(Screen):
                 self.vod_streams.sort(key=lambda x: x["added"], reverse=True)
 
             # Convert to sets for faster membership testing
-
             vod_categories_hidden = set(self.data["vod_categories_hidden"])
             vod_streams_hidden = set(self.data["vod_streams_hidden"])
 
@@ -689,7 +694,7 @@ class BmxBuildBouquets(Screen):
                     stream_id = int(stream_id)
                 except:
                     continue
-                name = channel["name"].replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
+                name = channel["name"].replace(":", "").replace('"', "").strip("-")
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
@@ -815,7 +820,6 @@ class BmxBuildBouquets(Screen):
                 self.series_categories.sort(key=lambda k: k["category_name"].lower())
 
             # Convert to sets for faster membership testing
-
             series_categories_hidden = set(self.data["series_categories_hidden"])
 
             for category in self.series_categories:
@@ -830,7 +834,6 @@ class BmxBuildBouquets(Screen):
 
             if self.playlist_info["playlist_type"] == "xtream":
                 geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
-
                 method, result = bmx.downloadM3U8File_with_fallback(geturl)
 
                 if not result:
@@ -839,10 +842,8 @@ class BmxBuildBouquets(Screen):
                     return
 
                 if method == "curl":
-                    print("*** streaming parse started (curl) ***")
                     self.nextJob(_("Parsing series data..."), lambda: self.parseXtreamSeries_streaming(result))
                 elif method in ("wget", "requests"):
-                    print("*** parsing non-streaming result ***")
                     self.series_streams = seriesparsem3u.parseM3u8Playlist(result)
 
                     result = None
@@ -902,7 +903,7 @@ class BmxBuildBouquets(Screen):
                 except:
                     continue
 
-                name = channel["name"].replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
+                name = channel["name"].replace(":", "").replace('"', "").strip("-")
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
@@ -939,7 +940,6 @@ class BmxBuildBouquets(Screen):
                 self.clearCaches()
 
         self.series_stream_data = all_series_data
-
         self.createSeriesBouquets()
 
     def createSeriesBouquets(self):
@@ -1168,33 +1168,10 @@ class BmxBuildBouquets(Screen):
             pass
 
     def finished(self):
-        if debugs:
-            print("*** finished ***")
-
         self.updateJson()
         self.clearCaches()
-        bmx.refreshBouquets()
-
-        message = ""
-
-        if getattr(glob, "get_series_failed", False):
-            message += _("Series failed to download get.php file.\n\n")
-
-        message += str(self.total_count) + _(" IPTV Bouquets Created")
-
-        self.session.openWithCallback(
-            self.exit,
-            MessageBox,
-            message,
-            MessageBox.TYPE_INFO,
-            timeout=10
-        )
-
-    def exit(self, answer=None):
-        if debugs:
-            print("*** exit ***")
-        glob.finished = True
-        self.close(True)
+        self.bouq += 1
+        self.loopPlaylists()
 
     def updateJson(self):
         if debugs:
@@ -1213,3 +1190,7 @@ class BmxBuildBouquets(Screen):
 
         with open(playlists_json, "w") as f:
             json.dump(self.playlists_all, f, indent=4)
+
+    def done(self, answer=None):
+        bmx.refreshBouquets()
+        self.close()

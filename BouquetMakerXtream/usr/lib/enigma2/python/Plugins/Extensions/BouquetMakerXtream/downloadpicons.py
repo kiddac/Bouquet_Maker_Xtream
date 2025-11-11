@@ -300,7 +300,7 @@ class BmxDownloadPicons(Screen):
     def log_result(self, result=None):
         # self.progresscurrent += 1
         self["progress"].setValue(self.progresscurrent)
-        self["info"].setText(_("Success: " + "%s   " + _("Size: ") + "%s   " + _("Type: ") + "%s   " + _("Url: ") + "%s   " + _("Exists: ") + "%s") % (self.successcount, self.sizecount, self.typecount, self.badurlcount, self.existscount))
+        self["info"].setText(_("Success: " + "%s   " + _("Invalid size: ") + "%s   " + _("Invalid type: ") + "%s   " + _("Invalid source: ") + "%s   " + _("Already exists: ") + "%s") % (self.successcount, self.sizecount, self.typecount, self.badurlcount, self.existscount))
         self["status"].setText(_("Picon %d of %d") % (self.progresscurrent, self.job_total))
 
         if self.progresscurrent == self.job_total:
@@ -336,8 +336,6 @@ class BmxDownloadPicons(Screen):
                 for i in range(self.job_total):
                     try:
                         executor.submit(self.fetch_url, self.selected, i)
-                        # results = executor.submit(self.fetch_url, self.selected, i)
-                        # results.add_done_callback(self.log_result)
                     except:
                         pass
 
@@ -352,7 +350,6 @@ class BmxDownloadPicons(Screen):
 
                 for i in range(self.job_total):
                     try:
-                        # pool.apply_async(self.fetch_url, args=(self.selected, i), callback=self.log_result)
                         pool.apply_async(self.fetch_url, args=(self.selected, i))
                     except:
                         pass
@@ -375,7 +372,7 @@ class BmxDownloadPicons(Screen):
             }
 
             for filename, data_list in file_map.items():
-                path = os.path.join(dir_tmp, filename)
+                path = os.path.join(dir_tmp(), filename)
                 with open(path, 'w+') as f:
                     for item in data_list:
                         f.write("%s\n" % item)
@@ -399,7 +396,7 @@ class BmxDownloadPicons(Screen):
                 _("Your created picons can be found in") + "\n" +
                 str(self.downloadlocation) + "\n\n" +
                 _("Your failed picon list can be found in") + "\n" +
-                str(dir_tmp),
+                str(dir_tmp()),
                 MessageBox.TYPE_INFO
             )
 

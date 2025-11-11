@@ -18,6 +18,7 @@ from .plugin import cfg, playlist_file, playlists_json, debugs
 def processFiles():
     if debugs:
         print("*** processFiles ***")
+
     # Check if playlists.txt file exists in specified location
     if not os.path.isfile(playlist_file):
         with open(playlist_file, "a"):
@@ -41,7 +42,6 @@ def processFiles():
     epg_alternative = False
     epg_alternative_url = ""
     next_days = "0"
-    show_superscript = False
 
     if os.path.isfile(playlists_json):
         with open(playlists_json, "r") as f:
@@ -53,7 +53,7 @@ def processFiles():
     else:
         with open(playlists_json, "w") as f:
             playlists_all = []
-            json.dump(playlists_all, f)
+            json.dump(playlists_all, f, indent=4)
 
     # Check playlist.txt entries are valid
     with open(playlist_file, "r+") as f:
@@ -108,11 +108,6 @@ def processFiles():
                 username = query["username"][0].strip()
                 password = query["password"][0].strip()
 
-                """
-                if "type" in query:
-                    media_type = query["type"][0].strip()
-                    """
-
                 if "output" in query:
                     output = query["output"][0].strip()
                 else:
@@ -153,8 +148,6 @@ def processFiles():
             media_type = "m3u_plus"
             output = ""
 
-            # live_streams = []
-
             epg_offset = 0
             playlist_type = ""
 
@@ -189,11 +182,6 @@ def processFiles():
 
                     username = query["username"][0].strip()
                     password = query["password"][0].strip()
-
-                    """
-                    if "type" in query:
-                        media_type = query["type"][0].strip()
-                        """
 
                     if "output" in query:
                         output = query["output"][0].strip()
@@ -247,9 +235,6 @@ def processFiles():
 
                                 if ("next_days" not in playlist["settings"]) or ("next_days" in playlist["settings"] and playlist["settings"]["next_days"] == 0):
                                     playlist["settings"]["next_days"] = next_days
-
-                                if "show_superscript" not in playlist["settings"]:
-                                    playlist["settings"]["show_superscript"] = show_superscript
 
                                 playlist["playlist_info"]["name"] = name
                                 playlist["playlist_info"]["type"] = media_type
@@ -306,8 +291,7 @@ def processFiles():
                                 ("epg_offset", server_offset),
                                 ("epg_alternative", epg_alternative),
                                 ("epg_alternative_url", epg_alternative_url),
-                                ("next_days", next_days),
-                                ("show_superscript", show_superscript)
+                                ("next_days", next_days)
                             ]),
                             "data": dict([
                                 ("live_categories", []),
@@ -346,9 +330,6 @@ def processFiles():
                                 if "vod_stream_order" not in playlist["settings"]:
                                     playlist["settings"]["vod_stream_order"] = vod_stream_order
 
-                                if "show_superscript" not in playlist["settings"]:
-                                    playlist["settings"]["show_superscript"] = show_superscript
-
                                 playlist["playlist_info"]["name"] = name
                                 playlist["playlist_info"]["index"] = index
 
@@ -383,8 +364,7 @@ def processFiles():
                                 ("live_category_order", live_category_order),
                                 ("live_stream_order", live_stream_order),
                                 ("vod_category_order", vod_category_order),
-                                ("vod_stream_order", vod_stream_order),
-                                ("show_superscript", show_superscript)
+                                ("vod_stream_order", vod_stream_order)
                             ]),
                             "data": dict([
                                 ("live_categories", []),
@@ -456,11 +436,7 @@ def processFiles():
                         if "vod_stream_order" not in playlist["settings"]:
                             playlist["settings"]["vod_stream_order"] = vod_stream_order
 
-                        if "show_superscript" not in playlist["settings"]:
-                            playlist["settings"]["show_superscript"] = show_superscript
-
                         playlist["playlist_info"]["index"] = index
-
                         playlist["data"]["live_streams"] = []
                         playlist["data"]["vod_streams"] = []
                         playlist["data"]["series_streams"] = []
@@ -488,8 +464,7 @@ def processFiles():
                         ("live_category_order", live_category_order),
                         ("live_stream_order", live_stream_order),
                         ("vod_category_order", vod_category_order),
-                        ("vod_stream_order", vod_stream_order),
-                        ("show_superscript", show_superscript)
+                        ("vod_stream_order", vod_stream_order)
                     ]),
                     "data": dict([
                         ("live_categories", []),
@@ -510,6 +485,6 @@ def processFiles():
 
     # Write new x-playlists.json file
     with open(playlists_json, "w") as f:
-        json.dump(playlists_all, f)
+        json.dump(playlists_all, f, indent=4)
 
     return playlists_all

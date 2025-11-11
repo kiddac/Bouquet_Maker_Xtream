@@ -10,7 +10,6 @@ def check_internet():
     try:
         with open('/proc/net/route', 'r') as f:
             for line in f:
-                # print("*** line ***", line)
                 fields = line.strip().split()
                 if len(fields) >= 2:
                     interface, dest = fields[:2]

@@ -26,7 +26,6 @@ class BmxDeleteBouquets(Screen):
             self.skin = f.read()
         self.setup_title = _("Delete Bouquets")
 
-        # new list code
         self.start_list = []
         self.draw_list = []
         self["list"] = List(self.draw_list, enableWrapAround=True)
@@ -154,7 +153,6 @@ class BmxDeleteBouquets(Screen):
                         print(e)
 
             self.deleteBouquetFile(bouquet_name)
-            glob.firstrun = True
             glob.current_selection = 0
             glob.current_playlist = []
             bmx.refreshBouquets()
@@ -169,4 +167,4 @@ class BmxDeleteBouquets(Screen):
         self.playlists_all = [_f for _f in self.playlists_all if _f]
 
         with open(playlists_json, "w") as f:
-            json.dump(self.playlists_all, f)
+            json.dump(self.playlists_all, f, indent=4)

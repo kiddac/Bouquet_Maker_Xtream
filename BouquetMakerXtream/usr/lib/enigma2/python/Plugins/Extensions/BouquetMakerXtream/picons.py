@@ -30,7 +30,6 @@ class BmxDownloadPicons(Screen):
             self.skin = f.read()
         self.setup_title = _("Download Picons")
 
-        # new list code
         self.start_list = []
         self.draw_list = []
         self["list"] = List(self.draw_list, enableWrapAround=True)
@@ -128,7 +127,7 @@ class BmxDownloadPicons(Screen):
 
             self.deletePiconSet(str(self.unique_ref))
 
-            response = bmx.downloadApi(url)
+            response = bmx.downloadXtreamApi(url)
 
             if response:
                 self.live_streams = response
@@ -229,9 +228,7 @@ class BmxDownloadPicons(Screen):
 
                 x += 1
 
-                # self.picon_list.sort(key=lambda x: x[1])
-
-                path = os.path.join(dir_tmp, 'bmxpiconlist.txt')
+                path = os.path.join(dir_tmp(), 'bmxpiconlist.txt')
                 with open(path, 'w+') as f:
                     for item in self.picon_list:
                         f.write("%s\n" % item)

@@ -3,10 +3,9 @@
 
 from . import _
 from . import bouquet_globals as glob
-from . import globalfunctions as bmx
 from . import processfiles as pfiles
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, playlists_json, pythonFull, skin_directory, version
+from .plugin import cfg, common_path, pythonFull, skin_directory, version
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -15,7 +14,6 @@ from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from Tools.LoadPixmap import LoadPixmap
 from Components.config import configfile
-import json
 import os
 
 
@@ -87,11 +85,6 @@ class BmxMainMenu(Screen):
             self.start()
 
     def start(self, answer=None):
-        """
-        if glob.finished:
-            self.close()
-            """
-
         self.playlists_all = pfiles.processFiles()
 
         # clear stream data if populated after a crash
@@ -118,7 +111,6 @@ class BmxMainMenu(Screen):
                 self.list.append([3, _("Main Settings")])
                 self.list.append([4, _("Update Bouquets")])
                 self.list.append([5, _("Delete Bouquets")])
-                self.list.append([6, _("Delete All BMX Bouquets")])
                 self.list.append([8, _("Download Picons")])
                 self.list.append([2, _("Add Playlist")])
                 self.list.append([7, _("About")])
@@ -150,39 +142,9 @@ class BmxMainMenu(Screen):
         from . import deletebouquets
         self.session.openWithCallback(self.start, deletebouquets.BmxDeleteBouquets)
 
-    def deleteAll(self, answer=None):
-        if answer is None:
-            self.session.openWithCallback(self.deleteAll, MessageBox, _("Delete all BMX created bouquets?"))
-        elif answer:
-            bmx.purge("/etc/enigma2", "bouquetmakerxtream")
-
-            with open("/etc/enigma2/bouquets.tv", "r+") as f:
-                lines = f.readlines()
-                f.seek(0)
-                for line in lines:
-                    if "bouquetmakerxtream" not in line:
-                        f.write(line)
-                f.truncate()
-
-            bmx.purge("/etc/epgimport", "bouquetmakerxtream")
-
-            self.playlists_all = bmx.getPlaylistJson()
-
-            for playlist in self.playlists_all:
-                playlist["playlist_info"]["bouquet"] = False
-
-            # delete leftover empty dicts
-            self.playlists_all = [_f for _f in self.playlists_all if _f]
-
-            with open(playlists_json, "w") as f:
-                json.dump(self.playlists_all, f)
-
-            bmx.refreshBouquets()
-            self.start()
-
     def update(self):
-        from . import update
-        self.session.openWithCallback(self.start, update.BmxUpdate, "manual")
+        from . import update2
+        self.session.openWithCallback(self.start, update2.BmxUpdate, "manual")
 
     def makePicons(self):
         from . import piconsettings
@@ -202,15 +164,12 @@ class BmxMainMenu(Screen):
                 self.update()
             if index == 5:
                 self.deleteSet()
-            if index == 6:
-                self.deleteAll()
             if index == 7:
                 self.about()
             if index == 8:
                 self.makePicons()
 
     def quit(self):
-        glob.firstrun = 0
         self.close()
 
 
@@ -221,7 +180,6 @@ def buildListEntry(index, title):
         3: "settings.png",
         4: "updateplaylists.png",
         5: "deleteplaylist.png",
-        6: "deleteplaylist.png",
         7: "about.png",
         8: "picons.png"
     }
