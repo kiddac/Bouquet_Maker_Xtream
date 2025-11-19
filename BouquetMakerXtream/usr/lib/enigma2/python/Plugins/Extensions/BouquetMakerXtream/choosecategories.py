@@ -232,7 +232,7 @@ class BmxChooseCategories(Screen):
                         ])
                     )
                     self.live_streams = list(response)
-                del response
+                response = None
 
         try:
             self["splash"].hide()
@@ -280,7 +280,7 @@ class BmxChooseCategories(Screen):
                     )
                     self.vod_streams = list(response)
 
-                del response
+                response = None
 
         try:
             self["splash"].hide()
@@ -327,7 +327,7 @@ class BmxChooseCategories(Screen):
                         ])
                     )
                     self.series_streams = list(response)
-                del response
+                response = None
 
         try:
             self["splash"].hide()
@@ -351,7 +351,7 @@ class BmxChooseCategories(Screen):
 
         if response:
             self.parseFullM3u8Data(response)
-            del response
+            response = None
 
         try:
             self["splash"].hide()
@@ -381,7 +381,7 @@ class BmxChooseCategories(Screen):
                     response = f.read()
                 if response:
                     self.parseFullM3u8Data(response)
-                    del response
+                    response = None
             except Exception as e:
                 if debugs:
                     print("Error reading local file:", e)

@@ -276,7 +276,7 @@ class BmxUpdate(Screen):
                         ])
                     )
                     self.live_streams = list(response)
-                del response
+                response = None
 
         self.progress_value += 1
         self["progress"].setValue(self.progress_value)
@@ -316,7 +316,7 @@ class BmxUpdate(Screen):
                     )
                     self.vod_streams = list(response)
 
-                del response
+                response = None
 
         self.progress_value += 1
         self["progress"].setValue(self.progress_value)
@@ -354,7 +354,7 @@ class BmxUpdate(Screen):
                         ])
                     )
                     self.series_streams = list(response)
-                del response
+                response = None
 
         self.progress_value += 1
         self["progress"].setValue(self.progress_value)
@@ -368,7 +368,7 @@ class BmxUpdate(Screen):
 
         if response:
             self.parseFullM3u8Data(response)
-            del response
+            response = None
 
         self.progress_value += 1
         self["progress"].setValue(self.progress_value)
@@ -388,7 +388,7 @@ class BmxUpdate(Screen):
                     response = f.read()
                 if response:
                     self.parseFullM3u8Data(response)
-                    del response
+                    response = None
             except Exception as e:
                 if debugs:
                     print("Error reading local file:", e)
@@ -504,7 +504,8 @@ class BmxUpdate(Screen):
 
             for channel in self.live_streams:
                 category_id = channel.get("category_id")
-                name = channel.get("name")
+                name = channel.get("name") or ""
+                name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
                 stream_id = channel.get("stream_id")
 
                 if str(category_id) in live_categories_hidden or str(stream_id) in live_streams_hidden:
@@ -515,7 +516,6 @@ class BmxUpdate(Screen):
                 except:
                     continue
 
-                name = channel["name"].replace(":", "").replace('"', "").strip("-")
                 catchup = int(channel.get("tv_archive", 0))
 
                 if cfg.catchup.value and catchup == 1:
@@ -684,7 +684,8 @@ class BmxUpdate(Screen):
 
             for channel in self.vod_streams:
                 category_id = channel.get("category_id")
-                name = channel.get("name")
+                name = channel.get("name") or ""
+                name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
                 stream_id = channel.get("stream_id")
 
                 if str(category_id) in vod_categories_hidden or str(stream_id) in vod_streams_hidden:
@@ -694,7 +695,6 @@ class BmxUpdate(Screen):
                     stream_id = int(stream_id)
                 except:
                     continue
-                name = channel["name"].replace(":", "").replace('"', "").strip("-")
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535
@@ -847,7 +847,6 @@ class BmxUpdate(Screen):
                     self.series_streams = seriesparsem3u.parseM3u8Playlist(result)
 
                     result = None
-                    del result
 
                     self.nextJob(_("Processing series data..."), self.processSeries)
                 else:
@@ -903,7 +902,8 @@ class BmxUpdate(Screen):
                 except:
                     continue
 
-                name = channel["name"].replace(":", "").replace('"', "").strip("-")
+                name = channel.get("name") or ""
+                name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
 
                 try:
                     bouquet_id1 = int(stream_id) // 65535

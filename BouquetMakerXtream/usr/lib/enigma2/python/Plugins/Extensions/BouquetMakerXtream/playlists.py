@@ -318,73 +318,99 @@ class BmxPlaylists(Screen):
             playlist_type = ""
 
             if playlist:
-                name = playlist["playlist_info"].get("name", playlist["playlist_info"].get("domain", ""))
-                url = playlist["playlist_info"].get("host", "")
-                user_info = playlist.get("user_info", {})
+                name = playlist.get("playlist_info", {}).get("name", playlist.get("playlist_info", {}).get("domain", ""))
 
-                if "host" in playlist["playlist_info"]:
-                    url = playlist["playlist_info"]["host"]
+                url = playlist.get("playlist_info", {}).get("host", "")
 
-                if "full_url" in playlist["playlist_info"]:
-                    fullurl = playlist["playlist_info"]["full_url"]
+                if "host" in playlist.get("playlist_info", {}):
+                    url = playlist.get("playlist_info", {}).get("host", "")
 
-                if "playlist_type" in playlist["playlist_info"]:
-                    playlist_type = playlist["playlist_info"]["playlist_type"]
+                if "full_url" in playlist.get("playlist_info", {}):
+                    fullurl = playlist.get("playlist_info", {}).get("full_url", "")
 
-                if playlist["playlist_info"]["playlist_type"] == "xtream":
+                if "playlist_type" in playlist.get("playlist_info", {}):
+                    playlist_type = playlist.get("playlist_info", {}).get("playlist_type", "")
 
-                    if user_info and "auth" in user_info:
+                if playlist.get("playlist_info", {}).get("playlist_type") == "xtream":
+
+                    if playlist.get("user_info") and "auth" in playlist.get("user_info", {}):
                         status = _("Not Authorised")
 
-                        if str(user_info["auth"]) == "1":
-                            if playlist["user_info"]["status"] == "Active":
+                        if str(playlist.get("user_info", {}).get("auth", "")) == "1":
+
+                            usr_status = playlist.get("user_info", {}).get("status", "")
+
+                            if usr_status == "Active":
                                 status = _("Active")
-                            elif playlist["user_info"]["status"] == "Banned":
+                            elif usr_status == "Banned":
                                 status = _("Banned")
-                            elif playlist["user_info"]["status"] == "Disabled":
+                            elif usr_status == "Disabled":
                                 status = _("Disabled")
-                            elif playlist["user_info"]["status"] == "Expired":
+                            elif usr_status == "Expired":
                                 status = _("Expired")
 
                             if status == _("Active"):
+
                                 try:
-                                    expires = str(_("Expires: ")) + str(datetime.fromtimestamp(int(playlist["user_info"]["exp_date"])).strftime("%d-%m-%Y"))
+                                    expires = str(_("Expires: ")) + str(
+                                        datetime.fromtimestamp(
+                                            int(playlist.get("user_info", {}).get("exp_date"))
+                                        ).strftime("%d-%m-%Y")
+                                    )
                                 except:
-                                    expires = str(_("Expires: ")) + str("Null")
+                                    expires = str(_("Expires: ")) + "Null"
 
                                 active = str(_("Active Conn:"))
-                                activenum = playlist["user_info"]["active_cons"]
-
+                                activenum = playlist.get("user_info", {}).get("active_cons", 0)
                                 try:
                                     activenum = int(activenum)
                                 except:
                                     activenum = 0
 
                                 maxc = str(_("Max Conn:"))
-                                maxnum = playlist["user_info"]["max_connections"]
-
+                                maxnum = playlist.get("user_info", {}).get("max_connections", 0)
                                 try:
                                     maxnum = int(maxnum)
                                 except:
                                     maxnum = 0
 
                 else:
-                    if playlist["playlist_info"]["valid"]:
+
+                    if playlist.get("playlist_info", {}).get("valid"):
+
                         active = ""
                         activenum = ""
                         maxc = ""
                         maxnum = ""
 
-                        if playlist["playlist_info"]["playlist_type"] == "external":
+                        if playlist.get("playlist_info", {}).get("playlist_type") == "external":
                             status = _("Url OK")
                             expires = _("External playlist")
-                        if playlist["playlist_info"]["playlist_type"] == "local":
+
+                        if playlist.get("playlist_info", {}).get("playlist_type") == "local":
                             status = ""
                             expires = _("Local file")
 
-                self.list.append([index, name, url, expires, status, active, activenum, maxc, maxnum, fullurl, playlist_type])
+            self.list.append([
+                index,
+                name,
+                url,
+                expires,
+                status,
+                active,
+                activenum,
+                maxc,
+                maxnum,
+                fullurl,
+                playlist_type
+            ])
 
-        self.drawList = [self.buildListEntry(x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7], x[8], x[9], x[10]) for x in self.list]
+        self.drawList = [
+            self.buildListEntry(
+                x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7], x[8], x[9], x[10]
+            )
+            for x in self.list
+        ]
         self["playlists"].setList(self.drawList)
 
         if len(self.list) == 1 and cfg.skip_playlists_screen.getValue() and playlist["playlist_info"]["valid"]:
