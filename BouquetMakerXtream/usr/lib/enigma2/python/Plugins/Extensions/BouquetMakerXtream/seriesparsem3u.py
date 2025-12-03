@@ -1,107 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# import io
-# import gc
 import re
 from . import bouquet_globals as glob
 from .plugin import debugs
 
 SERIES_PATTERN = re.compile(r'(S\d+|E\d+|Episode\s\d+)', re.IGNORECASE)
-
-
-def parseM3u8Playlist_streaming(pipe_process):
-    """
-    Stream-parse M3U8 directly from curl pipe process.
-    Never loads full file into memory.
-
-    Args:
-        pipe_process: subprocess.Popen object or file-like object with stdout
-    """
-    data = glob.current_playlist["data"]
-    series_streams = []
-    streamid = 0
-    hidden_categories = set(data.get("series_categories_hidden", []))
-
-    # Stream lines directly from curl stdout
-    line_iter = iter(pipe_process.stdout.readline, b'')
-    pending_extinf = None
-
-    for raw_line in line_iter:
-        try:
-            line = raw_line.decode('utf-8', 'ignore').strip()
-        except Exception:
-            continue
-
-        if not line:
-            continue
-
-        # Handle EXTINF lines
-        if line.startswith("#EXTINF"):
-            pending_extinf = line
-            continue
-
-        # Process URL line if we have a pending EXTINF
-        if pending_extinf and line.startswith(('http://', 'https://')):
-            process_entry(pending_extinf, line, hidden_categories, series_streams, streamid)
-            if series_streams and len(series_streams) > streamid:
-                streamid = len(series_streams)
-            pending_extinf = None
-
-    return series_streams
-
-
-def process_entry(extinf_line, url_line, hidden_categories, series_streams, streamid):
-    """Process a single EXTINF + URL pair"""
-
-    # Extract group-title
-    group_title = ""
-    gt_pos = extinf_line.find('group-title="')
-    if gt_pos > -1:
-        end_pos = extinf_line.find('"', gt_pos + 13)
-        if end_pos > -1:
-            group_title = extinf_line[gt_pos + 13:end_pos].strip()
-
-    # Skip hidden categories
-    if group_title and group_title in hidden_categories:
-        return
-
-    # Extract name
-    name = ""
-    name_pos = extinf_line.find('tvg-name="')
-    if name_pos > -1:
-        end_pos = extinf_line.find('"', name_pos + 10)
-        if end_pos > -1:
-            name = extinf_line[name_pos + 10:end_pos].strip()
-
-    # Fallback to name after last comma
-    if not name:
-        last_comma = extinf_line.rfind(',')
-        if last_comma > -1:
-            name = extinf_line[last_comma + 1:].strip()
-
-    if not name:
-        return
-
-    source = url_line.split()[0]
-
-    # Early rejection of non-series paths
-    lower_source = source.lower()
-    if "/live/" in lower_source or "/movies/" in lower_source:
-        return
-
-    # Series detection
-    is_series = (
-        "/series/" in lower_source or
-        SERIES_PATTERN.search(name)
-    )
-
-    if is_series:
-        series_streams.append({
-            "category_id": group_title or "Uncategorised Series",
-            "name": simplify_name(name),
-            "source": source,
-            "series_id": str(len(series_streams) + 1)
-        })
 
 
 def parseM3u8Playlist(response):

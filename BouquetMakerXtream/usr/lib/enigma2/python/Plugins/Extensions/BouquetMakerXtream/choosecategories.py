@@ -217,14 +217,14 @@ class BmxChooseCategories(Screen):
                 elif category == 3:
                     response = (
                         {
-                            "name": item.get("name"),
-                            "stream_id": item.get("stream_id"),
-                            "stream_icon": item.get("stream_icon"),
-                            "epg_channnel_id": item.get("epg_channel_id"),
-                            "added": item.get("added"),
-                            "category_id": item.get("category_id"),
-                            "custom_sid": item.get("custom_sid"),
-                            "tv_archive": item.get("tv_archive"),
+                            "name": item.get("name", ""),
+                            "stream_id": item.get("stream_id", ""),
+                            "stream_icon": item.get("stream_icon", ""),
+                            "epg_channel_id": item.get("epg_channel_id", ""),
+                            "added": item.get("added", 0),  # Default to 0 for numeric
+                            "category_id": item.get("category_id", ""),
+                            "custom_sid": item.get("custom_sid", ""),
+                            "tv_archive": item.get("tv_archive", 0),
                         }
                         for item in response if all(k in item for k in [
                             "name", "stream_id", "stream_icon", "epg_channel_id",
@@ -268,11 +268,11 @@ class BmxChooseCategories(Screen):
                 elif category == 4:
                     response = (
                         {
-                            "name": item.get("name"),
-                            "stream_id": item.get("stream_id"),
-                            "added": item.get("added"),
-                            "category_id": item.get("category_id"),
-                            "container_extension": item.get("container_extension")
+                            "name": item.get("name", ""),
+                            "stream_id": item.get("stream_id", ""),
+                            "added": item.get("added", 0),
+                            "category_id": item.get("category_id", ""),
+                            "container_extension": item.get("container_extension", "")
                         }
                         for item in response if all(k in item for k in [
                             "name", "stream_id", "added", "category_id", "container_extension"
@@ -317,10 +317,10 @@ class BmxChooseCategories(Screen):
                 elif category == 5:
                     response = (
                         {
-                            "name": item.get("name"),
-                            "series_id": item.get("series_id"),
-                            "last_modified": item.get("last_modified"),
-                            "category_id": item.get("category_id")
+                            "name": item.get("name", ""),
+                            "series_id": item.get("series_id", ""),
+                            "last_modified": item.get("last_modified", "0"),
+                            "category_id": item.get("category_id", "")
                         }
                         for item in response if all(k in item for k in [
                             "name", "series_id", "last_modified", "category_id"

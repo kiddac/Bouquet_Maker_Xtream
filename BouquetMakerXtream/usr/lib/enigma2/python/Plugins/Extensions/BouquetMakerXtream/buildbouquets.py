@@ -256,14 +256,14 @@ class BmxBuildBouquets(Screen):
                 elif category == 3:
                     response = (
                         {
-                            "name": item.get("name"),
-                            "stream_id": item.get("stream_id"),
-                            "stream_icon": item.get("stream_icon"),
-                            "epg_channel_id": item.get("epg_channel_id"),
-                            "added": item.get("added"),
-                            "category_id": item.get("category_id"),
-                            "custom_sid": item.get("custom_sid"),
-                            "tv_archive": item.get("tv_archive"),
+                            "name": item.get("name", ""),
+                            "stream_id": item.get("stream_id", ""),
+                            "stream_icon": item.get("stream_icon", ""),
+                            "epg_channel_id": item.get("epg_channel_id", ""),
+                            "added": item.get("added", 0),
+                            "category_id": item.get("category_id", ""),
+                            "custom_sid": item.get("custom_sid", ""),
+                            "tv_archive": item.get("tv_archive", 0),
                         }
                         for item in response if all(k in item for k in [
                             "name", "stream_id", "stream_icon", "epg_channel_id",
@@ -299,11 +299,11 @@ class BmxBuildBouquets(Screen):
                 elif category == 4:
                     response = (
                         {
-                            "name": item.get("name"),
-                            "stream_id": item.get("stream_id"),
-                            "added": item.get("added"),
-                            "category_id": item.get("category_id"),
-                            "container_extension": item.get("container_extension")
+                            "name": item.get("name", ""),
+                            "stream_id": item.get("stream_id", ""),
+                            "added": item.get("added", 0),
+                            "category_id": item.get("category_id", ""),
+                            "container_extension": item.get("container_extension", "")
                         }
                         for item in response if all(k in item for k in [
                             "name", "stream_id", "added", "category_id", "container_extension"
@@ -339,10 +339,10 @@ class BmxBuildBouquets(Screen):
                 elif category == 5:
                     response = (
                         {
-                            "name": item.get("name"),
-                            "series_id": item.get("series_id"),
-                            "last_modified": item.get("last_modified"),
-                            "category_id": item.get("category_id")
+                            "name": item.get("name", ""),
+                            "series_id": item.get("series_id", ""),
+                            "last_modified": item.get("last_modified", "0"),
+                            "category_id": item.get("category_id", "")
                         }
                         for item in response if all(k in item for k in [
                             "name", "series_id", "last_modified", "category_id"
@@ -491,17 +491,17 @@ class BmxBuildBouquets(Screen):
                 self.live_streams.sort(key=lambda x: x["name"].lower())
 
             elif self.settings["live_stream_order"] == "added":
-                self.live_streams.sort(key=lambda x: x["added"], reverse=True)
+                self.live_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
 
             # Convert to sets for faster membership testing
             live_categories_hidden = set(self.data["live_categories_hidden"])
             live_streams_hidden = set(self.data["live_streams_hidden"])
 
             for channel in self.live_streams:
-                category_id = channel.get("category_id")
-                name = channel.get("name") or ""
+                category_id = channel.get("category_id", "")
+                name = channel.get("name", "")
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
-                stream_id = channel.get("stream_id")
+                stream_id = channel.get("stream_id", "")
 
                 if str(category_id) in live_categories_hidden or str(stream_id) in live_streams_hidden:
                     continue
@@ -533,7 +533,7 @@ class BmxBuildBouquets(Screen):
                     service_ref = str(":".join(custom_sid.split(":")[:7])) + ":0:0:0:http%3a//example.m3u8"
 
                 xml_str = ""
-                channel_id = channel.get("epg_channel_id")
+                channel_id = channel.get("epg_channel_id", "")
 
                 if channel_id:
                     channel_id = channel_id.replace("&", "&amp;")
@@ -576,7 +576,7 @@ class BmxBuildBouquets(Screen):
                     cat_map[cat_id].append(stream)
 
                 for category in self.live_categories:
-                    category_id = category.get("category_id")
+                    category_id = category.get("category_id", "")
 
                     if not category_id or str(category_id) in live_categories_hidden or str(category_id) not in cat_map:
                         continue
@@ -596,7 +596,7 @@ class BmxBuildBouquets(Screen):
                         f.write(str(bouquet_tv_string))
 
                     for category in self.live_categories:
-                        category_id = category.get("category_id")
+                        category_id = category.get("category_id", "")
 
                         if not category_id or str(category_id) in live_categories_hidden or str(category_id) not in cat_map:
                             continue
@@ -624,34 +624,34 @@ class BmxBuildBouquets(Screen):
                 # Free up memory once finished
                 cat_map.clear()
 
-            self.progress_value += 1
-            self["progress"].setValue(self.progress_value)
+        self.progress_value += 1
+        self["progress"].setValue(self.progress_value)
 
-            # Continue to next section
-            if self.playlist_info["playlist_type"] == "xtream":
-                if self.live_categories and epgimporter:
-                    self.buildXmltvSource()
-                self.live_categories = []
-                self.live_streams = []
-                self.live_stream_data = []
-                if self.settings["show_vod"]:
-                    self.nextJob(_("Downloading VOD data..."), self.downloadXtreamVod)
-                elif self.settings["show_series"]:
-                    self.nextJob(_("Downloading series data..."), self.downloadXtreamSeries)
-                else:
-                    self.finished()
-                    return
+        # Continue to next section
+        if self.playlist_info["playlist_type"] == "xtream":
+            if self.live_categories and epgimporter:
+                self.buildXmltvSource()
+            self.live_categories = []
+            self.live_streams = []
+            self.live_stream_data = []
+            if self.settings["show_vod"]:
+                self.nextJob(_("Downloading VOD data..."), self.downloadXtreamVod)
+            elif self.settings["show_series"]:
+                self.nextJob(_("Downloading series data..."), self.downloadXtreamSeries)
             else:
-                self.live_categories = []
-                self.live_streams = []
-                self.live_stream_data = []
-                if self.settings["show_vod"]:
-                    self.nextJob(_("Process VOD data..."), self.loadVod)
-                elif self.settings["show_series"]:
-                    self.nextJob(_("Processing series data..."), self.loadSeries)
-                else:
-                    self.finished()
-                    return
+                self.finished()
+                return
+        else:
+            self.live_categories = []
+            self.live_streams = []
+            self.live_stream_data = []
+            if self.settings["show_vod"]:
+                self.nextJob(_("Process VOD data..."), self.loadVod)
+            elif self.settings["show_series"]:
+                self.nextJob(_("Processing series data..."), self.loadSeries)
+            else:
+                self.finished()
+                return
 
     def loadVod(self):
         if debugs:
@@ -670,18 +670,17 @@ class BmxBuildBouquets(Screen):
                 self.vod_streams.sort(key=lambda x: x["name"].lower())
 
             elif self.settings["vod_stream_order"] == "added":
-                self.vod_streams.sort(key=lambda x: x["added"], reverse=True)
+                self.vod_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
 
             # Convert to sets for faster membership testing
-
             vod_categories_hidden = set(self.data["vod_categories_hidden"])
             vod_streams_hidden = set(self.data["vod_streams_hidden"])
 
             for channel in self.vod_streams:
-                category_id = channel.get("category_id")
-                name = channel.get("name") or ""
+                category_id = channel.get("category_id", "")
+                name = channel.get("name", "")
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
-                stream_id = channel.get("stream_id")
+                stream_id = channel.get("stream_id", "")
 
                 if str(category_id) in vod_categories_hidden or str(stream_id) in vod_streams_hidden:
                     continue
@@ -735,7 +734,7 @@ class BmxBuildBouquets(Screen):
                     cat_map[cat_id].append(stream)
 
                 for category in self.vod_categories:
-                    category_id = category.get("category_id")
+                    category_id = category.get("category_id", "")
 
                     if not category_id or str(category_id) in vod_categories_hidden or str(category_id) not in cat_map:
                         continue
@@ -755,7 +754,7 @@ class BmxBuildBouquets(Screen):
                         f.write(str(bouquet_tv_string))
 
                     for category in self.vod_categories:
-                        category_id = category.get("category_id")
+                        category_id = category.get("category_id", "")
 
                         if not category_id or str(category_id) in vod_categories_hidden or str(category_id) not in cat_map:
                             continue
@@ -815,12 +814,11 @@ class BmxBuildBouquets(Screen):
                 self.series_categories.sort(key=lambda k: k["category_name"].lower())
 
             # Convert to sets for faster membership testing
-
             series_categories_hidden = set(self.data["series_categories_hidden"])
 
             for category in self.series_categories:
-                category_id = category.get("category_id")
-                name = category.get("category_name")
+                category_id = category.get("category_id", "")
+                name = category.get("category_name", "")
 
                 if not category_id or not name or str(category_id) in series_categories_hidden:
                     continue
@@ -828,59 +826,36 @@ class BmxBuildBouquets(Screen):
             self.progress_value += 1
             self["progress"].setValue(self.progress_value)
 
-            if self.playlist_info["playlist_type"] == "xtream":
-                geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
+        if self.playlist_info["playlist_type"] == "xtream":
+            geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
 
-                method, result = bmx.downloadM3U8File_with_fallback(geturl)
+            response = bmx.downloadM3U8File(geturl)
 
-                if not result:
-                    glob.get_series_failed = True
-                    self.finished()
-                    return
+            if not response:
+                glob.get_series_failed = True
+                self.finished()
+                return
 
-                if method == "curl":
-                    print("*** streaming parse started (curl) ***")
-                    self.nextJob(_("Parsing series data..."), lambda: self.parseXtreamSeries_streaming(result))
-                elif method in ("wget", "requests"):
-                    print("*** parsing non-streaming result ***")
-                    self.series_streams = seriesparsem3u.parseM3u8Playlist(result)
-
-                    result = None
-
-                    self.nextJob(_("Processing series data..."), self.processSeries)
-                else:
-                    print("*** all methods failed ***")
-                    self.finished()
-            else:
+            if response:
+                self.series_streams = seriesparsem3u.parseM3u8Playlist(response)
+                response = None
                 self.nextJob(_("Processing series data..."), self.processSeries)
-
-    def parseXtreamSeries_streaming(self, pipe_process):
-        if debugs:
-            print("*** parseXtreamSeries_streaming ***")
-
-        try:
-            self.series_streams = seriesparsem3u.parseM3u8Playlist_streaming(pipe_process)
-        finally:
-            pipe_process.stdout.close()
-            pipe_process.wait()  # Ensure curl finishes
-
-        if not self.series_streams:
-            self.finished()
-            return
-
-        self.progress_value += 1
-        self["progress"].setValue(self.progress_value)
-        self.nextJob(_("Processing series data..."), self.processSeries)
+            else:
+                print("***  xtream series failed ***")
+                self.finished()
+                return
+        else:
+            self.nextJob(_("Processing series data..."), self.processSeries)
 
     def processSeries(self):
         if debugs:
             print("*** processSeries ***")
 
         if self.settings["vod_stream_order"] == "alphabetical":
-            self.series_streams.sort(key=lambda x: x["name"].lower())
+            self.series_streams.sort(key=lambda x: x.get("name", "").lower())
 
         elif self.settings["vod_stream_order"] == "added":
-            self.series_streams.sort(key=lambda x: x["added"], reverse=True)
+            self.series_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
 
         BATCH_SIZE = 20000
         stream_type = self.settings["vod_type"]
@@ -889,10 +864,10 @@ class BmxBuildBouquets(Screen):
             batch_data = []
             for channel in streams_batch:
 
-                category_id = channel.get("category_id")
-                name = channel.get("name") or ""
+                category_id = channel.get("category_id", "")
+                name = channel.get("name", "")
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
-                stream_id = channel.get("series_id")
+                stream_id = channel.get("series_id", "")
 
                 if not category_id or not name:
                     continue
@@ -937,7 +912,6 @@ class BmxBuildBouquets(Screen):
                 self.clearCaches()
 
         self.series_stream_data = all_series_data
-
         self.createSeriesBouquets()
 
     def createSeriesBouquets(self):
@@ -968,7 +942,7 @@ class BmxBuildBouquets(Screen):
 
         # Write top-level bouquet entries
         for category in self.series_categories:
-            category_id = category.get("category_name")
+            category_id = category.get("category_name", "")
 
             if not category_id:
                 continue
@@ -1000,7 +974,7 @@ class BmxBuildBouquets(Screen):
                     """
 
                 for category in category_batch:
-                    category_id = category.get("category_name")
+                    category_id = category.get("category_name", "")
 
                     if not category_id:
                         continue

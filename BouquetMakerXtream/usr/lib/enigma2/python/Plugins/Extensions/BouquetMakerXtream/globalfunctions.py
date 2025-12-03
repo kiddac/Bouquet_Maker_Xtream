@@ -11,9 +11,6 @@ import json
 import os
 import re
 import requests
-import subprocess
-import tempfile
-import shutil
 
 hdr = {
     'User-Agent': str(cfg.useragent.value),
@@ -173,113 +170,6 @@ def downloadM3U8File(url):
         except requests.RequestException as e:
             print("Error message: {}".format(str(e)))
             return ""
-
-
-def downloadM3U8File_wget(url):
-    if debugs:
-        print("*** downloadM3U8File_wget ***", url)
-
-    tmp_file = None
-
-    try:
-        # Create a temporary file for wget output
-        tmp_file = tempfile.NamedTemporaryFile(delete=False)
-        tmp_file_path = tmp_file.name
-        tmp_file.close()
-
-        # Build wget command
-        cmd = [
-            "wget",
-            "--quiet",               # no progress output
-            "--timeout=20",          # connect timeout
-            "--read-timeout=300",    # read timeout
-            "--no-check-certificate",
-            "-O", tmp_file_path,
-            url
-        ]
-
-        # Run wget command
-        subprocess.check_call(cmd)
-
-        # Read file content
-        with open(tmp_file_path, "r", encoding="utf-8", errors="ignore") as f:
-            content = f.read()
-
-        return content
-
-    except subprocess.CalledProcessError as e:
-        print("Error message: {}".format(str(e)))
-        return ""
-
-    except Exception as e:
-        print("Error message: {}".format(str(e)))
-        return ""
-
-    finally:
-        if tmp_file and os.path.exists(tmp_file_path):
-            try:
-                os.remove(tmp_file_path)
-            except Exception:
-                pass
-
-
-def downloadM3U8File_curl_pipe(url):
-    # Stream download using curl - returns subprocess for streaming parse
-    process = subprocess.Popen(
-        ['curl', '-s', '-N', url],  # -N disables buffering
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        bufsize=8192  # Small buffer for line-by-line processing
-    )
-    return process
-
-
-def downloadM3U8File_with_fallback(url):
-    if debugs:
-        print("*** downloadM3U8File_with_fallback ***", url)
-
-    # Try curl pipe first (streaming)
-    try:
-        process = downloadM3U8File_curl_pipe(url)
-        # Check if process started correctly
-        if process and process.poll() is None:
-            if debugs:
-                print("*** using curl pipe ***")
-            return ("curl", process)
-        else:
-            if debugs:
-                print("*** curl pipe failed to start ***")
-    except Exception as e:
-        print("Curl error: {}".format(str(e)))
-
-    # Try wget next
-    try:
-        if shutil.which("wget"):
-            if debugs:
-                print("*** trying wget fallback ***")
-            content = downloadM3U8File_wget(url)
-            if content:
-                if debugs:
-                    print("*** wget succeeded ***")
-                return ("wget", content)
-    except Exception as e:
-        print("Wget error: {}".format(str(e)))
-
-    # Final fallback to Python requests
-    try:
-        if debugs:
-            print("*** trying requests fallback ***")
-        content = downloadM3U8File(url)
-        if content:
-            if debugs:
-                print("*** requests succeeded ***")
-            return ("requests", content)
-    except Exception as e:
-        print("Requests error: {}".format(str(e)))
-
-    # All failed
-    print("*** all download methods failed ***")
-    return (None, "")
 
 
 def safeName(name):

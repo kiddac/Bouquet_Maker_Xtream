@@ -9,7 +9,7 @@ import shutil
 import sys
 import time
 import twisted.python.runtime
-from datetime import datetime, timedelta
+from datetime import datetime
 from requests.adapters import HTTPAdapter, Retry
 
 try:
@@ -317,11 +317,6 @@ class BMXAutoStartTimer:
             clock = cfg.wakeup.value
             now = datetime.now()
             dt = datetime(now.year, now.month, now.day, clock[0], clock[1], 0)
-
-            # If wake time has already passed today, schedule for tomorrow
-            if dt <= now:
-                dt += timedelta(days=1)
-
             return int(time.mktime(dt.timetuple()))
         else:
             return -1
@@ -375,6 +370,8 @@ class BMXAutoStartTimer:
         if abs(wake - now) < 60:
             self.runUpdate()
             atLeast = 60
+        else:
+            print("*** start update failed ***")
 
         self.update(atLeast)
 
@@ -406,7 +403,6 @@ def myBase(self, session, forceLegacy=False):
 
 def autostart(reason, session=None, **kwargs):
     # called with reason=1 to during shutdown, with reason=0 at startup?
-
     global bmxAutoStartTimer
     global _session
 
