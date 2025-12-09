@@ -88,6 +88,8 @@ def processFiles():
                 if not (protocol == "http://" or protocol == "https://"):
                     continue
 
+                if not parsed_uri.hostname:
+                    continue
                 domain = parsed_uri.hostname.lower()
                 name = domain
 
@@ -113,14 +115,9 @@ def processFiles():
                 else:
                     output = "ts"
 
-                if output not in ["ts", "m3u8", "mpegts", "hls"]:
+                output = {"mpegts": "ts", "hls": "m3u8"}.get(output, output)
+                if output not in ["ts", "m3u8"]:
                     output = "ts"
-
-                if output == "mpegts":
-                    output = "ts"
-
-                if output == "hls":
-                    output = "m3u8"
 
                 if "timeshift" in query:
                     try:

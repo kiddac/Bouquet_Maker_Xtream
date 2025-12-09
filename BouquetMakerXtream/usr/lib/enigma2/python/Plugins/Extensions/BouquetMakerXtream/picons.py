@@ -105,137 +105,102 @@ class BmxDownloadPicons(Screen):
     def downloadPicons(self):
         selected_bouquet_list = self.getSelectionsList()
 
-        response = []
-
         for x in selected_bouquet_list:
             url = str(x[3]) + "&action=get_live_streams"
             self.unique_ref = 0
 
             for playlist in self.playlists_all:
-                if playlist["playlist_info"]["bouquet"] and playlist["playlist_info"]["playlist_type"] == "xtream" and playlist["playlist_info"]["player_api"] == x[3]:
+                if playlist.get("playlist_info", {}).get("bouquet") and \
+                   playlist.get("playlist_info", {}).get("playlist_type") == "xtream" and \
+                   playlist.get("playlist_info", {}).get("player_api") == x[3]:
                     glob.current_playlist = playlist
                     break
 
-            stream_type = glob.current_playlist["settings"]["live_type"]
+            stream_type = glob.current_playlist.get("settings", {}).get("live_type", "")
+            full_url = glob.current_playlist.get("playlist_info", {}).get("full_url", "")
 
-            full_url = glob.current_playlist["playlist_info"]["full_url"]
-            self.unique_ref = 0
-
-            for j in str(full_url):
-                value = ord(j)
-                self.unique_ref += value
+            self.unique_ref = sum(ord(c) for c in str(full_url))
 
             self.deletePiconSet(str(self.unique_ref))
-
             response = bmx.downloadXtreamApi(url)
 
-            if response:
-                self.live_streams = response
-                x = 0
-                self.picon_list = []
-                for channel in self.live_streams:
-                    if "stream_id" in channel and channel["stream_id"]:
-                        stream_id = str(channel["stream_id"])
-                    else:
-                        continue
+            if not response:
+                continue
 
-                    if "category_id" not in channel or not channel["category_id"]:
-                        continue
+            self.live_streams = response
+            self.picon_list = []
 
-                    if "stream_icon" not in channel or not channel["stream_icon"]:
-                        continue
-                    else:
-                        stream_icon = str(channel["stream_icon"])
+            for channel in self.live_streams:
+                stream_id = str(channel.get("stream_id") or "")
+                category_id = str(channel.get("category_id") or "")
+                stream_icon = str(channel.get("stream_icon") or "")
+                name = str(channel.get("name") or "")
 
-                    if "http" not in stream_icon:
-                        continue
+                if not (stream_id and category_id and stream_icon and name):
+                    continue
 
-                    blocked = False
+                if "http" not in stream_icon:
+                    continue
 
-                    for domain in self.domainblocking:
-                        if domain in stream_icon:
-                            blocked = True
+                if any(domain in stream_icon for domain in self.domainblocking):
+                    continue
 
-                    """
-                    if " " in stream_icon or "%20" in stream_icon:
-                        continue
-                        """
+                if channel.get("stream_type") != "live":
+                    continue
 
-                    if blocked:
-                        continue
+                if category_id in glob.current_playlist.get("data", {}).get("live_categories_hidden", []) or \
+                   stream_id in glob.current_playlist.get("data", {}).get("live_streams_hidden", []):
+                    continue
 
-                    if channel["stream_type"] != "live":
-                        continue
+                # Clean name
+                name = name.replace(":", "").replace('"', "").strip("- ").strip()
+                try:
+                    bouquet_id1 = int(stream_id) // 65535
+                    bouquet_id2 = int(stream_id) - bouquet_id1 * 65535
+                except Exception:
+                    continue
 
-                    custom_sid = ""
+                custom_sid = ":0:1:{}:{}:{}:0:0:0:0:".format(
+                    format(bouquet_id1, "x"),
+                    format(bouquet_id2, "x"),
+                    format(self.unique_ref, "x")
+                )
 
-                    if str(channel["category_id"]) not in glob.current_playlist["data"]["live_categories_hidden"] and str(channel["stream_id"]) not in glob.current_playlist["data"]["live_streams_hidden"]:
-                        if "name" in channel and channel["name"]:
-                            name = channel["name"]
-                            name = name.replace(":", "").replace('"', "").strip("-")
+                custom_sid_from_channel = str(channel.get("custom_sid") or "")
+                if custom_sid_from_channel not in ("null", "None", "0", ":0:0:0:0:0:0:0:0:0:") and len(custom_sid_from_channel) > 16:
+                    custom_sid = custom_sid_from_channel
+                    if custom_sid[0].isdigit():
+                        custom_sid = custom_sid[1:]
+
+                custom_sid = (stream_type + custom_sid).rstrip(":").replace(":", "_").upper()
+
+                piconname = name
+                if cfg.picon_type.value != "SRP":
+                    try:
+                        if pythonVer == 2:
+                            piconname = normalize("NFKD", unicode(piconname, "utf-8", errors="ignore")).encode("ASCII", "ignore")
                         else:
-                            continue
+                            piconname = normalize("NFKD", piconname).encode("ASCII", "ignore").decode()
+                    except Exception:
+                        pass
 
-                        try:
-                            bouquet_id1 = int(stream_id) // 65535
-                            bouquet_id2 = int(stream_id) - int(bouquet_id1 * 65535)
-                        except:
-                            continue
+                    piconname = re.sub("[^a-z0-9]", "", piconname.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
 
-                        custom_sid = ":0:1:" + str(format(bouquet_id1, "x")) + ":" + str(format(bouquet_id2, "x")) + ":" + str(format(self.unique_ref, "x")) + ":0:0:0:0:"
+                # Append to list
+                if cfg.picon_type.value == "SRP":
+                    self.picon_list.append([piconname if cfg.picon_type.value != "SRP" else custom_sid, stream_icon])
+                else:
+                    if all(sublist[0] != piconname for sublist in self.picon_list):
+                        self.picon_list.append([piconname, stream_icon])
 
-                        if "custom_sid" in channel and channel["custom_sid"] and str(channel["custom_sid"]) not in ("null", "None", "0", ":0:0:0:0:0:0:0:0:0:") and len(channel["custom_sid"]) > 16:
-                            custom_sid = str(channel["custom_sid"])
-                            if custom_sid[0].isdigit():
-                                custom_sid = custom_sid[1:]
+            # Write temp list
+            path = os.path.join(dir_tmp(), 'bmxpiconlist.txt')
+            with open(path, 'w+') as f:
+                for item in self.picon_list:
+                    f.write("%s\n" % item)
 
-                        custom_sid = str(stream_type) + str(custom_sid).rstrip(":")
-                        custom_sid = custom_sid.replace(":", "_")
-                        custom_sid = custom_sid.upper()
-
-                        if "epg_channel_id" in channel and channel["epg_channel_id"]:
-                            channel_id = str(channel["epg_channel_id"])
-                            if "&" in channel_id:
-                                channel_id = channel_id.replace("&", "&amp;")
-
-                        piconname = name
-
-                        if cfg.picon_type.value == "SRP":
-                            self.picon_list.append([custom_sid, stream_icon])
-                        else:
-                            try:
-                                if pythonVer == 2:
-                                    piconname = normalize("NFKD", unicode(str(piconname), "utf_8", errors="ignore")).encode("ASCII", "ignore")
-
-                                elif pythonVer == 3:
-                                    piconname = normalize("NFKD", piconname).encode("ASCII", "ignore").decode()
-                            except:
-                                pass
-
-                            piconname = re.sub("[^a-z0-9]", "", piconname.replace("&", "and").replace("+", "plus").replace("*", "star").lower())
-
-                            if piconname and stream_icon:
-                                if cfg.picon_type.value == "SRP":
-                                    self.picon_list.append([piconname, stream_icon])
-                                else:
-                                    exists = False
-                                    for sublist in self.picon_list:
-                                        if str(sublist[0]) == str(piconname):
-                                            exists = True
-                                            break
-                                    if exists is False:
-                                        self.picon_list.append([piconname, stream_icon])
-
-                x += 1
-
-                path = os.path.join(dir_tmp(), 'bmxpiconlist.txt')
-                with open(path, 'w+') as f:
-                    for item in self.picon_list:
-                        f.write("%s\n" % item)
-                    f.truncate()
-
-                from . import downloadpicons
-                self.session.openWithCallback(self.finished, downloadpicons.BmxDownloadPicons, self.picon_list)
+            from . import downloadpicons
+            self.session.openWithCallback(self.finished, downloadpicons.BmxDownloadPicons, self.picon_list)
 
     def finished(self, answer=None):
         try:

@@ -14,8 +14,8 @@ def convert_m3u_to_json(m3u_path, json_path):
     if debugs:
         print("*** convert_m3u_to_json ***")
 
-    data = glob.current_playlist["data"]
-    hidden_categories = set(data.get("series_categories_hidden", []))
+    data = glob.current_playlist.get("data") or {}
+    hidden_categories = set(data.get("series_categories_hidden") or [])
     streamid = 0
     first = True
 
@@ -25,7 +25,7 @@ def convert_m3u_to_json(m3u_path, json_path):
 
             current = {}
             for raw_line in infile:
-                line = raw_line.strip()
+                line = (raw_line or "").strip()
                 if not line:
                     continue
 
@@ -37,7 +37,7 @@ def convert_m3u_to_json(m3u_path, json_path):
                     if gt_pos > -1:
                         end_pos = line.find('"', gt_pos + 13)
                         if end_pos > -1:
-                            group_title = line[gt_pos + 13:end_pos].strip()
+                            group_title = (line[gt_pos + 13:end_pos] or "").strip()
 
                     if group_title and group_title in hidden_categories:
                         continue
@@ -46,12 +46,12 @@ def convert_m3u_to_json(m3u_path, json_path):
                     if name_pos > -1:
                         end_pos = line.find('"', name_pos + 10)
                         if end_pos > -1:
-                            name = line[name_pos + 10:end_pos].strip()
+                            name = (line[name_pos + 10:end_pos] or "").strip()
 
                     if not name:
                         last_comma = line.rfind(',')
                         if last_comma > -1:
-                            name = line[last_comma + 1:].strip()
+                            name = (line[last_comma + 1:] or "").strip()
 
                     current = {
                         "category_id": group_title or "Uncategorised Series",
@@ -59,7 +59,7 @@ def convert_m3u_to_json(m3u_path, json_path):
                     }
 
                 elif line.startswith(('http://', 'https://')):
-                    source = line.split()[0]
+                    source = (line.split()[0] or "")
                     lower_source = source.lower()
 
                     if "/live/" in lower_source or "/movies/" in lower_source:
@@ -67,7 +67,7 @@ def convert_m3u_to_json(m3u_path, json_path):
 
                     is_series = (
                         "/series/" in lower_source or
-                        SERIES_PATTERN.search(current.get("name", ""))
+                        SERIES_PATTERN.search(current.get("name") or "")
                     )
 
                     if is_series:
@@ -92,12 +92,12 @@ def convert_m3u_to_json(m3u_path, json_path):
 
 def simplify_name(name):
     if not name:
-        return name
+        return ""
     try:
-        cleaned = name.replace(':', '').replace('"', '').strip('- ')
+        cleaned = (name or "").replace(':', '').replace('"', '').strip('- ')
         cleaned = ' '.join(cleaned.split())
         return cleaned
     except Exception as e:
         if debugs:
             print("simplify_name error: %s" % str(e))
-        return name
+        return name or ""

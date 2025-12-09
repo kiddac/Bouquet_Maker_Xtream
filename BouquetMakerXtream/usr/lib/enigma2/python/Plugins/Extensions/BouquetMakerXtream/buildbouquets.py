@@ -499,7 +499,7 @@ class BmxBuildBouquets(Screen):
 
             for channel in self.live_streams:
                 category_id = channel.get("category_id", "")
-                name = channel.get("name", "")
+                name = channel.get("name") or ""
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
                 stream_id = channel.get("stream_id", "")
 
@@ -678,7 +678,7 @@ class BmxBuildBouquets(Screen):
 
             for channel in self.vod_streams:
                 category_id = channel.get("category_id", "")
-                name = channel.get("name", "")
+                name = channel.get("name") or ""
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
                 stream_id = channel.get("stream_id", "")
 
@@ -852,7 +852,7 @@ class BmxBuildBouquets(Screen):
             print("*** processSeries ***")
 
         if self.settings["vod_stream_order"] == "alphabetical":
-            self.series_streams.sort(key=lambda x: x.get("name", "").lower())
+            self.series_streams.sort(key=lambda x: (x.get("name") or "").lower())
 
         elif self.settings["vod_stream_order"] == "added":
             self.series_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
@@ -865,7 +865,7 @@ class BmxBuildBouquets(Screen):
             for channel in streams_batch:
 
                 category_id = channel.get("category_id", "")
-                name = channel.get("name", "")
+                name = channel.get("name") or ""
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
                 stream_id = channel.get("series_id", "")
 

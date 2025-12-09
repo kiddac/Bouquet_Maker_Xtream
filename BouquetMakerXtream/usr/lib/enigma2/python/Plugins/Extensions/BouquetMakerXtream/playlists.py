@@ -318,18 +318,11 @@ class BmxPlaylists(Screen):
             playlist_type = ""
 
             if playlist:
-                name = playlist.get("playlist_info", {}).get("name", playlist.get("playlist_info", {}).get("domain", ""))
-
-                url = playlist.get("playlist_info", {}).get("host", "")
-
-                if "host" in playlist.get("playlist_info", {}):
-                    url = playlist.get("playlist_info", {}).get("host", "")
-
-                if "full_url" in playlist.get("playlist_info", {}):
-                    fullurl = playlist.get("playlist_info", {}).get("full_url", "")
-
-                if "playlist_type" in playlist.get("playlist_info", {}):
-                    playlist_type = playlist.get("playlist_info", {}).get("playlist_type", "")
+                playlist_info = playlist.get("playlist_info", {})
+                name = playlist_info.get("name") or playlist_info.get("domain") or ""
+                url = playlist_info.get("host") or ""
+                fullurl = playlist_info.get("full_url") or ""
+                playlist_type = playlist_info.get("playlist_type") or ""
 
                 if playlist.get("playlist_info", {}).get("playlist_type") == "xtream":
 
@@ -497,33 +490,51 @@ class BmxPlaylists(Screen):
         if not self.list:
             return
 
-        user_info = glob.current_playlist.get("user_info", {})
-        playlist_type = glob.current_playlist["playlist_info"]["playlist_type"]
+        user_info = glob.current_playlist.get("user_info") or {}
+        playlist_info = glob.current_playlist.get("playlist_info") or {}
+        playlist_type = playlist_info.get("playlist_type") or ""
 
-        if "auth" in user_info:
-            if user_info["auth"] == 1:
-                self.session.open(serverinfo.BmxUserInfo)
-                return
+        auth = user_info.get("auth", 0)
 
-            self.session.open(MessageBox, _("Url is invalid or playlist/user no longer authorised!"), MessageBox.TYPE_ERROR, timeout=5)
-        elif playlist_type != "xtream":
-            self.session.open(MessageBox, _("User Info only available for xtream/XUI One lines"), MessageBox.TYPE_ERROR, timeout=5)
+        if auth == 1:
+            self.session.open(serverinfo.BmxUserInfo)
+            return
+
+        if playlist_type != "xtream":
+            self.session.open(
+                MessageBox,
+                _("User Info only available for xtream/XUI One lines"),
+                MessageBox.TYPE_ERROR,
+                timeout=5
+            )
+        else:
+            self.session.open(
+                MessageBox,
+                _("Url is invalid or playlist/user no longer authorised!"),
+                MessageBox.TYPE_ERROR,
+                timeout=5
+            )
 
     def openBouquetSettings(self):
         from . import bouquetsettings
-        if glob.current_playlist and glob.current_playlist["playlist_info"]["playlist_type"] == "xtream":
-            if "user_info" in glob.current_playlist:
-                if "auth" in glob.current_playlist["user_info"] and str(glob.current_playlist["user_info"]["auth"]) == "1" and glob.current_playlist["user_info"]["status"] == "Active":
-                    self.session.openWithCallback(self.exit, bouquetsettings.BmxBouquetSettings)
-                    self.checkOnePlaylist()
-            else:
-                return
-        else:
-            if glob.current_playlist["playlist_info"]["valid"]:
+
+        playlist_info = glob.current_playlist.get("playlist_info") or {}
+        user_info = glob.current_playlist.get("user_info") or {}
+
+        playlist_type = playlist_info.get("playlist_type") or ""
+        playlist_valid = playlist_info.get("valid", False)
+
+        auth = str(user_info.get("auth", "0"))
+        status = user_info.get("status", "")
+
+        if playlist_type == "xtream":
+            if auth == "1" and status == "Active":
                 self.session.openWithCallback(self.exit, bouquetsettings.BmxBouquetSettings)
                 self.checkOnePlaylist()
-            else:
-                return
+        else:
+            if playlist_valid:
+                self.session.openWithCallback(self.exit, bouquetsettings.BmxBouquetSettings)
+                self.checkOnePlaylist()
 
     def checkOnePlaylist(self):
         if self.list and len(self.list) == 1 and cfg.skip_playlists_screen.value:

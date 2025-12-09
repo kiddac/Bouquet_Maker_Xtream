@@ -273,7 +273,7 @@ class BmxCatchup(Screen):
             catchupend = int(cfg.catchup_end.value)
 
             for listing in short_epg_json["epg_listings"]:
-                if "has_archive" in listing and listing["has_archive"] == 1 or "now_playing" in listing and listing["now_playing"] == 1:
+                if (listing.get("has_archive", 0) == 1) or (listing.get("now_playing", 0) == 1):
 
                     title = base64.b64decode(listing.get("title", "")).decode("utf-8")
                     description = base64.b64decode(listing.get("description", "")).decode("utf-8")

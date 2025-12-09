@@ -217,7 +217,7 @@ class BmxChooseCategories(Screen):
                 elif category == 3:
                     response = (
                         {
-                            "name": item.get("name", ""),
+                            "name": item.get("name") or "",
                             "stream_id": item.get("stream_id", ""),
                             "stream_icon": item.get("stream_icon", ""),
                             "epg_channel_id": item.get("epg_channel_id", ""),
@@ -268,7 +268,7 @@ class BmxChooseCategories(Screen):
                 elif category == 4:
                     response = (
                         {
-                            "name": item.get("name", ""),
+                            "name": item.get("name") or "",
                             "stream_id": item.get("stream_id", ""),
                             "added": item.get("added", 0),
                             "category_id": item.get("category_id", ""),
@@ -317,7 +317,7 @@ class BmxChooseCategories(Screen):
                 elif category == 5:
                     response = (
                         {
-                            "name": item.get("name", ""),
+                            "name": item.get("name") or "",
                             "series_id": item.get("series_id", ""),
                             "last_modified": item.get("last_modified", "0"),
                             "category_id": item.get("category_id", "")
@@ -550,7 +550,7 @@ class BmxChooseCategories(Screen):
         if self.level == 1:
             for channel in self.live_streams:
 
-                name = str(channel.get("name", ""))
+                name = channel.get("name") or ""
                 stream_id = str(channel.get("stream_id", ""))
                 added = str(channel.get("added", "0"))
 
