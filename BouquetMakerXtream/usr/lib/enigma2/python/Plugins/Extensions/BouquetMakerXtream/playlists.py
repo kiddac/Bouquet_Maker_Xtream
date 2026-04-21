@@ -35,12 +35,18 @@ from . import _
 from . import bouquet_globals as glob
 from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory, version, epgimporter
 from .bmxStaticText import StaticText
-from . import checkinternet
 
 hdr = {
-    'User-Agent': str(cfg.useragent.value),
-    'Accept-Encoding': 'gzip, deflate'
+    'User-Agent': str(cfg.useragent.value)
 }
+
+
+def check_internet():
+    try:
+        requests.get("https://clients3.google.com/generate_204", timeout=5)
+        return True
+    except requests.exceptions.RequestException:
+        return False
 
 
 class BmxPlaylists(Screen):
@@ -66,6 +72,7 @@ class BmxPlaylists(Screen):
         self.list = []
         self.drawList = []
         glob.current_playlist = []
+        self.playlists_all = []
 
         self["playlists"] = List(self.drawList, enableWrapAround=True)
         self["playlists"].onSelectionChanged.append(self.getCurrentEntry)
@@ -96,15 +103,14 @@ class BmxPlaylists(Screen):
         self.setTitle(self.setup_title)
 
     def start(self):
-        self.checkinternet = checkinternet.check_internet()
-        if not self.checkinternet:
+        if not check_internet():
             self.session.openWithCallback(self.quit, MessageBox, _("No internet."), type=MessageBox.TYPE_ERROR, timeout=5)
+            return
+
         self["version"].setText(version)
 
         if epgimporter:
             self.epgimportcleanup()
-
-        self.playlists_all = []
 
         # check if playlists.json file exists in specified location
         if os.path.isfile(playlists_json):
@@ -157,7 +163,7 @@ class BmxPlaylists(Screen):
     def download_url(self, url):
         index = url[1]
         response = None
-        retries = Retry(total=2, backoff_factor=1)
+        retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
 
         with requests.Session() as http:

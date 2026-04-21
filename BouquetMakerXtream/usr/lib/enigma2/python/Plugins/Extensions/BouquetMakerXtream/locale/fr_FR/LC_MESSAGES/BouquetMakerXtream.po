@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2025-12-11 12:24+0000\n"
-"PO-Revision-Date: 2025-12-11 12:24+0000\n"
+"PO-Revision-Date: 2026-02-16 17:15+0100\n"
 "Last-Translator: Jakarta\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -436,7 +436,7 @@ msgstr "Mettre à jour les bouquets"
 
 #: mainmenu.py:116
 msgid "Delete All BMX Bouquets"
-msgstr ""
+msgstr "Supprimer tous les bouquets BMX"
 
 #: mainmenu.py:117 picons.py:31
 msgid "Download Picons"
@@ -444,7 +444,7 @@ msgstr "Télécharger les Picons"
 
 #: mainmenu.py:150
 msgid "Delete all BMX created bouquets?"
-msgstr ""
+msgstr "Supprimer tous les bouquets créés par BMX ?"
 
 #: parsem3u.py:91
 msgid "Stream"

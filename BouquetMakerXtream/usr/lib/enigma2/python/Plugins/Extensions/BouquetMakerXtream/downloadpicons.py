@@ -2,93 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from . import _
-from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, pythonVer, dir_custom, dir_tmp
+from .plugin import skin_directory, cfg, hasConcurrent, hasMultiprocessing, dir_custom, dir_tmp
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.ProgressBar import ProgressBar
 from enigma import eTimer
-from PIL import Image, ImageFile, PngImagePlugin, ImageChops
+from PIL import Image, ImageChops
 from requests.adapters import HTTPAdapter, Retry
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 
 import io
 import os
-import re
 import requests
-import string
-
-ImageFile.LOAD_TRUNCATED_IMAGES = True
-
-_simple_palette = re.compile(b"^\xff*\x00\xff*$")
-
-
-# png code courtest of adw on stackoverflow
-def patched_chunk_tRNS(self, pos, len):
-    i16 = PngImagePlugin.i16
-    s = ImageFile._safe_read(self.fp, len)
-    if self.im_mode == "P":
-        i = string.find(s, chr(0))
-        if i >= 0:
-            self.im_info["transparency"] = map(ord, s)
-    elif self.im_mode == "L":
-        self.im_info["transparency"] = i16(s)
-    elif self.im_mode == "RGB":
-        self.im_info["transparency"] = (i16(s), i16(s[2:]), i16(s[4:]))
-    return s
-
-
-# png code courtest of adw on stackoverflow
-def patched_load(self):
-    if self.im and self.palette and self.palette.dirty:
-        self.im.putpalette(*self.palette.getdata())
-        self.palette.dirty = 0
-        self.palette.rawmode = None
-        try:
-            trans = self.info["transparency"]
-        except KeyError:
-            self.palette.mode = "RGB"
-        else:
-            try:
-                for i, a in enumerate(trans):
-                    self.im.putpalettealpha(i, a)
-            except TypeError:
-                self.im.putpalettealpha(trans, 0)
-            self.palette.mode = "RGBA"
-    if self.im:
-        return self.im.pixel_access(self.readonly)
-
-
-def mycall(self, cid, pos, length):
-    if cid.decode("ascii") == "tRNS":
-        return self.chunk_TRNS(pos, length)
-    else:
-        return getattr(self, "chunk_" + cid.decode("ascii"))(pos, length)
-
-
-def mychunk_TRNS(self, pos, length):
-    i16 = PngImagePlugin.i16
-    s = ImageFile._safe_read(self.fp, length)
-    if self.im_mode == "P":
-        if _simple_palette.match(s):
-            i = s.find(b"\0")
-            if i >= 0:
-                self.im_info["transparency"] = i
-        else:
-            self.im_info["transparency"] = s
-    elif self.im_mode in ("1", "L", "I"):
-        self.im_info["transparency"] = i16(s)
-    elif self.im_mode == "RGB":
-        self.im_info["transparency"] = i16(s), i16(s, 2), i16(s, 4)
-    return s
-
-
-if pythonVer == 2:
-    Image.Image.load = patched_load
-    PngImagePlugin.PngStream.chunk_tRNS = patched_chunk_tRNS
-else:
-    PngImagePlugin.ChunkStream.call = mycall
-    PngImagePlugin.PngStream.chunk_TRNS = mychunk_TRNS
 
 
 try:
@@ -99,8 +25,7 @@ except:
     HTTPConnection.debuglevel = 0
 
 hdr = {
-    'User-Agent': str(cfg.useragent.value),
-    'Accept-Encoding': 'gzip, deflate'
+    'User-Agent': str(cfg.useragent.value)
 }
 
 
@@ -454,11 +379,8 @@ class BmxDownloadPicons(Screen):
 
                 try:
                     im.thumbnail(thumbsize, Image.Resampling.LANCZOS)
-                except Exception:
-                    try:
-                        im.thumbnail(thumbsize, Image.ANTIALIAS)
-                    except Exception:
-                        pass
+                except:
+                    im.thumbnail(thumbsize, Image.ANTIALIAS)
 
                 # merge blank and resized image
 

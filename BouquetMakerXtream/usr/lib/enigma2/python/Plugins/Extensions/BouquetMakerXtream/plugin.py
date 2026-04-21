@@ -121,10 +121,9 @@ else:
 folders = [folder for folder in os.listdir(skin_directory) if folder != "common"]
 
 useragents = [
-    ("Enigma2 - BouquetMakerXtream Plugin", "BouquetMakerXtream"),
-    ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Chrome 124"),
+    ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36", "Chrome 145"),
     ("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0", "Firefox 125"),
-    ("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36", "Android")
+    ("Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36", "Android")
 ]
 
 # Configurations initialization
@@ -198,7 +197,7 @@ cfg.picon_location = ConfigSelection(default="/media/hdd/picon/", choices=[
 ]
 )
 
-cfg.useragent = ConfigSelection(default="Enigma2 - BouquetMakerXtream Plugin", choices=useragents)
+cfg.useragent = ConfigSelection(default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", choices=useragents)
 
 cfg.deepstandby = ConfigSelection(default="skip", choices=[
     ("wakeup", _("import after wake up")),
@@ -240,8 +239,7 @@ addFont(os.path.join(font_folder, "m-plus-rounded-1c-regular.ttf"), "bmxregular"
 addFont(os.path.join(font_folder, "m-plus-rounded-1c-medium.ttf"), "bmxbold", 100, 0)
 
 hdr = {
-    'User-Agent': 'Enigma2 - BouquetMakerXtream Plugin',
-    'Accept-Encoding': 'gzip, deflate'
+    'User-Agent': str(cfg.useragent.value),
 }
 
 # create folder for working files
@@ -317,7 +315,6 @@ class BMXAutoStartTimer:
         self.update()
 
     def getWakeTime(self):
-        """Return the next scheduled wake timestamp in the future."""
         if not cfg.autoupdate.value:
             return -1
 
@@ -332,7 +329,6 @@ class BMXAutoStartTimer:
         return int(time.mktime(dt.timetuple()))
 
     def update(self):
-        """Schedule the timer for the next update."""
         self.timer.stop()
         wake = self.getWakeTime()
         nowtime = time.time()
@@ -355,13 +351,11 @@ class BMXAutoStartTimer:
         return wake
 
     def onTimer(self):
-        """Callback when the timer fires."""
         self.timer.stop()
         self.runUpdate()
         self.update()  # Schedule next day
 
     def runUpdate(self):
-        """Run the bouquet update safely without overlapping."""
         if self._running_update:
             print("[BMXAutoStartTimer] Update already running, skipping...")
             return
@@ -387,10 +381,6 @@ def myBase(self, session, forceLegacy=False):
 
 
 def autostart(reason, session=None, **kwargs):
-    """
-    Called by Enigma2 at startup (reason=0) or shutdown (reason=1).
-    Initializes the BMXAutoStartTimer on startup.
-    """
     global bmxAutoStartTimer
     global _session
 

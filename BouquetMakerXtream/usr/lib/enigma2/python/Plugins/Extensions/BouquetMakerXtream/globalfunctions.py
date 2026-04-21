@@ -13,8 +13,7 @@ import re
 import requests
 
 hdr = {
-    'User-Agent': str(cfg.useragent.value),
-    'Accept-Encoding': 'gzip, deflate'
+    'User-Agent': str(cfg.useragent.value)
 }
 
 if pythonVer == 3:
@@ -197,3 +196,54 @@ def purge(my_dir, pattern):
                     os.remove(file_path)
     except Exception as e:
         print(e)
+
+
+def downloadM3U8Lines(url):
+    if debugs:
+        print("*** downloadM3U8Lines ***", url)
+
+    retries = 0
+    adapter = HTTPAdapter(max_retries=retries)
+    http = requests.Session()
+    http.mount("http://", adapter)
+    http.mount("https://", adapter)
+    response = None
+
+    try:
+        response = http.get(
+            url,
+            headers=hdr,
+            timeout=(20, 300),
+            verify=False,
+            stream=True
+        )
+        response.raise_for_status()
+
+        if response.status_code != requests.codes.ok:
+            return
+
+        for line in response.iter_lines(chunk_size=256 * 1024, decode_unicode=False):
+            if line:
+                if isinstance(line, bytes):
+                    line = line.decode("utf-8", "ignore")
+                yield line
+
+    except MemoryError:
+        print("downloadM3U8Lines: MemoryError - insufficient memory")
+
+    except requests.Timeout as e:
+        print("Error message: {}".format(str(e)))
+
+    except requests.RequestException as e:
+        print("Error message: {}".format(str(e)))
+
+    finally:
+        try:
+            if response:
+                response.close()
+        except:
+            pass
+        try:
+            http.close()
+        except:
+            pass

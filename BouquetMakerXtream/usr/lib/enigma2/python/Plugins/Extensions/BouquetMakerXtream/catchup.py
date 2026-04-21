@@ -29,8 +29,7 @@ except:
     HTTPConnection.debuglevel = 0
 
 hdr = {
-    'User-Agent': str(cfg.useragent.value),
-    'Accept-Encoding': 'gzip, deflate'
+    'User-Agent': str(cfg.useragent.value)
 }
 
 
@@ -242,7 +241,7 @@ class BmxCatchup(Screen):
         self.downloadSimpleData()
 
     def downloadSimpleData(self):
-        retries = Retry(total=3, backoff_factor=1)
+        retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
 
         with requests.Session() as http:

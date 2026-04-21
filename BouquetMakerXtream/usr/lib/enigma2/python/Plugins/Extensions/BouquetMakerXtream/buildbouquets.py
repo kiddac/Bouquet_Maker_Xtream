@@ -802,6 +802,7 @@ class BmxBuildBouquets(Screen):
                 self.finished()
                 return
 
+    """
     def loadSeries(self):
         if debugs:
             print("*** loadSeries ***")
@@ -848,6 +849,273 @@ class BmxBuildBouquets(Screen):
                 return
         else:
             self.nextJob(_("Processing series data..."), self.processSeries)
+            """
+
+    """
+    def loadSeries(self):
+        if debugs:
+            print("*** loadSeries ***")
+
+        if not (glob.current_playlist["settings"]["show_series"] and self.series_categories):
+            self.finished()
+            return
+
+        self.clearCaches()
+
+        series_categories_hidden = set(self.data["series_categories_hidden"])
+        self.allowed_series_categories = set()
+
+        for category in self.series_categories:
+            category_id = category.get("category_id", "")
+
+            if not category_id:
+                continue
+
+            if str(category_id) in series_categories_hidden:
+                continue
+
+            self.allowed_series_categories.add(str(category_id))
+
+        if self.playlist_info["playlist_type"] == "xtream":
+
+            geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
+
+            lines = bmx.downloadM3U8Lines(geturl)
+
+            try:
+                self.series_generator = seriesparsem3u.parseM3u8Stream(lines)
+                self.series_cat_buffers = {}
+                self.series_count = 0
+
+                self.nextJob(_("Processing series data..."), self.processSeriesChunk)
+            except Exception as e:
+                if debugs:
+                    print("Series load failed:", e)
+                glob.get_series_failed = True
+                self.finished()
+                return
+
+        else:
+            self.nextJob(_("Processing series data..."), self.processSeries)
+            """
+
+    def loadSeries(self):
+        if debugs:
+            print("*** loadSeries ***")
+
+        if not (glob.current_playlist["settings"]["show_series"] and self.series_categories):
+            self.finished()
+            return
+
+        self.clearCaches()
+
+        # sort like original
+        if self.settings["vod_category_order"] == "alphabetical":
+            self.series_categories.sort(key=lambda k: k["category_name"].lower())
+
+        # normalised hidden category names
+        self.series_categories_hidden = set(
+            str(x).strip().lower() for x in self.data.get("series_categories_hidden", [])
+        )
+
+        # hidden streams
+        self.series_streams_hidden = set(self.data.get("series_streams_hidden", []))
+
+        # track used categories (store original name)
+        self.used_series_categories = set()
+
+        if self.playlist_info["playlist_type"] == "xtream":
+
+            geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
+
+            lines = bmx.downloadM3U8Lines(geturl)
+
+            try:
+                self.series_generator = seriesparsem3u.parseM3u8Stream(lines)
+                self.series_cat_buffers = {}
+                self.series_count = 0
+
+                self.nextJob(_("Processing series data..."), self.processSeriesChunk)
+
+            except Exception as e:
+                if debugs:
+                    print("Series load failed:", e)
+                glob.get_series_failed = True
+                self.finished()
+                return
+
+        else:
+            self.nextJob(_("Processing series data..."), self.processSeries)
+
+    def processSeriesChunk(self):
+        if debugs:
+            print("*** processSeriesChunk ***")
+
+        stream_type = self.settings["vod_type"]
+
+        CHUNK_SIZE = 1000
+        processed = 0
+
+        try:
+            while processed < CHUNK_SIZE:
+
+                channel = next(self.series_generator)
+
+                self.series_count += 1
+                processed += 1
+
+                category_name = str(channel.get("category_id", "")).strip()
+                category_key = category_name.lower()
+
+                name = channel.get("name") or ""
+                source = channel.get("source", "")
+
+                # correct filtering (name-based)
+                if not category_name:
+                    continue
+
+                if category_key in self.series_categories_hidden:
+                    continue
+
+                if not name or not source:
+                    continue
+
+                if source in self.series_streams_hidden:
+                    continue
+
+                name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
+
+                try:
+                    stream_id = abs(hash(source))
+                    bouquet_id1 = stream_id // 65535
+                    bouquet_id2 = stream_id - int(bouquet_id1 * 65535)
+                except:
+                    continue
+
+                custom_sid = ":0:1:%x:%x:%x:0:0:0:0:" % (
+                    bouquet_id1,
+                    bouquet_id2,
+                    self.unique_ref
+                )
+
+                bouquet_string = "#SERVICE %s%s%s:%s\n" % (
+                    stream_type,
+                    custom_sid,
+                    quote(source),
+                    name
+                )
+
+                # track used category (original name)
+                self.used_series_categories.add(category_name)
+
+                if category_name not in self.series_cat_buffers:
+                    self.series_cat_buffers[category_name] = []
+
+                self.series_cat_buffers[category_name].append(bouquet_string)
+
+                # flush buffer
+                if len(self.series_cat_buffers[category_name]) >= 2000:
+                    self._writeSeriesCategory(category_name, self.series_cat_buffers[category_name])
+                    self.series_cat_buffers[category_name] = []
+
+            # UI update
+            self["action"].setText("Processing series: %d" % self.series_count)
+
+            self.timer = eTimer()
+            try:
+                self.timer_conn = self.timer.timeout.connect(self.processSeriesChunk)
+            except:
+                self.timer.callback.append(self.processSeriesChunk)
+
+            self.timer.start(5, True)
+
+        except StopIteration:
+
+            # flush remaining
+            for category_name, buffer in self.series_cat_buffers.items():
+                if buffer:
+                    self._writeSeriesCategory(category_name, buffer)
+
+            self._finaliseSeriesFiles()
+
+    def _writeSeriesCategory(self, category_name, buffer):
+        safe_cat = bmx.safeName(category_name)
+        bouquet_title = self.name + "_" + safe_cat
+
+        if cfg.groups.value:
+            filename = "/etc/enigma2/subbouquet.bouquetmakerxtream_series_" + str(bouquet_title) + ".tv"
+        else:
+            filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_series_" + str(bouquet_title) + ".tv"
+
+        if not os.path.exists(filename):
+
+            output_string = ""
+
+            if self.settings["prefix_name"] and not cfg.groups.value:
+                output_string += "#NAME " + self.name + " Series - " + category_name + "\n"
+            else:
+                output_string += "#NAME Series - " + category_name + "\n"
+
+            with open(filename, "w") as f:
+                f.write(output_string)
+
+            self.total_count += 1
+
+        with open(filename, "a+") as f:
+            for line in buffer:
+                f.write(line)
+
+    def _finaliseSeriesFiles(self):
+        if debugs:
+            print("*** finaliseSeriesFiles ***")
+
+        if cfg.groups.value and not self.bouquet_tv:
+            self.buildBouquetTvGroupedFile()
+
+        bouquet_tv_string = ""
+
+        if cfg.groups.value and not self.userbouquet:
+            bouquet_tv_string += "#NAME " + str(self.playlist_info["name"]) + "\n"
+
+        bouquet_filename = ""
+
+        for category in self.series_categories:
+            category_name = str(category.get("category_name", "")).strip()
+            category_key = category_name.lower()
+
+            if not category_name:
+                continue
+
+            # correct hidden filtering
+            if category_key in self.series_categories_hidden:
+                continue
+
+            # only include categories we actually wrote
+            if category_name not in self.used_series_categories:
+                continue
+
+            if cfg.groups.value:
+                bouquet_filename = "/etc/enigma2/userbouquet.bouquetmakerxtream_" + str(self.name) + ".tv"
+                bouquet = "subbouquet"
+                self.userbouquet = True
+            else:
+                bouquet_filename = "/etc/enigma2/bouquets.tv"
+                bouquet = "userbouquet"
+
+            bouquet_tv_string += (
+                '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' +
+                bouquet + ".bouquetmakerxtream_series_" +
+                str(self.name) + "_" +
+                bmx.safeName(category_name) +
+                '.tv" ORDER BY bouquet\n'
+            )
+
+        if bouquet_filename:
+            with open(bouquet_filename, "a+") as f:
+                f.write(str(bouquet_tv_string))
+
+        self.clearCaches()
+        self.finished()
 
     def processSeries(self):
         if debugs:
@@ -970,11 +1238,6 @@ class BmxBuildBouquets(Screen):
             category_batches = [self.series_categories[i:i + 10] for i in range(0, len(self.series_categories), 10)]
 
             for batch_num, category_batch in enumerate(category_batches):
-                """
-                if debugs:
-                    print("[BMX] Creating series bouquet batch %d" % (batch_num + 1))
-                    """
-
                 for category in category_batch:
                     category_id = category.get("category_name", "")
 

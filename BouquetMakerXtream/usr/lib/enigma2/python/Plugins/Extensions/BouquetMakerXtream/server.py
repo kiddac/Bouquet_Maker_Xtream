@@ -29,7 +29,6 @@ from .bmxStaticText import StaticText
 
 hdr = {
     'User-Agent': str(cfg.useragent.value),
-    'Accept-Encoding': 'gzip, deflate'
 }
 
 
@@ -140,43 +139,38 @@ class BmxAddServer(ConfigListScreen, Screen):
         currConfig = self["config"].getCurrent()
 
         if currConfig is not None:
-            if isinstance(currConfig[1], ConfigText):
-                if "VKeyIcon" in self:
-                    if isinstance(currConfig[1], ConfigNumber):
-                        try:
-                            self["VirtualKB"].setEnabled(False)
-                        except:
-                            pass
-
-                        try:
-                            self["virtualKeyBoardActions"].setEnabled(False)
-                        except:
-                            pass
-
-                        self["VKeyIcon"].hide()
-                    else:
-                        try:
-                            self["VirtualKB"].setEnabled(True)
-                        except:
-                            pass
-
-                        try:
-                            self["virtualKeyBoardActions"].setEnabled(True)
-                        except:
-                            pass
-                        self["VKeyIcon"].show()
-
-                if "HelpWindow" in self and currConfig[1].help_window and currConfig[1].help_window.instance is not None:
-                    helpwindowpos = self["HelpWindow"].getPosition()
-                    currConfig[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
-
-            else:
-                if "VKeyIcon" in self:
+            if "VKeyIcon" in self:
+                if isinstance(currConfig[1], ConfigNumber):
+                    try:
+                        self["VirtualKB"].setEnabled(False)
+                    except:
+                        pass
+                    try:
+                        self["virtualKeyBoardActions"].setEnabled(False)
+                    except:
+                        pass
+                    self["VKeyIcon"].hide()
+                elif isinstance(currConfig[1], ConfigText):
+                    try:
+                        self["VirtualKB"].setEnabled(True)
+                    except:
+                        pass
+                    try:
+                        self["virtualKeyBoardActions"].setEnabled(True)
+                    except:
+                        pass
+                    self["VKeyIcon"].show()
+                else:
                     try:
                         self["VirtualKB"].setEnabled(False)
                     except:
                         pass
                     self["VKeyIcon"].hide()
+
+            if "HelpWindow" in self and isinstance(currConfig[1], ConfigText):
+                if currConfig[1].help_window and currConfig[1].help_window.instance is not None:
+                    helpwindowpos = self["HelpWindow"].getPosition()
+                    currConfig[1].help_window.instance.move(ePoint(helpwindowpos[0], helpwindowpos[1]))
 
     def getPlaylistJson(self):
         playlists_all = []
@@ -262,7 +256,7 @@ class BmxAddServer(ConfigListScreen, Screen):
     def checkline(self):
         valid = False
 
-        retries = Retry(total=3, backoff_factor=1)
+        retries = Retry(total=1, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retries)
 
         with requests.Session() as http:
