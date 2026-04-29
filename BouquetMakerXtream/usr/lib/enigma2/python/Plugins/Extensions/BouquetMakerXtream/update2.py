@@ -887,8 +887,38 @@ class BmxUpdate(Screen):
 
             lines = bmx.downloadM3U8Lines(geturl)
 
+            if not lines:
+                glob.get_series_failed = True
+                self.finished()
+                return
+
             try:
-                self.series_generator = seriesparsem3u.parseM3u8Stream(lines)
+                first_item = next(lines)
+
+            except StopIteration:
+                # empty playlist
+                if debugs:
+                    print("*** Series empty response ***")
+                glob.get_series_failed = True
+                self.finished()
+                return
+
+            except Exception as e:
+                if debugs:
+                    print("Series load failed:", e)
+                glob.get_series_failed = True
+                self.finished()
+                return
+
+            def chain_first(first, rest):
+                yield first
+                for item in rest:
+                    yield item
+
+            try:
+                self.series_generator = seriesparsem3u.parseM3u8Stream(
+                    chain_first(first_item, lines)
+                )
                 self.series_cat_buffers = {}
                 self.series_count = 0
 
@@ -896,7 +926,7 @@ class BmxUpdate(Screen):
 
             except Exception as e:
                 if debugs:
-                    print("Series load failed:", e)
+                    print("Series parsing failed:", e)
                 glob.get_series_failed = True
                 self.finished()
                 return

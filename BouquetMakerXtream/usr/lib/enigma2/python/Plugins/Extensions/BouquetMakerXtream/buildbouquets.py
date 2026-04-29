@@ -802,103 +802,6 @@ class BmxBuildBouquets(Screen):
                 self.finished()
                 return
 
-    """
-    def loadSeries(self):
-        if debugs:
-            print("*** loadSeries ***")
-
-        self.series_stream_data = []
-
-        if glob.current_playlist["settings"]["show_series"] and self.series_categories and self.series_streams:
-            self.clearCaches()
-            # stream_type = self.settings["vod_type"]
-
-            if self.settings["vod_category_order"] == "alphabetical":
-                self.series_categories.sort(key=lambda k: k["category_name"].lower())
-
-            # Convert to sets for faster membership testing
-            series_categories_hidden = set(self.data["series_categories_hidden"])
-
-            for category in self.series_categories:
-                category_id = category.get("category_id", "")
-                name = category.get("category_name", "")
-
-                if not category_id or not name or str(category_id) in series_categories_hidden:
-                    continue
-
-            self.progress_value += 1
-            self["progress"].setValue(self.progress_value)
-
-        if self.playlist_info["playlist_type"] == "xtream":
-            geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
-
-            response = bmx.downloadM3U8File(geturl)
-
-            if not response:
-                glob.get_series_failed = True
-                self.finished()
-                return
-
-            if response:
-                self.series_streams = seriesparsem3u.parseM3u8Playlist(response)
-                response = None
-                self.nextJob(_("Processing series data..."), self.processSeries)
-            else:
-                print("***  xtream series failed ***")
-                self.finished()
-                return
-        else:
-            self.nextJob(_("Processing series data..."), self.processSeries)
-            """
-
-    """
-    def loadSeries(self):
-        if debugs:
-            print("*** loadSeries ***")
-
-        if not (glob.current_playlist["settings"]["show_series"] and self.series_categories):
-            self.finished()
-            return
-
-        self.clearCaches()
-
-        series_categories_hidden = set(self.data["series_categories_hidden"])
-        self.allowed_series_categories = set()
-
-        for category in self.series_categories:
-            category_id = category.get("category_id", "")
-
-            if not category_id:
-                continue
-
-            if str(category_id) in series_categories_hidden:
-                continue
-
-            self.allowed_series_categories.add(str(category_id))
-
-        if self.playlist_info["playlist_type"] == "xtream":
-
-            geturl = str(self.host) + "/get.php?username=" + str(self.username) + "&password=" + str(self.password) + "&type=m3u_plus&output=" + str(self.output)
-
-            lines = bmx.downloadM3U8Lines(geturl)
-
-            try:
-                self.series_generator = seriesparsem3u.parseM3u8Stream(lines)
-                self.series_cat_buffers = {}
-                self.series_count = 0
-
-                self.nextJob(_("Processing series data..."), self.processSeriesChunk)
-            except Exception as e:
-                if debugs:
-                    print("Series load failed:", e)
-                glob.get_series_failed = True
-                self.finished()
-                return
-
-        else:
-            self.nextJob(_("Processing series data..."), self.processSeries)
-            """
-
     def loadSeries(self):
         if debugs:
             print("*** loadSeries ***")
@@ -930,8 +833,38 @@ class BmxBuildBouquets(Screen):
 
             lines = bmx.downloadM3U8Lines(geturl)
 
+            if not lines:
+                glob.get_series_failed = True
+                self.finished()
+                return
+
             try:
-                self.series_generator = seriesparsem3u.parseM3u8Stream(lines)
+                first_item = next(lines)
+
+            except StopIteration:
+                # empty playlist
+                if debugs:
+                    print("*** Series empty response ***")
+                glob.get_series_failed = True
+                self.finished()
+                return
+
+            except Exception as e:
+                if debugs:
+                    print("Series load failed:", e)
+                glob.get_series_failed = True
+                self.finished()
+                return
+
+            def chain_first(first, rest):
+                yield first
+                for item in rest:
+                    yield item
+
+            try:
+                self.series_generator = seriesparsem3u.parseM3u8Stream(
+                    chain_first(first_item, lines)
+                )
                 self.series_cat_buffers = {}
                 self.series_count = 0
 
@@ -939,7 +872,7 @@ class BmxBuildBouquets(Screen):
 
             except Exception as e:
                 if debugs:
-                    print("Series load failed:", e)
+                    print("Series parsing failed:", e)
                 glob.get_series_failed = True
                 self.finished()
                 return
