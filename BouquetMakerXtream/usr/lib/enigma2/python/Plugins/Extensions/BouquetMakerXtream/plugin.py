@@ -11,6 +11,8 @@ import time
 import twisted.python.runtime
 from datetime import datetime, timedelta
 from requests.adapters import HTTPAdapter, Retry
+from Screens.Standby import inStandby
+
 
 try:
     from urlparse import urljoin
@@ -309,7 +311,7 @@ class BMXAutoStartTimer:
                     self.bootTimer_conn = self.bootTimer.timeout.connect(self.runUpdate)
                 except:
                     self.bootTimer.callback.append(self.runUpdate)
-                self.bootTimer.startLongTimer(20)  # 20-second delay after boot
+                self.bootTimer.startLongTimer(60)  # 60-second delay after boot
 
         # Schedule the next daily wake
         self.update()
@@ -363,8 +365,11 @@ class BMXAutoStartTimer:
         try:
             self._running_update = True
             print("\n*********** BouquetMakerXtream runupdate ************\n")
-            from . import update2
-            self.session.open(update2.BmxUpdate, "auto")
+            if self.session and not inStandby:
+                from . import update2
+                self.session.open(update2.BmxUpdate, "auto")
+            else:
+                print("[BMX] Skipping splash (standby or UI not ready)")
         finally:
             self._running_update = False
 
