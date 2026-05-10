@@ -42,17 +42,6 @@ hdr = {
 }
 
 
-def check_internet():
-    for host in ("1.1.1.1", "8.8.8.8"):
-        try:
-            conn = socket.create_connection((host, 53), 2)
-            conn.close()
-            return True
-        except OSError:
-            continue
-    return False
-
-
 class BmxPlaylists(Screen):
     ALLOW_SUSPEND = True
 
@@ -107,10 +96,6 @@ class BmxPlaylists(Screen):
         self.setTitle(self.setup_title)
 
     def start(self):
-        if not check_internet():
-            self.session.openWithCallback(self.quit, MessageBox, _("No internet."), type=MessageBox.TYPE_ERROR, timeout=5)
-            return
-
         self["version"].setText(version)
 
         if epgimporter:

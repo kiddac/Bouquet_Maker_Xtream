@@ -112,10 +112,11 @@ def convert_m3u_to_json(m3u_path, json_path):
                     if end_pos > -1:
                         name = (line[name_pos + 10:end_pos] or "").strip()
 
+                # 2. Fallback ONLY if missing
                 if not name:
-                    last_comma = line.rfind(',')
-                    if last_comma > -1:
-                        name = (line[last_comma + 1:] or "").strip()
+                    first_comma = line.find(',')
+                    if first_comma > -1:
+                        name = (line[first_comma + 1:] or "").strip()
 
                 current = {
                     "category_id": group_title or "Uncategorised Series",

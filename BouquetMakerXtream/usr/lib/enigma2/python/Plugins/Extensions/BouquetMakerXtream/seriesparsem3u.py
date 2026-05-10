@@ -190,8 +190,15 @@ def parseM3u8Stream(lines):
         group = ""
 
         try:
-            if ',' in line:
-                name = line.split(',', 1)[1].strip()
+            if 'tvg-name="' in line:
+                try:
+                    name = line.split('tvg-name="', 1)[1].split('"', 1)[0].strip()
+                except:
+                    name = ""
+
+            if not name:
+                if ',' in line:
+                    name = line.split(',', 1)[1].strip()
 
             if 'group-title="' in line:
                 group = line.split('group-title="', 1)[1].split('"', 1)[0].strip()
