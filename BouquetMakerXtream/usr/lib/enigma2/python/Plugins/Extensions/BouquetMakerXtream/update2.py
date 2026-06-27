@@ -18,6 +18,14 @@ from Screens.Screen import Screen
 import json
 import os
 
+
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 try:
     from urllib import quote
 except:
@@ -261,19 +269,19 @@ class BmxUpdate(Screen):
                 elif category == 3:
                     response = (
                         {
-                            "name": item.get("name", ""),
-                            "stream_id": item.get("stream_id", ""),
-                            "stream_icon": item.get("stream_icon", ""),
-                            "epg_channel_id": item.get("epg_channel_id", ""),
-                            "added": item.get("added", 0),
-                            "category_id": item.get("category_id", ""),
-                            "custom_sid": item.get("custom_sid", ""),
-                            "tv_archive": item.get("tv_archive", 0),
+                            "name": item.get("name") or "",
+                            "stream_id": str(item.get("stream_id") or ""),
+                            "stream_icon": item.get("stream_icon") or "",
+                            "epg_channel_id": str(item.get("epg_channel_id") or ""),
+                            "added": _safe_int(item.get("added"), 0),
+                            "category_id": str(item.get("category_id") or ""),
+                            "custom_sid": str(item.get("custom_sid") or ""),
+                            "tv_archive": _safe_int(item.get("tv_archive"), 0),
                         }
-                        for item in response if all(k in item for k in [
-                            "name", "stream_id", "stream_icon", "epg_channel_id",
-                            "added", "category_id", "custom_sid", "tv_archive"
-                        ])
+                        for item in response
+                        if item.get("name")
+                        and item.get("stream_id")
+                        and item.get("category_id")
                     )
                     self.live_streams = list(response)
                 response = None
@@ -304,15 +312,17 @@ class BmxUpdate(Screen):
                 elif category == 4:
                     response = (
                         {
-                            "name": item.get("name", ""),
-                            "stream_id": item.get("stream_id", ""),
-                            "added": item.get("added", 0),
-                            "category_id": item.get("category_id", ""),
-                            "container_extension": item.get("container_extension", "")
+                            "name": item.get("name") or "",
+                            "stream_id": str(item.get("stream_id") or ""),
+                            "added": _safe_int(item.get("added"), 0),
+                            "category_id": str(item.get("category_id") or ""),
+                            "container_extension": str(item.get("container_extension") or "")
                         }
-                        for item in response if all(k in item for k in [
-                            "name", "stream_id", "added", "category_id", "container_extension"
-                        ])
+                        for item in response
+                        if item.get("name")
+                        and item.get("stream_id")
+                        and item.get("category_id")
+                        and item.get("container_extension")
                     )
                     self.vod_streams = list(response)
 
@@ -344,14 +354,15 @@ class BmxUpdate(Screen):
                 elif category == 5:
                     response = (
                         {
-                            "name": item.get("name", ""),
-                            "series_id": item.get("series_id", ""),
-                            "last_modified": item.get("last_modified", "0"),
-                            "category_id": item.get("category_id", "")
+                            "name": item.get("name") or "",
+                            "series_id": str(item.get("series_id") or ""),
+                            "last_modified": _safe_int(item.get("last_modified"), 0),
+                            "category_id": str(item.get("category_id") or "")
                         }
-                        for item in response if all(k in item for k in [
-                            "name", "series_id", "last_modified", "category_id"
-                        ])
+                        for item in response
+                        if item.get("name")
+                        and item.get("series_id")
+                        and item.get("category_id")
                     )
                     self.series_streams = list(response)
                 response = None
@@ -496,17 +507,17 @@ class BmxUpdate(Screen):
                 self.live_streams.sort(key=lambda x: x["name"].lower())
 
             elif self.settings["live_stream_order"] == "added":
-                self.live_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
+                self.live_streams.sort(key=lambda x: _safe_int(x.get("added"), 0), reverse=True)
 
             # Convert to sets for faster membership testing
             live_categories_hidden = set(self.data["live_categories_hidden"])
             live_streams_hidden = set(self.data["live_streams_hidden"])
 
             for channel in self.live_streams:
-                category_id = channel.get("category_id", "")
+                category_id = str(channel.get("category_id") or "")
                 name = channel.get("name") or ""
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
-                stream_id = channel.get("stream_id", "")
+                stream_id = str(channel.get("stream_id") or "")
 
                 if str(category_id) in live_categories_hidden or str(stream_id) in live_streams_hidden:
                     continue
@@ -516,7 +527,7 @@ class BmxUpdate(Screen):
                 except:
                     continue
 
-                catchup = int(channel.get("tv_archive", 0))
+                catchup = _safe_int(channel.get("tv_archive"), 0)
 
                 if cfg.catchup.value and catchup == 1:
                     name = str(cfg.catchup_prefix.value) + str(name)
@@ -557,7 +568,7 @@ class BmxUpdate(Screen):
                     "xml_str": str(xml_str),
                     "bouquet_string": bouquet_string,
                     "name": str(name),
-                    "added": str(channel.get("added", "0"))
+                    "added": _safe_int(channel.get("added"), 0)
                 })
 
             if self.live_stream_data:
@@ -676,17 +687,17 @@ class BmxUpdate(Screen):
                 self.vod_streams.sort(key=lambda x: x["name"].lower())
 
             elif self.settings["vod_stream_order"] == "added":
-                self.vod_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
+                self.vod_streams.sort(key=lambda x: _safe_int(x.get("added"), 0), reverse=True)
 
             # Convert to sets for faster membership testing
             vod_categories_hidden = set(self.data["vod_categories_hidden"])
             vod_streams_hidden = set(self.data["vod_streams_hidden"])
 
             for channel in self.vod_streams:
-                category_id = channel.get("category_id", "")
+                category_id = str(channel.get("category_id") or "")
                 name = channel.get("name") or ""
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
-                stream_id = channel.get("stream_id", "")
+                stream_id = str(channel.get("stream_id") or "")
 
                 if str(category_id) in vod_categories_hidden or str(stream_id) in vod_streams_hidden:
                     continue
@@ -716,7 +727,7 @@ class BmxUpdate(Screen):
                     "category_id": str(category_id),
                     "bouquet_string": bouquet_string,
                     "name": str(name),
-                    "added": str(channel.get("added", "0"))
+                    "added": _safe_int(channel.get("added"), 0)
                 })
 
             if self.vod_stream_data:
@@ -1112,7 +1123,7 @@ class BmxUpdate(Screen):
             self.series_streams.sort(key=lambda x: (x.get("name") or "").lower())
 
         elif self.settings["vod_stream_order"] == "added":
-            self.series_streams.sort(key=lambda x: int(x.get("added", 0)), reverse=True)
+            self.series_streams.sort(key=lambda x: _safe_int(x.get("added"), 0), reverse=True)
 
         BATCH_SIZE = 20000
         stream_type = self.settings["vod_type"]
@@ -1121,10 +1132,10 @@ class BmxUpdate(Screen):
             batch_data = []
             for channel in streams_batch:
 
-                category_id = channel.get("category_id", "")
+                category_id = str(channel.get("category_id") or "")
                 name = channel.get("name") or ""
                 name = name.replace(":", "").replace('"', "").replace('•', "-").strip("- ").strip()
-                stream_id = channel.get("series_id", "")
+                stream_id = str(channel.get("series_id") or "")
 
                 if not category_id or not name:
                     continue
@@ -1150,7 +1161,7 @@ class BmxUpdate(Screen):
                     "category_id": str(category_id),
                     "bouquet_string": bouquet_string,
                     "name": str(name),
-                    "added": str(channel.get("added", "0"))
+                    "added": _safe_int(channel.get("added"), 0)
                 })
             return batch_data
 

@@ -84,26 +84,48 @@ def downloadXtreamApi(url):
         print("*** downloadXtreamApi ***", url)
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
+    response = []
 
     with requests.Session() as http:
         http.mount("http://", adapter)
         http.mount("https://", adapter)
 
         try:
-            r = http.get(url, headers=hdr, timeout=5, verify=False)
+            r = http.get(url, headers=hdr, timeout=(10, 20), verify=False)
             r.raise_for_status()
 
-            if r.status_code == requests.codes.ok:
+            # Get Content-Type from headers
+            content_type = r.headers.get('Content-Type', '')
+
+            # Handle JSON content directly
+            if 'application/json' in content_type:
                 try:
                     response = r.json()
-                    return response
-                except Exception as e:
-                    print("Error processing JSON response:", e)
-                    return ""
+
+                except ValueError as e:
+                    print("Error decoding JSON:", e, url)
+                    response = []
+
+            # Handle text/html content
+            elif 'text/html' in content_type:
+                try:
+                    # Attempt to parse the HTML body as JSON
+                    response_text = r.text
+                    response = json.loads(response_text)
+
+                except ValueError as e:
+                    print("Error decoding JSON from HTML content:", e, url)
+                    response = []
+
+            else:
+                print("Final response is non-JSON content:", r.url)
+                response = []
+
         except Exception as e:
             print("Request failed:", e)
+            response = []
 
-    return []
+    return response
 
 
 def downloadXtreamApiCategory(url):
@@ -113,28 +135,51 @@ def downloadXtreamApiCategory(url):
     category = url[1]
     retries = 0
     adapter = HTTPAdapter(max_retries=retries)
+    response = []
 
     with requests.Session() as http:
         http.mount("http://", adapter)
         http.mount("https://", adapter)
 
         try:
-            r = http.get(url[0], headers=hdr, timeout=20, verify=False)
+            r = http.get(url[0], headers=hdr, timeout=(10, 20), verify=False)
             r.raise_for_status()
 
-            if r.status_code == requests.codes.ok:
-                data = r.json()
+            # Get Content-Type from headers
+            content_type = r.headers.get('Content-Type', '')
 
-                if pythonVer == 3:
-                    data = clean_names(data, category)
+            # Handle JSON content directly
+            if 'application/json' in content_type:
+                try:
+                    response = r.json()
 
-                return category, data
+                except ValueError as e:
+                    print("Error decoding JSON:", e, url)
+                    response = []
+
+            # Handle text/html content
+            elif 'text/html' in content_type:
+                try:
+                    # Attempt to parse the HTML body as JSON
+                    response_text = r.text
+                    response = json.loads(response_text)
+
+                except ValueError as e:
+                    print("Error decoding JSON from HTML content:", e, url)
+                    response = []
+
+            else:
+                print("Final response is non-JSON content:", r.url)
+                response = []
 
         except Exception as e:
             print("Request failed:", e)
-            return category, ""
+            response = []
 
-    return category, ""
+    if pythonVer == 3:
+        response = clean_names(response, category)
+
+    return category, response
 
 
 def downloadM3U8File(url):

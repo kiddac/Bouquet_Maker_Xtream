@@ -19,6 +19,13 @@ import json
 import os
 
 
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 class BmxChooseCategories(Screen):
     def __init__(self, session):
         Screen.__init__(self, session)
@@ -218,21 +225,22 @@ class BmxChooseCategories(Screen):
                     response = (
                         {
                             "name": item.get("name") or "",
-                            "stream_id": item.get("stream_id", ""),
-                            "stream_icon": item.get("stream_icon", ""),
-                            "epg_channel_id": item.get("epg_channel_id", ""),
-                            "added": item.get("added", 0),  # Default to 0 for numeric
-                            "category_id": item.get("category_id", ""),
-                            "custom_sid": item.get("custom_sid", ""),
-                            "tv_archive": item.get("tv_archive", 0),
+                            "stream_id": str(item.get("stream_id") or ""),
+                            "stream_icon": item.get("stream_icon") or "",
+                            "epg_channel_id": str(item.get("epg_channel_id") or ""),
+                            "added": _safe_int(item.get("added"), 0),
+                            "category_id": str(item.get("category_id") or ""),
+                            "custom_sid": str(item.get("custom_sid") or ""),
+                            "tv_archive": _safe_int(item.get("tv_archive"), 0),
                         }
-                        for item in response if all(k in item for k in [
-                            "name", "stream_id", "stream_icon", "epg_channel_id",
-                            "added", "category_id", "custom_sid", "tv_archive"
-                        ])
+                        for item in response
+                        if item.get("name")
+                        and item.get("stream_id")
+                        and item.get("category_id")
                     )
                     self.live_streams = list(response)
-                response = None
+
+            response = None
 
         try:
             self["splash"].hide()
@@ -265,19 +273,25 @@ class BmxChooseCategories(Screen):
             if response:
                 if category == 1:
                     self.vod_categories = response
+
                 elif category == 4:
                     response = (
                         {
                             "name": item.get("name") or "",
-                            "stream_id": item.get("stream_id", ""),
-                            "added": item.get("added", 0),
-                            "category_id": item.get("category_id", ""),
-                            "container_extension": item.get("container_extension", "")
+                            "stream_id": str(item.get("stream_id") or ""),
+                            "added": _safe_int(item.get("added"), 0),
+                            "category_id": str(item.get("category_id") or ""),
+                            "container_extension": str(
+                                item.get("container_extension") or ""
+                            )
                         }
-                        for item in response if all(k in item for k in [
-                            "name", "stream_id", "added", "category_id", "container_extension"
-                        ])
+                        for item in response
+                        if item.get("name")
+                        and item.get("stream_id")
+                        and item.get("category_id")
+                        and item.get("container_extension")
                     )
+
                     self.vod_streams = list(response)
 
                 response = None
@@ -318,13 +332,16 @@ class BmxChooseCategories(Screen):
                     response = (
                         {
                             "name": item.get("name") or "",
-                            "series_id": item.get("series_id", ""),
-                            "last_modified": item.get("last_modified", "0"),
-                            "category_id": item.get("category_id", "")
+                            "series_id": str(item.get("series_id") or ""),
+                            "last_modified": _safe_int(
+                                item.get("last_modified"), 0
+                            ),
+                            "category_id": str(item.get("category_id") or "")
                         }
-                        for item in response if all(k in item for k in [
-                            "name", "series_id", "last_modified", "category_id"
-                        ])
+                        for item in response
+                        if item.get("name")
+                        and item.get("series_id")
+                        and item.get("category_id")
                     )
                     self.series_streams = list(response)
                 response = None
@@ -551,8 +568,8 @@ class BmxChooseCategories(Screen):
             for channel in self.live_streams:
 
                 name = channel.get("name") or ""
-                stream_id = str(channel.get("stream_id", ""))
-                added = str(channel.get("added", "0"))
+                stream_id = str(channel.get("stream_id") or "")
+                added = _safe_int(channel.get("added"), 0)
 
                 if not name or not stream_id:
                     continue
@@ -565,22 +582,22 @@ class BmxChooseCategories(Screen):
                             self.channel_selected_list.append([stream_id, name, False, added])
                     else:
                         if stream_id in glob.current_playlist["data"]["live_streams_hidden"] or name in glob.current_playlist["data"]["live_streams_hidden"]:
-                            self.channel_selected_list.append([stream_id, name, True, "0"])
+                            self.channel_selected_list.append([stream_id, name, True, 0])
                         else:
-                            self.channel_selected_list.append([stream_id, name, False, "0"])
+                            self.channel_selected_list.append([stream_id, name, False, 0])
 
             if glob.current_playlist["settings"]["live_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
             if glob.current_playlist["settings"]["live_stream_order"] == "added":
-                self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
+                self.channel_selected_list.sort(key=lambda x: x[3], reverse=True)
 
         elif self.level == 2:
             for channel in self.vod_streams:
 
-                name = str(channel.get("name", ""))
-                stream_id = str(channel.get("stream_id", ""))
-                added = str(channel.get("added", "0"))
+                name = channel.get("name") or ""
+                stream_id = str(channel.get("stream_id") or "")
+                added = _safe_int(channel.get("added"), 0)
 
                 if not name or not stream_id:
                     continue
@@ -593,22 +610,22 @@ class BmxChooseCategories(Screen):
                             self.channel_selected_list.append([stream_id, name, False, added])
                     else:
                         if stream_id in glob.current_playlist["data"]["vod_streams_hidden"] or name in glob.current_playlist["data"]["vod_streams_hidden"]:
-                            self.channel_selected_list.append([stream_id, name, True, "0"])
+                            self.channel_selected_list.append([stream_id, name, True, 0])
                         else:
-                            self.channel_selected_list.append([stream_id, name, False, "0"])
+                            self.channel_selected_list.append([stream_id, name, False, 0])
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "added":
-                self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
+                self.channel_selected_list.sort(key=lambda x: x[3], reverse=True)
 
         elif self.level == 3:
             for channel in self.series_streams:
 
-                name = str(channel.get("name", ""))
-                series_id = str(channel.get("series_id", ""))
-                last_modified = str(channel.get("last_modified", "0"))
+                name = channel.get("name") or ""
+                series_id = str(channel.get("series_id") or "")
+                last_modified = _safe_int(channel.get("last_modified"), 0)
 
                 if not name or not series_id:
                     continue
@@ -621,15 +638,15 @@ class BmxChooseCategories(Screen):
                             self.channel_selected_list.append([series_id, name, False, last_modified])
                     else:
                         if series_id in glob.current_playlist["data"]["series_streams_hidden"] or name in glob.current_playlist["data"]["series_streams_hidden"]:
-                            self.channel_selected_list.append([series_id, name, True, "0"])
+                            self.channel_selected_list.append([series_id, name, True, 0])
                         else:
-                            self.channel_selected_list.append([series_id, name, False, "0"])
+                            self.channel_selected_list.append([series_id, name, False, 0])
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "alphabetical":
                 self.channel_selected_list.sort(key=lambda x: x[1].lower())
 
             if glob.current_playlist["settings"]["vod_stream_order"] == "added":
-                self.channel_selected_list.sort(key=lambda x: x[3].lower(), reverse=True)
+                self.channel_selected_list.sort(key=lambda x: x[3], reverse=True)
 
         if self.setup_title != _("Choose Series Categories"):
             self.channel_list = [self.buildListEntry(x[0], x[1], x[2]) for x in self.channel_selected_list]
