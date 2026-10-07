@@ -110,7 +110,10 @@ class BmxUpdate(Screen):
             self.bouquetLoop()
         else:
             if self.runtype == "manual":
-                self.session.openWithCallback(self.done, MessageBox, str(len(self.bouquets)) + _(" Providers IPTV Updated"), MessageBox.TYPE_INFO, timeout=5)
+                try:
+                    self.session.openWithCallback(self.done, MessageBox, str(len(self.bouquets)) + _(" Providers IPTV Updated"), MessageBox.TYPE_INFO, timeout=5)
+                except:
+                    self.done()
             else:
                 self.done()
 

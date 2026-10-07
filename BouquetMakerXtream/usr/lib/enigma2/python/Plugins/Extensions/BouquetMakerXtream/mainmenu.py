@@ -35,6 +35,8 @@ class BmxMainMenu(Screen):
         self.list = []
         self.draw_list = []
         self.playlists_all = []
+        self.onlineUpdater = None
+        self.onlineUpdateStarted = False
         self["list"] = List(self.draw_list, enableWrapAround=True)
 
         self.setup_title = _("Main Menu")
@@ -54,6 +56,7 @@ class BmxMainMenu(Screen):
 
         self.onFirstExecBegin.append(self.checkDependencies)
         self.onLayoutFinish.append(self.__layoutFinished)
+        self.onClose.append(self.closeOnlineUpdater)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -96,6 +99,24 @@ class BmxMainMenu(Screen):
             playlist["data"]["series_streams"] = []
 
         self.createSetup()
+
+        # Check once for every new main-menu instance. This means the check is
+        # repeated whenever BouquetMakerXtream is closed and opened again.
+        if not self.onlineUpdateStarted:
+            self.onlineUpdateStarted = True
+            self.checkOnlineUpdate()
+
+    def checkOnlineUpdate(self):
+        try:
+            from .updater import OnlineUpdater
+            self.onlineUpdater = OnlineUpdater(self.session, version)
+            self.onlineUpdater.check()
+        except Exception as error:
+            print("[BouquetMakerXtream] Unable to initialise update check: %s" % error)
+
+    def closeOnlineUpdater(self):
+        if self.onlineUpdater is not None:
+            self.onlineUpdater.close()
 
     def createSetup(self):
         self.bouquets_exist = False

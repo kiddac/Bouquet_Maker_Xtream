@@ -11,7 +11,6 @@ import time
 import twisted.python.runtime
 from datetime import datetime, timedelta
 from requests.adapters import HTTPAdapter, Retry
-from Screens.Standby import inStandby
 
 
 try:
@@ -291,12 +290,18 @@ class BMXAutoStartTimer:
     def __init__(self, session):
         self.session = session
         self.timer = eTimer()
+        self.retryTimer = eTimer()
         self._running_update = False  # Prevent overlapping updates
 
         try:
             self.timer_conn = self.timer.timeout.connect(self.onTimer)
         except:
             self.timer.callback.append(self.onTimer)
+
+        try:
+            self.retryTimer_conn = self.retryTimer.timeout.connect(self.runUpdate)
+        except:
+            self.retryTimer.callback.append(self.runUpdate)
 
         now = datetime.now()
         clock = cfg.wakeup.value
@@ -362,16 +367,57 @@ class BMXAutoStartTimer:
             print("[BMXAutoStartTimer] Update already running, skipping...")
             return
 
+        if not self.session:
+            return
+
+        dialog_stack = getattr(self.session, "dialog_stack", [])
+        in_exec = getattr(self.session, "in_exec", True)
+
+        if dialog_stack and not in_exec:
+            print("[BMXAutoStartTimer] UI not ready, retrying in 10 seconds...")
+            self.retryTimer.startLongTimer(10)
+            return
+
         try:
-            self._running_update = True
+            from . import update2
+
+            current_dialog = getattr(self.session, "current_dialog", None)
+
+            if isinstance(current_dialog, update2.BmxUpdate):
+                print(
+                    "[BMXAutoStartTimer] Bouquet update already open, "
+                    "retrying in 30 seconds..."
+                )
+                self.retryTimer.startLongTimer(30)
+                return
+
             print("\n*********** BouquetMakerXtream runupdate ************\n")
-            if self.session and not inStandby:
-                from . import update2
-                self.session.open(update2.BmxUpdate, "auto")
-            else:
-                print("[BMX] Skipping splash (standby or UI not ready)")
-        finally:
+
+            self._running_update = True
+
+            self.session.openWithCallback(
+                self.updateFinished,
+                update2.BmxUpdate,
+                "auto"
+            )
+
+        except RuntimeError as e:
             self._running_update = False
+
+            if "Modal open are allowed only" in str(e):
+                print(
+                    "[BMXAutoStartTimer] UI became non-modal, "
+                    "retrying in 10 seconds..."
+                )
+                self.retryTimer.startLongTimer(10)
+                return
+
+            raise
+
+    def updateFinished(self, *args):
+        self.retryTimer.stop()
+        self._running_update = False
+        print("[BMXAutoStartTimer] Automatic update finished")
 
 
 def myBase(self, session, forceLegacy=False):
