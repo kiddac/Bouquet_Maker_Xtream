@@ -5,6 +5,7 @@ from . import _
 from . import parsem3u
 from . import seriesparsem3u
 from . import bouquet_globals as glob
+from . import bouquetorder
 from . import globalfunctions as bmx
 from .plugin import epgimporter, cfg, playlists_json, skin_directory, debugs, dir_etc
 
@@ -154,6 +155,18 @@ class BmxBuildBouquets(Screen):
         glob.get_series_failed = False
         self["progress"].setRange((0, self.progress_range))
         self["progress"].setValue(self.progress_value)
+        grouped_bouquets = [
+            "userbouquet.bouquetmakerxtream_" + str(self.name) + ".tv"
+        ]
+        if self.original_name and self.original_name != self.name:
+            grouped_bouquets.append(
+                "userbouquet.bouquetmakerxtream_" + str(self.original_name) + ".tv"
+            )
+        self.bouquet_order_saved = bouquetorder.save_bouquet_order(
+            dir_etc,
+            grouped_bouquets
+        )
+        bmx.reconcileGeneratedArtifacts(self.playlists_all)
         self.deleteExistingRefs()
 
         self.timer = eTimer()
@@ -886,13 +899,18 @@ class BmxBuildBouquets(Screen):
 
         stream_type = self.settings["vod_type"]
 
-        CHUNK_SIZE = 1000
+        CHUNK_SIZE = 250
         processed = 0
 
         try:
             while processed < CHUNK_SIZE:
 
                 channel = next(self.series_generator)
+
+                # Cooperative yield marker from the streaming parser.
+                if channel is None:
+                    self._scheduleSeriesChunk()
+                    return
 
                 self.series_count += 1
                 processed += 1
@@ -951,16 +969,7 @@ class BmxBuildBouquets(Screen):
                     self._writeSeriesCategory(category_name, self.series_cat_buffers[category_name])
                     self.series_cat_buffers[category_name] = []
 
-            # UI update
-            self["action"].setText("Processing series: %d" % self.series_count)
-
-            self.timer = eTimer()
-            try:
-                self.timer_conn = self.timer.timeout.connect(self.processSeriesChunk)
-            except:
-                self.timer.callback.append(self.processSeriesChunk)
-
-            self.timer.start(5, True)
+            self._scheduleSeriesChunk()
 
         except StopIteration:
 
@@ -970,6 +979,16 @@ class BmxBuildBouquets(Screen):
                     self._writeSeriesCategory(category_name, buffer)
 
             self._finaliseSeriesFiles()
+
+    def _scheduleSeriesChunk(self):
+        """Return control to the UI before processing the next series chunk."""
+        self["action"].setText("Processing series: %d" % self.series_count)
+        self.timer = eTimer()
+        try:
+            self.timer_conn = self.timer.timeout.connect(self.processSeriesChunk)
+        except:
+            self.timer.callback.append(self.processSeriesChunk)
+        self.timer.start(5, True)
 
     def _writeSeriesCategory(self, category_name, buffer):
         safe_cat = bmx.safeName(category_name)
@@ -1219,6 +1238,14 @@ class BmxBuildBouquets(Screen):
                 bouquet_tv_string = '#SERVICE 1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "' + str(groupname) + '" ORDER BY bouquet\n'
                 f.write(str(bouquet_tv_string))
 
+        # Ensure the top-level reference always has a valid target, including
+        # builds where the provider returns no usable categories.
+        grouped_path = os.path.join("/etc/enigma2", groupname)
+        if not os.path.isfile(grouped_path):
+            with open(grouped_path, "w") as f:
+                f.write("#NAME " + str(self.playlist_info["name"]) + "\n")
+            self.userbouquet = True
+
         self.bouquet_tv = True
 
     def buildXmltvSource(self):
@@ -1343,6 +1370,8 @@ class BmxBuildBouquets(Screen):
 
         self.updateJson()
         self.clearCaches()
+        if getattr(self, "bouquet_order_saved", False):
+            bouquetorder.restore_bouquet_order(dir_etc)
         bmx.refreshBouquets()
 
         message = ""

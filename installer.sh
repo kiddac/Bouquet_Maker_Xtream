@@ -3,8 +3,10 @@
 
 description="
 What is new:
-Attempt to fix the auto update modal screen crash
-Auto online updater added
+Auto online updater amends with more user choice
+Bouquets now remember order of folders and sub folders. Not streams
+Fixed a build series issue if the provider url was /movie/ and not /series/
+Remove orphan files in bouquets or epgimporter sources if removed from playlists.txt outside of the plugin.
 "
 
 PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream

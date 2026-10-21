@@ -205,6 +205,8 @@ cfg.deepstandby = ConfigSelection(default="skip", choices=[
     ("skip", _("skip the import"))
 ])
 
+cfg.autoupdateprompt = ConfigYesNo(default=False)
+
 # vti picon symlink - ln -s /media/hdd/picon /usr/share/enigma2
 # newenigma2 symlink - # ln -s /data/picons /picons
 

@@ -3,10 +3,11 @@
 
 from . import _
 from . import bouquet_globals as glob
+from . import bouquetorder
 from . import globalfunctions as bmx
 from . import processfiles as pfiles
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, playlists_json, pythonFull, skin_directory, version
+from .plugin import cfg, common_path, dir_etc, playlists_json, pythonFull, skin_directory, version
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -56,7 +57,8 @@ class BmxMainMenu(Screen):
 
         self.onFirstExecBegin.append(self.checkDependencies)
         self.onLayoutFinish.append(self.__layoutFinished)
-        self.onClose.append(self.closeOnlineUpdater)
+        if cfg.autoupdateprompt.value:
+            self.onClose.append(self.closeOnlineUpdater)
 
     def __layoutFinished(self):
         self.setTitle(self.setup_title)
@@ -92,6 +94,9 @@ class BmxMainMenu(Screen):
     def start(self, answer=None):
         self.playlists_all = pfiles.processFiles()
 
+        if bmx.reconcileGeneratedArtifacts(self.playlists_all):
+            bmx.refreshBouquets()
+
         # clear stream data if populated after a crash
         for playlist in self.playlists_all:
             playlist["data"]["live_streams"] = []
@@ -102,7 +107,7 @@ class BmxMainMenu(Screen):
 
         # Check once for every new main-menu instance. This means the check is
         # repeated whenever BouquetMakerXtream is closed and opened again.
-        if not self.onlineUpdateStarted:
+        if cfg.autoupdateprompt.value and not self.onlineUpdateStarted:
             self.onlineUpdateStarted = True
             self.checkOnlineUpdate()
 
@@ -193,6 +198,7 @@ class BmxMainMenu(Screen):
             with open(playlists_json, "w") as f:
                 json.dump(self.playlists_all, f, indent=4)
 
+            bouquetorder.clean_bouquet_order(dir_etc, remove_all=True)
             bmx.refreshBouquets()
             self.start()
 

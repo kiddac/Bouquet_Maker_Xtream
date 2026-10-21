@@ -6,6 +6,7 @@ from . import bouquet_globals as glob
 from .plugin import debugs
 
 # Strict patterns
+SERIES_EPISODE_PATTERN = re.compile(r'\bS\d{1,4}E\d{1,4}\b', re.IGNORECASE)
 SERIES_PATTERN = re.compile(r'\bS\d{1,4}\b', re.IGNORECASE)
 EPISODE_PATTERN = re.compile(r'\bE\d{1,4}\b', re.IGNORECASE)
 EPISODE_WORD_PATTERN = re.compile(r'\bEpisode\s\d+\b', re.IGNORECASE)
@@ -18,6 +19,11 @@ def is_series_stream(name, lower_source):
     - OR name contains BOTH season + episode
     """
     if "/series/" in lower_source:
+        return True
+
+    # In S03E07 there is no word boundary between the season number and E,
+    # so it must be checked as a combined token before the separate patterns.
+    if SERIES_EPISODE_PATTERN.search(name):
         return True
 
     has_season = SERIES_PATTERN.search(name)
@@ -81,8 +87,9 @@ def parseM3u8Playlist(response):
 
         lower_source = source.lower()
 
-        # reject obvious non-series paths
-        if "/live/" in lower_source or "/movie" in lower_source:
+        # Some providers put episodic files under /movie/. Trust an explicit
+        # season/episode name in that case, but never import a /live/ URL.
+        if "/live/" in lower_source:
             continue
 
         # group-title
@@ -133,14 +140,22 @@ def parseM3u8Playlist(response):
 # STREAMING PARSER (memory-safe)
 # --------------------------------------------------
 
-def parseM3u8Stream(lines):
+def parseM3u8Stream(lines, yield_interval=250):
     data = glob.current_playlist["data"]
     hidden_categories = set(data.get("series_categories_hidden", []))
 
     current = {}
     pending_url = None
+    scanned_lines = 0
 
     for line in lines:
+        # This generator is consumed by the Enigma2 main thread. Yield a marker
+        # regularly so long runs of non-series entries cannot hold the UI until
+        # the next matching series entry is found.
+        scanned_lines += 1
+        if yield_interval and scanned_lines > yield_interval:
+            scanned_lines = 1
+            yield None
 
         if isinstance(line, bytes):
             try:
@@ -161,7 +176,7 @@ def parseM3u8Stream(lines):
                 lower_source = source.lower()
                 name = current.get("name", "")
 
-                if "/live/" in lower_source or "/movie" in lower_source:
+                if "/live/" in lower_source:
                     current = {}
                     continue
 
@@ -225,7 +240,7 @@ def parseM3u8Stream(lines):
             lower_source = source.lower()
             name = current.get("name", "")
 
-            if "/live/" in lower_source or "/movie" in lower_source:
+            if "/live/" in lower_source:
                 current = {}
                 continue
 

@@ -5,9 +5,7 @@
 from __future__ import division
 
 import json
-import glob as pythonglob
 import os
-import re
 import socket
 from datetime import datetime
 
@@ -34,6 +32,7 @@ from Tools.LoadPixmap import LoadPixmap
 # Local application/library-specific imports
 from . import _
 from . import bouquet_globals as glob
+from . import globalfunctions as bmx
 from .plugin import cfg, common_path, hasConcurrent, hasMultiprocessing, playlist_file, playlists_json, skin_directory, version, epgimporter
 from .bmxStaticText import StaticText
 
@@ -540,40 +539,11 @@ class BmxPlaylists(Screen):
             self.close(True)
 
     def epgimportcleanup(self):
-        channelfilelist = []
-        oldchannelfiles = pythonglob.glob("/etc/epgimport/bouquetmakerxtream.*.channels.xml")
-
         try:
             with open(playlists_json, "r") as f:
                 self.playlists_all = json.load(f)
         except:
             self.playlists_all = []
 
-        for playlist in self.playlists_all:
-            cleanName = re.sub(r'[\'\<\>\:\"\/\\\|\?\*\(\)\[\]]', "_", str(playlist["playlist_info"]["name"]))
-            cleanName = re.sub(r" +", "_", cleanName)
-            cleanName = re.sub(r"_+", "_", cleanName)
-            channelfilelist.append(cleanName)
-
-        for filePath in oldchannelfiles:
-            if not any(cfile in filePath for cfile in channelfilelist):
-                try:
-                    os.remove(filePath)
-                except Exception as e:
-                    print("Error while deleting file:", filePath, e)
-        sourcefile = "/etc/epgimport/bouquetmakerxtream.sources.xml"
-
-        if os.path.isfile(sourcefile):
-            try:
-                import xml.etree.ElementTree as ET
-                tree = ET.parse(sourcefile, parser=ET.XMLParser(encoding="utf-8"))
-                root = tree.getroot()
-                for elem in root.findall(".//source"):
-                    description = elem.find("description").text if elem.find("description") is not None else ""
-                    if not any(cfile in description for cfile in channelfilelist):
-                        if elem in root:
-                            root.remove(elem)
-
-                tree.write(sourcefile)
-            except Exception as e:
-                print("Error:", e)
+        if bmx.reconcileGeneratedArtifacts(self.playlists_all):
+            bmx.refreshBouquets()

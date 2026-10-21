@@ -182,12 +182,13 @@ class BmxSettings(ConfigListScreen, Screen, ProtectedScreen):
         self.location = cfg.location.getValue()
         self.local_location = cfg.local_location.getValue()
         self.org_catchup_on = cfg.catchup_on.getValue()
-
+        self.cfg_autoupdateprompt = getConfigListEntry(_("Prompt if plugin update available"), cfg.autoupdateprompt)
         self.createSetup()
 
     def createSetup(self):
         config_entries = [
             self.cfg_skin,
+            self.cfg_autoupdateprompt,
             self.cfg_useragent,
             self.cfg_location,
             self.cfg_local_location,

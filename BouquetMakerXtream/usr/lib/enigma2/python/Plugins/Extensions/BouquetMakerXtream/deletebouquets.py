@@ -3,9 +3,10 @@
 
 from . import _
 from . import bouquet_globals as glob
+from . import bouquetorder
 from . import globalfunctions as bmx
 from .bmxStaticText import StaticText
-from .plugin import cfg, common_path, epgimporter, playlists_json, skin_directory, version
+from .plugin import cfg, common_path, dir_etc, epgimporter, playlists_json, skin_directory, version
 
 from Components.ActionMap import ActionMap
 from Components.Sources.List import List
@@ -102,9 +103,11 @@ class BmxDeleteBouquets(Screen):
 
     def deleteBouquets(self):
         selected_bouquet_list = self.getSelectionsList()
+        deleted_safe_names = []
 
         for bouquet_name in selected_bouquet_list:
             safe_name = bmx.safeName(bouquet_name)
+            deleted_safe_names.append(safe_name)
 
             with open("/etc/enigma2/bouquets.tv", "r+") as f:
                 lines = f.readlines()
@@ -156,6 +159,9 @@ class BmxDeleteBouquets(Screen):
             glob.current_selection = 0
             glob.current_playlist = []
             bmx.refreshBouquets()
+
+        if deleted_safe_names:
+            bouquetorder.clean_bouquet_order(dir_etc, deleted_safe_names)
         self.close()
 
     def deleteBouquetFile(self, bouquet_name):
