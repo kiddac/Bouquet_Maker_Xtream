@@ -1,24 +1,29 @@
 #!/bin/sh
-## setup command=wget https://raw.githubusercontent.com/kiddac/Bouquet_Maker_Xtream/master/installer.sh -O - | /bin/sh
+## setup command=rm -rf /tmp/Bouquet_Maker_Xtream-master /tmp/Bouquet_Maker_Xtream-master.tar.gz; wget -q https://codeload.github.com/kiddac/Bouquet_Maker_Xtream/tar.gz/refs/heads/master -O /tmp/Bouquet_Maker_Xtream-master.tar.gz && tar -xzf /tmp/Bouquet_Maker_Xtream-master.tar.gz -C /tmp && /bin/sh /tmp/Bouquet_Maker_Xtream-master/installer.sh
 
 description="
 What is new:
-Auto online updater amends with more user choice
-Bouquets now remember order of folders and sub folders. Not streams
-Fixed a build series issue if the provider url was /movie/ and not /series/
-Remove orphan files in bouquets or epgimporter sources if removed from playlists.txt outside of the plugin.
+Auto online updater amends for older images
 "
 
 PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream
-TMPDIR=/tmp/BouquetMakerXtream_update
+TMPDIR=/tmp/Bouquet_Maker_Xtream_update
 ARCHIVE_ROOT=Bouquet_Maker_Xtream-master/BouquetMakerXtream
+ARCHIVE_URL=https://codeload.github.com/kiddac/Bouquet_Maker_Xtream/tar.gz/refs/heads/master
 
 echo " ** Download and install BouquetMakerXtream ** "
 rm -rf "$TMPDIR"
 mkdir -p "$TMPDIR"
 cd "$TMPDIR" || exit 1
 
-if ! wget -q "https://github.com/kiddac/Bouquet_Maker_Xtream/archive/refs/heads/master.tar.gz" -O master.tar.gz \
+# GNU wget and newer BusyBox builds support this option, but old VTi BusyBox
+# builds do not. Only add it when the installed wget advertises support.
+WGET_CERT_OPTION=
+if wget --help 2>&1 | grep -q 'no-check-certificate'; then
+    WGET_CERT_OPTION=--no-check-certificate
+fi
+
+if ! wget $WGET_CERT_OPTION -q "$ARCHIVE_URL" -O master.tar.gz \
    || ! tar -xzf master.tar.gz \
    || [ ! -f "$ARCHIVE_ROOT/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream/plugin.py" ]; then
     echo "Download failed. Nothing was changed."
@@ -52,6 +57,5 @@ fi
 
 sync
 echo
-echo "BouquetMakerXtream installed successfully. Restarting Enigma2..."
-killall enigma2
+echo "BouquetMakerXtream installed successfully. Restart Enigma2 to load the update."
 exit 0
