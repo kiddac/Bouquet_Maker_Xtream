@@ -6,7 +6,7 @@ from __future__ import division
 
 import json
 import os
-import socket
+# import socket
 from datetime import datetime
 
 try:

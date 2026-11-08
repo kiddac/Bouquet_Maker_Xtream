@@ -3,8 +3,7 @@
 
 description="
 What is new:
-Auto online updater amends for older images
-HTTPS Cert - extra date and time check added.
+Fix for bad custom_sid provider data - that should never happen
 "
 
 PLUGINPATH=/usr/lib/enigma2/python/Plugins/Extensions/BouquetMakerXtream

@@ -167,7 +167,7 @@ class BmxDownloadPicons(Screen):
                 )
 
                 custom_sid_from_channel = str(channel.get("custom_sid") or "")
-                if custom_sid_from_channel not in ("null", "None", "0", ":0:0:0:0:0:0:0:0:0:") and len(custom_sid_from_channel) > 16:
+                if custom_sid_from_channel not in ("null", "None", "0", ":0:0:0:0:0:0:0:0:0:") and len(custom_sid_from_channel) > 16 and custom_sid_from_channel.count(":") >= 6:
                     custom_sid = custom_sid_from_channel
                     if custom_sid[0].isdigit():
                         custom_sid = custom_sid[1:]

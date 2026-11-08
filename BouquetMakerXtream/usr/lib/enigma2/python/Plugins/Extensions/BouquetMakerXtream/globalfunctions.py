@@ -276,8 +276,7 @@ def _isBmxBouquet(filename):
     ) and filename.endswith(".tv")
 
 
-def reconcileGeneratedArtifacts(playlists, bouquet_directory="/etc/enigma2",
-                                epg_directory="/etc/epgimport"):
+def reconcileGeneratedArtifacts(playlists, bouquet_directory="/etc/enigma2", epg_directory="/etc/epgimport"):
     """Remove generated bouquet and EPG artifacts for deleted playlist names."""
     import xml.etree.ElementTree as ET
 
